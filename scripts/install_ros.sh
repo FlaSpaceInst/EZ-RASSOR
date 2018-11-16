@@ -13,6 +13,9 @@
 #       Download ROS packages into a new Catkin workspace.
 #   --build
 #       Build ROS packages in a Catkin workspace.
+#   --clean
+#       Clean up the workspace.
+
 # These flags can be chained together, and they will execute in order.
 # If you provide no flags, all of the functions will be run in the correct
 # order (recommended).
@@ -21,7 +24,7 @@
 
 SHELL="bash"
 SHELL_RC="$HOME/.bashrc"
-WORKSPACE="$HOME/workspace"
+WORK_SPACE="/tmp/ros_workspace"
 INSTALL_SPACE="/opt/ros/kinetic"
 
 # Configure the prerequisites for ROS.
@@ -49,9 +52,9 @@ function setup_prerequisites {
 function download_packages {
 
     # Create a Catkin workspace.
-    rm -rf $WORKSPACE
-    mkdir -p $WORKSPACE
-    cd $WORKSPACE
+    clean_up
+    mkdir -p $WORK_SPACE
+    cd $WORK_SPACE
 
     # Install the core ROS packages and communication libraries. This section
     # skips downloading Assimp because it has issues during compilation and
@@ -69,7 +72,7 @@ function download_packages {
 
 # Build the packages located in the Catkin workspace.
 function build_packages {
-    cd $WORKSPACE
+    cd $WORK_SPACE
 
     sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release \
         --install-space $INSTALL_SPACE -j2 --quiet
@@ -81,11 +84,17 @@ function build_packages {
     cd -
 }
 
+# Clean up the workspace.
+function clean_up {
+    rm -rf $WORK_SPACE
+}
+
 # Run every part of this script.
 function run_full_installation {
     setup_prerequisites
     download_packages
     build_packages
+    clean_up
 }
 
 # Main entry point to the script. If no arguments are provided, run everything.
@@ -104,6 +113,9 @@ else
                 ;;
             --build)
                 build_packages
+                ;;
+            --clean)
+                clean_up
                 ;;
         esac
     done
