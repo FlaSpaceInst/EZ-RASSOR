@@ -3,6 +3,8 @@
 
 # Written by Tiger Sachse for the EZ-RASSOR project.
 
+# UPDATE: We aren't using Melodic.
+
 SHELL="bash"
 SHELL_RC="$HOME/.bashrc"
 
