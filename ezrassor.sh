@@ -3,7 +3,9 @@ PACKAGES_DIR="packages"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 
+# Install software. First argument is the collection desired.
 install_software() {
+    for COLLECTION in "$@"
     case $1 in
         ros)
             bash $SCRIPTS_DIR/install_ros.sh
@@ -15,6 +17,7 @@ install_software() {
     esac
 }
 
+# Set up the catkin workspace.
 setup_catkin() {
     mkdir -p $SOURCE_DIR
 
