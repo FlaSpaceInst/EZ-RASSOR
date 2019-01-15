@@ -32,9 +32,8 @@ function create_new_package {
     # passed to this function.
     catkin_create_pkg "$@"
 
-    # Make a few modifications to the new package structure.
+    # Add a scripts directory to the new package structure.
     mkdir "$1/scripts"
-    rm -rf "$1/include" "$1/src"
 
     # Create a symlink in the main workspace so that catkin
     # can build this new package.
