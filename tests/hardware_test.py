@@ -1,4 +1,6 @@
 import RPi.GPIO as GPIO
+import mpu6050
+import Adafruit_PCA9685
 import time
 
 forward_lights = (9, 5, 10)
