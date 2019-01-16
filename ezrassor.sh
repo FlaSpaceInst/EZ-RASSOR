@@ -14,6 +14,9 @@ install_software() {
                 sudo apt install -y python-rosinstall build-essential \
                     python-rosinstall-generator python-wstool
                 ;;
+            ezrc)
+                sudo apt install -y python3-pip
+                yes | sudo pip3 install RPi.GPIO
         esac
     done
 }
