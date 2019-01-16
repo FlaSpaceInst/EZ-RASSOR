@@ -16,7 +16,8 @@ install_software() {
                 ;;
             ezrc)
                 sudo apt install -y python3-pip
-                yes | sudo pip3 install RPi.GPIO
+                yes | sudo pip3 install RPi.GPIO adafruit-pca9685 \
+                    mpu6050-raspberrypi cffi smbus-cffi
         esac
     done
 }
