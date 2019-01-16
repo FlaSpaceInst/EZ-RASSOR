@@ -51,6 +51,9 @@ function relink_packages {
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
         for PACKAGE_DIR in *; do
+            if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
+                rm "$SOURCE_DIR/$PACKAGE_DIR"
+            fi
             ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
             printf "Linked %s.\n" "$PWD/$PACKAGE_DIR"
         done
