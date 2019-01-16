@@ -14,6 +14,12 @@ install_software() {
                 sudo apt install -y python-rosinstall build-essential \
                     python-rosinstall-generator python-wstool
                 ;;
+            ai|swarm)
+                sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
+                    ros-kinetic-libg2o ros-kinetic-opencv3 ros-kinetic-ros-control \
+                    ros-kinetic-ros-controllers
+                sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
+                    /usr/lib/x86_64-linux-gnu/libQGLViewer.so
         esac
     done
 }
