@@ -26,10 +26,18 @@ install_software() {
 
 # Set up the catkin workspace.
 setup_catkin() {
+    mkdir -p $WORKSPACE_DIR
+  
     mkdir -p $SOURCE_DIR
 
-    cd $WORKSPACE_DIR
+    cd $SOURCE_DIR
+    catkin_init_workspace
+
+    cd ..
+
     catkin_make
+
+    echo "source $WORKSPACE_DIR/devel/setup.bash" >> ~/.bashrc
 }
 
 # Create a new ROS package in source control.
