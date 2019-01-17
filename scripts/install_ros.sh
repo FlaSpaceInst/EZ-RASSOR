@@ -1,10 +1,8 @@
 # This script will automatically install and configure
 # ROS Kinetic on APT systems (Debian, Ubuntu, Raspbian).
 
-# Written by Tiger Sachse for the EZ-RASSOR project.
-
-SHELL_EXTENSION="bash"
-SHELL_RC="$HOME/.bashrc"
+# Written by Tiger Sachse.
+# Part of the EZ-RASSOR suite of software.
 
 # Add source for necessary packages.
 sudo bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
@@ -24,5 +22,5 @@ sudo rosdep init
 rosdep update
 
 # Source the installation's environment variables.
-echo "source /opt/ros/kinetic/setup.$SHELL_EXTENSION" >> $SHELL_RC
-source $SHELL_RC
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
