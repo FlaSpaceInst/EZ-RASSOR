@@ -18,16 +18,32 @@ install_software() {
                 sudo apt install -y python3-pip
                 yes | sudo pip3 install RPi.GPIO adafruit-pca9685 \
                     mpu6050-raspberrypi cffi smbus-cffi
+                ;;
+            ai|swarm)
+                sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
+                    ros-kinetic-libg2o ros-kinetic-opencv3 ros-kinetic-ros-control \
+                    ros-kinetic-ros-controllers
+                sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
+                    /usr/lib/x86_64-linux-gnu/libQGLViewer.so
+                ;;
         esac
     done
 }
 
 # Set up the catkin workspace.
 setup_catkin() {
+    mkdir -p $WORKSPACE_DIR
+  
     mkdir -p $SOURCE_DIR
 
-    cd $WORKSPACE_DIR
+    cd $SOURCE_DIR
+    catkin_init_workspace
+
+    cd ..
+
     catkin_make
+
+    echo "source $WORKSPACE_DIR/devel/setup.bash" >> ~/.bashrc
 }
 
 # Create a new ROS package in source control.
@@ -55,6 +71,9 @@ function relink_packages {
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
         for PACKAGE_DIR in *; do
+            if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
+                rm "$SOURCE_DIR/$PACKAGE_DIR"
+            fi
             ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
             printf "Linked %s.\n" "$PWD/$PACKAGE_DIR"
         done
