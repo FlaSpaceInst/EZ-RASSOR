@@ -1,7 +1,10 @@
+# A collection of functions that make working with this repository easier.
+
+# Written by Tiger Sachse.
+# Part of the EZ-RASSOR suite of software.
+
 SCRIPTS_DIR="scripts"
-SHELL_EXTENSION="bash"
 PACKAGES_DIR="packages"
-SHELL_RC="$HOME/.bashrc"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 
@@ -34,18 +37,36 @@ install_software() {
 
 # Set up the catkin workspace.
 setup_catkin() {
-    mkdir -p $WORKSPACE_DIR
-  
     mkdir -p $SOURCE_DIR
 
     cd $SOURCE_DIR
     catkin_init_workspace
-
     cd ..
 
-    catkin_make
+    build_packages
+}
 
-    echo "source $WORKSPACE_DIR/devel/setup.$SHELL_EXTENSION" >> $SHELL_RC
+# Start a ROS graph.
+start_ros_graph() {
+    case $1 in
+        ezrc)
+            bash "$SCRIPTS_DIR/start_ezrc_graph.sh" $WORKSPACE_DIR
+            ;;
+    esac
+}
+
+# Kill all running ROS nodes.
+kill_ros() {
+    rosnode kill --all
+    killall -SIGTERM roscore
+}
+
+# Build all packages.
+build_packages() {
+    cd $WORKSPACE_DIR
+
+    catkin_make
+    source "$WORKSPACE_DIR/devel/setup.bash"
 }
 
 # Create a new ROS package in source control.
@@ -68,7 +89,7 @@ new_package() {
 }
 
 # Relink all packages to the ROS workspace.
-function relink_packages {
+relink_packages() {
     cd $PACKAGES_DIR
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
@@ -97,5 +118,14 @@ case $1 in
         ;;
     --relink)
         relink_packages
+        ;;
+    --build)
+        build_packages
+        ;;
+    --start)
+        start_ros_graph "${@:2}"
+        ;;
+    --kill)
+        kill_ros
         ;;
 esac
