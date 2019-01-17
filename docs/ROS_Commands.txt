@@ -1,0 +1,20 @@
+Launch World: roslaunch ez_rassor_gazebo ez_rassor_world.launch
+
+Launch Control: roslaunch ez_rassor_control ez_rassor_control.launch
+
+Launch Rviz: rosrun rviz rviz
+
+Launch LSD_SLAM_Viewer: rosrun lsd_slam_viewer viewer
+
+
+
+
+Run LSD_SLAM_Core: rosrun lsd_slam_core live_slam /image:=ez_rassor/camera_<front/back>/image_raw /camera_info:=/ez_rassor/camera_<front/back>/camera_info
+
+Publish Wheel Data: rostopic pub -1 /ez_rassor/right_wheel_front_velocity_controller/command std_msgs/Float64 "data: .1"
+
+
+
+
+
+
