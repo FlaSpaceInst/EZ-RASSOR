@@ -1,5 +1,7 @@
 SCRIPTS_DIR="scripts"
+SHELL_EXTENSION="bash"
 PACKAGES_DIR="packages"
+SHELL_RC="$HOME/.bashrc"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 
@@ -37,7 +39,7 @@ setup_catkin() {
 
     catkin_make
 
-    echo "source $WORKSPACE_DIR/devel/setup.bash" >> ~/.bashrc
+    echo "source $WORKSPACE_DIR/devel/setup.$SHELL_EXTENSION" >> $SHELL_RC
 }
 
 # Create a new ROS package in source control.
