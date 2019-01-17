@@ -17,9 +17,9 @@ install_software() {
                     python-rosinstall-generator python-wstool
                 ;;
             ezrc)
-                sudo apt install -y python3-pip
-                yes | sudo pip3 install RPi.GPIO adafruit-pca9685 \
-                    mpu6050-raspberrypi cffi smbus-cffi
+                sudo apt install -y python-pip
+                yes | sudo pip install RPi.GPIO #adafruit-pca9685 \
+                    #mpu6050-raspberrypi cffi smbus-cffi
                 ;;
             ai|swarm)
                 sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
