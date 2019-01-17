@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ezrc-core</name>
-  <version>0.1</version>
+  <name>ezrc_core</name>
+  <version>1.0.0</version>
   <description>Control hardware for the EZRC.</description>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <maintainer email="harrison@todo.todo">Harrison Black</maintainer>
