@@ -10,6 +10,7 @@ git remote add -f -m master -t ai/swarm origin https://github.com/FlaSpaceInst/N
 
 git checkout ai/swarm
 
+bash ezrassor.sh --install
 bash ezrassor.sh --catkin  (IF this doesn't do anything, just type the code from the script into the terminal)
 bash ezrassor.sh --relink
 
