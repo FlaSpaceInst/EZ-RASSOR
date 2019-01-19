@@ -38,12 +38,16 @@ install_software() {
 # Set up the catkin workspace.
 setup_catkin() {
     mkdir -p $SOURCE_DIR
-
     cd $SOURCE_DIR
     catkin_init_workspace
     cd ..
-
     build_packages
+}
+
+# Call catkin_make in the workspace.
+catkin_make_workspace() {
+    cd $WORKSPACE_DIR
+    catkin_make
 }
 
 # Start a ROS graph.
@@ -64,7 +68,6 @@ kill_ros() {
 # Build all packages.
 build_packages() {
     cd $WORKSPACE_DIR
-
     catkin_make
     source "$WORKSPACE_DIR/devel/setup.bash"
 }
@@ -73,10 +76,7 @@ build_packages() {
 # Arguments are:
 #   superpackage package [dependencies]
 new_package() {
-
-    # Make the superpackage, if necessary.
     mkdir -p "$PACKAGES_DIR/$1"
-
     cd "$PACKAGES_DIR/$1"
 
     # Create a new catkin package with all the arguments
@@ -88,21 +88,29 @@ new_package() {
     ln -s "$PWD/$2" "$SOURCE_DIR/$2"
 }
 
-# Relink all packages to the ROS workspace.
-relink_packages() {
+# Link all packages to the ROS workspace.
+link_packages() {
     cd $PACKAGES_DIR
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
         for PACKAGE_DIR in *; do
             if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
-                rm "$SOURCE_DIR/$PACKAGE_DIR"
+                rm -f "$SOURCE_DIR/$PACKAGE_DIR"
+                printf "Relinking %s...\n" $PWD/$PACKAGE_DIR
+            else
+                printf "Linking %s...\n" $PWD/$PACKAGE_DIR
             fi
             ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
-            printf "Linked %s.\n" "$PWD/$PACKAGE_DIR"
         done
-        cd - &> /dev/null
+        cd ..
     done
-    cd - &> /dev/null
+}
+
+# Purge packages in the ROS workspace.
+purge_packages() {
+    cd $SOURCE_DIR
+    echo "Purging all packages in /src..."
+    find . ! -name 'CMakeLists.txt' -type l -exec rm -f {} +
 }
 
 # Main entry point of the script.
@@ -116,8 +124,8 @@ case $1 in
     -n|--new)
         new_package "${@:2}"
         ;;
-    -r|--relink)
-        relink_packages
+    -l|--link)
+        link_packages
         ;;
     -b|--build)
         build_packages
@@ -127,5 +135,11 @@ case $1 in
         ;;
     -k|--kill)
         kill_ros
+        ;;
+    -p|--purge)
+        purge_packages
+        ;;
+    -m|--make)
+        catkin_make_workspace
         ;;
 esac
