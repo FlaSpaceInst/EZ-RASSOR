@@ -107,25 +107,25 @@ relink_packages() {
 
 # Main entry point of the script.
 case $1 in
-    --install)
+    -i|--install)
         install_software "${@:2}"
         ;;
-    --catkin)
+    -c|--catkin)
         setup_catkin
         ;;
-    --new)
+    -n|--new)
         new_package "${@:2}"
         ;;
-    --relink)
+    -r|--relink)
         relink_packages
         ;;
-    --build)
+    -b|--build)
         build_packages
         ;;
-    --start)
+    -s|--start)
         start_ros_graph "${@:2}"
         ;;
-    --kill)
+    -k|--kill)
         kill_ros
         ;;
 esac
