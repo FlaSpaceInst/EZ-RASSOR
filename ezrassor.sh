@@ -33,6 +33,9 @@ install_software() {
                 ;;
         esac
     done
+
+    printf "\n\nNOTICE!\n"
+    echo "Please restart your terminal for changes to take effect."
 }
 
 # Set up the catkin workspace.
