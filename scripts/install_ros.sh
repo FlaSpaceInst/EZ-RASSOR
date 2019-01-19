@@ -21,6 +21,5 @@ sudo apt install -y ros-kinetic-desktop-full
 sudo rosdep init
 rosdep update
 
-# Source the installation's environment variables.
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
+# Source the installation's environment variables at each new session.
+echo "source /opt/ros/kinetic/setup.bash" >> "$HOME/.bashrc"
