@@ -14,7 +14,3 @@ Run LSD_SLAM_Core: rosrun lsd_slam_core live_slam /image:=ez_rassor/camera_<fron
 Publish Wheel Data: rostopic pub -1 /ez_rassor/right_wheel_front_velocity_controller/command std_msgs/Float64 "data: .1"
 
 
-
-
-
-
