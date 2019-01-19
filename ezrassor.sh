@@ -26,10 +26,10 @@ install_software() {
                 ;;
             ai|swarm)
                 sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
-                    ros-kinetic-libg2o ros-kinetic-opencv3 ros-kinetic-ros-control \
-                    ros-kinetic-ros-controllers
+                    ros-kinetic-libg2o ros-kinetic-opencv3
                 sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
                     /usr/lib/x86_64-linux-gnu/libQGLViewer.so
+                sudo apt install -y ros-kinetic-ros-control ros-kinetic-ros-controllers
                 ;;
         esac
     done
@@ -54,10 +54,25 @@ catkin_make_workspace() {
 }
 
 # Start a ROS graph.
-start_ros_graph() {
+start_ros() {
     case $1 in
         ezrc)
             bash "$SCRIPTS_DIR/start_ezrc_graph.sh" $WORKSPACE_DIR
+            ;;
+        control)
+            bash "$SCRIPTS_DIR/start_control_graph.sh" $WORKSPACE_DIR
+            ;;
+        gazebo)
+            bash "$SCRIPTS_DIR/start_gazebo_simulation.sh" $WORKSPACE_DIR
+            ;;
+        rviz)
+            bash "$SCRIPTS_DIR/start_rviz_graph.sh" $WORKSPACE_DIR
+            ;;
+        slam-core)
+            bash "$SCRIPTS_DIR/start_slam_core_graph.sh" $WORKSPACE_DIR
+            ;;
+        slam-viewer)
+            bash "$SCRIPTS_DIR/start_slam_viewer_graph.sh" $WORKSPACE_DIR
             ;;
     esac
 }
@@ -134,7 +149,7 @@ case $1 in
         build_packages
         ;;
     -s|--start)
-        start_ros_graph "${@:2}"
+        start_ros "${@:2}"
         ;;
     -k|--kill)
         kill_ros
