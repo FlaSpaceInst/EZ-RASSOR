@@ -75,6 +75,7 @@ start_ros() {
 kill_ros() {
     rosnode kill --all
     killall -SIGTERM roscore
+    printf "\nROS has been shut down.\n"
 }
 
 # Build all packages.
