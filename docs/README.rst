@@ -13,7 +13,7 @@ This repository contains all of the code for the EZ-RASSOR, its simulations, con
 
 DEVELOPMENT
 ----
-This repository contains a script, `ezrassor.sh`, that helps developers improve this software with ease. It's general syntax looks like this:
+This repository contains a script, ``ezrassor.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
 ::
   bash ezrassor.sh <--flag> [args]
   
