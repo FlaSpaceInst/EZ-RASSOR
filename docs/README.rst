@@ -36,6 +36,28 @@ The flags supported by the script are listed below:
 ``-k, --kill``
   Kill all running ROS nodes and `roscore`.
 
+EXAMPLES
+----
+Here are some example commands to get started.
+::
+  # Install the ROS and EZRC software collections, then create a Catkin
+  # workspace and link all existing packages in the repository.
+  bash ezrassor.sh --install ros ezrc
+  bash ezrassor.sh --catkin
+  bash ezrassor.sh --link
+  
+  # Create a new package in the superpackage 'ezrc' called 'ezrc_cameras'.
+  bash ezrassor.sh --new ezrc ezrc_cameras
+  
+  # Fire up the EZRC ROS graph.
+  bash ezrassor.sh --start ezrc
+  
+  # Kill all running ROS nodes.
+  bash ezrassor.sh --kill
+  
+  # Build the contents of 'src' in your Catkin workspace.
+  bash ezrassor.sh --build
+
 AUTHORS
 ----
 - `Sean Rapp`_
@@ -50,7 +72,7 @@ AUTHORS
 - `Lucas Gonzalez`_
 
 .. _`Sean Rapp`: https://github.com/shintoo
-.. _`Ron Marrero` : https://github.com/CSharpRon 
+.. _`Ron Marrero` : https://github.com/CSharpRon
 .. _`Tiger Sachse` : https://github.com/tgsachse
 .. _`Tyler Duncan` : https://github.com/Tduncan13
 .. _`Samuel Lewis` : https://github.com/BrainfreezeFL
