@@ -10,4 +10,6 @@ source "devel/setup.bash"
 
 # ROS node initializations.
 roscore &
-rosrun ezrc_core arms.py &
+rosrun ezrc_moving_parts arms_node.py &
+rosrun ezrc_moving_parts wheels_node.py &
+rosrun ezrc_moving_parts drums_node.py &
