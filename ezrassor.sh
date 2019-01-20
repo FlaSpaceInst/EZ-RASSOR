@@ -47,12 +47,6 @@ setup_catkin() {
     build_packages
 }
 
-# Call catkin_make in the workspace.
-catkin_make_workspace() {
-    cd $WORKSPACE_DIR
-    catkin_make
-}
-
 # Start a ROS graph.
 start_ros() {
     case $1 in
@@ -87,7 +81,6 @@ kill_ros() {
 build_packages() {
     cd $WORKSPACE_DIR
     catkin_make
-    source "$WORKSPACE_DIR/devel/setup.bash"
 }
 
 # Create a new ROS package in source control.
@@ -156,8 +149,5 @@ case $1 in
         ;;
     -p|--purge)
         purge_packages
-        ;;
-    -m|--make)
-        catkin_make_workspace
         ;;
 esac
