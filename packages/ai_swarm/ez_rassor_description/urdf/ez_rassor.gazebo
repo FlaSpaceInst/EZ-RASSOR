@@ -1,0 +1,113 @@
+<?xml version='1.0'?>
+
+<robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="arm_back">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="drum_back">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="arm_front">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="drum_front">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="camera_back">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+    <!-- camera -->
+  <gazebo reference="camera_back">
+    <sensor type="camera" name="cameraback">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <Cx>180.0</Cx>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>ez_rassor/camera_back</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_back</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/ez_rassor</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="$right_wheel_back">
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="$right_wheel_front">
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="$left_wheel_back">
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="$right_wheel_back">
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+</robot>
