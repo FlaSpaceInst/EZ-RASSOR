@@ -1,7 +1,10 @@
+# A collection of functions that make working with this repository easier.
+
+# Written by Tiger Sachse.
+# Part of the EZ-RASSOR suite of software.
+
 SCRIPTS_DIR="scripts"
-SHELL_EXTENSION="bash"
 PACKAGES_DIR="packages"
-SHELL_RC="$HOME/.bashrc"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 
@@ -16,40 +19,75 @@ install_software() {
                 sudo apt install -y python-rosinstall build-essential \
                     python-rosinstall-generator python-wstool
                 ;;
+            ezrc)
+                sudo apt install -y python-pip
+                yes | sudo pip install RPi.GPIO #adafruit-pca9685 \
+                    #mpu6050-raspberrypi cffi smbus-cffi
+                ;;
             ai|swarm)
                 sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
-                    ros-kinetic-libg2o ros-kinetic-opencv3 ros-kinetic-ros-control \
-                    ros-kinetic-ros-controllers
+                    ros-kinetic-libg2o ros-kinetic-opencv3
                 sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
                     /usr/lib/x86_64-linux-gnu/libQGLViewer.so
+                sudo apt install -y ros-kinetic-ros-control ros-kinetic-ros-controllers
+                ;;
         esac
     done
+
+    printf "\n\nNOTICE!\n"
+    echo "Please restart your terminal for changes to take effect."
 }
 
 # Set up the catkin workspace.
 setup_catkin() {
-    mkdir -p $WORKSPACE_DIR
-  
     mkdir -p $SOURCE_DIR
-
     cd $SOURCE_DIR
     catkin_init_workspace
-
     cd ..
+    build_packages
+}
 
+# Start a ROS graph.
+start_ros() {
+    case $1 in
+        ezrc)
+            bash "$SCRIPTS_DIR/start_ezrc_graph.sh" $WORKSPACE_DIR
+            ;;
+        control)
+            bash "$SCRIPTS_DIR/start_control_graph.sh" $WORKSPACE_DIR
+            ;;
+        gazebo)
+            bash "$SCRIPTS_DIR/start_gazebo_simulation.sh" $WORKSPACE_DIR
+            ;;
+        rviz)
+            bash "$SCRIPTS_DIR/start_rviz_graph.sh" $WORKSPACE_DIR
+            ;;
+        slam-core)
+            bash "$SCRIPTS_DIR/start_slam_core_graph.sh" $WORKSPACE_DIR
+            ;;
+        slam-viewer)
+            bash "$SCRIPTS_DIR/start_slam_viewer_graph.sh" $WORKSPACE_DIR
+            ;;
+    esac
+}
+
+# Kill all running ROS nodes.
+kill_ros() {
+    rosnode kill --all
+    killall -SIGTERM roscore
+}
+
+# Build all packages.
+build_packages() {
+    cd $WORKSPACE_DIR
     catkin_make
-
-    echo "source $WORKSPACE_DIR/devel/setup.$SHELL_EXTENSION" >> $SHELL_RC
 }
 
 # Create a new ROS package in source control.
 # Arguments are:
 #   superpackage package [dependencies]
 new_package() {
-
-    # Make the superpackage, if necessary.
     mkdir -p "$PACKAGES_DIR/$1"
-
     cd "$PACKAGES_DIR/$1"
 
     # Create a new catkin package with all the arguments
@@ -61,35 +99,55 @@ new_package() {
     ln -s "$PWD/$2" "$SOURCE_DIR/$2"
 }
 
-# Relink all packages to the ROS workspace.
-function relink_packages {
+# Link all packages to the ROS workspace.
+link_packages() {
     cd $PACKAGES_DIR
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
         for PACKAGE_DIR in *; do
             if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
-                rm "$SOURCE_DIR/$PACKAGE_DIR"
+                rm -f "$SOURCE_DIR/$PACKAGE_DIR"
+                printf "Relinking %s...\n" $PWD/$PACKAGE_DIR
+            else
+                printf "Linking %s...\n" $PWD/$PACKAGE_DIR
             fi
             ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
-            printf "Linked %s.\n" "$PWD/$PACKAGE_DIR"
         done
-        cd - &> /dev/null
+        cd ..
     done
-    cd - &> /dev/null
+}
+
+# Purge packages in the ROS workspace.
+purge_packages() {
+    cd $SOURCE_DIR
+    echo "Purging all packages in /src..."
+    find . ! -name 'CMakeLists.txt' -type l -exec rm -f {} +
 }
 
 # Main entry point of the script.
 case $1 in
-    --install)
+    -i|--install)
         install_software "${@:2}"
         ;;
-    --catkin)
+    -c|--catkin)
         setup_catkin
         ;;
-    --new)
+    -n|--new)
         new_package "${@:2}"
         ;;
-    --relink)
-        relink_packages
+    -l|--link)
+        link_packages
+        ;;
+    -b|--build)
+        build_packages
+        ;;
+    -s|--start)
+        start_ros "${@:2}"
+        ;;
+    -k|--kill)
+        kill_ros
+        ;;
+    -p|--purge)
+        purge_packages
         ;;
 esac
