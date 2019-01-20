@@ -16,6 +16,25 @@ DEVELOPMENT
 This repository contains a script, `ezrassor.sh`, that makes improving this software easier and more straightforward for developers. It is run using this command:
 ::
   bash ezrassor.sh [--flag] [args]
+  
+The flags supported by this script are listed below:
+ 
+``-i, --install [collections]``
+  Install one or many collections of software that are needed by portions of this project. The current collections available are ``ezrc``, ``ros``, ``devtools``, ``ai``, and ``swarm``.
+``-c, --catkin``
+  Set up a Catkin workspace in your home directory to develop and compile ROS nodes. By default, this workspace is named ``.workspace``.
+``-n, --new [superpackage] [package] [dependencies]``
+  Create a new ROS ``package`` in the ``packages`` folder, under the appropriate ``superpackage``. If the superpackage doesn't exist it is created. All arguments after package are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run the ``--catkin`` command ensure to do that before trying to make a new package, otherwise you won't have a workspace to develop in.
+``-l, --link``
+  Create a symlink between all packages in all superpackages in the ``packages`` directory and the ``src`` directory of your workspace. This is necessary after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll probably want to ``--purge`` first (see below).
+``-p, --purge``
+  Remove all symlinked packages from ``src``.
+``-b, --build``
+  Call `catkin_make` in your workspace.
+``-s, --start [graph]``
+  Fire up a ROS graph. Available ROS graphs are ``ezrc``, ``control``, ``gazebo``, ``rviz``, ``slam-core``, and ``slam-viewer``.
+``-k, --kill``
+  Kill all running ROS nodes and `roscore`.
 
 AUTHORS
 ----
