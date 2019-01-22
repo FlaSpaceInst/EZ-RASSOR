@@ -1,13 +1,18 @@
 <launch>	  
+
+	<env name="GAZEBO_MODEL_PATH" value="$(find ez_rassor_description)" />
+  	<env name="GAZEBO_RESOURCE_PATH" value="$(find ez_rassor_description)" />
+
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">	    
 		<arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/ez_rassor.world"/>	    
 		<arg name="gui" value="true"/>	  
 	</include>	
 
-	<!-- urdf xml robot description loaded on the Parameter Server, converting the xacro into a proper urdf file-->
-	<param name="robot_description" command="$(find xacro)/xacro.py '$(find ez_rassor_description)/urdf/ez_rassor.xacro'" />
+	<!-- Load the SDF into the ROS Parameter Server -->                               
+	<param name="robot_sdf" textfile="$(find ez_rassor_description)/sdf/model.sdf" />        
 
-	<!-- push robot_description to factory and spawn robot in gazebo -->
-	<node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model ez_rassor" />
+	<!-- Spawn the ez_rassor in gazebo --> 
+	<node name="sdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	args="-sdf -model ez_rassor -file $(find ez_rassor_description)/sdf/model.sdf"/>
  
 </launch>
