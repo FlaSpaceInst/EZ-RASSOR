@@ -36,14 +36,14 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </collision>
 
     <visual name="left_wheel_front_visual">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </visual>
 
@@ -61,14 +61,14 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </collision>
 
     <visual name="right_wheel_front_visual">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </visual>
 
@@ -85,14 +85,14 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </collision>
 
     <visual name="left_wheel_back_visual">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </visual>
 
@@ -109,14 +109,14 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </collision>
 
     <visual name="right_wheel_back_visual">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+          <mesh filename="package://ez_rassor_description/meshes/wheel.dae"/>
       </geometry>
     </visual>
 
