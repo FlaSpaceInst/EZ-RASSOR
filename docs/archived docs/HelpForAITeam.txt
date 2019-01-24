@@ -10,6 +10,7 @@ git remote add -f -m master -t ai/swarm origin https://github.com/FlaSpaceInst/N
 
 git checkout ai/swarm
 
+bash ezrassor.sh --install
 bash ezrassor.sh --catkin  (IF this doesn't do anything, just type the code from the script into the terminal)
 bash ezrassor.sh --relink
 
@@ -22,6 +23,8 @@ catkin_make
 *open terminal*
 
 
+EVERY TIME YOU CATKIN MAKE YOU NEED TO ezrassor.sh --relink
+
 
 AI/Gazebo Control Packages:
 
@@ -30,8 +33,6 @@ sudo apt install libsuitesparse-dev libqglviewer-dev-qt4 ros-kinetic-libg2o  ros
 sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so /usr/lib/x86_64-linux-gnu/libQGLViewer.so
 
 sudo apt-get install ros-kinetic-ros-control ros-kinetic-ros-controllers
-
-echo "source ~/PATH_TO_WORKSPACE/devel/setup.bash" > ~/.bashrc
 
 catkin_make
 
