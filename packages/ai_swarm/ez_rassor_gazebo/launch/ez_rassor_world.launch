@@ -9,10 +9,15 @@
 	</include>	
 
 	<!-- Load the SDF into the ROS Parameter Server -->                               
-	<param name="robot_sdf" textfile="$(find ez_rassor_description)/sdf/model.sdf" />        
-
-	<!-- Spawn the ez_rassor in gazebo --> 
+	<!-- <param name="robot_description" textfile="$(find ez_rassor_description)/sdf/model.sdf" />    
 	<node name="sdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-	args="-sdf -model ez_rassor -file $(find ez_rassor_description)/sdf/model.sdf"/>
+	args="-sdf -model ez_rassor -file $(find ez_rassor_description)/models/model.sdf"/>
+	-->
+
+	<!-- Load the URDF into the ROS Parameter Server and spawn it-->  
+	<param name="robot_description" textfile="$(find ez_rassor_description)/models/model.urdf" />     
+
+	<node name="sdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	args="-urdf -model ez_rassor -file $(find ez_rassor_description)/models/model.urdf"/>
  
 </launch>
