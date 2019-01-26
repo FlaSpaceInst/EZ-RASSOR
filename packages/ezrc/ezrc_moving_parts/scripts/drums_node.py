@@ -15,54 +15,101 @@ NODE_NAME = "drums_node"
 TOPIC_NAME = "ezmain_topic"
 MESSAGE_FORMAT = "EZRC (drums_node.py): %s."
 
-FORWARD_PINS = (16, 21, 20)
-ROTATIONAL_SPEED = .2
+SLEEP_DURATION = .2
+GPIO_MODE = GPIO.BCM
+REAR_PINS = (13, 19, 26)
+FORWARD_PINS = (20, 21, 16)
 
-def rotate_drum(pins):
-    """"""
-    for pin in pins:
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(ROTATIONAL_SPEED)
-        GPIO.output(pin, GPIO.LOW)
-        time.sleep(ROTATIONAL_SPEED/2)
+class Drum:
+    def __init__(self, pins, sleep_duration):
+        self.pins = pins
+        self.rotating = False
+        self.sleep_duration = sleep_duration
 
-def handle_drum_movements(instruction):
+    def is_rotating(self):
+        return self.rotating
+
+    def dig(self):
+        self.__rotate(self.pins)
+
+    def dump(self):
+        self.__rotate(tuple(reversed(self.pins)))
+    
+    def stop(self):
+        self.rotating = False
+
+    def __rotate(self, pins):
+        self.rotating = True
+
+        pin_iterator = iter(pins)
+        while self.rotating:
+            try:
+                pin = next(pin_iterator)
+            except StopIteration:
+                pin_iterator = iter(pins)
+                pin = next(pin_iterator) # error here
+            finally:
+                GPIO.output(pin, GPIO.HIGH)
+                time.sleep(self.sleep_duration)
+                GPIO.output(pin, GPIO.LOW)
+                time.sleep(self.sleep_duration / 2)
+
+
+def handle_drum_movements(instruction, additional_arguments):
     """Move the drums of the EZRC per the commands encoded in the instruction."""
-    drum1_dig, drum1_dump, drum2_dig, drum2_dump = utilities.get_nibble(
-        instruction.data,
-        MASK
-    )
+    forward_drum, rear_drum, mask, message_format = additional_arguments
 
-    if not any((drum1_dig, drum1_dump, drum2_dig, drum2_dump)):
-        print MESSAGE_FORMAT % "Stopping both drums"
-        # stop both drums
+    nibble = utilities.get_nibble(instruction.data, mask)
+    dig_forward, dump_forward, dig_rear, dump_rear = nibble
+
+    if not any((dig_forward, dump_forward, dig_rear, dump_rear)):
+        print message_format % "Stopping both drums"
+        forward_drum.stop()
+        rear_drum.stop()
+
     else:
-        if drum1_dig:
-            print MESSAGE_FORMAT % "Digging with drum 1"
-            rotate_drum(FORWARD_PINS)
+        if dig_forward:
+            print message_format % "Digging with forward drum"
+            forward_drum.dig()
+            
+        if dump_forward:
+            print message_format % "Dumping from forward drum"
+            forward_drum.dump()
 
-        if drum1_dump:
-            print MESSAGE_FORMAT % "Dumping from drum 1"
-            # dump from drum 1
+        if dig_rear:
+            print message_format % "Digging with rear drum"
+            rear_drum.dig()
 
-        if drum2_dig:
-            print MESSAGE_FORMAT % "Digging with drum 2"
-            # dig with drum 2
+        if dump_rear:
+            print message_format % "Dumping from rear drum"
+            rear_drum.dump()
 
-        if drum2_dump:
-            print MESSAGE_FORMAT % "Dumping from drum 2"
-            # dump from drum 2
 
 # Main entry point to the node.
 try:
-    GPIO.setmode(GPIO.BCM)
+    GPIO.setmode(GPIO_MODE)
     GPIO.setwarnings(False)
 
     for pin in FORWARD_PINS:
         GPIO.setup(pin, GPIO.OUT)
 
+    for pin in REAR_PINS:
+        GPIO.setup(pin, GPIO.OUT)
+
     rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME, std_msgs.msg.Int16, handle_drum_movements)
+    rospy.Subscriber(TOPIC_NAME,
+                     std_msgs.msg.Int16,
+                     callback=handle_drum_movements,
+                     callback_args=(Drum(FORWARD_PINS, SLEEP_DURATION),
+                                    Drum(REAR_PINS, SLEEP_DURATION),
+                                    MASK,
+                                    MESSAGE_FORMAT))
     rospy.spin()
 except rospy.ROSInterruptException:
     pass
+finally:
+    for pin in FORWARD_PINS:
+        GPIO.output(pin, GPIO.LOW)
+
+    for pin in REAR_PINS:
+        GPIO.output(pin, GPIO.LOW)
