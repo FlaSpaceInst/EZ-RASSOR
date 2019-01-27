@@ -4,7 +4,7 @@ from std_msgs.msg import Int8, Int16
 from sensor_msgs.msg import Joy
 
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('control_topic', Int16, queue_size = 10)
+publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
 
 def callback(data):
 
