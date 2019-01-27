@@ -271,6 +271,27 @@
     </actuator>
   </transmission>
 
+  <transmission name="arm_front_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_front_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="arm_back_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_back_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
   <!--First Camera Added/-->
   <link name="f_stereo_1">
@@ -438,7 +459,7 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="fixed" name="arm_back_hinge">
+  <joint type="continuous" name="arm_back_hinge">
     <origin xyz="-0.2 0 0" rpy="0 0 1.57"/>
     <child link="arm_back"/>
     <parent link="base_link"/>
@@ -447,7 +468,7 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="fixed" name="arm_front_hinge">
+  <joint type="continuous" name="arm_front_hinge">
     <origin xyz="0.2 0 0" rpy="0 0 1.57"/>
     <child link="arm_front"/>
     <parent link="base_link"/>

@@ -101,6 +101,7 @@ def callback(data):
 	
 def main():
 
+	print("Controller node started")
 	global publisher
 	rospy.init_node('ez_controller', anonymous = True)
 	rate = rospy.Rate(600) # number of hz
