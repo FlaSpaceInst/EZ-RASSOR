@@ -3,24 +3,6 @@
 Written by Tiger Sachse and Harrison Black.
 Part of the EZ-RASSOR suite of software.
 """
-import threading
-
-class StoppableThread(threading.Thread):
-    """"""
-    def __init__(self, *args, **kwargs):
-        """"""
-        super(StoppableThread, self).__init__(*args, **kwargs)
-        self.__stop_flag = threading.Event()
-
-    def stop(self):
-        """"""
-        self.__stop_flag.set()
-
-    def is_stopped(self):
-        """"""
-        return self.__stop_flag.is_set()
-
-
 def get_nibble(bitstring, mask):
     """Retrieve a nibble of data from the bitstring, using a given mask."""
 

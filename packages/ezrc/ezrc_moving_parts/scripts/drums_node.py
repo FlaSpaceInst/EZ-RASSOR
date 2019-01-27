@@ -6,8 +6,11 @@ Part of the EZ-RASSOR suite of software.
 """
 import time
 import rospy
+import Queue
 import std_msgs
 import utilities
+import itertools
+import multiprocessing
 import RPi.GPIO as GPIO
 
 MASK = 0b000000001111
@@ -20,72 +23,66 @@ GPIO_MODE = GPIO.BCM
 REAR_PINS = (13, 19, 26)
 FORWARD_PINS = (20, 21, 16)
 
-class Drum:
-    def __init__(self, pins, sleep_duration):
-        self.pins = pins
-        self.rotating = False
-        self.sleep_duration = sleep_duration
+def rotate_drums(nibble_queue,
+                 forward_pins,
+                 rear_pins,
+                 sleep_duration,
+                 message_format):
+    dig_rear = False
+    dump_rear = False
+    dig_forward = False
+    dump_forward = False
 
-    def is_rotating(self):
-        return self.rotating
+    forward_iterator = iter(itertools.cycle(forward_pins))
+    reversed_forward_iterator = iter(itertools.cycle(reversed(forward_pins)))
+    rear_iterator = iter(itertools.cycle(rear_pins))
+    reversed_rear_iterator = iter(itertools.cycle(reversed(rear_pins)))
 
-    def dig(self):
-        self.__rotate(self.pins)
+    while True:
+        try:
+            nibble = nibble_queue.get(False)
+            if nibble == None:
+                for pin in forward_pins:
+                    GPIO.output(pin, GPIO.LOW)
 
-    def dump(self):
-        self.__rotate(tuple(reversed(self.pins)))
-    
-    def stop(self):
-        self.rotating = False
+                for pin in rear_pins:
+                    GPIO.output(pin, GPIO.LOW)
+                break
+            else:
+                dig_forward, dump_forward, dig_rear, dump_rear = nibble
+        except Queue.Empty:
+            pass
 
-    def __rotate(self, pins):
-        self.rotating = True
-
-        pin_iterator = iter(pins)
-        while self.rotating:
-            try:
-                pin = next(pin_iterator)
-            except StopIteration:
-                pin_iterator = iter(pins)
-                pin = next(pin_iterator) # error here
-            finally:
-                GPIO.output(pin, GPIO.HIGH)
-                time.sleep(self.sleep_duration)
-                GPIO.output(pin, GPIO.LOW)
-                time.sleep(self.sleep_duration / 2)
-
-
-def handle_drum_movements(instruction, additional_arguments):
-    """Move the drums of the EZRC per the commands encoded in the instruction."""
-    forward_drum, rear_drum, mask, message_format = additional_arguments
-
-    nibble = utilities.get_nibble(instruction.data, mask)
-    dig_forward, dump_forward, dig_rear, dump_rear = nibble
-
-    if not any((dig_forward, dump_forward, dig_rear, dump_rear)):
-        print message_format % "Stopping both drums"
-        forward_drum.stop()
-        rear_drum.stop()
-
-    else:
         if dig_forward:
             print message_format % "Digging with forward drum"
-            forward_drum.dig()
+            GPIO.output(next(forward_iterator), GPIO.HIGH)
             
         if dump_forward:
             print message_format % "Dumping from forward drum"
-            forward_drum.dump()
+            GPIO.output(next(reversed_forward_iterator), GPIO.HIGH)
 
         if dig_rear:
             print message_format % "Digging with rear drum"
-            rear_drum.dig()
+            GPIO.output(next(rear_iterator), GPIO.HIGH)
 
         if dump_rear:
             print message_format % "Dumping from rear drum"
-            rear_drum.dump()
+            GPIO.output(next(reversed_rear_iterator), GPIO.HIGH)
+
+        if any((dig_forward, dump_forward, dig_rear, dump_rear)):
+            time.sleep(sleep_duration)
+            for pin in itertools.chain(forward_pins, rear_pins):
+                GPIO.output(pin, GPIO.LOW)
+            time.sleep(sleep_duration / 2)
 
 
-# Main entry point to the node.
+def enqueue_nibble(instruction, additional_arguments):
+    nibble_queue, mask = additional_arguments
+
+    nibble = utilities.get_nibble(instruction.data, mask)
+    nibble_queue.put(nibble, False)
+
+
 try:
     GPIO.setmode(GPIO_MODE)
     GPIO.setwarnings(False)
@@ -96,20 +93,23 @@ try:
     for pin in REAR_PINS:
         GPIO.setup(pin, GPIO.OUT)
 
+    nibble_queue = multiprocessing.Queue()
+    rotator_process = multiprocessing.Process(target=rotate_drums,
+                                              args=(nibble_queue,
+                                                    FORWARD_PINS,
+                                                    REAR_PINS,
+                                                    SLEEP_DURATION,
+                                                    MESSAGE_FORMAT))
+    rotator_process.start()
+
     rospy.init_node(NODE_NAME, anonymous=True)
     rospy.Subscriber(TOPIC_NAME,
                      std_msgs.msg.Int16,
-                     callback=handle_drum_movements,
-                     callback_args=(Drum(FORWARD_PINS, SLEEP_DURATION),
-                                    Drum(REAR_PINS, SLEEP_DURATION),
-                                    MASK,
-                                    MESSAGE_FORMAT))
+                     callback=enqueue_nibble,
+                     callback_args=(nibble_queue, MASK))
     rospy.spin()
 except rospy.ROSInterruptException:
     pass
 finally:
-    for pin in FORWARD_PINS:
-        GPIO.output(pin, GPIO.LOW)
-
-    for pin in REAR_PINS:
-        GPIO.output(pin, GPIO.LOW)
+    nibble_queue.put(None, False)
+    rotator_process.join()
