@@ -33,69 +33,69 @@ def get_movements(integer, mask):
 
 
 def wheel_movement_callback(instruction):
-	# print("callback")
-	# data_in = data.data
-	
-	# # mask = 0b111100000000
-	# data_in &= mask
-	# data_in >>= 8
-	# data_string = "Wheels:\t {0:04b}".format(data_in)
+    # print("callback")
+    # data_in = data.data
 
-	drive_forward, drive_reverse, turn_left, turn_right = get_movements(instruction.data, MASK)
+    # # mask = 0b111100000000
+    # data_in &= mask
+    # data_in >>= 8
+    # data_string = "Wheels:\t {0:04b}".format(data_in)
 
-	velocity = 10
+    drive_forward, drive_reverse, turn_left, turn_right = get_movements(instruction.data, MASK)
 
-	if drive_forward:
-		# data_string = data_string + " -> Drive Forward"
-		pubLF.publish(velocity)
-		pubLB.publish(velocity)
-		pubRF.publish(velocity)
-		pubRB.publish(velocity)
+    velocity = 10
 
-	elif drive_reverse:
-		# data_string = data_string + " -> Reverse"
-		pubLF.publish(-velocity)
-		pubLB.publish(-velocity)
-		pubRF.publish(-velocity)
-		pubRB.publish(-velocity)
+    if drive_forward:
+        # data_string = data_string + " -> Drive Forward"
+        pubLF.publish(velocity)
+        pubLB.publish(velocity)
+        pubRF.publish(velocity)
+        pubRB.publish(velocity)
 
-	elif turn_left:
-		# data_string = data_string + " -> Turn Left"
-		pubLF.publish(-velocity)
-		pubLB.publish(-velocity)
-		pubRF.publish(velocity)
-		pubRB.publish(velocity)
+    elif drive_reverse:
+        # data_string = data_string + " -> Reverse"
+        pubLF.publish(-velocity)
+        pubLB.publish(-velocity)
+        pubRF.publish(-velocity)
+        pubRB.publish(-velocity)
 
-	elif turn_right:
-		# data_string = data_string + " -> Turn Right"
-		pubLF.publish(velocity)
-		pubLB.publish(velocity)
-		pubRF.publish(-velocity)
-		pubRB.publish(-velocity)
+    elif turn_left:
+        # data_string = data_string + " -> Turn Left"
+        pubLF.publish(-velocity)
+        pubLB.publish(-velocity)
+        pubRF.publish(velocity)
+        pubRB.publish(velocity)
 
-	else:
-		# data_string = data_string + " -> Stop"
-		# Halt motor functions
-		pubLF.publish(0)
-		pubLB.publish(0)
-		pubRF.publish(0)
-		pubRB.publish(0)
+    elif turn_right:
+        # data_string = data_string + " -> Turn Right"
+        pubLF.publish(velocity)
+        pubLB.publish(velocity)
+        pubRF.publish(-velocity)
+        pubRB.publish(-velocity)
+
+    else:
+        # data_string = data_string + " -> Stop"
+        # Halt motor functions
+        pubLF.publish(0)
+        pubLB.publish(0)
+        pubRF.publish(0)
+        pubRB.publish(0)
 
 
 
-	# print(data_string)
+    # print(data_string)
 
 def main():
 
-	print("Wheel node started")
-	rospy.init_node('ez_wheels', anonymous = True)
-	rospy.Subscriber('ez_main_topic', Int16, wheel_movement_callback)
-	rospy.spin()
+    print("Wheel node started")
+    rospy.init_node('ez_wheels', anonymous = True)
+    rospy.Subscriber('ez_main_topic', Int16, wheel_movement_callback)
+    rospy.spin()
 
 if __name__ == '__main__':
 
-	try:
-		main()
+    try:
+        main()
 
-	except rospy.ROSInterruptException:
-		pass
+    except rospy.ROSInterruptException:
+        pass
