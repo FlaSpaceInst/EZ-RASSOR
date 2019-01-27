@@ -1,49 +1,147 @@
 #!/usr/bin/env python
-"""A ROS node that moves the drums on the EZRC.
+"""A ROS node that spins the drums on the EZRC.
 
 Written by Tiger Sachse and Harrison Black.
 Part of the EZ-RASSOR suite of software.
 """
+import time
 import rospy
+import Queue
 import std_msgs
 import utilities
+import itertools
+import multiprocessing
+import RPi.GPIO as GPIO
 
+
+# Change these constants if you want to break this node. :)
+SLEEP_DURATION = .2
+GPIO_MODE = GPIO.BCM
 MASK = 0b000000001111
+REAR_PINS = (13, 19, 26)
+FORWARD_PINS = (20, 21, 16)
+
 NODE_NAME = "drums_node"
 TOPIC_NAME = "ezmain_topic"
 MESSAGE_FORMAT = "EZRC (drums_node.py): %s."
 
-def handle_drum_movements(instruction):
-    """Move the drums of the EZRC per the commands encoded in the instruction."""
-    drum1_dig, drum1_dump, drum2_dig, drum2_dump = utilities.get_nibble(
-        instruction.data,
-        MASK
-    )
 
-    if not any((drum1_dig, drum1_dump, drum2_dig, drum2_dump)):
-        print MESSAGE_FORMAT % "Stopping both drums"
-        # stop both drums
+def rotate_drums(nibble_queue,
+                 forward_pins,
+                 rear_pins,
+                 sleep_duration):
+    """Rotate the drums of the EZRC.
+    
+    The drums are controlled by sending boolean 4-tuples to this function via
+    the nibble queue. This function is run as a separate process from the ROS
+    subscription code so that both actions (rotation and listening to the ROS
+    topic) can occur simultaneously. 
+    """
+
+    # These rotation booleans tell the main function loop whether to rotate a
+    # drum in a particular direction or not.
+    dig_rear = False
+    dump_rear = False
+    dig_forward = False
+    dump_forward = False
+
+    # These iterators track the current pin that should be lit up to simulate
+    # the rotation of a drum. The itertools.cycle iterable makes it easy to
+    # loop through a tuple. :)
+    rear_iterator = iter(itertools.cycle(rear_pins))
+    forward_iterator = iter(itertools.cycle(forward_pins))
+    reversed_rear_iterator = iter(itertools.cycle(reversed(rear_pins)))
+    reversed_forward_iterator = iter(itertools.cycle(reversed(forward_pins)))
+
+    while True:
+
+        # Attempt to read a nibble (4-tuple) from the queue. If nothing is
+        # available then the rotation booleans remain unchanged. If the None
+        # type is retrieved from the queue, break the loop and let the function
+        # end. Otherwise, split the fetched nibble between the 4 rotation booleans.
+        try:
+            nibble = nibble_queue.get(False)
+            if nibble == None:
+                utilities.turn_off_pins(forward_pins, rear_pins)
+                break
+            else:
+                dig_forward, dump_forward, dig_rear, dump_rear = nibble
+        except Queue.Empty:
+            pass
+
+        # For each true rotation boolean, turn the appropriate pin on.
+        if dig_forward:
+            GPIO.output(next(forward_iterator), GPIO.HIGH)
+        if dump_forward:
+            GPIO.output(next(reversed_forward_iterator), GPIO.HIGH)
+        if dig_rear:
+            GPIO.output(next(rear_iterator), GPIO.HIGH)
+        if dump_rear:
+            GPIO.output(next(reversed_rear_iterator), GPIO.HIGH)
+
+        # If any pins were turned on this iteration, sleep for sleep_duration
+        # and turn off all pins after waking again.
+        if any((dig_forward, dump_forward, dig_rear, dump_rear)):
+            time.sleep(sleep_duration)
+            utilities.turn_off_pins(forward_pins, rear_pins)
+            time.sleep(sleep_duration / 2)
+
+
+def enqueue_nibble(instruction, additional_arguments):
+    """Decode a nibble from the instruction and enqueue it into the nibble queue."""
+    nibble_queue, mask, message_format = additional_arguments
+
+    nibble = utilities.get_nibble(instruction.data, mask)
+    nibble_queue.put(nibble, False)
+
+    # Print some debugging information to the terminal.
+    dig_forward, dump_forward, dig_rear, dump_rear = nibble
+    if not any(nibble):
+        print message_format % "Stopping both drums"
     else:
-        if drum1_dig:
-            print MESSAGE_FORMAT % "Digging with drum 1"
-            # dig with drum 1
+        if dig_forward:
+            print message_format % "Digging with forward drum"
+        if dump_forward:
+            print message_format % "Dumping from forward drum"
+        if dig_rear:
+            print message_format % "Digging with rear drum"
+        if dump_rear:
+            print message_format % "Dumping from rear drum"
 
-        if drum1_dump:
-            print MESSAGE_FORMAT % "Dumping from drum 1"
-            # dump from drum 1
 
-        if drum2_dig:
-            print MESSAGE_FORMAT % "Digging with drum 2"
-            # dig with drum 2
-
-        if drum2_dump:
-            print MESSAGE_FORMAT % "Dumping from drum 2"
-            # dump from drum 2
-
-# Main entry point to the node.
+# Main entry point to this node.
 try:
+    GPIO.setmode(GPIO_MODE)
+    GPIO.setwarnings(False)
+
+    for pin in FORWARD_PINS:
+        GPIO.setup(pin, GPIO.OUT)
+
+    for pin in REAR_PINS:
+        GPIO.setup(pin, GPIO.OUT)
+
+    # Create a queue and process to rotate the drums.
+    nibble_queue = multiprocessing.Queue()
+    rotator_process = multiprocessing.Process(target=rotate_drums,
+                                              args=(nibble_queue,
+                                                    FORWARD_PINS,
+                                                    REAR_PINS,
+                                                    SLEEP_DURATION))
+    rotator_process.start()
+
+    # Initialize this node as a subscriber.
     rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME, std_msgs.msg.Int16, handle_drum_movements)
+    rospy.Subscriber(TOPIC_NAME,
+                     std_msgs.msg.Int16,
+                     callback=enqueue_nibble,
+                     callback_args=(nibble_queue, MASK, MESSAGE_FORMAT))
     rospy.spin()
+
 except rospy.ROSInterruptException:
     pass
+
+# Finally, send a kill message (None) to the rotator process and wait for it to
+# die, then exit.
+finally:
+    nibble_queue.put(None, False)
+    rotator_process.join()

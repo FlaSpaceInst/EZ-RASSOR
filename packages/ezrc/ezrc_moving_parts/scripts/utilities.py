@@ -3,6 +3,9 @@
 Written by Tiger Sachse and Harrison Black.
 Part of the EZ-RASSOR suite of software.
 """
+import RPi.GPIO as GPIO
+
+
 def get_nibble(bitstring, mask):
     """Retrieve a nibble of data from the bitstring, using a given mask."""
 
@@ -22,3 +25,10 @@ def get_nibble(bitstring, mask):
         nibble & 0b10 != 0,
         nibble & 0b1 != 0
     )
+
+
+def turn_off_pins(*pin_iterables):
+    """Turn off all pins. Expects 1 or more iterables of pin integers."""
+    for pin_iterable in pin_iterables:
+        for pin in pin_iterable:
+            GPIO.output(pin, GPIO.LOW)
