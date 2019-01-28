@@ -124,40 +124,28 @@ new_package() {
 link_packages() {
     cd $PACKAGES_DIR
 
-    # Check if the user wants to ignore certain packages.
-    if [ $# -gt 0 ] && ([ "$1" = "--ignore" ] || [ "$1" = "-i" ]); then
-        for SUPERPACKAGE_DIR in *; do
-            cd $SUPERPACKAGE_DIR
-            for PACKAGE_DIR in *; do
-
-                # Make sure the current PACKAGE_DIR is not an ignored package.
-                # There might be a more Bash-appropriate way to do this.
-                SHOULD_IGNORE=false
-                for IGNORED_PACKAGE_DIR in ${@:2}; do
-                    if [ "$IGNORED_PACKAGE_DIR" = "$PACKAGE_DIR" ]; then
-                        SHOULD_IGNORE=true
-                        break
+    for SUPERPACKAGE_DIR in *; do
+        cd $SUPERPACKAGE_DIR
+        for PACKAGE_DIR in *; do
+            case $1 in
+                -o|--only)
+                    if package_in_arguments  "$PACKAGE_DIR" "${@:2}"; then
+                        link_package "$PACKAGE_DIR"
                     fi
-                done
-
-                # If this package doesn't need to be ignored, link it!
-                if [ "$SHOULD_IGNORE" = false ]; then
-                    link_package $PACKAGE_DIR
-                fi
-            done
-            cd ..
+                    ;;
+                -i|--ignore)
+                    if ! package_in_arguments "$PACKAGE_DIR" "${@:2}"; then
+                        link_package "$PACKAGE_DIR"
+                    fi
+                    ;;
+                *)
+                    link_package "$PACKAGE_DIR"
+                    ;;
+            esac
         done
+        cd ..
+    done
 
-    # Otherwise, link all packages in all superpackages.
-    else
-        for SUPERPACKAGE_DIR in *; do
-            cd $SUPERPACKAGE_DIR
-            for PACKAGE_DIR in *; do
-                link_package $PACKAGE_DIR
-            done
-            cd ..
-        done
-    fi
     cd ..
 }
 
@@ -170,6 +158,17 @@ link_package() {
         printf "Linking %s...\n" $PWD/$1
     fi
     ln -s "$PWD/$1" "$SOURCE_DIR/$1"
+}
+
+# Helper function to determine if a package is in the argument list.
+package_in_arguments() {
+    for PACKAGE_DIR in ${@:2}; do
+        if [ "$1" = "$PACKAGE_DIR" ]; then
+            return 0
+        fi
+    done
+    
+    return 1
 }
 
 # Purge packages in the ROS workspace.
