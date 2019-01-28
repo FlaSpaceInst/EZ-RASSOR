@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """A ROS node that spins the drums on the EZRC.
 
-Written by Tiger Sachse and Harrison Black.
+Written by Tiger Sachse.
 Part of the EZ-RASSOR suite of software.
 """
 import time
@@ -23,7 +23,7 @@ FORWARD_PINS = (20, 21, 16)
 
 NODE_NAME = "drums_node"
 TOPIC_NAME = "ezmain_topic"
-MESSAGE_FORMAT = "EZRC (drums_node.py): %s."
+MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
 def rotate_drums(nibble_queue,
@@ -62,7 +62,6 @@ def rotate_drums(nibble_queue,
         try:
             nibble = nibble_queue.get(False)
             if nibble == None:
-                utilities.turn_off_pins(forward_pins, rear_pins)
                 break
             else:
                 dig_forward, dump_forward, dig_rear, dump_rear = nibble
@@ -79,12 +78,15 @@ def rotate_drums(nibble_queue,
         if dump_rear:
             GPIO.output(next(reversed_rear_iterator), GPIO.HIGH)
 
-        # If any pins were turned on this iteration, sleep for sleep_duration
+        # If any pins were turned on this iteration, sleep for some duration
         # and turn off all pins after waking again.
         if any((dig_forward, dump_forward, dig_rear, dump_rear)):
             time.sleep(sleep_duration)
             utilities.turn_off_pins(forward_pins, rear_pins)
             time.sleep(sleep_duration / 2)
+
+    # Clean up after the loop is broken.
+    utilities.turn_off_pins(forward_pins, rear_pins)
 
 
 def enqueue_nibble(instruction, additional_arguments):

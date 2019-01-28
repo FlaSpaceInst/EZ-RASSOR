@@ -1,6 +1,6 @@
 """A collection of utilities that are shared among all moving parts nodes.
 
-Written by Tiger Sachse and Harrison Black.
+Written by Tiger Sachse.
 Part of the EZ-RASSOR suite of software.
 """
 import RPi.GPIO as GPIO
@@ -32,3 +32,17 @@ def turn_off_pins(*pin_iterables):
     for pin_iterable in pin_iterables:
         for pin in pin_iterable:
             GPIO.output(pin, GPIO.LOW)
+
+
+def enqueue_nibble(instruction, additional_arguments):
+    """Decode a nibble from the instruction and enqueue it.
+    
+    Arguments after instruction are passed as a single tuple because of how ROS
+    callbacks work.
+    """
+    nibble_queue, mask, message_format, print_status = additional_arguments
+
+    nibble = get_nibble(instruction.data, mask)
+    nibble_queue.put(nibble, False)
+
+    print_status(nibble, message_format)
