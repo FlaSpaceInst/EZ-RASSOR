@@ -21,8 +21,7 @@ install_software() {
                 ;;
             ezrc)
                 sudo apt install -y python-pip
-                yes | sudo pip install RPi.GPIO #adafruit-pca9685 \
-                    #mpu6050-raspberrypi cffi smbus-cffi
+                yes | sudo pip install RPi.GPIO adafruit-pca9685
                 ;;
             ai|swarm)
                 sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
@@ -30,6 +29,11 @@ install_software() {
                 sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
                     /usr/lib/x86_64-linux-gnu/libQGLViewer.so
                 sudo apt install -y ros-kinetic-ros-control ros-kinetic-ros-controllers
+                ;;
+            joy)
+                sudo apt install ros-kinetic-joy
+                sudo jstest /dev/input/js1
+                sudo chmod a+rw /dev/input/js1
                 ;;
         esac
     done
@@ -51,22 +55,35 @@ setup_catkin() {
 start_ros() {
     case $1 in
         ezrc)
-            bash "$SCRIPTS_DIR/start_ezrc_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE/devel/setup.bash"
+            roscore &
+            rosrun ezrc_moving_parts arms_node.py &
+            rosrun ezrc_moving_parts wheels_node.py &
+            rosrun ezrc_moving_parts drums_node.py &
             ;;
         control)
-            bash "$SCRIPTS_DIR/start_control_graph.sh" $WORKSPACE_DIR
+            roslaunch ez_rassor_control ez_rassor_control.launch
             ;;
         gazebo)
-            bash "$SCRIPTS_DIR/start_gazebo_simulation.sh" $WORKSPACE_DIR
+            sudo killall rosmaster
+            sudo killall gzserver
+            sudo killall gzclient
+            roslaunch ez_rassor_gazebo ez_rassor_world.launch
             ;;
         rviz)
-            bash "$SCRIPTS_DIR/start_rviz_graph.sh" $WORKSPACE_DIR
+            roslaunch ez_rassor_description ez_rassor_rviz.launch
             ;;
         slam-core)
-            bash "$SCRIPTS_DIR/start_slam_core_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE/devel/setup.bash"
+            roscore &
+            rosrun lsd_slam_core live_slam \
+                /image:=ez_rassor/camera_<front/back>/image_raw \
+                /camera_info:=/ez_rassor/camera_<front/back>/camera_info &
             ;;
         slam-viewer)
-            bash "$SCRIPTS_DIR/start_slam_viewer_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE/devel/setup.bash"
+            roscore &
+            rosrun lsd_slam_viewer viewer &
             ;;
     esac
 }
