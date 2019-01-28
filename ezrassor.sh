@@ -47,7 +47,7 @@ setup_catkin() {
     mkdir -p $SOURCE_DIR
     cd $SOURCE_DIR
     catkin_init_workspace
-    cd ..
+    cd - &> /dev/null
     build_packages
 }
 
@@ -99,6 +99,7 @@ kill_ros() {
 build_packages() {
     cd $WORKSPACE_DIR
     catkin_make
+    cd - &> /dev/null
 }
 
 # Create a new ROS package in source control.
@@ -115,6 +116,8 @@ new_package() {
     # Create a symlink in the main workspace so that catkin
     # can build this new package.
     ln -s "$PWD/$2" "$SOURCE_DIR/$2"
+
+    cd - &> /dev/null
 }
 
 # Link all packages to the ROS workspace.
@@ -133,6 +136,7 @@ link_packages() {
         done
         cd ..
     done
+    cd ..
 }
 
 # Purge packages in the ROS workspace.
@@ -140,6 +144,7 @@ purge_packages() {
     cd $SOURCE_DIR
     echo "Purging all packages in /src..."
     find . ! -name 'CMakeLists.txt' -type l -exec rm -f {} +
+    cd - &> /dev/null
 }
 
 # Main entry point of the script.
@@ -167,5 +172,9 @@ case $1 in
         ;;
     -p|--purge)
         purge_packages
+        ;;
+    -r|--relink)
+        purge_packages
+        link_packages
         ;;
 esac

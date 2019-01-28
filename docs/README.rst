@@ -29,6 +29,8 @@ The flags supported by the script are listed below:
   Create a symlink from all packages in the ``packages`` directory to the ``src`` directory of your workspace. This is necessary after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll want to ``--purge`` before running this command (see below), otherwise your ``src`` directory could contain broken symlinks to removed/renamed packages.
 ``-p, --purge``
   Remove all symlinked packages from ``src``.
+``-r, --relink``
+  Purge all symlinked packages from ``src``, and then link all packages in ``packages``.
 ``-b, --build``
   Call ``catkin_make`` in your workspace.
 ``-s, --start <graph>``
