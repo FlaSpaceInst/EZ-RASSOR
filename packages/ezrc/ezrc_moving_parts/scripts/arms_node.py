@@ -21,11 +21,12 @@ FORWARD_CHANNEL = 15
 SLEEP_DURATION = .025
 MASK = 0b000011110000
 
-# These wavelengths are the boundary wavelengths for both servos that control
-# the arms. Vertical wavelengths point the arms straight up; ground wavelengths
+# These constants are the boundary wavelengths for the servos that control the
+# arms. The vertical wavelengths point the arms straight up; ground wavelengths
 # bring the arms close to the ground. Note that the forward wavelengths are
-# the inverted versions of the rear wavelengths. This is due to the front servo
-# being mounted backwards. This will possibly change after another hardware revision.
+# inverted versions of the rear wavelengths. This is due to the forward servo
+# being mounted backwards. This will hopefully change after another hardware
+# revision.
 FORWARD_VERTICAL_WAVELENGTH = 325
 FORWARD_GROUND_WAVELENGTH = 675
 REAR_VERTICAL_WAVELENGTH = 700
@@ -88,7 +89,8 @@ def move_arms(nibble_queue,
 
         # For each true movement boolean, move the appropriate arm by the shift
         # amount. If the arm moves past the wavelength boundaries, hold it
-        # steady at the boundary.
+        # steady at the boundary. Note that the apparent invertedness of the
+        # forward servo is clear in the code below.
         if up_forward:
             forward_arm_wavelength -= shift_amount
             if forward_arm_wavelength < forward_vertical_wavelength:
