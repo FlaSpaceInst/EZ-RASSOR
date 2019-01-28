@@ -29,7 +29,8 @@ MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 def rotate_drums(nibble_queue,
                  forward_pins,
                  rear_pins,
-                 sleep_duration):
+                 sleep_duration,
+                 pin_mode):
     """Rotate the drums of the EZRC.
     
     The drums are controlled by sending boolean 4-tuples to this function via
@@ -37,6 +38,12 @@ def rotate_drums(nibble_queue,
     subscription code so that both actions (rotation and listening to the ROS
     topic) can occur simultaneously. 
     """
+
+    # Initialize all required GPIO pins.
+    GPIO.setmode(pin_mode)
+    GPIO.setwarnings(False)
+    for pin in itertools.chain(forward_pins, rear_pins):
+        GPIO.setup(pin, GPIO.OUT)
 
     # These rotation booleans tell the main function loop whether to rotate a
     # drum in a particular direction or not.
@@ -108,14 +115,6 @@ def print_status(nibble, message_format):
 
 # Main entry point to this node.
 try:
-    GPIO.setmode(GPIO_MODE)
-    GPIO.setwarnings(False)
-
-    for pin in FORWARD_PINS:
-        GPIO.setup(pin, GPIO.OUT)
-
-    for pin in REAR_PINS:
-        GPIO.setup(pin, GPIO.OUT)
 
     # Create a queue and process to rotate the drums.
     nibble_queue = multiprocessing.Queue()
@@ -123,7 +122,8 @@ try:
                                               args=(nibble_queue,
                                                     FORWARD_PINS,
                                                     REAR_PINS,
-                                                    SLEEP_DURATION))
+                                                    SLEEP_DURATION,
+                                                    GPIO_MODE))
     rotator_process.start()
 
     # Initialize this node as a subscriber.
