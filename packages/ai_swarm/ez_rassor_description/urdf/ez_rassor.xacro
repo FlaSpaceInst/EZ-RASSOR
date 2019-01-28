@@ -393,7 +393,7 @@
     </inertial>
   </link>
 
-  <!-- IMU -->
+    <!-- IMU -->
   <link name="imu_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -417,6 +417,13 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
+
+  <joint name="imu_joint" type="fixed">
+    <axis xyz="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+  </joint>
 
   <!--Below are all of the robot's joints/-->
 
@@ -446,13 +453,6 @@
     <origin xyz="-.47 -.03 0" rpy="0 0 3.14"/>
     <parent link="base_link"/>
     <child link="f_stereo_4"/>
-  </joint>
-
-  <joint name="imu_joint" type="fixed">
-    <axis xyz="0 0 0" />
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="base_link"/>
-    <child link="imu_link"/>
   </joint>
 
   <joint type="continuous" name="left_wheel_front_hinge">
