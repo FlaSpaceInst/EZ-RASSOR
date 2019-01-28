@@ -123,20 +123,53 @@ new_package() {
 # Link all packages to the ROS workspace.
 link_packages() {
     cd $PACKAGES_DIR
-    for SUPERPACKAGE_DIR in *; do
-        cd $SUPERPACKAGE_DIR
-        for PACKAGE_DIR in *; do
-            if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
-                rm -f "$SOURCE_DIR/$PACKAGE_DIR"
-                printf "Relinking %s...\n" $PWD/$PACKAGE_DIR
-            else
-                printf "Linking %s...\n" $PWD/$PACKAGE_DIR
-            fi
-            ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
+
+    # Check if the user wants to ignore certain packages.
+    if [ $# -gt 0 ] && ([ "$1" = "--ignore" ] || [ "$1" = "-i" ]); then
+        for SUPERPACKAGE_DIR in *; do
+            cd $SUPERPACKAGE_DIR
+            for PACKAGE_DIR in *; do
+
+                # Make sure the current PACKAGE_DIR is not an ignored package.
+                # There might be a more Bash-appropriate way to do this.
+                SHOULD_IGNORE=false
+                for IGNORED_PACKAGE_DIR in ${@:2}; do
+                    if [ "$IGNORED_PACKAGE_DIR" = "$PACKAGE_DIR" ]; then
+                        SHOULD_IGNORE=true
+                        break
+                    fi
+                done
+
+                # If this package doesn't need to be ignored, link it!
+                if [ "$SHOULD_IGNORE" = false ]; then
+                    link_package $PACKAGE_DIR
+                fi
+            done
+            cd ..
         done
-        cd ..
-    done
+
+    # Otherwise, link all packages in all superpackages.
+    else
+        for SUPERPACKAGE_DIR in *; do
+            cd $SUPERPACKAGE_DIR
+            for PACKAGE_DIR in *; do
+                link_package $PACKAGE_DIR
+            done
+            cd ..
+        done
+    fi
     cd ..
+}
+
+# Helper function that links a single package.
+link_package() {
+    if [ -L "$SOURCE_DIR/$1" ]; then
+        rm -f "$SOURCE_DIR/$1"
+        printf "Relinking %s...\n" $PWD/$1
+    else
+        printf "Linking %s...\n" $PWD/$1
+    fi
+    ln -s "$PWD/$1" "$SOURCE_DIR/$1"
 }
 
 # Purge packages in the ROS workspace.
@@ -159,7 +192,7 @@ case $1 in
         new_package "${@:2}"
         ;;
     -l|--link)
-        link_packages
+        link_packages "${@:2}"
         ;;
     -b|--build)
         build_packages
@@ -175,6 +208,6 @@ case $1 in
         ;;
     -r|--relink)
         purge_packages
-        link_packages
+        link_packages "${@:2}"
         ;;
 esac
