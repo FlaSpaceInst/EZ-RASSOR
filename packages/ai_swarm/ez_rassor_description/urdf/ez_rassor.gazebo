@@ -47,7 +47,7 @@
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
         <cameraName>ez_rassor/camera1</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
+        <imageTopicName>image_raw1</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>camera</frameName>
         <hackBaseline>0.07</hackBaseline>
