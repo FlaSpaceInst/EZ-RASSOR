@@ -8,7 +8,6 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      command: "",
       modalVisible: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -18,9 +17,26 @@ export default class App extends React.Component {
     this.setState({ modalVisible: visible });
   }
 
+
+  handleSubmit(event){
+    command = 'http://192.168.43.145:5000/control?command=' + event
+    alert(command)
+    return fetch(command)
+    .then((response) => response.json())
+    .then((responseJson) => {
+        alert(responseJson.ans)
+      return responseJson.ans;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+/*
   async handleSubmit() {
-    /*
-        const command = "/api?command=" + this.state.command
+
+        //const command = "/control?command=" + this.state.command
+        const command = "http://192.168.43.145:5000/test2"
         const response = await fetch(command, {method: 'POST'});
     
         if (!response.ok) {
@@ -30,7 +46,7 @@ export default class App extends React.Component {
           
         const data = await response.json();
     
-        if (data == true) {
+        if (data.ans == true) {
           ToastAndroid.showWithGravity(
             'Command Processed Successfully',
             ToastAndroid.SHORT,
@@ -43,9 +59,9 @@ export default class App extends React.Component {
             ToastAndroid.CENTER
           );
         }
-    */
-  };
 
+  };
+*/
   render() {
     return (
       <View style={styles.container}>
@@ -102,7 +118,7 @@ export default class App extends React.Component {
 
         <View style={styles.buttonLayoutContainer}>
           <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-            <TouchableOpacity onPress={() => this.handleSubmit()}>
+            <TouchableOpacity onPressIn={() => this.handleSubmit(3)} onPressOut={() => this.handleSubmit(-3)}>
               <FontAwesome
                 name="arrow-circle-left"
                 size={50}
@@ -111,14 +127,14 @@ export default class App extends React.Component {
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPressIn={() => this.handleSubmit(1)} onPressOut={() => this.handleSubmit(-1)}>
               <FontAwesome
                 name="arrow-circle-up"
                 size={50}
                 color='#fff'
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPressIn={() => this.handleSubmit(2)} onPressOut={() => this.handleSubmit(-2)}>
               <FontAwesome
                 name="arrow-circle-down"
                 size={50}
@@ -127,7 +143,7 @@ export default class App extends React.Component {
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPressIn={() => this.handleSubmit(4)} onPressOut={() => this.handleSubmit(-4)}>
               <FontAwesome
                 name="arrow-circle-right"
                 size={50}
@@ -140,14 +156,14 @@ export default class App extends React.Component {
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity onPressIn={() => this.handleSubmit(10)} onPressOut={() => this.handleSubmit(-10)}>
                     <FontAwesome
                       name="arrow-circle-up"
                       size={50}
                       color='#fff'
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(13)} onPressOut={() => this.handleSubmit(-13)}>
                     <FontAwesome
                       name="arrow-circle-down"
                       size={50}
@@ -156,14 +172,14 @@ export default class App extends React.Component {
                   </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(11)} onPressOut={() => this.handleSubmit(-11)}>
                     <FontAwesome
                       name="arrow-circle-up"
                       size={50}
                       color='#fff'
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity onPressIn={() => this.handleSubmit(14)} onPressOut={() => this.handleSubmit(-14)}>
                     <FontAwesome
                       name="arrow-circle-down"
                       size={50}
@@ -178,14 +194,14 @@ export default class App extends React.Component {
               />
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity onPressIn={() => this.handleSubmit(16)} onPressOut={() => this.handleSubmit(-16)}>
                     <FontAwesome
                       name="rotate-left"
                       size={50}
                       color='#fff'
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(19)} onPressOut={() => this.handleSubmit(-19)}>
                     <FontAwesome
                       name="rotate-right"
                       size={50}
@@ -194,14 +210,14 @@ export default class App extends React.Component {
                   </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(20)} onPressOut={() => this.handleSubmit(20)}>
                     <FontAwesome
                       name="rotate-left"
                       size={50}
                       color='#fff'
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.handleSubmit()}>
+                  <TouchableOpacity onPressIn={() => this.handleSubmit(17)} onPressOut={() => this.handleSubmit(-17)}>
                     <FontAwesome
                       name="rotate-right"
                       size={50}
