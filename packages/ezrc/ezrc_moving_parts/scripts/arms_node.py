@@ -37,14 +37,14 @@ MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
 def move_arms(nibble_queue,
-              driver,
               forward_channel,
               rear_channel,
+              shift_amount,
               forward_vertical_wavelength,
               forward_ground_wavelength,
               rear_vertical_wavelength,
               rear_ground_wavelength,
-              shift_amount,
+              driver_frequency,
               sleep_duration):
     """Move the arms of the EZRC.
     
@@ -53,6 +53,10 @@ def move_arms(nibble_queue,
     subscription code so that both actions (movement and listening to the ROS
     topic) can occur simultaneously. 
     """
+
+    # Create a new driver for the PCA9685 board.
+    driver = Adafruit_PCA9685.PCA9685()
+    driver.set_pwm_freq(driver_frequency)
 
     # These movement booleans tell the main function loop whether to raise or
     # lower a particular arm.
@@ -134,21 +138,19 @@ def print_status(nibble, message_format):
 
 # Main entry point to this node.
 try:
-    driver = Adafruit_PCA9685.PCA9685()
-    driver.set_pwm_freq(FREQUENCY)
 
     # Create a queue and process to move the arms.
     nibble_queue = multiprocessing.Queue()
     movement_process = multiprocessing.Process(target=move_arms,
                                                args=(nibble_queue,
-                                                     driver,
                                                      FORWARD_CHANNEL,
                                                      REAR_CHANNEL,
+                                                     SHIFT_AMOUNT,
                                                      FORWARD_VERTICAL_WAVELENGTH,
                                                      FORWARD_GROUND_WAVELENGTH,
                                                      REAR_VERTICAL_WAVELENGTH,
                                                      REAR_GROUND_WAVELENGTH,
-                                                     SHIFT_AMOUNT,
+                                                     FREQUENCY,
                                                      SLEEP_DURATION))
     movement_process.start()
 
