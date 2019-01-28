@@ -89,15 +89,10 @@ def rotate_drums(nibble_queue,
     utilities.turn_off_pins(forward_pins, rear_pins)
 
 
-def enqueue_nibble(instruction, additional_arguments):
-    """Decode a nibble from the instruction and enqueue it into the nibble queue."""
-    nibble_queue, mask, message_format = additional_arguments
-
-    nibble = utilities.get_nibble(instruction.data, mask)
-    nibble_queue.put(nibble, False)
-
-    # Print some debugging information to the terminal.
+def print_status(nibble, message_format):
+    """Print status information based on the provided nibble."""
     dig_forward, dump_forward, dig_rear, dump_rear = nibble
+
     if not any(nibble):
         print message_format % "Stopping both drums"
     else:
@@ -135,8 +130,11 @@ try:
     rospy.init_node(NODE_NAME, anonymous=True)
     rospy.Subscriber(TOPIC_NAME,
                      std_msgs.msg.Int16,
-                     callback=enqueue_nibble,
-                     callback_args=(nibble_queue, MASK, MESSAGE_FORMAT))
+                     callback=utilities.enqueue_nibble,
+                     callback_args=(nibble_queue,
+                                    MASK,
+                                    MESSAGE_FORMAT,
+                                    print_status))
     rospy.spin()
 
 except rospy.ROSInterruptException:

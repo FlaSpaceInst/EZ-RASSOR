@@ -137,7 +137,7 @@ try:
     driver = Adafruit_PCA9685.PCA9685()
     driver.set_pwm_freq(FREQUENCY)
 
-    # create a queue and process to move the arms.
+    # Create a queue and process to move the arms.
     nibble_queue = multiprocessing.Queue()
     movement_process = multiprocessing.Process(target=move_arms,
                                                args=(nibble_queue,
