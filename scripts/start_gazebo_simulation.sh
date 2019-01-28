@@ -10,4 +10,4 @@ source "devel/setup.bash"
 
 # ROS node initializations.
 roscore &
-roslaunch ez_rassor_gaxebo ez_rassor_world.launch &
+roslaunch ez_rassor_gazebo ez_rassor_world.launch &
