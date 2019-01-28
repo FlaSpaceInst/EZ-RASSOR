@@ -14,12 +14,18 @@ import Adafruit_PCA9685
 
 
 # Change these constants if you want to break this node. :)
-SLEEP_DURATION = .025
-MASK = 0b000011110000
 FREQUENCY = 60
 SHIFT_AMOUNT = 5
-REAR_CHANNEL = 15
-FORWARD_CHANNEL = 12
+REAR_CHANNEL = 12
+FORWARD_CHANNEL = 15
+SLEEP_DURATION = .025
+MASK = 0b000011110000
+
+# These wavelengths are the boundary wavelengths for both servos that control
+# the arms. Vertical wavelengths point the arms straight up; ground wavelengths
+# bring the arms close to the ground. Note that the forward wavelengths are
+# the inverted versions of the rear wavelengths. This is due to the front servo
+# being mounted backwards. This will possibly change after another hardware revision.
 FORWARD_VERTICAL_WAVELENGTH = 325
 FORWARD_GROUND_WAVELENGTH = 675
 REAR_VERTICAL_WAVELENGTH = 700
@@ -40,19 +46,33 @@ def move_arms(nibble_queue,
               rear_ground_wavelength,
               shift_amount,
               sleep_duration):
-    """"""
+    """Move the arms of the EZRC.
+    
+    The arms are controlled by sending boolean 4-tuples to this function via
+    the nibble queue. This function is run as a separate process from the ROS
+    subscription code so that both actions (movement and listening to the ROS
+    topic) can occur simultaneously. 
+    """
+
+    # These movement booleans tell the main function loop whether to raise or
+    # lower a particular arm.
     up_rear = False
     down_rear = False
     up_forward = False
     down_forward = False
 
+    # Initialize both arms to be vertical.
     rear_arm_wavelength = rear_vertical_wavelength
     forward_arm_wavelength = forward_vertical_wavelength
-
     driver.set_pwm(rear_channel, 0, rear_arm_wavelength)
     driver.set_pwm(forward_channel, 0, forward_arm_wavelength)
 
     while True:
+
+        # Attempt to read a nibble (4-tuple) from the queue. If nothing is
+        # available then the movement booleans remain unchanged. If the None
+        # type is retrieved from the queue, break the loop and let the function
+        # end. Otherwise, split the fetched nibble between the 4 movement booleans.
         try:
             nibble = nibble_queue.get(False)
             if nibble == None:
@@ -62,6 +82,9 @@ def move_arms(nibble_queue,
         except Queue.Empty:
             pass
 
+        # For each true movement boolean, move the appropriate arm by the shift
+        # amount. If the arm moves past the wavelength boundaries, hold it
+        # steady at the boundary.
         if up_forward:
             forward_arm_wavelength -= shift_amount
             if forward_arm_wavelength < forward_vertical_wavelength:
@@ -83,12 +106,17 @@ def move_arms(nibble_queue,
                 rear_arm_wavelength = rear_ground_wavelength
             driver.set_pwm(rear_channel, 0, rear_arm_wavelength)
 
+        # If either arm moved this iteration, sleep for some duration.
         if any((up_forward, down_forward, up_rear, down_rear)):
             time.sleep(sleep_duration)
 
+    # Clean up after the loop is broken. 
+    driver.set_pwm(rear_channel, 0, rear_vertical_wavelength)
+    driver.set_pwm(forward_channel, 0, forward_vertical_wavelength)
+
 
 def print_status(nibble, message_format):
-    """"""
+    """Print status information based on the provided nibble."""
     up_forward, down_forward, up_rear, down_rear = nibble
 
     if not any(nibble):
@@ -109,6 +137,7 @@ try:
     driver = Adafruit_PCA9685.PCA9685()
     driver.set_pwm_freq(FREQUENCY)
 
+    # create a queue and process to move the arms.
     nibble_queue = multiprocessing.Queue()
     movement_process = multiprocessing.Process(target=move_arms,
                                                args=(nibble_queue,
@@ -116,13 +145,14 @@ try:
                                                      FORWARD_CHANNEL,
                                                      REAR_CHANNEL,
                                                      FORWARD_VERTICAL_WAVELENGTH,
-                                                     FORWARd_GROUND_WAVELENGTH,
+                                                     FORWARD_GROUND_WAVELENGTH,
                                                      REAR_VERTICAL_WAVELENGTH,
                                                      REAR_GROUND_WAVELENGTH,
                                                      SHIFT_AMOUNT,
                                                      SLEEP_DURATION))
     movement_process.start()
 
+    # Initialize this node as a subscriber.
     rospy.init_node(NODE_NAME, anonymous=True)
     rospy.Subscriber(TOPIC_NAME,
                      std_msgs.msg.Int16,
@@ -136,6 +166,8 @@ try:
 except rospy.ROSInterruptException:
     pass
 
+# Finally, send a kill message (None) to the movement process and wait for it
+# to die, then exit.
 finally:
     nibble_queue.put(None, False)
     movement_process.join()
