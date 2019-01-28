@@ -4,7 +4,7 @@ from std_msgs.msg import Int8, Int16
 from sensor_msgs.msg import Joy
 
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('control_topic', Int16, queue_size = 10)
+publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
 
 def callback(data):
 
@@ -101,6 +101,7 @@ def callback(data):
 	
 def main():
 
+	print("Controller node started")
 	global publisher
 	rospy.init_node('ez_controller', anonymous = True)
 	rate = rospy.Rate(600) # number of hz
