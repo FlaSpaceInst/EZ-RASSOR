@@ -35,6 +35,9 @@ install_software() {
                 sudo jstest /dev/input/js1
                 sudo chmod a+rw /dev/input/js1
                 ;;
+            *)
+                return
+                ;;
         esac
     done
 
@@ -129,12 +132,12 @@ link_packages() {
         for PACKAGE_DIR in *; do
             case $1 in
                 -o|--only)
-                    if package_in_arguments  "$PACKAGE_DIR" "${@:2}"; then
+                    if argument_in_list "$PACKAGE_DIR" "${@:2}"; then
                         link_package "$PACKAGE_DIR"
                     fi
                     ;;
                 -i|--ignore)
-                    if ! package_in_arguments "$PACKAGE_DIR" "${@:2}"; then
+                    if ! argument_in_list "$PACKAGE_DIR" "${@:2}"; then
                         link_package "$PACKAGE_DIR"
                     fi
                     ;;
@@ -160,23 +163,23 @@ link_package() {
     ln -s "$PWD/$1" "$SOURCE_DIR/$1"
 }
 
-# Helper function to determine if a package is in the argument list.
-package_in_arguments() {
-    for PACKAGE_DIR in ${@:2}; do
-        if [ "$1" = "$PACKAGE_DIR" ]; then
-            return 0
-        fi
-    done
-    
-    return 1
-}
-
 # Purge packages in the ROS workspace.
 purge_packages() {
     cd $SOURCE_DIR
     echo "Purging all packages in /src..."
     find . ! -name 'CMakeLists.txt' -type l -exec rm -f {} +
     cd - &> /dev/null
+}
+
+# Helper function that determines if an argument is in a list.
+argument_in_list() {
+    for ARGUMENT in ${@:2}; do
+        if [ "$1" = "$ARGUMENT" ]; then
+            return 0
+        fi
+    done
+   
+    return 1
 }
 
 # Main entry point of the script.
