@@ -162,9 +162,7 @@
     </sensor>
   </gazebo>
 
-<!-- IMU -->
   <gazebo reference="imu_link">
-    <sensor type="camera" name="camera4">
     <gravity>true</gravity>
     <sensor name="imu_sensor" type="imu">
       <always_on>true</always_on>
@@ -183,7 +181,7 @@
       <pose>0 0 0 0 0 0</pose>
     </sensor>
   </gazebo>
-
+  
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/ez_rassor</robotNamespace>
