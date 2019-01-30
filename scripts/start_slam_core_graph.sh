@@ -10,5 +10,5 @@ source "devel/setup.bash"
 
 # ROS node initializations.
 rosrun lsd_slam_core live_slam \
-    /image:=/ez_rassor/camera1/image_raw1 \
-    /camera_info:=/ez_rassor/camera1/camera_info &
+    /image:=/ez_rassor/front_camera/left/image_raw \
+    /camera_info:=/ez_rassor/front_camera/left/camera_info &
