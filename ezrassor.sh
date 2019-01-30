@@ -58,7 +58,7 @@ setup_catkin() {
 start_ros() {
     case $1 in
         ezrc)
-            source "$WORKSPACE/devel/setup.bash"
+            source "$WORKSPACE_DIR/devel/setup.bash"
             roscore &
             rosrun ezrc_moving_parts arms_node.py &
             rosrun ezrc_moving_parts wheels_node.py &
@@ -77,14 +77,14 @@ start_ros() {
             roslaunch ez_rassor_description ez_rassor_rviz.launch
             ;;
         slam-core)
-            source "$WORKSPACE/devel/setup.bash"
+            source "$WORKSPACE_DIR/devel/setup.bash"
             roscore &
             rosrun lsd_slam_core live_slam \
                 /image:=ez_rassor/camera_<front/back>/image_raw \
                 /camera_info:=/ez_rassor/camera_<front/back>/camera_info &
             ;;
         slam-viewer)
-            source "$WORKSPACE/devel/setup.bash"
+            source "$WORKSPACE_DIR/devel/setup.bash"
             roscore &
             rosrun lsd_slam_viewer viewer &
             ;;
