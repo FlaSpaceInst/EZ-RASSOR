@@ -35,8 +35,8 @@ def rotate_drums(nibble_queue,
     
     The drums are controlled by sending boolean 4-tuples to this function via
     the nibble queue. This function is run as a separate process from the ROS
-    subscription code so that both actions (rotation and listening to the ROS
-    topic) can occur simultaneously. 
+    subscription code so that both actions (rotating the drums and listening to
+    the ROS topic) can occur simultaneously. 
     """
 
     # Initialize all required GPIO pins.

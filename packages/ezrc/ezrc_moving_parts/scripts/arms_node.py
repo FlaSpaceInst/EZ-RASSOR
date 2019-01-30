@@ -51,8 +51,8 @@ def move_arms(nibble_queue,
     
     The arms are controlled by sending boolean 4-tuples to this function via
     the nibble queue. This function is run as a separate process from the ROS
-    subscription code so that both actions (movement and listening to the ROS
-    topic) can occur simultaneously. 
+    subscription code so that both actions (moving the arms and listening to
+    the ROS topic) can occur simultaneously. 
     """
 
     # Create a new driver for the PCA9685 board.
