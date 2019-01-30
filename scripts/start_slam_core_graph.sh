@@ -9,7 +9,6 @@ cd $1
 source "devel/setup.bash"
 
 # ROS node initializations.
-roscore &
 rosrun lsd_slam_core live_slam \
-    /image:=ez_rassor/camera_<front/back>/image_raw \
-    /camera_info:=/ez_rassor/camera_<front/back>/camera_info &
+    /image:=/ez_rassor/camera1/image_raw1 \
+    /camera_info:=/ez_rassor/camera1/camera_info &
