@@ -9,5 +9,4 @@ cd $1
 source "devel/setup.bash"
 
 # ROS node initializations.
-roscore &
 rosrun lsd_slam_viewer viewer &

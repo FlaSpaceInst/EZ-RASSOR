@@ -32,7 +32,7 @@ The flags supported by the script are listed below:
 ``-b, --build``
   Call ``catkin_make`` in your workspace.
 ``-s, --start <graph>``
-  Fire up a ROS graph. Available ROS graphs are ``ezrc``, ``control``, ``gazebo``, ``rviz``, ``slam-core``, and ``slam-viewer``.
+  Fire up a ROS graph. Available ROS graphs are ``ezrc``, ``control``, ``gazebo``, ``rviz``, ``slam-core``, and ``slam-viewer``. You must start ``control`` before ``slam-core`` and ``slam-viewer``.
 ``-k, --kill``
   Kill all running ROS nodes and `roscore`.
 
