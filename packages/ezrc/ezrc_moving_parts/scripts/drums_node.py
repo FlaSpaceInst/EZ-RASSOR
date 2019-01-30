@@ -16,7 +16,6 @@ import RPi.GPIO as GPIO
 
 # Change these constants if you want to break this node. :)
 SLEEP_DURATION = .2
-GPIO_MODE = GPIO.BCM
 MASK = 0b000000001111
 REAR_PINS = (13, 19, 26)
 FORWARD_PINS = (20, 21, 16)
@@ -30,18 +29,19 @@ def rotate_drums(nibble_queue,
                  forward_pins,
                  rear_pins,
                  sleep_duration,
-                 pin_mode):
+                 gpio_mode=GPIO.BCM,
+                 enable_gpio_warnings=False):
     """Rotate the drums of the EZRC.
     
     The drums are controlled by sending boolean 4-tuples to this function via
     the nibble queue. This function is run as a separate process from the ROS
-    subscription code so that both actions (rotation and listening to the ROS
-    topic) can occur simultaneously. 
+    subscription code so that both actions (rotating the drums and listening to
+    the ROS topic) can occur simultaneously. 
     """
 
     # Initialize all required GPIO pins.
-    GPIO.setmode(pin_mode)
-    GPIO.setwarnings(False)
+    GPIO.setmode(gpio_mode)
+    GPIO.setwarnings(enable_gpio_warnings)
     for pin in itertools.chain(forward_pins, rear_pins):
         GPIO.setup(pin, GPIO.OUT)
 
@@ -122,8 +122,7 @@ try:
                                               args=(nibble_queue,
                                                     FORWARD_PINS,
                                                     REAR_PINS,
-                                                    SLEEP_DURATION,
-                                                    GPIO_MODE))
+                                                    SLEEP_DURATION))
     rotator_process.start()
 
     # Initialize this node as a subscriber.
