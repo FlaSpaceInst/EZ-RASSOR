@@ -28,7 +28,6 @@ for run in range(100):
         GPIO.output(forward_pin, GPIO.LOW)
         time.sleep(speed/2)
 """
-
 # move the arms up and down
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -38,34 +37,32 @@ max = 700
 #channel rear = 12
 num = int(sys.argv[1])
 print num
-pwm.set_pwm(12, 0, num)
+pwm.set_pwm(8, 0, num)
 
-
-"""
+"""f
 # 11 12 13 15
 m0a = 17
 m0b = 18
 m1a = 27
 m1b = 22
-pwm = PCA9685()
+pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 GPIO.setup(m0a, GPIO.OUT)
 GPIO.setup(m0b, GPIO.OUT)
 GPIO.setup(m1a, GPIO.OUT)
 GPIO.setup(m1b, GPIO.OUT)
-"""
-"""
+
 speed = 3000
 GPIO.output(m0a, GPIO.LOW)
 GPIO.output(m0b, GPIO.HIGH)
 pwm.set_pwm(5, 0, speed)
 
-
 GPIO.output(m1b, GPIO.HIGH)
 GPIO.output(m1a, GPIO.LOW)
 pwm.set_pwm(4, 0, speed)
-
 time.sleep(4)
 pwm.set_pwm(4, 0, 0)
 pwm.set_pwm(5, 0, 0)
