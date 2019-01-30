@@ -16,8 +16,11 @@ class Ui_Form(object):
 
     def changeCamera(self, text):
         if text != "Select Camera":
+            if self.displayed == 1:
+                self.sub.unregister()
             self.imageSelected = text
-            rospy.Subscriber(self.imageSelected, Image, lambda data : self.displayCamera(data))
+            self.sub = rospy.Subscriber(self.imageSelected, Image, lambda data : self.displayCamera(data))
+            self.displayed = 1
 
     def displayCamera(self, data):
         bridge = CvBridge()
@@ -62,6 +65,7 @@ class Ui_Form(object):
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.cameraSelect.currentIndexChanged['QString'].connect(self.changeCamera)
+        self.displayed = 0
 
 
 if __name__ == "__main__":
