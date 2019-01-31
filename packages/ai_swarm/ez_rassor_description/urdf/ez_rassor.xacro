@@ -36,19 +36,19 @@
 
   <link name="left_wheel_front">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 -0.06 0" rpy="3.14159 1.57079 -1.57089"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </collision>
     <visual name="left_wheel_front_visual">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 -0.06 0" rpy="-3.12268 1.57079 -1.55198"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707" />
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -60,19 +60,19 @@
 
   <link name="right_wheel_front">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0.06 0" rpy="0 1.57079 -1.57089"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </collision>
     <visual name="right_wheel_front_visual">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0.06 0" rpy="-0.00702 1.57079 -1.57316"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -81,18 +81,18 @@
         izz="1.0"/>
     </inertial>
   </link>
-
+  
   <link name="left_wheel_back">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 -0.06 0" rpy="3.14159  1.57079 -1.57089"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </collision>
     <visual name="left_wheel_back_visual">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 -0.06 0" rpy="-3.12268  1.57079 -1.55198"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </visual>
     <inertial>
@@ -108,15 +108,15 @@
 
   <link name="right_wheel_back">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0.06 0" rpy="0 1.57079 -1.57089"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </collision>
     <visual name="right_wheel_back_visual">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0.06 0" rpy="-0.00702 1.57079 -1.57316"/>
       <geometry>
-        <cylinder radius="0.1" length="0.05"/>
+        <robot_wheel />
       </geometry>
     </visual>
     <inertial>
@@ -132,19 +132,19 @@
 
   <link name="arm_back">
     <collision name="collision">
-      <origin xyz="0 .1 0" rpy="0 1.5707 1.5707"/>
+      <origin rpy="0 0 3.1415" xyz="0 0 0"/>
       <geometry>
-        <cylinder radius="0.025" length="0.3"/>
+        <robot_arm />
       </geometry>
     </collision>
-    <visual name="arm_back_visual">
-      <origin xyz="0 .1 0" rpy="0 1.5707 1.5707"/>
+    <visual name="visual">
+      <origin rpy="0 0 3.1415" xyz="0 0 0"/>
       <geometry>
-        <cylinder radius="0.025" length="0.3"/>
+        <robot_arm />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -156,19 +156,19 @@
 
   <link name="arm_front">
     <collision name="collision">
-      <origin xyz="0 -.1 0" rpy="0 1.5707 1.5707"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder radius="0.025" length="0.3"/>
+        <robot_arm />
       </geometry>
     </collision>
-    <visual name="arm_front_visual">
-      <origin xyz="0 -.1 0" rpy="0 1.5707 1.5707"/>
+    <visual name="visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder radius="0.025" length="0.3"/>
+        <robot_arm />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -180,19 +180,19 @@
 
   <link name="drum_front">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 1.5707"/>
       <geometry>
-        <cylinder radius="0.08" length="0.05"/>
+        <robot_arm_drum />
       </geometry>
     </collision>
     <visual name="drum_front_visual">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 1.5707"/>
       <geometry>
-        <cylinder radius="0.08" length="0.4"/>
+        <robot_arm_drum />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 1.5707"/>
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -204,19 +204,19 @@
 
   <link name="drum_back">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 4.7122"/>
       <geometry>
-        <cylinder radius="0.08" length="0.05"/>
+        <robot_arm_drum />
       </geometry>
     </collision>
     <visual name="drum_back">
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 4.7122"/>
       <geometry>
-        <cylinder radius="0.08" length="0.4"/>
+        <robot_arm_drum />
       </geometry>
     </visual>
     <inertial>
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <origin xyz="0 0 0" rpy="0 0 4.7122"/>
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -492,25 +492,25 @@
   </joint>
 
   <joint type="continuous" name="arm_back_hinge">
-    <origin xyz="-0.2 0 0" rpy="0 0 1.57"/>
+    <origin xyz="-0.25 0 0" rpy="0 0 6.2828"/>
     <child link="arm_back"/>
     <parent link="base_link"/>
-    <axis xyz="1 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
   <joint type="continuous" name="arm_front_hinge">
-    <origin xyz="0.2 0 0" rpy="0 0 1.57"/>
+    <origin xyz="0.25 0 0" rpy="0 0 6.2828"/>
     <child link="arm_front"/>
     <parent link="base_link"/>
-    <axis xyz="1 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
   <joint type="continuous" name="drum_front_hinge">
-    <origin xyz="0 -0.2 0" rpy="0 0 1.57"/>
+    <origin xyz="0.338245 0 0" rpy="0 0 6.2828"/>
     <child link="drum_front"/>
     <parent link="arm_front"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -519,7 +519,7 @@
   </joint>
 
   <joint type="continuous" name="drum_back_hinge">
-    <origin xyz="0 0.2 0" rpy="0 0 1.57"/>
+    <origin xyz="-0.338245 0 0" rpy="0 0 6.2828"/>
     <child link="drum_back"/>
     <parent link="arm_back"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
