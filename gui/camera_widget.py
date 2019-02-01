@@ -7,10 +7,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from cv_bridge import CvBridge, CvBridgeError
 
 class Ui_Form(object):
+    def addCameras(self):
+        topicList = dict(rospy.get_published_topics())
+
+        for i in topicList:
+            if 'sensor_msgs/Image' == topicList[i]:
+                self.cameraSelect.addItem(i)
+
     def changeCamera(self, text):
-        if text is not "Select Camera":
+        if text != "Select Camera":
+            if self.displayed == 1:
+                self.sub.unregister()
             self.imageSelected = text
-            rospy.Subscriber(self.imageSelected, Image, lambda data : self.displayCamera(data))
+            self.sub = rospy.Subscriber(self.imageSelected, Image, lambda data : self.displayCamera(data))
+            self.displayed = 1
 
     def displayCamera(self, data):
         bridge = CvBridge()
@@ -43,9 +53,9 @@ class Ui_Form(object):
         self.gridLayout_2 = QtWidgets.QGridLayout(Form)
         self.gridLayout = QtWidgets.QGridLayout()
         self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
         self.cameraSelect = QtWidgets.QComboBox(Form)
-        self.cameraSelect.addItems(["Select Camera","/ez_rassor/camera_back/image_raw"])
+        self.cameraSelect.addItem("Select Camera")
+        self.addCameras()
         self.verticalLayout.addWidget(self.cameraSelect)
         self.cameraFrame = QtWidgets.QLabel(Form)
         self.cameraFrame.setFrameShape(QtWidgets.QFrame.Box)
@@ -55,6 +65,7 @@ class Ui_Form(object):
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.cameraSelect.currentIndexChanged['QString'].connect(self.changeCamera)
+        self.displayed = 0
 
 
 if __name__ == "__main__":
