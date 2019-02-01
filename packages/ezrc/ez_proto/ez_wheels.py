@@ -17,7 +17,7 @@ def callback(data):
     data_in >>= 8
     data_string = "Wheels:\t {0:04b}".format(data_in)
 
-    velocity = 10
+    velocity = 5
 
     if data_in == 0b1000:
         data_string = data_string + " -> Drive Forward"
@@ -28,23 +28,38 @@ def callback(data):
 
     elif data_in == 0b0100:
         data_string = data_string + " -> Reverse"
+        pubLF.publish(-velocity)
+        pubLB.publish(-velocity)
+        pubRF.publish(-velocity)
+        pubRB.publish(-velocity)
 
         # Insert motor functions
 
     elif data_in == 0b0010:
         data_string = data_string + " -> Turn Left"
+        pubLF.publish(-velocity)
+        pubLB.publish(-velocity)
+        pubRF.publish(velocity)
+        pubRB.publish(velocity)
 
         # Insert motor functions
 
     elif data_in == 0b0001:
         data_string = data_string + " -> Turn Right"
+        pubLF.publish(velocity)
+        pubLB.publish(velocity)
+        pubRF.publish(-velocity)
+        pubRB.publish(-velocity)
 
         # Insert motor functions
 
     else:
         data_string = data_string + " -> Stop"
 
-        # Halt motor functions
+        pubLF.publish(0)
+        pubLB.publish(0)
+        pubRF.publish(0)
+        pubRB.publish(0)
 
     print(data_string)
 
