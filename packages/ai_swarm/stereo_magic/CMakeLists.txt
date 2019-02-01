@@ -34,10 +34,10 @@ include_directories(
 
 
 ## Declare a C++ executable
-add_executable(stereo_node src/stereo_node.cpp)
-add_executable(calib_camera src/calib_camera.cpp)
-add_executable(stereo_tf_broadcaster src/stereo_tf_broadcaster.cpp)
-add_executable(draw_boxes src/draw_boxes.cpp)
+add_executable(stereo_node /src/stereo_node.cpp)
+add_executable(calib_camera /src/calib_camera.cpp)
+add_executable(stereo_tf_broadcaster /src/stereo_tf_broadcaster.cpp)
+add_executable(draw_boxes /src/draw_boxes.cpp)
 
 
 
