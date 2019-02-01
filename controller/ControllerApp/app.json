@@ -5,7 +5,10 @@
     "slug": "ControllerApp",
     "privacy": "public",
     "sdkVersion": "31.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
