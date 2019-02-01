@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 import time
 import scipy
 
-#change it to your own global path to workspace
+# change it to your own global path to workspace
 GLOBAL_PATH = '/home/chico55/.workspace'
 
 class Rectify:
