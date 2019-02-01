@@ -22,6 +22,7 @@ import cv2
 bridge = CvBridge()
 
 def image_callback(msg):
+    print("Working")
     try:
         # Convert your ROS Image message to OpenCV2
         cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
@@ -69,13 +70,13 @@ def image_callback_4(msg):
 def main():
     rospy.init_node('image_listener')
     # Define your image topic
-    image_topic = "/ez_rassor/camera1/image_raw1"
-    image_topic_2 = "/ez_rassor/camera2/image_raw2"
-    image_topic_3 = "/ez_rassor/camera3/image_raw3"
-    image_topic_4 = "/ez_rassor/camera4/image_raw4"
+    image_topic = "/ez_rassor/front_camera/left/image_raw"
+    image_topic_2 = "/ez_rassor/front_camera/right/image_raw"
+    image_topic_3 = "/ez_rassor/back_camera/right/image_raw"
+    image_topic_4 = "/ez_rassor/back_camera/left/image_raw"
     # Set up your subscriber and define its callback
     rospy.Subscriber(image_topic, Image, image_callback)
-    rospy.Subscriber(image_topic_2, Image, image_callback_2)
+    rospy.Subscriber(image_topic_4, Image, image_callback_2)
     rospy.Subscriber(image_topic_3, Image, image_callback_3)
     rospy.Subscriber(image_topic_4, Image, image_callback_4)
     # Spin until ctrl + c
