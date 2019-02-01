@@ -43,7 +43,7 @@ def wheel_movement_callback(instruction):
 
     drive_forward, drive_reverse, turn_left, turn_right = get_movements(instruction.data, MASK)
 
-    velocity = 10
+    velocity = 5
 
     if drive_forward:
         # data_string = data_string + " -> Drive Forward"
