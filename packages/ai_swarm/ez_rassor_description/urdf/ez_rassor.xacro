@@ -293,6 +293,28 @@
     </actuator>
   </transmission>
 
+  <transmission name="drum_front_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_front_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="drum_back_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_back_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
   <!--Front Camera Added/-->
   <link name="stereo_camera_front">
     <collision>
