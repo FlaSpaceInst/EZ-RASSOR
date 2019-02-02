@@ -1,7 +1,35 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image } from 'react-native';
+import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Modal from "react-native-modal";
+import { Font } from 'expo';
+
+// Fade in amimation
+class FadeInView extends React.Component { 
+  state = {
+    fadeAnim: new Animated.Value(0),  
+  }
+
+  componentDidMount() {
+    Animated.timing(
+      this.state.fadeAnim,
+      {
+        toValue: 1,
+        duration: 5000,
+      }
+    ).start();
+  }
+
+  render() {
+    let { fadeAnim } = this.state;
+
+    return (
+      <Animated.View style={{ ...this.props.style, opacity: fadeAnim }}>
+        {this.props.children}
+      </Animated.View>
+    );
+  }
+}
 
 export default class App extends React.Component {
 
@@ -9,18 +37,29 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
+      modal2Visible: false,
+      isLoading: true,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async componentDidMount () {
+    await Font.loadAsync({
+      'NASA': require('./assets/nasa.ttf'),
+    });
+    this.setState({ isLoading: false })
   }
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
 
+  setModal2Visible(visible) {
+    this.setState({ modal2Visible: visible });
+  }
 
   handleSubmit(event){
     url = 'http://192.168.4.1:5000/cmd'
-    //alert(url)
       return fetch(
           url,
           {
@@ -42,40 +81,18 @@ export default class App extends React.Component {
     });
   }
 
-/*
-  async handleSubmit() {
-
-        //const command = "/control?command=" + this.state.command
-        const command = "http://192.168.43.145:5000/test2"
-        const response = await fetch(command, {method: 'POST'});
-    
-        if (!response.ok) {
-          alert("Server Down");
-          throw Error(response.statusText);
-        }
-          
-        const data = await response.json();
-    
-        if (data.ans == true) {
-          ToastAndroid.showWithGravity(
-            'Command Processed Successfully',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER
-          );
-        } else {
-          ToastAndroid.showWithGravity(
-            'Command Failed',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER
-          );
-        }
-
-  };
-*/
   render() {
+
+    // Loading font
+    if (this.state.isLoading) {
+      return (
+        <View style={{flex: 1, backgroundColor: '#5D6061'}}/>
+      );
+    }
+
     return (
       <View style={styles.container}>
-
+        <StatusBar hidden />
         <Modal
           style={styles.modalViewContainer}
           isVisible={this.state.modalVisible}
@@ -105,65 +122,96 @@ export default class App extends React.Component {
           </TouchableHighlight>
         </Modal>
 
-        <View style={styles.headerContainer}>
-          <View style={{flexDirection: 'row', width: '97%' }}>
-            <TouchableOpacity style={{ flex: 1 }}>
-              <FontAwesome
-                name="info-circle"
-                size={32}
-                color='#fff'
-              />
+        <Modal
+          style={styles.modalViewContainer}
+          isVisible={this.state.modal2Visible}
+          onSwipe={() => this.setModal2Visible(false)}
+          swipeDirection='down'
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>NASA EZ-RASSOR Controller</Text>
+              <View style={{marginVertical: 10}}/>
+              <Text style={{fontSize:15, fontWeight: 'bold', color: '#fff'}}>App Developer</Text>
+              <Text style={{color: '#fff'}}>Christopher Taliaferro</Text>
+              <View style={{marginVertical: 10}}/>
+              <Text style={{fontSize:15, fontWeight: 'bold', color: '#fff'}}>EZ-RASSOR Team</Text>
+              <View style={{flexDirection: 'row'}}>
+                <View>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Camilo Lozano</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Cameron Taylor</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Harrison Black</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Ron Marrero</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Samuel Lewis</Text>
+                </View>
+                <View style={{marginHorizontal:5}}/>
+                <View>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Sean Rapp</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Tiger Sachse</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Tyler Duncan</Text>
+                  <Text style={{color: '#fff', textAlign: 'center'}}>Lucas Gonzalez</Text>
+                </View>
+              </View>
             </TouchableOpacity>
-            <Text style={styles.text}>EZ-RASSOR Controller</Text>
-            <TouchableOpacity style={{ flex: 1 }} onPress={() => { this.setModalVisible(true); }}>
-              <FontAwesome
-                style={{ position: 'absolute', right: 0 }}
-                name="eercast"
-                size={30}
-                color='#fff'
-              />
+            <View style={{ flex: .5, borderRadius:20, backgroundColor: '#2e3030'}}></View>
+            <TouchableOpacity style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>Our Mission</Text>
+              <View style={{marginVertical: 10}}/>
+              <Text style={{color: '#fff', textAlign: 'center'}}>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center.</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Modal>
 
-        <View style={styles.buttonLayoutContainer}>
-          <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-            <TouchableOpacity onPressIn={() => this.handleSubmit(3)} onPressOut={() => this.handleSubmit(0)}>
+        <FadeInView style={styles.headerContainer}>
+          <TouchableOpacity style={{ flex: 1, padding: 3 }}>
+            <FontAwesome
+              name="info-circle"
+              size={32}
+              color='#fff'
+              onPress={() => { this.setModal2Visible(true); }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.text}>EZ-RASSOR Controller</Text>
+          <Button style={{ flex: 1}} title="AI FUNCTIONS" onPress={() => { this.setModalVisible(true); }}/>
+        </FadeInView>
+
+        <FadeInView style={styles.buttonLayoutContainer}>
+          <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
+            <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, margin: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(1)} onPressOut={() => this.handleSubmit(0)}>
               <FontAwesome
-                name="arrow-circle-left"
+                name="chevron-up"
+                size={50}
+                color='#fff'
+              />
+            </TouchableOpacity>
+            <View style={{flex: 2 , flexDirection: 'row'}}>
+              <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, marginHorizontal: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(3)} onPressOut={() => this.handleSubmit(0)}>
+                <FontAwesome
+                  name="chevron-left"
+                  size={50}
+                  color='#fff'
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, marginRight: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(4)} onPressOut={() => this.handleSubmit(0)}>
+                <FontAwesome
+                  name="chevron-right"
+                  size={50}
+                  color='#fff'
+                />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, margin: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(2)} onPressOut={() => this.handleSubmit(0)}>
+              <FontAwesome
+                name="chevron-down"
                 size={50}
                 color='#fff'
               />
             </TouchableOpacity>
           </View>
-          <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-              <TouchableOpacity 
-                  onPressIn={() => this.handleSubmit(1)} onPressOut={() => this.handleSubmit(0)}>
-              <FontAwesome
-                name="arrow-circle-up"
-                size={50}
-                color='#fff'
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPressIn={() => this.handleSubmit(2)} onPressOut={() => this.handleSubmit(0)}>
-              <FontAwesome
-                name="arrow-circle-down"
-                size={50}
-                color='#fff'
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, justifyContent: 'space-around', marginHorizontal: 10 }}>
-            <TouchableOpacity onPressIn={() => this.handleSubmit(4)} onPressOut={() => this.handleSubmit(0)}>
-              <FontAwesome
-                name="arrow-circle-right"
-                size={50}
-                color='#fff'
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 6, justifyContent: 'center', marginHorizontal: 20 }}>
-            <View style= {{ flex: 1}}/>
+
+          <View style={{ flex: 6, justifyContent: 'center', marginHorizontal: 10,padding:10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}> 
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
@@ -199,10 +247,7 @@ export default class App extends React.Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              <Image
-                style={styles.image}
-                source={require('../ControllerApp/assets/rassor3.png')}
-              />
+              <Image style={styles.image} source={require('../ControllerApp/assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity onPressIn={() => this.handleSubmit(16)} onPressOut={() => this.handleSubmit(0)}>
@@ -238,9 +283,8 @@ export default class App extends React.Component {
                 </View>
               </View>
             </View>
-            <View style= {{ flex: 1}}/>
           </View>
-        </View>
+        </FadeInView>
       </View>
     );
   }
@@ -256,25 +300,29 @@ const styles = StyleSheet.create({
 
   headerContainer: {
     flex: 1,
-    marginTop: 40,
-    marginBottom: 10,
+    flexDirection: 'row',
+    marginTop: 10,
+    marginHorizontal: 10,
+    elevation: 3,
+    backgroundColor: '#2e3030',
+    borderRadius: 10,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   buttonLayoutContainer: {
-    flex: 11,
+    flex: 8,
     flexDirection: 'row',
+    marginVertical: 10,
   },
 
   text: {
-    flex: 10,
+    fontFamily: 'NASA',
+    flex: 4,
     fontSize: 25,
-    fontWeight: 'bold',
     color: '#fff',
-    textAlign: 'center'
-  },
-
-  button: {
-
+    textAlign: 'center',
   },
 
   image: {
@@ -282,10 +330,10 @@ const styles = StyleSheet.create({
     width: null,
     height: null,
     resizeMode: 'contain',
+    paddingVertical:20,
   },
 
   modalViewContainer: {
-    flex: 1,
     borderRadius: 25,
     backgroundColor: '#5D6061',
   },
@@ -297,6 +345,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100
+    height: 100,
+    elevation: 5,
   }
 });
