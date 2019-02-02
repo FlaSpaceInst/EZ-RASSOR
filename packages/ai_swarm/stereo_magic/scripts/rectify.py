@@ -13,7 +13,7 @@ import time
 import scipy
 
 # change it to your own global path to workspace
-GLOBAL_PATH = '/home/cameron/.workspace'
+GLOBAL_PATH = '/home/chico55/.workspace'
 
 class Rectify:
 
@@ -21,8 +21,8 @@ class Rectify:
     self.left_pub = rospy.Publisher("/camera/left/rect",Image,queue_size=1)
     self.right_pub = rospy.Publisher("/camera/right/rect",Image,queue_size=1)
     self.bridge = CvBridge()
-    self.rimage_sub = message_filters.Subscriber("camera/right/image_raw",Image)
-    self.limage_sub = message_filters.Subscriber("camera/left/image_raw",Image)
+    self.rimage_sub = message_filters.Subscriber("ez_rassor/front_camera/right/image_raw",Image)
+    self.limage_sub = message_filters.Subscriber("ez_rassor/front_camera/left/image_raw",Image)
     self.ts = message_filters.TimeSynchronizer([self.limage_sub, self.rimage_sub], 1).registerCallback(self.callback)
     self.dist = np.load(GLOBAL_PATH + '/src/stereo_magic/params/dist.npy')
     self.mtx = np.array(np.load(GLOBAL_PATH + '/src/stereo_magic/params/mtx.npy'))

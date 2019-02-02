@@ -13,7 +13,7 @@ import time
 import scipy
 
 #change it to your own global path to workspace
-GLOBAL_PATH = '/home/cameron/.workspace'
+GLOBAL_PATH = '/home/chico55/.workspace'
 
 
 class CameraSim:
