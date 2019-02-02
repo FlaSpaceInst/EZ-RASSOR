@@ -22,11 +22,14 @@ sleep 2
 # Spawn SLAM Core
 rosrun lsd_slam_core live_slam \
     /image:=/ez_rassor/front_camera/left/image_raw \
-    /camera_info:=/ez_rassor/front_camera/left/camera_info & 
+    /camera_info:=/ez_rassor/front_camera/left/camera_info &
 
-sleep 2
+sleep 5
 
-
+echo "Starting AI script in 5..."
+sleep 1
+echo "Starting AI script in 4..."
+sleep 1
 echo "Starting AI script in 3..."
 sleep 1
 echo "Starting AI script in 2..."
