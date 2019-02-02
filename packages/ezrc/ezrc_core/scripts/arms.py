@@ -14,8 +14,8 @@ MASK = 0b000011110000
 MESSAGE_FORMAT = "EZRC (arms.py): %s."
 
 # /ez_rassor/arm_back_velocity_controller/command
-pubFA = rospy.Publisher('/ez_rassor/arm_front_velocity_controller/command', Float64, queue_size = 10)
-pubBA = rospy.Publisher('/ez_rassor/arm_back_velocity_controller/command', Float64, queue_size = 10)
+pub_FA = rospy.Publisher('/ez_rassor/arm_front_velocity_controller/command', Float64, queue_size = 10)
+pub_BA = rospy.Publisher('/ez_rassor/arm_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):
@@ -48,8 +48,8 @@ def handle_arm_movements(instruction):
     if not any((arm1_up, arm1_down, arm2_up, arm2_down)):
         # print MESSAGE_FORMAT % "Stopping both arms"
         # stop both arms
-        pubFA.publish(0)
-        pubBA.publish(0)
+        pub_FA.publish(0)
+        pub_BA.publish(0)
 
     else:
 
@@ -57,23 +57,23 @@ def handle_arm_movements(instruction):
         if arm1_up:
             # print MESSAGE_FORMAT % "Raising arm 1"
             # raise arm 1
-            pubFA.publish(-arm_speed)
+            pub_FA.publish(-arm_speed)
 
         if arm1_down:
             # print MESSAGE_FORMAT % "Lowering arm 1"
             # lower arm 1
-            pubFA.publish(arm_speed)
+            pub_FA.publish(arm_speed)
 
 
         if arm2_up:
             # print MESSAGE_FORMAT % "Raising arm 2"
             # raise arm 2
-            pubBA.publish(arm_speed)
+            pub_BA.publish(arm_speed)
 
         if arm2_down:
             # print MESSAGE_FORMAT % "Lowering arm 2"
             # lower arm 2
-            pubBA.publish(-arm_speed)
+            pub_BA.publish(-arm_speed)
 
 
 
