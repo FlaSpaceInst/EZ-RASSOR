@@ -68,6 +68,9 @@ start_ros() {
         slam-viewer)
             bash "$SCRIPTS_DIR/start_slam_viewer_graph.sh" $WORKSPACE_DIR
             ;;
+        ai-demo)
+            bash "$SCRIPTS_DIR/ai_demo.sh" $WORKSPACE_DIR
+            ;;
     esac
 }
 
