@@ -21,8 +21,7 @@ install_software() {
                 ;;
             ezrc)
                 sudo apt install -y python-pip
-                yes | sudo pip install RPi.GPIO #adafruit-pca9685 \
-                    #mpu6050-raspberrypi cffi smbus-cffi
+                yes | sudo pip install RPi.GPIO adafruit-pca9685
                 ;;
             ai|swarm)
                 sudo apt install -y libsuitesparse-dev libqglviewer-dev-qt4 \
@@ -30,6 +29,14 @@ install_software() {
                 sudo ln -s /usr/lib/x86_64-linux-gnu/libQGLViewer-qt4.so \
                     /usr/lib/x86_64-linux-gnu/libQGLViewer.so
                 sudo apt install -y ros-kinetic-ros-control ros-kinetic-ros-controllers
+                ;;
+            joy)
+                sudo apt install ros-kinetic-joy
+                sudo jstest /dev/input/js1
+                sudo chmod a+rw /dev/input/js1
+                ;;
+            *)
+                return
                 ;;
         esac
     done
@@ -43,7 +50,7 @@ setup_catkin() {
     mkdir -p $SOURCE_DIR
     cd $SOURCE_DIR
     catkin_init_workspace
-    cd ..
+    cd - &> /dev/null
     build_packages
 }
 
@@ -51,22 +58,35 @@ setup_catkin() {
 start_ros() {
     case $1 in
         ezrc)
-            bash "$SCRIPTS_DIR/start_ezrc_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE_DIR/devel/setup.bash"
+            roscore &
+            rosrun ezrc_moving_parts arms_node.py &
+            rosrun ezrc_moving_parts wheels_node.py &
+            rosrun ezrc_moving_parts drums_node.py &
             ;;
         control)
-            bash "$SCRIPTS_DIR/start_control_graph.sh" $WORKSPACE_DIR
+            roslaunch ez_rassor_control ez_rassor_control.launch
             ;;
         gazebo)
-            bash "$SCRIPTS_DIR/start_gazebo_simulation.sh" $WORKSPACE_DIR
+            sudo killall rosmaster
+            sudo killall gzserver
+            sudo killall gzclient
+            roslaunch ez_rassor_gazebo ez_rassor_world.launch
             ;;
         rviz)
-            bash "$SCRIPTS_DIR/start_rviz_graph.sh" $WORKSPACE_DIR
+            roslaunch ez_rassor_description ez_rassor_rviz.launch
             ;;
         slam-core)
-            bash "$SCRIPTS_DIR/start_slam_core_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE_DIR/devel/setup.bash"
+            roscore &
+            rosrun lsd_slam_core live_slam \
+                /image:=ez_rassor/camera_<front/back>/image_raw \
+                /camera_info:=/ez_rassor/camera_<front/back>/camera_info &
             ;;
         slam-viewer)
-            bash "$SCRIPTS_DIR/start_slam_viewer_graph.sh" $WORKSPACE_DIR
+            source "$WORKSPACE_DIR/devel/setup.bash"
+            roscore &
+            rosrun lsd_slam_viewer viewer &
             ;;
         ai-demo)
             bash "$SCRIPTS_DIR/ai_demo.sh" $WORKSPACE_DIR
@@ -78,12 +98,14 @@ start_ros() {
 kill_ros() {
     rosnode kill --all
     killall -SIGTERM roscore
+    printf "\nROS has been shut down.\n"
 }
 
 # Build all packages.
 build_packages() {
     cd $WORKSPACE_DIR
     catkin_make
+    cd - &> /dev/null
 }
 
 # Create a new ROS package in source control.
@@ -100,24 +122,48 @@ new_package() {
     # Create a symlink in the main workspace so that catkin
     # can build this new package.
     ln -s "$PWD/$2" "$SOURCE_DIR/$2"
+
+    cd - &> /dev/null
 }
 
 # Link all packages to the ROS workspace.
 link_packages() {
     cd $PACKAGES_DIR
+
     for SUPERPACKAGE_DIR in *; do
         cd $SUPERPACKAGE_DIR
         for PACKAGE_DIR in *; do
-            if [ -L "$SOURCE_DIR/$PACKAGE_DIR" ]; then
-                rm -f "$SOURCE_DIR/$PACKAGE_DIR"
-                printf "Relinking %s...\n" $PWD/$PACKAGE_DIR
-            else
-                printf "Linking %s...\n" $PWD/$PACKAGE_DIR
-            fi
-            ln -s "$PWD/$PACKAGE_DIR" "$SOURCE_DIR/$PACKAGE_DIR"
+            case $1 in
+                -o|--only)
+                    if argument_in_list "$PACKAGE_DIR" "${@:2}"; then
+                        link_package "$PACKAGE_DIR"
+                    fi
+                    ;;
+                -i|--ignore)
+                    if ! argument_in_list "$PACKAGE_DIR" "${@:2}"; then
+                        link_package "$PACKAGE_DIR"
+                    fi
+                    ;;
+                *)
+                    link_package "$PACKAGE_DIR"
+                    ;;
+            esac
         done
         cd ..
     done
+
+    cd ..
+}
+
+# Helper function that links a single package.
+link_package() {
+    if [ -L "$SOURCE_DIR/$1" ]; then
+        rm -f "$SOURCE_DIR/$1"
+        printf "Relinking %s...\n" $PWD/$1
+    else
+        printf "Linking %s...\n" $PWD/$1
+    fi
+    ln -s "$PWD/$1" "$SOURCE_DIR/$1"
 }
 
 # Purge packages in the ROS workspace.
@@ -125,6 +171,18 @@ purge_packages() {
     cd $SOURCE_DIR
     echo "Purging all packages in /src..."
     find . ! -name 'CMakeLists.txt' -type l -exec rm -f {} +
+    cd - &> /dev/null
+}
+
+# Helper function that determines if an argument is in a list.
+argument_in_list() {
+    for ARGUMENT in ${@:2}; do
+        if [ "$1" = "$ARGUMENT" ]; then
+            return 0
+        fi
+    done
+   
+    return 1
 }
 
 # Main entry point of the script.
@@ -139,7 +197,7 @@ case $1 in
         new_package "${@:2}"
         ;;
     -l|--link)
-        link_packages
+        link_packages "${@:2}"
         ;;
     -b|--build)
         build_packages
@@ -152,5 +210,9 @@ case $1 in
         ;;
     -p|--purge)
         purge_packages
+        ;;
+    -r|--relink)
+        purge_packages
+        link_packages "${@:2}"
         ;;
 esac

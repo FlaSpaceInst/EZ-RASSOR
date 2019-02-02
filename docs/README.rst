@@ -25,10 +25,12 @@ The flags supported by the script are listed below:
   Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default.
 ``-n, --new <superpackage> <package> [dependencies...]``
   Create a new ROS package in the ``packages`` folder, under the appropriate superpackage. If the superpackage doesn't exist it is created. All arguments after package are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run the ``--catkin`` command ensure that you do that before trying to make a new package, otherwise you won't have a workspace to develop in!
-``-l, --link``
-  Create a symlink from all packages in the ``packages`` directory to the ``src`` directory of your workspace. This is necessary after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll want to ``--purge`` before running this command (see below), otherwise your ``src`` directory could contain broken symlinks to removed/renamed packages.
+``-l, --link [-i, --ignore <packages...> | -o, --only <packages...>]``
+  Create a symlink from all packages in the ``packages`` directory to the ``src`` directory of your workspace. This is necessary after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll want to ``--purge`` before running this command (see below), otherwise your ``src`` directory could contain broken symlinks to removed/renamed packages. Ignore specific packages with the ``-i`` or ``--ignore`` flag. Relink specific packages with the ``-o`` or ``--only`` flag. When linking specific packages, all other packages are purged.
 ``-p, --purge``
   Remove all symlinked packages from ``src``.
+``-r, --relink [-i, --ignore <packages...> | -o, --only <packages...>]``
+  Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-i`` or ``--ignore`` flag. Relink specific packages with the ``-o`` or ``--only`` flag. When relinking specific packages, all other packages are purged.
 ``-b, --build``
   Call ``catkin_make`` in your workspace.
 ``-s, --start <graph>``
@@ -57,6 +59,12 @@ Here are some example commands to get started.
   
   # Build the contents of 'src' in your Catkin workspace.
   bash ezrassor.sh --build
+
+  # Link all packages except the 'depreciated' package.
+  bash ezrassor.sh --link --ignore depreciated
+
+  # Relink only the 'ezrc_moving_parts' and 'lsd_slam' packages.
+  bash ezrassor.sh --relink -o ezrc_moving_parts lsd_slam
 
 AUTHORS
 ----
