@@ -88,6 +88,9 @@ start_ros() {
             roscore &
             rosrun lsd_slam_viewer viewer &
             ;;
+        ai-demo)
+            bash "$SCRIPTS_DIR/ai_demo.sh" $WORKSPACE_DIR
+            ;;
     esac
 }
 

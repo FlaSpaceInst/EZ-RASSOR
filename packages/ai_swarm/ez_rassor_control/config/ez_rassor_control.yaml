@@ -6,18 +6,34 @@ ez_rassor:
 
   # Position Controllers ---------------------------------------
   left_wheel_back_velocity_controller:
-    type: effort_controllers/JointEffortController
+    type: velocity_controllers/JointVelocityController
     joint: left_wheel_back_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
   left_wheel_front_velocity_controller:
-    type: effort_controllers/JointEffortController
+    type: velocity_controllers/JointVelocityController
     joint: left_wheel_front_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
   right_wheel_back_velocity_controller:
-    type: effort_controllers/JointEffortController
+    type: velocity_controllers/JointVelocityController
     joint: right_wheel_back_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
   right_wheel_front_velocity_controller:
-    type: effort_controllers/JointEffortController
+    type: velocity_controllers/JointVelocityController
     joint: right_wheel_front_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  arm_front_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: arm_front_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  arm_back_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: arm_back_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  drum_front_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: drum_front_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  drum_back_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: drum_back_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
