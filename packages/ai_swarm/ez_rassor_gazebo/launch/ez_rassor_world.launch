@@ -9,7 +9,7 @@
   <arg name="debug" default="false"/>
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/ez_rassor.world"/>
+    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/moon.world"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
