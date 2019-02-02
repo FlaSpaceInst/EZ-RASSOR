@@ -43,11 +43,13 @@ def linkCallBack(data):
     heading = data.pose[1].orientation.z
     front_arm_angle = data.pose
 
+    print(posx, posy)
+
 def go_forward(distance):
     print('Going Forward')
     global posx, posy
     start_pos = (posx, posy)
-
+    
     while euclidean_distance(start_pos[0], posx, start_pos[1], posy) < distance:
         pub.publish(commands['forward'])
         rate.sleep()
