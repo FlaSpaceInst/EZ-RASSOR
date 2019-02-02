@@ -98,7 +98,7 @@ def ai_control():
 
     set_arm_angle(1, 'arms_up')
     go_forward(10)
-    set_arm_angle(1, 'arms_down')
+    set_arm_angle(2, 'arms_down')
     go_dig(5)
     set_arm_angle(1, 'arms_up')
     go_reverse(10)

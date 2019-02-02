@@ -379,14 +379,14 @@
 
   <joint name="camera_front_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz=".47 0 0" rpy="0 0 0"/>
+    <origin xyz=".75 0 0" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="stereo_camera_front"/>
   </joint>
 
   <joint name="camera_back_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz="-.47 0 0" rpy="0 0 3.14"/>
+    <origin xyz="-.75 0 0" rpy="0 0 3.14"/>
     <parent link="base_link"/>
     <child link="stereo_camera_back"/>
   </joint>
