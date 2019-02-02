@@ -29,3 +29,11 @@ ez_rassor:
     type: velocity_controllers/JointVelocityController
     joint: arm_back_hinge
     pid: {p: 100.0, i: 0.01, d: 10.0}
+  drum_front_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: drum_front_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  drum_back_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: drum_back_hinge
+    pid: {p: 100.0, i: 0.01, d: 10.0}
