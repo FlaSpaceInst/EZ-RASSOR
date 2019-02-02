@@ -2,11 +2,7 @@
 
 <robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<<<<<<< HEAD
   <xacro:property name="cameraSize" value="0.005"/>
-=======
-  <xacro:property name="cameraSize" value="0.05"/>
->>>>>>> master
   <xacro:property name="cameraMass" value="0.1"/>
 
   <xacro:include filename="$(find ez_rassor_description)/urdf/ez_rassor.gazebo" />
@@ -52,11 +48,7 @@
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707" />
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -80,11 +72,7 @@
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -149,23 +137,14 @@
         <robot_arm />
       </geometry>
     </collision>
-<<<<<<< HEAD
     <visual name="visual">
       <origin rpy="0 0 3.1415" xyz="0 0 0"/>
-=======
-    <visual name="arm_back_visual">
-      <origin xyz="0 .1 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <geometry>
         <robot_arm />
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin xyz="0 0 0" rpy="0 0 3.1415"/>
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -182,23 +161,14 @@
         <robot_arm />
       </geometry>
     </collision>
-<<<<<<< HEAD
     <visual name="visual">
       <origin rpy="0 0 0" xyz="0 0 0"/>
-=======
-    <visual name="arm_front_visual">
-      <origin xyz="0 -.1 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <geometry>
         <robot_arm />
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin xyz="0 0 0" rpy="0 0 0"/>
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -212,11 +182,7 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 1.5707"/>
       <geometry>
-<<<<<<< HEAD
         <robot_arm_drum />
-=======
-        <cylinder radius="0.1" length="0.05"/>
->>>>>>> master
       </geometry>
     </collision>
     <visual name="drum_front_visual">
@@ -226,11 +192,7 @@
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin xyz="0 0 0" rpy="0 0 1.5707"/>
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -244,11 +206,7 @@
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 4.7122"/>
       <geometry>
-<<<<<<< HEAD
         <robot_arm_drum />
-=======
-        <cylinder radius="0.1" length="0.05"/>
->>>>>>> master
       </geometry>
     </collision>
     <visual name="drum_back">
@@ -258,11 +216,7 @@
       </geometry>
     </visual>
     <inertial>
-<<<<<<< HEAD
       <origin xyz="0 0 0" rpy="0 0 4.7122"/>
-=======
-      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
->>>>>>> master
       <mass value="5"/>
       <cylinder_inertia m="5" r="0.1" h="0.05"/>
       <inertia
@@ -270,7 +224,6 @@
         iyy="1.0" iyz="0.0"
         izz="1.0"/>
     </inertial>
-<<<<<<< HEAD
   </link>
 
 <!-- Transmissions -->
@@ -317,111 +270,6 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-=======
-  </link>
-
-  <!--First Camera Added/-->
-  <link name="f_stereo_1">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-  <!--Second Camera Added/-->
-  <link name="f_stereo_2">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-    <!--Third Camera Added/-->
-  <link name="f_stereo_3">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-      <!--Fourth Camera Added/-->
-  <link name="f_stereo_4">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-  <!--Below are all of the robot's joints/-->
->>>>>>> master
 
   <transmission name="arm_front_tran">
     <type>transmission_interface/SimpleTransmission</type>
@@ -531,7 +379,6 @@
 
   <joint name="camera_front_joint" type="fixed">
     <axis xyz="0 1 0" />
-<<<<<<< HEAD
     <origin xyz=".75 0 0" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="stereo_camera_front"/>
@@ -542,32 +389,6 @@
     <origin xyz="-.75 0 0" rpy="0 0 3.14"/>
     <parent link="base_link"/>
     <child link="stereo_camera_back"/>
-=======
-    <origin xyz=".47 .03 0" rpy="0 0 0"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_1"/>
-  </joint>
-
-  <joint name="camera_joint2" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz=".47 -.03 0" rpy="0 0 0"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_2"/>
-  </joint>
-
-  <joint name="camera_joint3" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="-.47 .03 0" rpy="0 0 3.14"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_3"/>
-  </joint>
-
-  <joint name="camera_joint4" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="-.47 -.03 0" rpy="0 0 3.14"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_4"/>
->>>>>>> master
   </joint>
 
   <joint type="continuous" name="left_wheel_front_hinge">
@@ -607,11 +428,7 @@
   </joint>
 
   <joint type="continuous" name="arm_back_hinge">
-<<<<<<< HEAD
     <origin xyz="-0.25 0 0" rpy="0 0 6.2828"/>
-=======
-    <origin xyz="-0.2 0 0" rpy="0 0 1.57"/>
->>>>>>> master
     <child link="arm_back"/>
     <parent link="base_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -620,11 +437,7 @@
   </joint>
 
   <joint type="continuous" name="arm_front_hinge">
-<<<<<<< HEAD
     <origin xyz="0.25 0 0" rpy="0 0 6.2828"/>
-=======
-    <origin xyz="0.2 0 0" rpy="0 0 1.57"/>
->>>>>>> master
     <child link="arm_front"/>
     <parent link="base_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -633,11 +446,7 @@
   </joint>
 
   <joint type="continuous" name="drum_front_hinge">
-<<<<<<< HEAD
     <origin xyz="0.338245 0 0" rpy="0 0 6.2828"/>
-=======
-    <origin xyz="0 -0.2 0" rpy="0 0 1.57"/>
->>>>>>> master
     <child link="drum_front"/>
     <parent link="arm_front"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -646,11 +455,7 @@
   </joint>
 
   <joint type="continuous" name="drum_back_hinge">
-<<<<<<< HEAD
     <origin xyz="-0.338245 0 0" rpy="0 0 6.2828"/>
-=======
-    <origin xyz="0 0.2 0" rpy="0 0 1.57"/>
->>>>>>> master
     <child link="drum_back"/>
     <parent link="arm_back"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
