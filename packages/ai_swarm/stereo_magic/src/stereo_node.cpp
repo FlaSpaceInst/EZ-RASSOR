@@ -246,8 +246,8 @@ int main(int argc, char **argv) {
   pub = it.advertise("/camera/depth/image", 1);
 
   //left and right rectified images subscriber
-	message_filters::Subscriber<Image> left_sub(nh, "ez_rassor/front_camera/left/rect", 1);
-	message_filters::Subscriber<Image> right_sub(nh, "ez_rassor/front_camera/right/rect", 1);
+	message_filters::Subscriber<Image> left_sub(nh, "camera/left/rect", 1);
+	message_filters::Subscriber<Image> right_sub(nh, "camera/right/rect", 1);
 
   //time syncronizer to publish 2 images in the same callback function
 	TimeSynchronizer<Image, Image> sync(left_sub, right_sub, 1);

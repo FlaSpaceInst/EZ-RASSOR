@@ -23,8 +23,6 @@ class Rectify:
     self.bridge = CvBridge()
     self.rimage_sub = message_filters.Subscriber("ez_rassor/front_camera/right/image_raw",Image)
     self.limage_sub = message_filters.Subscriber("ez_rassor/front_camera/left/image_raw",Image)
-    cv2.cvtColor(self.limage_sub, self.limage_sub, COLOR_BGR2GRAY)
-    cv2.cvtColor(self.rimage_sub, self.rimage_sub, COLOR_BGR2GRAY)
     self.ts = message_filters.TimeSynchronizer([self.limage_sub, self.rimage_sub], 1).registerCallback(self.callback)
     self.dist = np.load(GLOBAL_PATH + '/src/stereo_magic/params/dist.npy')
     self.mtx = np.array(np.load(GLOBAL_PATH + '/src/stereo_magic/params/mtx.npy'))
@@ -65,12 +63,12 @@ class Rectify:
 
 
     try:
-      self.left_pub.publish(self.bridge.cv2_to_imgmsg(left, "8UC1"))
+      self.left_pub.publish(self.bridge.cv2_to_imgmsg(left, "8UC3"))
     except CvBridgeError as e:\
       print(e)
 
     try:
-      self.right_pub.publish(self.bridge.cv2_to_imgmsg(right, "8UC1"))
+      self.right_pub.publish(self.bridge.cv2_to_imgmsg(right, "8UC3"))
     except CvBridgeError as e:
       print(e)
 
