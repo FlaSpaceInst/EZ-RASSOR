@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar } from 'react-native';
+import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import { Font } from 'expo';
@@ -38,7 +38,9 @@ export default class App extends React.Component {
     this.state = {
       modalVisible: false,
       modal2Visible: false,
+      ipModal: false,
       isLoading: true,
+      ip:'192.168.4.1',  
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -58,8 +60,17 @@ export default class App extends React.Component {
     this.setState({ modal2Visible: visible });
   }
 
+  setIPModalVisible(visible){
+    this.setState({ipModal: visible});
+  }
+
+  changeIP(text){
+    this.setState({ip:text})
+  }
+  
   handleSubmit(event){
-    url = 'http://192.168.4.1:5000/cmd'
+      url = 'http://'+this.state.ip+'/cmd'
+      console.log(url)
       return fetch(
           url,
           {
@@ -81,6 +92,7 @@ export default class App extends React.Component {
     });
   }
 
+
   render() {
 
     // Loading font
@@ -98,9 +110,8 @@ export default class App extends React.Component {
           isVisible={this.state.modalVisible}
           onSwipe={() => this.setModalVisible(!this.state.modalVisible)}
           swipeDirection='down'
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
+          onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}
+          >
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
               <TouchableOpacity style={styles.modalButton}>
@@ -118,6 +129,10 @@ export default class App extends React.Component {
               <TouchableOpacity style={styles.modalButton}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Explore</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                  <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}
+                        onPress={() => this.setIPModalVisible(true)} >Change IP</Text>
+              </TouchableOpacity>
             </View>
           </TouchableHighlight>
         </Modal>
@@ -127,9 +142,8 @@ export default class App extends React.Component {
           isVisible={this.state.modal2Visible}
           onSwipe={() => this.setModal2Visible(false)}
           swipeDirection='down'
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
+          onRequestClose={() => this.setModal2Visible(false)}
+          >
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>NASA EZ-RASSOR Controller</Text>
@@ -164,6 +178,33 @@ export default class App extends React.Component {
           </View>
         </Modal>
 
+        <Modal
+          style={styles.modalViewContainer}
+          isVisible={this.state.ipModal}
+          onSwipe={() => this.setIPModalVisible(false)}
+          swipeDirection='down'
+          onRequestClose={() => {this.setIPModalVisible(false)}}>
+          <KeyboardAvoidingView
+            paddingLeft={64}
+            paddingRight={64}>
+
+            <Text style={{color: '#fff', textAlign: 'left'}}>IP Address:</Text>
+            <TextInput
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={(text) => this.changeIP(text)}
+              value={this.state.ip}
+              marginTop={20} />
+            <Button  
+              title="Done" 
+              paddingTop={10}
+              onPress={() => {
+                this.setIPModalVisible(false)
+                this.setModalVisible(false);
+              }}/>
+
+          </KeyboardAvoidingView>
+        </Modal>
+
         <FadeInView style={styles.headerContainer}>
           <TouchableOpacity style={{ flex: 1, padding: 3 }}>
             <FontAwesome
@@ -174,7 +215,7 @@ export default class App extends React.Component {
             />
           </TouchableOpacity>
           <Text style={styles.text}>EZ-RASSOR Controller</Text>
-          <Button style={{ flex: 1}} title="AI FUNCTIONS" onPress={() => { this.setModalVisible(true); }}/>
+          <Button style={{ flex: 1}} title="FUNCTIONS" onPress={() => { this.setModalVisible(true); }}/>
         </FadeInView>
 
         <FadeInView style={styles.buttonLayoutContainer}>
