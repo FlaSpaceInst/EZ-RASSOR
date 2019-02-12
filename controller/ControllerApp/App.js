@@ -1,3 +1,25 @@
+/*
+ *  To perform an action send one of the nubers below that correspond to the movement
+ *  To STOP peforming that action, send the negative value of that action
+ * 
+ *  EX:
+ *    Start moving forward :  1
+ *    Stop Moving Forward  : -1
+ *  --------------------------------------------------------------------------------
+ *  MOVE FORWARD      - 1
+ *  MOVE BACKWARD     - 2
+ *  TURN LEFT         - 3
+ *  TURN RIGHT        - 4
+ *  RAISE FRONT DRUM  - 10
+ *  LOWER FRONT DRUM  - 13
+ *  DIG FRONT DRUM    - 16
+ *  DUMP FRONT DRUM   - 19
+ *  RAISE BACK DRUM   - 11
+ *  LOWER BACK DRUM   - 14
+ *  DIG BACK DRUM     - 17
+ *  DUMPBACK DRUM     - 20
+ */
+
 import React from 'react';
 import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
@@ -69,22 +91,22 @@ export default class App extends React.Component {
   }
   
   handleSubmit(event){
-      url = 'http://'+this.state.ip+'/cmd'
-      console.log(url)
-      return fetch(
-          url,
-          {
-              headers: {"Content-Type":"text/plain; charset=utf-8"},
-              method: 'POST',
-              headers:{
-                  Accept: 'application/json',
-              },
-              body: event.toString()
-          }
-      )
+    url = 'http://'+this.state.ip+'/cmd'
+    console.log(url)
+
+    return fetch(
+        url,
+        {
+            headers: {"Content-Type":"text/plain; charset=utf-8"},
+            method: 'POST',
+            headers:{
+                Accept: 'application/json',
+            },
+            body: event.toString()
+        }
+    )
     .then((response) => response.json())
     .then((responseJson) => {
-        //alert(responseJson.ans)
       return responseJson.ans;
     })
     .catch((error) => {
@@ -145,8 +167,8 @@ export default class App extends React.Component {
           onRequestClose={() => this.setModal2Visible(false)}
           >
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>NASA EZ-RASSOR Controller</Text>
+            <View style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>NASA EZ-RASSOR Controller</Text>
               <View style={{marginVertical: 10}}/>
               <Text style={{fontSize:15, fontWeight: 'bold', color: '#fff'}}>App Developer</Text>
               <Text style={{color: '#fff'}}>Christopher Taliaferro</Text>
@@ -168,13 +190,13 @@ export default class App extends React.Component {
                   <Text style={{color: '#fff', textAlign: 'center'}}>Lucas Gonzalez</Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
             <View style={{ flex: .5, borderRadius:20, backgroundColor: '#2e3030'}}></View>
-            <TouchableOpacity style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>Our Mission</Text>
               <View style={{marginVertical: 10}}/>
               <Text style={{color: '#fff', textAlign: 'center'}}>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center.</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </Modal>
 
@@ -220,107 +242,131 @@ export default class App extends React.Component {
 
         <FadeInView style={styles.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
-            <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, margin: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(1)} onPressOut={() => this.handleSubmit(0)}>
+            <View style={styles.upAndDownDPad} onTouchStart={() => this.handleSubmit(1)} onTouchEnd={() => this.handleSubmit(-1)}>
+            <TouchableOpacity>  
               <FontAwesome
                 name="chevron-up"
                 size={50}
                 color='#fff'
               />
             </TouchableOpacity>
+            </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
-              <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, marginHorizontal: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(3)} onPressOut={() => this.handleSubmit(0)}>
+              <View style={styles.dPadLeft} onTouchStart={() => this.handleSubmit(3)} onTouchEnd={() => this.handleSubmit(-3)}>
+                <TouchableOpacity>
+                  <FontAwesome
+                    name="chevron-left"
+                    size={50}
+                    color='#fff'
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.dPadRight} onTouchStart={() => this.handleSubmit(4)} onTouchEnd={() => this.handleSubmit(-4)}>
+                <TouchableOpacity>
+                  <FontAwesome
+                    name="chevron-right"
+                    size={50}
+                    color='#fff'
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.upAndDownDPad}  onTouchStart={() => this.handleSubmit(2)} onTouchEnd={() => this.handleSubmit(-2)}>
+              <TouchableOpacity>
                 <FontAwesome
-                  name="chevron-left"
-                  size={50}
-                  color='#fff'
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, marginRight: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(4)} onPressOut={() => this.handleSubmit(0)}>
-                <FontAwesome
-                  name="chevron-right"
+                  name="chevron-down"
                   size={50}
                   color='#fff'
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{flex: 1, backgroundColor: '#3a3d3d', borderRadius: 10, margin: 10, elevation: 5, justifyContent: 'center', alignItems: 'center'}} onPressIn={() => this.handleSubmit(2)} onPressOut={() => this.handleSubmit(0)}>
-              <FontAwesome
-                name="chevron-down"
-                size={50}
-                color='#fff'
-              />
-            </TouchableOpacity>
           </View>
 
-          <View style={{ flex: 6, justifyContent: 'center', marginHorizontal: 10,padding:10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}> 
+          <View style={styles.drumFunctionContainer}> 
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity onPressIn={() => this.handleSubmit(10)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="arrow-circle-up"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(13)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="arrow-circle-down"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
+                  <View onTouchStart={() => this.handleSubmit(10)} onTouchEnd={() => this.handleSubmit(-10)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="arrow-circle-up"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(13)} onTouchEnd={() => this.handleSubmit(-13)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="arrow-circle-down"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(11)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="arrow-circle-up"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPressIn={() => this.handleSubmit(14)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="arrow-circle-down"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
+                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(11)} onTouchEnd={() => this.handleSubmit(-11)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="arrow-circle-up"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View onTouchStart={() => this.handleSubmit(14)} onTouchEnd={() => this.handleSubmit(-14)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="arrow-circle-down"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
               <Image style={styles.image} source={require('../ControllerApp/assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity onPressIn={() => this.handleSubmit(16)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="rotate-left"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(19)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="rotate-right"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
+                  <View onTouchStart={() => this.handleSubmit(16)} onTouchEnd={() => this.handleSubmit(-16)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="rotate-left"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(19)} onTouchEnd={() => this.handleSubmit(-19)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="rotate-right"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <TouchableOpacity style={{ marginHorizontal: 15 }} onPressIn={() => this.handleSubmit(20)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="rotate-left"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPressIn={() => this.handleSubmit(17)} onPressOut={() => this.handleSubmit(0)}>
-                    <FontAwesome
-                      name="rotate-right"
-                      size={50}
-                      color='#fff'
-                    />
-                  </TouchableOpacity>
+                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(20)} onTouchEnd={() => this.handleSubmit(-20)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="rotate-left"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View onTouchStart={() => this.handleSubmit(17)} onTouchEnd={() => this.handleSubmit(-17)}>
+                    <TouchableOpacity>
+                      <FontAwesome
+                        name="rotate-right"
+                        size={50}
+                        color='#fff'
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
@@ -388,5 +434,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 100,
     elevation: 5,
+  },
+
+  upAndDownDPad: {
+    flex: 1, 
+    backgroundColor: '#3a3d3d', 
+    borderRadius: 10, 
+    margin: 10, 
+    elevation: 5, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+
+  dPadLeft: {
+    flex: 1, 
+    backgroundColor: '#3a3d3d', 
+    borderRadius: 10, 
+    marginHorizontal: 10, 
+    elevation: 5, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+
+  dPadRight: {
+    flex: 1, 
+    backgroundColor: '#3a3d3d', 
+    borderRadius: 10,
+    marginRight: 10, 
+    elevation: 5, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+
+  drumFunctionContainer: {
+    flex: 6, 
+    justifyContent: 'center', 
+    marginHorizontal: 10,
+    padding:10, 
+    borderRadius: 10, 
+    elevation: 3, 
+    backgroundColor: '#2e3030'
   }
 });
