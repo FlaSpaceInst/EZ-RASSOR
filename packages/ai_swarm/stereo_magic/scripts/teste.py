@@ -14,7 +14,7 @@ class image_converter:
   def __init__(self):
     self.image_pub = rospy.Publisher("image_topic_2",Image,1)
     self.bridge = CvBridge()
-    self.image_sub = rospy.Subscriber("/camera/depth/image",Image,self.callback)
+    self.image_sub = rospy.Subscriber("camera/depth/image",Image,self.callback)
 
 
   def callback(self,data):
@@ -24,7 +24,7 @@ class image_converter:
       print(e)
 
     try:
-      image_camera = rospy.wait_for_message('/camera/left/image_raw', Image, timeout=2)
+      image_camera = rospy.wait_for_message('ez_rassor/front_camera/left/image_raw', Image, timeout=2)
       image = self.bridge.imgmsg_to_cv2(image_camera, "bgr8")
       print type(image)
 

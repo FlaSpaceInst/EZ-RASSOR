@@ -50,25 +50,28 @@ class Rectify:
 
     try:
       cv_image_left = CvBridge().imgmsg_to_cv2(left)
+      cv_image_left_gray = cv2.cvtColor(cv_image_left, cv2.COLOR_BGR2GRAY)
     except CvBridgeError as e:
       print(e)
 
     try:
       cv_image_right = CvBridge().imgmsg_to_cv2(right)
+      cv_image_right_gray = cv2.cvtColor(cv_image_right, cv2.COLOR_BGR2GRAY)
+
     except CvBridgeError as e:
       print(e)
 
-    left = cv2.pyrDown(self.rectify(cv_image_left))
-    right = cv2.pyrDown(self.rectify(cv_image_right))
+    left = cv2.pyrDown(self.rectify(cv_image_left_gray))
+    right = cv2.pyrDown(self.rectify(cv_image_right_gray))
 
 
     try:
-      self.left_pub.publish(self.bridge.cv2_to_imgmsg(left, "8UC3"))
+      self.left_pub.publish(self.bridge.cv2_to_imgmsg(left, "8UC1"))
     except CvBridgeError as e:\
       print(e)
 
     try:
-      self.right_pub.publish(self.bridge.cv2_to_imgmsg(right, "8UC3"))
+      self.right_pub.publish(self.bridge.cv2_to_imgmsg(right, "8UC1"))
     except CvBridgeError as e:
       print(e)
 
