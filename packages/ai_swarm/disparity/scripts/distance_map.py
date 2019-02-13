@@ -7,6 +7,22 @@ from cv_bridge import CvBridge, CvBridgeError
 from stereo_msgs.msg import DisparityImage
 import std_msgs
 
+# Written by Tyler Duncan
+# The following code assumes Gazebo to be running and the EZ-RASSOR executing the following scripts:
+#
+#**************************************************************************************************
+#
+#   ROS_NAMESPACE=ez_rassor/front_camera rosrun stereo_image_proc stereo_image_proc
+#
+#   rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
+#
+#**************************************************************************************************
+#	These scripts utilize the Disparity map generation provided by ROS out of the box using the 
+#	stereo_image_proc package.  So far this has returned the fastest disparity map generation.  
+
+
+
+#==================================================================================================
 # TODO: I need to figure out how to get the disparityImage message in such a way 
 # 		that I can use the focal length value, baseline value, and disparity matrix
 #		values to calculate a distance matrix. 
@@ -20,6 +36,8 @@ import std_msgs
 
 #		Numpy.reciprocal will invert all entries in the disparity matrix and then we simply need to
 #		multiply by fT on each entry to get depth information. 
+#===================================================================================================
+
 
 def callback(data):
 	# Testing Subscription. 
