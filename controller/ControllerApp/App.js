@@ -93,28 +93,27 @@ export default class App extends React.Component {
   
   handleSubmit(event){
     url = 'http://'+this.state.ip+'/cmd'
-    if (event == 0) {
-      alert("Killswitch Engage")
-    }
+
     console.log(url)
 
     return fetch(
-        url,
-        {
-            headers: {"Content-Type":"text/plain; charset=utf-8"},
-            method: 'POST',
-            headers:{
-                Accept: 'application/json',
-            },
-            body: event.toString()
-        }
+      url,
+      {
+        headers: {"Content-Type":"text/plain; charset=utf-8"},
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+        },
+        body: event.toString()
+      }
     )
     .then((response) => response.json())
     .then((responseJson) => {
       return responseJson.ans;
     })
     .catch((error) => {
-      console.error(error);
+      alert("Unable to connect to EZ-RASSOR");
+      console.log(error);
     });
   }
 
@@ -426,6 +425,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
+    textAlignVertical: 'center',
   },
 
   image: {
