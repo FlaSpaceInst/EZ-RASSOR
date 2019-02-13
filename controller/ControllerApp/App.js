@@ -18,11 +18,12 @@
  *  LOWER BACK DRUM   - 14
  *  DIG BACK DRUM     - 17
  *  DUMPBACK DRUM     - 20
+ *  KILL ALL          - 0
  */
 
 import React from 'react';
 import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import { Font } from 'expo';
 
@@ -92,6 +93,9 @@ export default class App extends React.Component {
   
   handleSubmit(event){
     url = 'http://'+this.state.ip+'/cmd'
+    if (event == 0) {
+      alert("Killswitch Engage")
+    }
     console.log(url)
 
     return fetch(
@@ -151,10 +155,6 @@ export default class App extends React.Component {
               <TouchableOpacity style={styles.modalButton}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Explore</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                  <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}
-                        onPress={() => this.setIPModalVisible(true)} >Change IP</Text>
-              </TouchableOpacity>
             </View>
           </TouchableHighlight>
         </Modal>
@@ -209,21 +209,12 @@ export default class App extends React.Component {
           <KeyboardAvoidingView
             paddingLeft={64}
             paddingRight={64}>
-
-            <Text style={{color: '#fff', textAlign: 'left'}}>IP Address:</Text>
+            <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>IP ADDRESS</Text>
             <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              style={styles.ipInputBox}
               onChangeText={(text) => this.changeIP(text)}
               value={this.state.ip}
-              marginTop={20} />
-            <Button  
-              title="Done" 
-              paddingTop={10}
-              onPress={() => {
-                this.setIPModalVisible(false)
-                this.setModalVisible(false);
-              }}/>
-
+              marginVertical={20} />
           </KeyboardAvoidingView>
         </Modal>
 
@@ -236,8 +227,33 @@ export default class App extends React.Component {
               onPress={() => { this.setModal2Visible(true); }}
             />
           </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1, padding: 3 }}>
+            <FontAwesome
+              name="search"
+              size={30}
+              color='#fff'
+              onPress={() => this.setIPModalVisible(true)}
+            />
+          </TouchableOpacity>
           <Text style={styles.text}>EZ-RASSOR Controller</Text>
-          <Button style={{ flex: 1}} title="FUNCTIONS" onPress={() => { this.setModalVisible(true); }}/>
+          <TouchableOpacity style={{ flex: 1, padding: 3}}>
+            <MaterialCommunityIcons
+              style={{marginLeft: "auto"}}
+              name="close-octagon"
+              size={35}
+              color='#fff'
+              onPress={() => this.handleSubmit(0)}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1, padding: 3, }}>
+            <MaterialCommunityIcons
+              style={{marginLeft: "auto"}}
+              name="robot"
+              size={32}
+              color='#fff'
+              onPress={() => { this.setModalVisible(true); }}
+            />
+          </TouchableOpacity>
         </FadeInView>
 
         <FadeInView style={styles.buttonLayoutContainer}>
@@ -474,5 +490,17 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     elevation: 3, 
     backgroundColor: '#2e3030'
+  },
+
+  ipInputBox: {
+    height: 80, 
+    fontSize: 65, 
+    backgroundColor:'#2e3030', 
+    borderColor: 'gray', 
+    borderWidth: 1 , 
+    color: '#fff', 
+    textAlign: 'center',
+    textAlignVertical: 'center', 
+    fontFamily: 'NASA',
   }
 });
