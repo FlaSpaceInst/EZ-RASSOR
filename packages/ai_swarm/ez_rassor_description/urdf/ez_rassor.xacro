@@ -293,8 +293,30 @@
     </actuator>
   </transmission>
 
-  <!--First Camera Added/-->
-  <link name="f_stereo_1">
+  <transmission name="drum_front_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_front_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="drum_back_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_back_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <!--Front Camera Added/-->
+  <link name="stereo_camera_front">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -318,58 +340,8 @@
     </inertial>
   </link>
 
-  <!--Second Camera Added/-->
-  <link name="f_stereo_2">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-    <!--Third Camera Added/-->
-  <link name="f_stereo_3">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-      <!--Fourth Camera Added/-->
-  <link name="f_stereo_4">
+<!--Back Camera Added/-->
+  <link name="stereo_camera_back">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -427,32 +399,18 @@
 
   <!--Below are all of the robot's joints/-->
 
-  <joint name="camera_joint" type="fixed">
+  <joint name="camera_front_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz=".47 .03 0" rpy="0 0 0"/>
+    <origin xyz=".75 0 0" rpy="0 0 0"/>
     <parent link="base_link"/>
-    <child link="f_stereo_1"/>
+    <child link="stereo_camera_front"/>
   </joint>
 
-  <joint name="camera_joint2" type="fixed">
+  <joint name="camera_back_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz=".47 -.03 0" rpy="0 0 0"/>
+    <origin xyz="-.75 0 0" rpy="0 0 3.14"/>
     <parent link="base_link"/>
-    <child link="f_stereo_2"/>
-  </joint>
-
-  <joint name="camera_joint3" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="-.47 .03 0" rpy="0 0 3.14"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_3"/>
-  </joint>
-
-  <joint name="camera_joint4" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="-.47 -.03 0" rpy="0 0 3.14"/>
-    <parent link="base_link"/>
-    <child link="f_stereo_4"/>
+    <child link="stereo_camera_back"/>
   </joint>
 
   <joint type="continuous" name="left_wheel_front_hinge">

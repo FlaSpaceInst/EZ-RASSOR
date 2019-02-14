@@ -1,0 +1,13 @@
+<launch>
+
+
+
+        <node pkg="stereo_magic"  type="rectify.py" name="rectify" />
+
+        <node pkg="stereo_magic" type="stereo_node" name="stereo_node" />
+
+        <node pkg="stereo_magic" type="stereo_tf_broadcaster" name="stereo_tf_broadcaster">
+
+
+        </node>
+</launch>

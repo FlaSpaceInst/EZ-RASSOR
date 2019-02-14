@@ -5,10 +5,10 @@ from std_msgs.msg import Int16, Float64
 MASK = 0b111100000000
 
 # /ez_rassor/left_wheel_back_velocity_controller/command
-pubLF = rospy.Publisher('/ez_rassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pubLB = rospy.Publisher('/ez_rassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
-pubRF = rospy.Publisher('/ez_rassor/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pubRB = rospy.Publisher('/ez_rassor/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_LF = rospy.Publisher('/ez_rassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_LB = rospy.Publisher('/ez_rassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_RF = rospy.Publisher('/ez_rassor/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_RB = rospy.Publisher('/ez_rassor/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):
@@ -43,43 +43,44 @@ def wheel_movement_callback(instruction):
 
     drive_forward, drive_reverse, turn_left, turn_right = get_movements(instruction.data, MASK)
 
-    velocity = 10
+    velocity = 5
+    turn_offset = 0.05
 
     if drive_forward:
         # data_string = data_string + " -> Drive Forward"
-        pubLF.publish(velocity)
-        pubLB.publish(velocity)
-        pubRF.publish(velocity)
-        pubRB.publish(velocity)
+        pub_LF.publish(velocity)
+        pub_LB.publish(velocity)
+        pub_RF.publish(velocity)
+        pub_RB.publish(velocity)
 
     elif drive_reverse:
         # data_string = data_string + " -> Reverse"
-        pubLF.publish(-velocity)
-        pubLB.publish(-velocity)
-        pubRF.publish(-velocity)
-        pubRB.publish(-velocity)
+        pub_LF.publish(-velocity)
+        pub_LB.publish(-velocity)
+        pub_RF.publish(-velocity)
+        pub_RB.publish(-velocity)
 
     elif turn_left:
         # data_string = data_string + " -> Turn Left"
-        pubLF.publish(-velocity)
-        pubLB.publish(-velocity)
-        pubRF.publish(velocity)
-        pubRB.publish(velocity)
+        pub_LF.publish(-velocity + turn_offset)
+        pub_LB.publish(-velocity + turn_offset)
+        pub_RF.publish(velocity)
+        pub_RB.publish(velocity)
 
     elif turn_right:
         # data_string = data_string + " -> Turn Right"
-        pubLF.publish(velocity)
-        pubLB.publish(velocity)
-        pubRF.publish(-velocity)
-        pubRB.publish(-velocity)
+        pub_LF.publish(velocity)
+        pub_LB.publish(velocity)
+        pub_RF.publish(-velocity + turn_offset)
+        pub_RB.publish(-velocity + turn_offset)
 
     else:
         # data_string = data_string + " -> Stop"
         # Halt motor functions
-        pubLF.publish(0)
-        pubLB.publish(0)
-        pubRF.publish(0)
-        pubRB.publish(0)
+        pub_LF.publish(0)
+        pub_LB.publish(0)
+        pub_RF.publish(0)
+        pub_RB.publish(0)
 
 
 

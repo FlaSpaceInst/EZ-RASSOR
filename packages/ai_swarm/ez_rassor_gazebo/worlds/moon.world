@@ -9,6 +9,10 @@
     <include>
       <uri>model://apollo15_landing_site_1000x1000</uri>
     </include>
+    <!--Hopper Model-->
+    <include>
+        <uri>model://sun</uri>
+    </include>
     <!-- Own physics settings to speed up simulation -->
     <physics type='ode'>
       <max_step_size>0.01</max_step_size>

@@ -22,16 +22,12 @@
     <material>Gazebo/Orange</material>
   </gazebo>
 
-  <gazebo reference="f_stereo_1">
-    <material>Gazebo/Blue</material>
-  </gazebo>
-
-  <!-- camera -->
-  <gazebo reference="f_stereo_1">
-    <material>Gazebo/Green</material>
-    <sensor type="camera" name="camera1">
+  <gazebo reference="stereo_camera_front">
+    <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
-      <camera name="head">
+      <camera name="left">
+        <focalLength>0</focalLength>
+        <pose> 0 0.035 0 0 0 0 </pose>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -42,14 +38,40 @@
           <near>0.02</near>
           <far>300</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
       </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <camera name="right">
+        <pose>0 -0.035 0 0 0 0</pose>
+        <focalLength>0</focalLength>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
+        <focalLength>0</focalLength>
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>ez_rassor/camera1</cameraName>
-        <imageTopicName>image_raw1</imageTopicName>
+        <cameraName>ez_rassor/front_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <frameName>camera</frameName>
+        <frameName>left_camera_optical_frame</frameName>
+        <rightFrameName>right_camera_optical_frame</rightFrameName>
         <hackBaseline>0.07</hackBaseline>
         <distortionK1>0.0</distortionK1>
         <distortionK2>0.0</distortionK2>
@@ -60,12 +82,12 @@
     </sensor>
   </gazebo>
 
-  <!-- camera -->
-  <gazebo reference="f_stereo_2">
-    <material>Gazebo/Green</material>
-    <sensor type="camera" name="camera2">
+  <gazebo reference="stereo_camera_back">
+    <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
-      <camera name="head">
+      <camera name="left">
+        <focalLength>0</focalLength>
+        <pose> 0 0.035 0 0 0 0 </pose>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -76,30 +98,15 @@
           <near>0.02</near>
           <far>300</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
       </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>ez_rassor/camera2</cameraName>
-        <imageTopicName>image_raw2</imageTopicName>
-        <cameraInfoTopicName>camera_info2</cameraInfoTopicName>
-        <frameName>camera2</frameName>
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-  <!-- camera -->
-  <gazebo reference="f_stereo_3">
-    <material>Gazebo/Green</material>
-    <sensor type="camera" name="camera3">
-      <update_rate>30.0</update_rate>
-      <camera name="head">
+      <camera name="right">
+        <pose>0 -0.035 0 0 0 0</pose>
+        <focalLength>0</focalLength>
         <horizontal_fov>1.3962634</horizontal_fov>
         <image>
           <width>800</width>
@@ -110,48 +117,21 @@
           <near>0.02</near>
           <far>300</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
       </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
+        <focalLength>0</focalLength>
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>ez_rassor/camera3</cameraName>
-        <imageTopicName>image_raw3</imageTopicName>
-        <cameraInfoTopicName>camera_info3</cameraInfoTopicName>
-        <frameName>camera3</frameName>
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-    <!-- camera -->
-  <gazebo reference="f_stereo_4">
-    <material>Gazebo/Green</material>
-    <sensor type="camera" name="camera4">
-      <update_rate>30.0</update_rate>
-      <camera name="head">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-      </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>ez_rassor/camera4</cameraName>
-        <imageTopicName>image_raw4</imageTopicName>
-        <cameraInfoTopicName>camera_info4</cameraInfoTopicName>
-        <frameName>camera4</frameName>
+        <cameraName>ez_rassor/back_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>left_camera_optical_frame</frameName>
+        <rightFrameName>right_camera_optical_frame</rightFrameName>
         <hackBaseline>0.07</hackBaseline>
         <distortionK1>0.0</distortionK1>
         <distortionK2>0.0</distortionK2>
