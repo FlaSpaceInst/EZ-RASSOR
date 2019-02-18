@@ -1,3 +1,0 @@
-[submodule "packages/pysdf"]
-	path = packages/pysdf
-	url = https://github.com/CSharpRon/pysdf.git
