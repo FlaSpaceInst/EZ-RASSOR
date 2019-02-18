@@ -25,7 +25,7 @@ rate = rospy.Rate(RATE) # 600hz
 # Robot Command Dictionary
 commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b001000000000, 'right' : 0b000100000000, 
                 'front_arm_up' : 0b000010000000, 'front_arm_down' : 0b000001000000, 'back_arm_up' : 0b000000100000, 'back_arm_down' : 0b000000010000,
-                'front_dig' : 0b000000001000, 'front_dump' : 0b000000000100, 'back_dig' : 0b0000000000100, 'back_dump' : 0b000000000001,
+                'front_dig' : 0b000000001000, 'front_dump' : 0b000000000100, 'back_dig' : 0b000000000010, 'back_dump' : 0b000000000001,
                 'arms_up' : 0b000010100000, 'arms_down' : 0b000001010000}
 
 # Pre-Planned Path and Index           
@@ -41,9 +41,10 @@ def linkCallBack(data):
     posx = data.pose[1].position.x
     posy = data.pose[1].position.y
     heading = data.pose[1].orientation.z
-    front_arm_angle = data.pose
+    back_arm_angle = data.pose[2]
+    front_arm_angle = data.pose[4]
 
-    print(posx, posy)
+    #print(posx, posy)
 
 def go_forward(distance):
     print('Going Forward')
@@ -71,8 +72,7 @@ def go_reverse(distance):
 def go_dig(duration):
     print('Currently Digging')
     for i in range(duration*RATE):
-        if i % RATE == 0:
-            print(i / RATE)
+        pub.publish(commands['forward'] | commands['front_dig'] | commands['back_dig'])
         rate.sleep()
 
     pub.publish(0b000000000000)
@@ -100,10 +100,10 @@ def ai_control():
 
     set_arm_angle(1, 'arms_up')
     go_forward(10)
-    set_arm_angle(2, 'arms_down')
+    set_arm_angle(1, 'arms_down')
     go_dig(5)
     set_arm_angle(1, 'arms_up')
-    go_reverse(10)
+    go_reverse(15)
         
 
 if __name__ == "__main__":
