@@ -22,4 +22,16 @@
     />
     </macro>
 
+    <macro name="robot_arm">
+        <mesh filename="package://ez_rassor_description/meshes/drum_arm_short.dae" scale="1.0 1.0 1.0"></mesh> 
+    </macro>
+
+    <macro name="robot_arm_drum">
+        <mesh filename="package://ez_rassor_description/meshes/drum.dae" scale="1.5 1.5 1.5"></mesh> 
+    </macro>
+
+    <macro name="robot_wheel">
+        <mesh filename="package://ez_rassor_description/meshes/wheel.dae" scale="1.1 1.1 1.1"></mesh> 
+    </macro>
+
 </robot>
