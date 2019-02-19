@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import math
 import numpy as np 
 import cv2
 from cv_bridge import CvBridge, CvBridgeError 
@@ -33,7 +34,7 @@ import std_msgs
 #		-	f = focal distance 
 #		-	T = baseline 
 #		-	d = disparity value of pixel (i, j). 
-
+#
 #		Numpy.reciprocal will invert all entries in the disparity matrix and then we simply need to
 #		multiply by fT on each entry to get depth information. 
 #===================================================================================================
@@ -45,14 +46,19 @@ def callback(data):
 
 
 	bridge = CvBridge()
-	cv_image = bridge.imgmsg_to_cv2(data.image, "8UC1")
+	cv_image = bridge.imgmsg_to_cv2(data.image, "8UC1").astype("float64")
 	
-	depth_mat = np.multiply((data.f * data.T), np.reciprocal(cv_image))
-	max_arr = depth_mat.max(0)
+	depth_mat = np.multiply((data.f * data.T), np.reciprocal(cv_image.astype("float64")))
+	max_arr = depth_mat.min(0)
 	rows, cols = depth_mat.shape
+
+	# print(max_arr)
 	
-	# max_left = max_arr[0:320]
-	# max_right = max_arr[321:639]
+	div_mat = np.split(depth_mat, 2)
+
+
+
+	print(div_mat[1].min(0))
 
 	# if max_left.mean > max_right.mean:
 	# 	print("MOVE RIGHT!")
