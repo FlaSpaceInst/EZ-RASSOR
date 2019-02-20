@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import Int8, Int16
+from std_msgs.msg import Int8, Int16, String
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
+from ai_control.msg import ObstacleDetection
 import time
 import math
 
@@ -13,7 +14,7 @@ DataInitialized = 0
 
 # ROS Node Init Parameters
 command_pub = rospy.Publisher('ez_main_topic', Int16, queue_size=100)
-#status_pub = rospy.Publisher('ez_rassor_status', String, queue_size=100)
+status_pub = rospy.Publisher('ez_rassor_status', ObstacleDetection, queue_size=100)
 
 rospy.init_node('ai_control_node', anonymous=True)
 rate = rospy.Rate(RATE) # 30hz
@@ -25,37 +26,40 @@ commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b0
                 'arms_up' : 0b000010100000, 'arms_down' : 0b000001010000, 'null': 0b000000000000}
 
 # Global World State Dictionary
-world_state = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 'front_arm_angle': 0, 'back_arm_angle': 0, 'front_arm_angle': 0, 'heading': 0}
+world_state = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 'front_arm_angle': 0, 'back_arm_angle': 0, 'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0, 'warning_column': 'left'}
 
 def euclidean_distance(x1, x2, y1, y2):
+    """ Calculate Euclidean distance from (x1,y1) to (x2,y2). """
     return math.sqrt( (x2-x1)**2 + (y2-y1)**2 )
 
 def jointCallBack(data):
-    '''''
-    '''''
-    global DataInitialized
-    global world_state
+    """ Set world_state joint position data. """
+    global world_state, DataInitialized
+
     print(-data.position[1], data.position[0])
     world_state['front_arm_angle'] = -(data.position[1])
     world_state['back_arm_angle'] = data.position[0]
     DataInitialized = 1
 
-
+# This will be replaced to capture data from visual odometry once it is working.
 def linkCallBack(data):
-    '''''
-    '''''
-    global DataInitialized
-    global world_state
+    """ Set world_state world position data. """
+    global world_state, DataInitialized
 
     world_state['positionX'] = data.pose[1].position.x
     world_state['positionY'] = data.pose[1].position.y
     world_state['heading'] = 0
     DataInitialized = 1
 
+def visionCallBack(data):
+    """ Set world_state vision data. """
+    global world_state, DataInitialized
 
-def go_forward(distance):
-    '''''
-    '''''
+    world_state['warning_flag'] = data.warning_flag
+    world_state['warning_column'] = data.warning_column 
+
+def auto_forward(distance):
+    """ Travel forward distance meters in a straight line. Avoid obstacles while maintaining heading. """
 
     start_pos = (world_state['positionX'], world_state['positionY'])
     
@@ -66,9 +70,8 @@ def go_forward(distance):
     command_pub.publish(commands['null'])
 
 
-def go_reverse(distance):
-    '''''
-    '''''
+def auto_reverse(distance):
+    """ Travel reverse distance meters in a straight line. Avoid obstacles while maintaining heading. """
 
     start_pos = (world_state['positionX'], world_state['positionY'])
     
@@ -78,9 +81,9 @@ def go_reverse(distance):
 
     command_pub.publish(commands['null'])
 
-def go_dig(duration):
-    '''''
-    '''''
+def auto_dig(duration):
+    """ Rotate both drums inward and drive forward for duration time in seconds. """
+
     for i in range(duration*RATE):
         command_pub.publish(commands['forward'] | commands['front_dig'] | commands['back_dig'])
         rate.sleep()
@@ -89,8 +92,8 @@ def go_dig(duration):
 
 
 def set_front_arm_angle(target_angle):
-    '''''
-    '''''
+    """ Set front arm to absolute angle target_angle in radians. """
+
     global world_state
 
     print("Target Angle: {}\tCurrent Angle: {}".format(target_angle, world_state['front_arm_angle']))    
@@ -110,9 +113,8 @@ def set_front_arm_angle(target_angle):
 
 
 def set_back_arm_angle(target_angle):
-    '''''
-    '''''
-    print("Target Angle: {}\tCurrent Angle: {}".format(target_angle, world_state['back_arm_angle']))    
+    """ Set back arm to absolute angle target_angle in radians. """
+
     if target_angle > world_state['back_arm_angle']:
         print("Going Up")
         while(target_angle > world_state['back_arm_angle']):
@@ -130,8 +132,13 @@ def set_back_arm_angle(target_angle):
 
 
 def ai_control():
+    """
+    
+    """
+
     rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, jointCallBack)
+    #rospy.Subscriber('ez_rassor/obstacles', Int16, visionCallBack)
 
     while DataInitialized == 0:
         abs(0)
@@ -139,9 +146,11 @@ def ai_control():
     set_back_arm_angle(.6)
     set_front_arm_angle(.6)
     go_forward(5)
-    set_back_arm_angle(-.1)
-    set_front_arm_angle(-.1)
-    go_dig(5)
+    set_back_arm_angle(-.15)
+    set_front_arm_angle(-.15)
+    go_dig(10)
+    set_back_arm_angle(.1)
+    set_front_arm_angle(.1)
     go_reverse(10)
 
 
