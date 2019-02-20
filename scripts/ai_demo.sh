@@ -37,4 +37,9 @@ sleep 1
 echo "Starting AI script in 1..."
 sleep 1
 
+# Check to see if devilspie is installed
+if type devilspie >/dev/null; then
+    devilspie -a & > /dev/null
+fi
+
 rosrun ai_control ai_control.py 
