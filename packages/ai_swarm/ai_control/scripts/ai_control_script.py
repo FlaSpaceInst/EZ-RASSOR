@@ -138,7 +138,7 @@ def ai_control():
 
     rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, jointCallBack)
-    #rospy.Subscriber('ez_rassor/obstacles', Int16, visionCallBack)
+    #rospy.Subscriber('ez_rassor/obstacles', ObstacleDetection, visionCallBack)
 
     while DataInitialized == 0:
         abs(0)
