@@ -109,19 +109,17 @@ build_packages() {
 }
 
 # Create a new ROS package in source control.
-# Arguments are:
-#   superpackage package [dependencies]
 new_package() {
-    mkdir -p "$PACKAGES_DIR/$1"
-    cd "$PACKAGES_DIR/$1"
+    mkdir -p "$PACKAGES_DIR"
+    cd "$PACKAGES_DIR"
 
     # Create a new catkin package with all the arguments
     # passed to this function.
-    catkin_create_pkg "${@:2}"
+    catkin_create_pkg "${@:1}"
 
     # Create a symlink in the main workspace so that catkin
     # can build this new package.
-    ln -s "$PWD/$2" "$SOURCE_DIR/$2"
+    ln -s "$PWD/$1" "$SOURCE_DIR/$1"
 
     cd - &> /dev/null
 }
@@ -130,28 +128,23 @@ new_package() {
 link_packages() {
     cd $PACKAGES_DIR
 
-    for SUPERPACKAGE_DIR in *; do
-        cd $SUPERPACKAGE_DIR
-        for PACKAGE_DIR in *; do
-            case $1 in
-                -o|--only)
-                    if argument_in_list "$PACKAGE_DIR" "${@:2}"; then
-                        link_package "$PACKAGE_DIR"
-                    fi
-                    ;;
-                -i|--ignore)
-                    if ! argument_in_list "$PACKAGE_DIR" "${@:2}"; then
-                        link_package "$PACKAGE_DIR"
-                    fi
-                    ;;
-                *)
+    for PACKAGE_DIR in *; do
+        case $1 in
+            -o|--only)
+                if argument_in_list "$PACKAGE_DIR" "${@:2}"; then
                     link_package "$PACKAGE_DIR"
-                    ;;
-            esac
-        done
-        cd ..
+                fi
+                ;;
+            -i|--ignore)
+                if ! argument_in_list "$PACKAGE_DIR" "${@:2}"; then
+                    link_package "$PACKAGE_DIR"
+                fi
+                ;;
+            *)
+                link_package "$PACKAGE_DIR"
+                ;;
+        esac
     done
-
     cd ..
 }
 
