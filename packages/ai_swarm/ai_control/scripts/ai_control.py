@@ -27,6 +27,9 @@ commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b0
 # Global World State Dictionary
 world_state = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 'front_arm_angle': 0, 'back_arm_angle': 0, 'front_arm_angle': 0, 'heading': 0}
 
+def euclidean_distance(x1, x2, y1, y2):
+    return math.sqrt( (x2-x1)**2 + (y2-y1)**2 )
+
 def jointCallBack(data):
     '''''
     '''''
@@ -125,9 +128,6 @@ def set_back_arm_angle(target_angle):
     
     command_pub.publish(commands['null'])
 
-
-def euclidean_distance(x1, x2, y1, y2):
-    return math.sqrt( (x2-x1)**2 + (y2-y1)**2 )
 
 def ai_control():
     rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
