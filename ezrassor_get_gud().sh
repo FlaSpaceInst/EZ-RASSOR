@@ -99,9 +99,8 @@ build_packages() {
     cd - &> /dev/null
 }
 
-# Create a new ROS package in source control.
-# Arguments are:
-#   superpackage package [dependencies]
+# Create a new ROS package in source control. Places the package
+# in a superpackage.
 new_package() {
     mkdir -p "$PACKAGES_DIR/$1"
     cd "$PACKAGES_DIR/$1"
@@ -142,7 +141,6 @@ link_packages() {
         done
         cd ..
     done
-
     cd ..
 }
 
