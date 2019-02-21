@@ -20,8 +20,8 @@ MASK = 0b000000001111
 REAR_PINS = (13, 19, 26)
 FORWARD_PINS = (20, 21, 16)
 
-NODE_NAME = "drums_node"
-TOPIC_NAME = "ezmain_topic"
+NODE_NAME = "drums_driver"
+MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
@@ -126,8 +126,8 @@ try:
     rotator_process.start()
 
     # Initialize this node as a subscriber.
-    rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME,
+    rospy.init_node(NODE_NAME)
+    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
                      callback=utilities.enqueue_nibble,
                      callback_args=(nibble_queue,
