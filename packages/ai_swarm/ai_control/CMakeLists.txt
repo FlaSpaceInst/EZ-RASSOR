@@ -3,6 +3,8 @@ project(ai_control)
 
 find_package(catkin REQUIRED COMPONENTS 
     message_generation
+    ai_control
+    disparity
     std_msgs
     rospy
     roscpp
@@ -19,11 +21,11 @@ generate_messages(
    DEPENDENCIES
    std_msgs
    ai_control
+   disparity
 )
 
 catkin_package(
-
-   CATKIN_DEPENDS message_runtime
+   CATKIN_DEPENDS message_runtime ai_control disparity
 )
 
 include_directories(

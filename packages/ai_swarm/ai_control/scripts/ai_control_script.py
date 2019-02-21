@@ -145,13 +145,13 @@ def ai_control():
 
     set_back_arm_angle(.6)
     set_front_arm_angle(.6)
-    go_forward(5)
+    auto_forward(5)
     set_back_arm_angle(-.15)
     set_front_arm_angle(-.15)
-    go_dig(10)
+    auto_dig(10)
     set_back_arm_angle(.1)
     set_front_arm_angle(.1)
-    go_reverse(10)
+    auto_reverse(10)
 
 
 if __name__ == "__main__":
