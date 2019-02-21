@@ -76,17 +76,8 @@ start_ros() {
         rviz)
             roslaunch ez_rassor_description ez_rassor_rviz.launch
             ;;
-        slam-core)
-            source "$WORKSPACE_DIR/devel/setup.bash"
-            roscore &
-            rosrun lsd_slam_core live_slam \
-                /image:=ez_rassor/camera_<front/back>/image_raw \
-                /camera_info:=/ez_rassor/camera_<front/back>/camera_info &
-            ;;
-        slam-viewer)
-            source "$WORKSPACE_DIR/devel/setup.bash"
-            roscore &
-            rosrun lsd_slam_viewer viewer &
+        slam)
+            bash "$SCRIPTS_DIR/launch_slam.sh" $WORKSPACE_DIR
             ;;
         ai-demo)
             bash "$SCRIPTS_DIR/ai_demo.sh" $WORKSPACE_DIR

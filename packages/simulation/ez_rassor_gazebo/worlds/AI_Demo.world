@@ -111,44 +111,845 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name='moon'>
-      <sim_time>600 750000000</sim_time>
-      <real_time>28 195241745</real_time>
-      <wall_time>1549133561 537273358</wall_time>
-      <iterations>2391</iterations>
-      <model name='apollo15_landing_site_1000x1000'>
+    <model name='ez_rassor'>
+      <link name='base_link'>
         <pose frame=''>0 0 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
+        <inertial>
+          <pose frame=''>0 0 0.097087 0 -0 0</pose>
+          <mass>10.3</mass>
+          <inertia>
+            <ixx>0.502914</ixx>
+            <ixy>-1.03398e-25</ixy>
+            <ixz>0</ixz>
+            <iyy>1.11541</iyy>
+            <iyz>0</iyz>
+            <izz>0.212501</izz>
+          </inertia>
+        </inertial>
+        <collision name='base_link_fixed_joint_lump__collision_collision'>
           <pose frame=''>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='unit_box_1'>
-        <pose frame=''>-1.39386 0.858837 0.605406 -0.635473 -1.33492 2.27959</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>-1.39386 0.858837 0.605406 -0.635473 -1.33492 2.27959</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <light name='sun'>
-        <pose frame=''>0 0 10 0 -0 0</pose>
-      </light>
-    </state>
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose frame=''>5.58533 4.99968 4.52203 0 0.539456 -2.74699</pose>
-        <view_controller>orbit</view_controller>
-        <projection_type>perspective</projection_type>
-      </camera>
-    </gui>
-    <model name='unit_box_1'>
-      <pose frame=''>-0.967772 0.064674 0.5 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.4 0.2 0.1</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='base_link_fixed_joint_lump__stereo_camera_back_collision_1'>
+          <pose frame=''>-0.75 0 0 0 -0 3.14</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_link_fixed_joint_lump__stereo_camera_front_collision_2'>
+          <pose frame=''>0.75 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_link_fixed_joint_lump__imu_link_collision_3'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='base_link_visual_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.4 0.2 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_fixed_joint_lump__stereo_camera_back_visual_1'>
+          <pose frame=''>-0.75 0 0 0 -0 3.14</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>__default__</uri>
+              <name>__default__</name>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_fixed_joint_lump__stereo_camera_front_visual_2'>
+          <pose frame=''>0.75 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>__default__</uri>
+              <name>__default__</name>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_fixed_joint_lump__imu_link_visual_3'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.005 0.005 0.005</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>__default__</uri>
+              <name>__default__</name>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <velocity_decay/>
+        <sensor name='stereo_camera' type='multicamera'>
+          <update_rate>30</update_rate>
+          <camera name='left'>
+            <pose frame=''>0 0.035 0 0 -0 0</pose>
+            <horizontal_fov>1.39626</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <camera name='right'>
+            <pose frame=''>0 -0.035 0 0 -0 0</pose>
+            <horizontal_fov>1.39626</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <plugin name='stereo_camera_controller' filename='libgazebo_ros_multicamera.so'>
+            <focalLength>0</focalLength>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>0.0</updateRate>
+            <cameraName>ez_rassor/back_camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>left_camera_optical_frame</frameName>
+            <rightFrameName>right_camera_optical_frame</rightFrameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+          <pose frame=''>-0.75 0 0 0 -0 3.14</pose>
+        </sensor>
+        <velocity_decay/>
+        <sensor name='stereo_camera' type='multicamera'>
+          <update_rate>30</update_rate>
+          <camera name='left'>
+            <pose frame=''>0 0.035 0 0 -0 0</pose>
+            <horizontal_fov>1.39626</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <camera name='right'>
+            <pose frame=''>0 -0.035 0 0 -0 0</pose>
+            <horizontal_fov>1.39626</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>800</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <plugin name='stereo_camera_controller' filename='libgazebo_ros_multicamera.so'>
+            <focalLength>0</focalLength>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>0.0</updateRate>
+            <cameraName>ez_rassor/front_camera</cameraName>
+            <imageTopicName>image_raw</imageTopicName>
+            <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+            <frameName>left_camera_optical_frame</frameName>
+            <rightFrameName>right_camera_optical_frame</rightFrameName>
+            <hackBaseline>0.07</hackBaseline>
+            <distortionK1>0.0</distortionK1>
+            <distortionK2>0.0</distortionK2>
+            <distortionK3>0.0</distortionK3>
+            <distortionT1>0.0</distortionT1>
+            <distortionT2>0.0</distortionT2>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+          <pose frame=''>0.75 0 0 0 -0 0</pose>
+        </sensor>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <gravity>1</gravity>
+        <sensor name='imu_sensor' type='imu'>
+          <always_on>1</always_on>
+          <update_rate>100</update_rate>
+          <visualize>1</visualize>
+          <topic>__default_topic__</topic>
+          <plugin name='imu_plugin' filename='libgazebo_ros_imu_sensor.so'>
+            <topicName>imu</topicName>
+            <bodyName>imu_link</bodyName>
+            <updateRateHZ>10.0</updateRateHZ>
+            <gaussianNoise>0.0</gaussianNoise>
+            <xyzOffset>0 0 0</xyzOffset>
+            <rpyOffset>0 0 0</rpyOffset>
+            <frameName>imu_link</frameName>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        </sensor>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='arm_back'>
+        <pose frame=''>-0.25 0 0 0 -0 -0.000385</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 3.1415</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='arm_back_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0 0 0 -0 3.1415</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum_arm_short.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='arm_back_fixed_joint_lump__visual_visual'>
+          <pose frame=''>0 0 0 0 -0 3.1415</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum_arm_short.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='arm_back_hinge' type='revolute'>
+        <child>arm_back</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0.000385 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='drum_back'>
+        <pose frame=''>-0.588245 0.00013 0 0 -0 -0.000771</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 -1.57099</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='drum_back_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0 0 0 -0 -1.57099</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='drum_back_visual'>
+          <pose frame=''>0 0 0 0 -0 -1.57099</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Orange</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='drum_back_hinge' type='revolute'>
+        <child>drum_back</child>
+        <parent>arm_back</parent>
+        <axis>
+          <xyz>0.000771 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='arm_front'>
+        <pose frame=''>0.25 0 0 0 -0 -0.000385</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='arm_front_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum_arm_short.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='arm_front_fixed_joint_lump__visual_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum_arm_short.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='arm_front_hinge' type='revolute'>
+        <child>arm_front</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0.000385 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='drum_front'>
+        <pose frame=''>0.588245 -0.00013 0 0 -0 -0.000771</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 1.5707</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='drum_front_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0 0 0 -0 1.5707</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='drum_front_visual_visual'>
+          <pose frame=''>0 0 0 0 -0 1.5707</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/drum.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Orange</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='drum_front_hinge' type='revolute'>
+        <child>drum_front</child>
+        <parent>arm_front</parent>
+        <axis>
+          <xyz>0.000771 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='left_wheel_back'>
+        <pose frame=''>-0.15 0.15 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 -0 1.5707 1.5707</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_wheel_back_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 -0.06 0 3.14159 1.57079 -1.57089</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='left_wheel_back_visual_visual'>
+          <pose frame=''>0 -0.06 0 3.14159 1.57079 -1.57089</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='left_wheel_back_hinge' type='revolute'>
+        <child>left_wheel_back</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='left_wheel_front'>
+        <pose frame=''>0.15 0.15 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 -0 1.5707 1.5707</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_wheel_front_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 -0.06 0 3.14159 1.57079 -1.57089</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='left_wheel_front_visual_visual'>
+          <pose frame=''>0 -0.06 0 3.14159 1.57079 -1.57089</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='left_wheel_front_hinge' type='revolute'>
+        <child>left_wheel_front</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='right_wheel_back'>
+        <pose frame=''>-0.15 -0.15 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 -0 1.5707 1.5707</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_wheel_back_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0.06 0 -3.14159 1.57079 1.5707</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='right_wheel_back_visual_visual'>
+          <pose frame=''>0 0.06 0 -3.14159 1.57079 1.57545</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='right_wheel_back_hinge' type='revolute'>
+        <child>right_wheel_back</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='right_wheel_front'>
+        <pose frame=''>0.15 -0.15 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 -0 1.5707 1.5707</pose>
+          <mass>5</mass>
+          <inertia>
+            <ixx>0.0135417</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0135417</iyy>
+            <iyz>0</iyz>
+            <izz>0.025</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_wheel_front_fixed_joint_lump__collision_collision'>
+          <pose frame=''>0 0.06 0 -3.14159 1.57079 1.5707</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='right_wheel_front_visual_visual'>
+          <pose frame=''>0 0.06 0 -3.14159 1.57079 1.57545</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/cameron/.workspace/src/ez_rassor_description/meshes/wheel.dae</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='right_wheel_front_hinge' type='revolute'>
+        <child>right_wheel_front</child>
+        <parent>base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <static>0</static>
+      <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+        <robotNamespace>/ez_rassor</robotNamespace>
+      </plugin>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+    </model>
+    <model name='unit_box_0'>
+      <pose frame=''>13.2297 -3.01852 0.5 0 -0 0</pose>
       <link name='link'>
         <inertial>
           <mass>1</mass>
@@ -199,5 +1000,225 @@
         <gravity>1</gravity>
       </link>
     </model>
+    <model name='unit_box_0_clone'>
+      <pose frame=''>13.5186 2.64117 3.06733 -0.001506 -0.037939 0.039598</pose>
+      <link name='link'>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166667</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166667</iyy>
+            <iyz>0</iyz>
+            <izz>0.166667</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>10.209 1 5.04343</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>10.209 1 5.04343</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <model name='unit_cylinder_0_0'>
+      <pose frame=''>-3.35265 1.28628 0.5 0 -0 0</pose>
+      <link name='link'>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.145833</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.145833</iyy>
+            <iyz>0</iyz>
+            <izz>0.125</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>1</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <state world_name='moon'>
+      <sim_time>584 400000000</sim_time>
+      <real_time>586 664492604</real_time>
+      <wall_time>1549313702 568579150</wall_time>
+      <iterations>58440</iterations>
+      <model name='apollo15_landing_site_1000x1000'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ez_rassor'>
+        <pose frame=''>6.08836 -0.468846 0.885141 -0.10277 -0.019853 0.07339</pose>
+        <scale>1 1 1</scale>
+        <link name='arm_back'>
+          <pose frame=''>5.83908 -0.487175 0.880177 -0.103889 -0.149493 0.086427</pose>
+          <velocity>-1.9e-05 -5e-06 6.3e-05 0.000135 -8.3e-05 2.3e-05</velocity>
+          <acceleration>0 1e-06 -1e-06 -6e-06 2e-06 1e-06</acceleration>
+          <wrench>-2e-06 7e-06 -4e-06 0 -0 0</wrench>
+        </link>
+        <link name='arm_front'>
+          <pose frame=''>6.33764 -0.450516 0.890104 -1.20822 -1.46117 1.27718</pose>
+          <velocity>-1.7e-05 -1.3e-05 6.6e-05 8.4e-05 -0.000551 5.3e-05</velocity>
+          <acceleration>0 -1e-06 1e-06 2e-06 2.3e-05 -1.5e-05</acceleration>
+          <wrench>-1e-06 -5e-06 4e-06 0 -0 0</wrench>
+        </link>
+        <link name='base_link'>
+          <pose frame=''>6.08836 -0.468846 0.885141 -0.10277 -0.019853 0.07339</pose>
+          <velocity>-1.8e-05 -7e-06 6.4e-05 0.000189 6e-06 -6e-06</velocity>
+          <acceleration>-1e-06 0 0 -2e-06 -4e-06 -5e-06</acceleration>
+          <wrench>-7e-06 5e-06 -1e-06 0 -0 0</wrench>
+        </link>
+        <link name='drum_back'>
+          <pose frame=''>5.50586 -0.516047 0.829808 -0.14041 -0.749057 0.166499</pose>
+          <velocity>-1.8e-05 -6e-06 3.4e-05 0.000119 -0.000245 3e-06</velocity>
+          <acceleration>0 1e-06 0 -9e-06 5e-06 -1e-06</acceleration>
+          <wrench>-2e-06 5e-06 0 0 -0 0</wrench>
+        </link>
+        <link name='drum_front'>
+          <pose frame=''>6.34836 -0.415047 1.22631 -0.14856 -0.811306 0.179062</pose>
+          <velocity>-0.000218 -6.3e-05 7.7e-05 8.8e-05 -0.000593 5.8e-05</velocity>
+          <acceleration>8e-06 -2e-06 1e-06 1e-06 2.3e-05 -1e-05</acceleration>
+          <wrench>4.1e-05 -9e-06 3e-06 0 -0 0</wrench>
+        </link>
+        <link name='left_wheel_back'>
+          <pose frame=''>5.92815 -0.331024 0.866767 -0.598181 -1.3876 0.661752</pose>
+          <velocity>-1.1e-05 0 9.3e-05 0.000166 0.000275 -9.9e-05</velocity>
+          <acceleration>0 1e-06 -1e-06 -3e-06 -5e-06 -5e-06</acceleration>
+          <wrench>2e-06 3e-06 -4e-06 0 -0 0</wrench>
+        </link>
+        <link name='left_wheel_front'>
+          <pose frame=''>6.22729 -0.309006 0.87269 -0.881763 -1.43698 0.948741</pose>
+          <velocity>-1.9e-05 -1.8e-05 0.0001 0.000251 -0.000157 -1.1e-05</velocity>
+          <acceleration>0 0 0 3e-06 5e-06 -6e-06</acceleration>
+          <wrench>1e-06 -2e-06 0 0 -0 0</wrench>
+        </link>
+        <link name='right_wheel_back'>
+          <pose frame=''>5.94943 -0.62868 0.897547 -0.209945 -1.05646 0.254769</pose>
+          <velocity>-2.1e-05 -4e-06 2.6e-05 6.2e-05 -0.000166 2.2e-05</velocity>
+          <acceleration>0 1e-06 0 -5e-06 -3e-06 -0</acceleration>
+          <wrench>-2e-06 3e-06 1e-06 0 -0 0</wrench>
+        </link>
+        <link name='right_wheel_front'>
+          <pose frame=''>6.24856 -0.606679 0.903508 -0.134971 -0.704164 0.159031</pose>
+          <velocity>-1.7e-05 -9e-06 3.2e-05 0.000216 -0.000143 1.7e-05</velocity>
+          <acceleration>-1e-06 0 1e-06 -1e-06 -3e-06 -5e-06</acceleration>
+          <wrench>-6e-06 -2e-06 3e-06 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='unit_box_0'>
+        <pose frame=''>15.7193 -2.78233 3.067 -0.00151 -0.038008 0.039733</pose>
+        <scale>10.209 1 5.04343</scale>
+        <link name='link'>
+          <pose frame=''>15.7193 -2.78233 3.067 -0.00151 -0.038008 0.039733</pose>
+          <velocity>-0.003931 -1.8e-05 -0.544699 -0.00024 -0.11168 0.000134</velocity>
+          <acceleration>-1.622 0.002946 0 3.09119 0.345297 3.14159</acceleration>
+          <wrench>-1.622 0.002946 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='unit_box_0_clone'>
+        <pose frame=''>13.5244 2.64117 3.067 0.00151 0.038008 0.039733</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>13.5244 2.64117 3.067 0.00151 0.038008 0.039733</pose>
+          <velocity>0.00811 -1.5e-05 -0.544699 0.000252 0.111682 0.000134</velocity>
+          <acceleration>1.622 -0.002946 0 -3.09119 -0.345293 -3.14159</acceleration>
+          <wrench>1.622 -0.002946 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='unit_cylinder_0_0'>
+        <pose frame=''>22.801 -0.114848 3.62016 -0.015482 -0.056163 0.674671</pose>
+        <scale>1 1 5.72516</scale>
+        <link name='link'>
+          <pose frame=''>22.801 -0.114848 3.62016 -0.015482 -0.056163 0.674671</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0.166069 0.07103 -0.022437 -0.024371 0.057968 -4.9e-05</acceleration>
+          <wrench>0.166069 0.07103 -0.022437 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>43.8783 -2.44227 13.2426 0 0.471456 -3.08299</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
   </world>
 </sdf>
