@@ -1,29 +1,31 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ai_control</name>
-  <version>0.0.0</version>
-  <description>The ai_control package</description>
+  <name>ez_rassor_description</name>
+  <version>1.0.0</version>
+  <description>The ez_rassor_description package</description>
 
-  <maintainer email="cetaylor758903@knights.ucf.edu">cameron</maintainer>
-
-
+  <maintainer email="Guitartaliaferro@yahoo.com">Chris</maintainer>
+  <maintainer email="Ronald.Marrero@outlook.com">Ron</maintainer>
+  <maintainer email="Cetaylorfl@gmail.com">Cameron</maintainer>
+  
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>MIT</license>
+  <license>TODO</license>
 
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/ai_control</url> -->
+  <!-- <url type="website">http://wiki.ros.org/ez_rassor_description</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
   <!-- Example: -->
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
-
+  <author email="Guitartaliaferro@yahoo.com">Chris</author>
+  <author email="Ronald.Marrero@outlook.com">Ron</author>
 
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
@@ -46,8 +48,12 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
-  <exec_depend>message_runtime</exec_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_export_depend>gazebo_ros</build_export_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>rospy</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

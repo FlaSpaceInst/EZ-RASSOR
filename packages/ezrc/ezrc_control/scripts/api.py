@@ -158,5 +158,20 @@ def num_to_bin(cmd,res):
         res |= 0b000000000000
     return res
 
-#Initializes Flask on local network, on default port of 5000
-app.run('0.0.0.0')
+
+#Kills Flask server unbinding the port
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+try:
+    #Initializes Flask on local network, on default port of 5000
+    app.run('0.0.0.0')
+except rospy.ROSInterruptException:
+    pass
+finally:
+    # On ROS node kill Flask properly
+    shutdown_server()
+
