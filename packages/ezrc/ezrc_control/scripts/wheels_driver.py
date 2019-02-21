@@ -32,8 +32,8 @@ RIGHT_WHEEL_SPECS = {
     "servo_frequency" : 325,
 }
 
-NODE_NAME = "wheels_node"
-TOPIC_NAME = "ezmain_topic"
+NODE_NAME = "wheels_driver"
+MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
@@ -213,7 +213,7 @@ try:
 
     # Initialize this node as a subscriber.
     rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME,
+    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
                      callback=utilities.enqueue_nibble,
                      callback_args=(nibble_queue,

@@ -32,8 +32,8 @@ FORWARD_GROUND_WAVELENGTH = 675
 REAR_VERTICAL_WAVELENGTH = 700
 REAR_GROUND_WAVELENGTH = 325
 
-NODE_NAME = "arms_node"
-TOPIC_NAME = "ezmain_topic"
+NODE_NAME = "arms_driver"
+MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
@@ -157,8 +157,8 @@ try:
     movement_process.start()
 
     # Initialize this node as a subscriber.
-    rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME,
+    rospy.init_node(NODE_NAME)
+    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
                      callback=utilities.enqueue_nibble,
                      callback_args=(nibble_queue,
