@@ -65,7 +65,7 @@ def rotate_drums(toggle_queue,
         # Attempt to read some toggles (a 4-tuple) from the queue. If nothing is
         # available then the rotation booleans remain unchanged. If the None
         # type is retrieved from the queue, break the loop and let the function
-        # end. Otherwise, split the fetched nibble between the 4 rotation booleans.
+        # end. Otherwise, split the fetched toggles between the 4 rotation booleans.
         try:
             toggles = toggle_queue.get(False)
             if toggles == None:
