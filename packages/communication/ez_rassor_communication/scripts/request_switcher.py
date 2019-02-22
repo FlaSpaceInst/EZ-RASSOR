@@ -64,7 +64,7 @@ try:
 
     # Publish to the routine toggles topic and movement toggles topic.
     routine_toggles_publisher = rospy.Publisher(ROUTINE_TOGGLES_TOPIC,
-                                                std_msgs.msg.Int16,
+                                                std_msgs.msg.Int8,
                                                 queue_size=QUEUE_SIZE)
     movement_toggles_publisher = rospy.Publisher(MOVEMENT_TOGGLES_TOPIC,
                                                  std_msgs.msg.Int16,
