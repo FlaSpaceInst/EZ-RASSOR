@@ -3,11 +3,28 @@ import Adafruit_PCA9685
 import mpu6050
 
 
+driver = Adafruit_PCA9685.PCA9685()
+driver.set_pwm_freq(60)
+
+print("front up then down")
+driver.set_pwm(15, 0, 325)
+time.sleep(1)
+driver.set_pwm(15, 0, 675)
+time.sleep(1)
+
+print("rear up then down")
+driver.set_pwm(12, 0, 700)
+time.sleep(1)
+driver.set_pwm(12, 0, 325)
+time.sleep(1)
+
+"""
 sensor = mpu6050.mpu6050(0x68)
 
 while True:
     print(sensor.get_gyro_data())
     time.sleep(.5)
+"""
 
 """
 driver = Adafruit_PCA9685.PCA9685()
