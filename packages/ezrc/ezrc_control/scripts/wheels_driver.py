@@ -71,7 +71,7 @@ class Wheel:
             GPIO.output(self.gpio_pins[0], GPIO.LOW)
             GPIO.output(self.gpio_pins[1], GPIO.HIGH)
 
-    def start(self):
+    def start(self):#combine with set direction in next issue
         """Start rotating!"""
         driver.set_pwm(self.pwm_pin, 0, self.speed)
 
@@ -82,7 +82,7 @@ class Wheel:
         GPIO.output(self.gpio_pins[1], GPIO.LOW)
 
 
-def rotate_wheels(nibble_queue,
+def rotate_wheels(toggle_queue,
                   left_wheel,
                   right_wheel,
                   front_servo_pin,
@@ -90,7 +90,7 @@ def rotate_wheels(nibble_queue,
     """Move the wheels of the EZRC.
     
     The wheels are controlled by sending boolean 4-tuples to this function via
-    the nibble queue. This function is run as a separate process from the ROS
+    the toggle queue. This function is run as a separate process from the ROS
     subscription code so that both actions (rotating the wheels and listening
     to the ROS topic) can occur simultaneously. 
     """
@@ -109,17 +109,17 @@ def rotate_wheels(nibble_queue,
 
     while True:
 
-        # Attempt to read a nibble (4-tuple) from the queue. If nothing is
+        # Attempt to read some toggles (a 4-tuple) from the queue. If nothing is
         # available then the movement booleans remain unchanged. If the None
         # type is retrieved from the queue, break the loop and let the function
-        # end. Otherwise, split the fetched nibble between the 4 rotation
+        # end. Otherwise, split the fetched toggles between the 4 rotation
         # booleans and give commands to the wheels.
         try:
-            nibble = nibble_queue.get(False)
-            if nibble == None:
+            toggles = toggle_queue.get(False)
+            if toggles == None:
                 break
             else:
-                drive_forward, drive_backward, turn_left, turn_right = nibble
+                drive_forward, drive_backward, turn_left, turn_right = toggles
 
                 if drive_forward:
                     left_wheel.set_direction(Wheel.FORWARD)
@@ -163,11 +163,11 @@ def rotate_wheels(nibble_queue,
     right_wheel.stop()
 
 
-def print_status(nibble, message_format):
-    """Print status information based on the provided nibble."""
-    drive_forward, drive_backward, turn_left, turn_right = nibble
+def print_status(toggles, message_format):
+    """Print status information based on the provided toggles."""
+    drive_forward, drive_backward, turn_left, turn_right = toggles
 
-    if not any(nibble):
+    if not any(toggles):
         print message_format % "Stopping the car"
     else:
         if drive_forward:
@@ -202,9 +202,9 @@ try:
                         RIGHT_WHEEL_SPECS["servo_frequency"])
 
     # Create a queue and process to rotate the wheels.
-    nibble_queue = multiprocessing.Queue()
+    toggle_queue = multiprocessing.Queue()
     movement_process = multiprocessing.Process(target=rotate_wheels,
-                                               args=(nibble_queue,
+                                               args=(toggle_queue,
                                                      left_wheel,
                                                      right_wheel,
                                                      FRONT_SERVO_PIN,
@@ -215,8 +215,8 @@ try:
     rospy.init_node(NODE_NAME, anonymous=True)
     rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
-                     callback=utilities.enqueue_nibble,
-                     callback_args=(nibble_queue,
+                     callback=utilities.enqueue_toggles,
+                     callback_args=(toggle_queue,
                                     MASK,
                                     MESSAGE_FORMAT,
                                     print_status))
@@ -228,5 +228,5 @@ except rospy.ROSInterruptException:
 # Finally, send a kill message (None) to the movement process and wait for it
 # to die, then exit.
 finally:
-    nibble_queue.put(None, False)
+    toggle_queue.put(None, False)
     movement_process.join()
