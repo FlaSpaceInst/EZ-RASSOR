@@ -3,7 +3,7 @@
 
 The HTTP server will not stop until a final POST request is received after
 ROS has shut down.
-Written by Tiger Sachse.
+Written by Tiger Sachse and Camilo Lozano.
 """
 import json
 import rospy
