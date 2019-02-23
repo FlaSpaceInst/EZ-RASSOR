@@ -7,7 +7,6 @@ Written by Tiger Sachse and Camilo Lozano.
 """
 import json
 import rospy
-import httplib
 import std_msgs
 import BaseHTTPServer
 
