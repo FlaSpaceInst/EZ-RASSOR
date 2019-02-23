@@ -39,23 +39,25 @@ def drum_movement_callback(instruction):
     front_dig, front_dump, back_dig, back_dump = get_movements(instruction.data, MASK)
     drum_speed = 5
 
-    if not any((front_dig, front_dump, back_dig, back_dump)):
-        # stop both drums
-        pub_FD.publish(0)
-        pub_BD.publish(0)
+    # Front drums
+    if front_dig:
+        pub_FD.publish(drum_speed)
+
+    elif front_dump:
+        pub_FD.publish(-drum_speed)
 
     else:
-        if front_dig:
-            pub_FD.publish(drum_speed)
+        pub_FD.publish(0)
 
-        if front_dump:
-            pub_FD.publish(-drum_speed)
+    # Back Drums
+    if back_dig:
+        pub_BD.publish(-drum_speed)
 
-        if back_dig:
-            pub_BD.publish(-drum_speed)
+    elif back_dump:
+        pub_BD.publish(drum_speed)
 
-        if back_dump:
-            pub_BD.publish(drum_speed)
+    else:
+        pub_BD.publish(0)
 
 
 def main():
