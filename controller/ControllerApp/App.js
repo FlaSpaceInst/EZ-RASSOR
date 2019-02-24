@@ -1,26 +1,3 @@
-/*
- *  To perform an action send one of the nubers below that correspond to the movement
- *  To STOP peforming that action, send the negative value of that action
- * 
- *  EX:
- *    Start moving forward :  1
- *    Stop Moving Forward  : -1
- *  --------------------------------------------------------------------------------
- *  MOVE FORWARD      - 1
- *  MOVE BACKWARD     - 2
- *  TURN LEFT         - 3
- *  TURN RIGHT        - 4
- *  RAISE FRONT DRUM  - 10
- *  LOWER FRONT DRUM  - 13
- *  DIG FRONT DRUM    - 16
- *  DUMP FRONT DRUM   - 19
- *  RAISE BACK DRUM   - 11
- *  LOWER BACK DRUM   - 14
- *  DIG BACK DRUM     - 17
- *  DUMPBACK DRUM     - 20
- *  KILL ALL          - 0
- */
-
 import React from 'react';
 import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -64,6 +41,8 @@ export default class App extends React.Component {
       ipModal: false,
       isLoading: true,
       ip:'192.168.4.1',  
+      endpoint: '/',
+      control: 0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -90,12 +69,23 @@ export default class App extends React.Component {
   changeIP(text){
     this.setState({ip:text})
   }
+
+  controlUpdate(input){
+    
+    newControl = this.state.control + input
+    
+    this.setState({control: newControl}, ()=> {
+      console.log(this.state.control)
+      this.handleSubmit(this.state.control)
+    })
+  
+  }
   
   handleSubmit(event){
-    url = 'http://'+this.state.ip+'/cmd'
 
+    url = 'http://'+this.state.ip+this.state.endpoint
     console.log(url)
-
+    
     return fetch(
       url,
       {
@@ -107,12 +97,8 @@ export default class App extends React.Component {
         body: event.toString()
       }
     )
-    .then((response) => response.json())
-    .then((responseJson) => {
-      return responseJson.ans;
-    })
     .catch((error) => {
-      alert("Unable to connect to EZ-RASSOR");
+      //alert("Unable to connect to EZ-RASSOR");
       console.log(error);
     });
   }
@@ -241,7 +227,9 @@ export default class App extends React.Component {
               name="close-octagon"
               size={35}
               color='#fff'
-              onPress={() => this.handleSubmit(0)}
+              onPress={() => {
+                this.setState({control: 0}, ()=> this.handleSubmit(0))
+              }}
             />
           </TouchableOpacity>
           <TouchableOpacity style={{ flex: 1, padding: 3, }}>
@@ -257,7 +245,10 @@ export default class App extends React.Component {
 
         <FadeInView style={styles.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
-            <View style={styles.upAndDownDPad} onTouchStart={() => this.handleSubmit(1)} onTouchEnd={() => this.handleSubmit(-1)}>
+            <View style={styles.upAndDownDPad} 
+            onTouchStart={() => this.controlUpdate(1<<11) }
+            onTouchEnd={() => this.controlUpdate(-1<<11)}
+            >
             <TouchableOpacity>  
               <FontAwesome
                 name="chevron-up"
@@ -267,7 +258,10 @@ export default class App extends React.Component {
             </TouchableOpacity>
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
-              <View style={styles.dPadLeft} onTouchStart={() => this.handleSubmit(3)} onTouchEnd={() => this.handleSubmit(-3)}>
+              <View style={styles.dPadLeft} 
+              onTouchStart={() => this.controlUpdate(1<<9) }
+              onTouchEnd={() => this.controlUpdate(-1<<9)}
+              >
                 <TouchableOpacity>
                   <FontAwesome
                     name="chevron-left"
@@ -276,7 +270,10 @@ export default class App extends React.Component {
                   />
                 </TouchableOpacity>
               </View>
-              <View style={styles.dPadRight} onTouchStart={() => this.handleSubmit(4)} onTouchEnd={() => this.handleSubmit(-4)}>
+              <View style={styles.dPadRight} 
+              onTouchStart={() => this.controlUpdate(1<<8) }
+              onTouchEnd={() => this.controlUpdate(-1<<8)}
+              >
                 <TouchableOpacity>
                   <FontAwesome
                     name="chevron-right"
@@ -286,7 +283,10 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.upAndDownDPad}  onTouchStart={() => this.handleSubmit(2)} onTouchEnd={() => this.handleSubmit(-2)}>
+            <View style={styles.upAndDownDPad}
+            onTouchStart={() => this.controlUpdate(1<<10) }
+            onTouchEnd={() => this.controlUpdate(-1<<10)}
+            >
               <TouchableOpacity>
                 <FontAwesome
                   name="chevron-down"
@@ -301,7 +301,10 @@ export default class App extends React.Component {
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <View onTouchStart={() => this.handleSubmit(10)} onTouchEnd={() => this.handleSubmit(-10)}>
+                  <View 
+                  onTouchStart={() => this.controlUpdate(1<<7) }
+                  onTouchEnd={() => this.controlUpdate(-1<<7)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-up"
@@ -310,7 +313,10 @@ export default class App extends React.Component {
                       />
                     </TouchableOpacity>
                   </View>
-                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(13)} onTouchEnd={() => this.handleSubmit(-13)}>
+                  <View style={{ marginHorizontal: 15 }} 
+                  onTouchStart={() => this.controlUpdate(1<<6) }
+                  onTouchEnd={() => this.controlUpdate(-1<<6)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-down"
@@ -321,7 +327,10 @@ export default class App extends React.Component {
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(11)} onTouchEnd={() => this.handleSubmit(-11)}>
+                  <View style={{ marginHorizontal: 15 }} 
+                  onTouchStart={() => this.controlUpdate(1<<5) }
+                  onTouchEnd={() => this.controlUpdate(-1<<5)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-up"
@@ -330,7 +339,10 @@ export default class App extends React.Component {
                       />
                     </TouchableOpacity>
                   </View>
-                  <View onTouchStart={() => this.handleSubmit(14)} onTouchEnd={() => this.handleSubmit(-14)}>
+                  <View 
+                  onTouchStart={() => this.controlUpdate(1<<4) }
+                  onTouchEnd={() => this.controlUpdate(-1<<4)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-down"
@@ -344,7 +356,10 @@ export default class App extends React.Component {
               <Image style={styles.image} source={require('../ControllerApp/assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
-                  <View onTouchStart={() => this.handleSubmit(16)} onTouchEnd={() => this.handleSubmit(-16)}>
+                  <View 
+                  onTouchStart={() => this.controlUpdate(1<<3) }
+                  onTouchEnd={() => this.controlUpdate(-1<<3)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-left"
@@ -353,7 +368,10 @@ export default class App extends React.Component {
                       />
                     </TouchableOpacity>
                   </View>
-                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(19)} onTouchEnd={() => this.handleSubmit(-19)}>
+                  <View style={{ marginHorizontal: 15 }} 
+                  onTouchStart={() => this.controlUpdate(1<<2) }
+                  onTouchEnd={() => this.controlUpdate(-1<<2)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-right"
@@ -364,7 +382,10 @@ export default class App extends React.Component {
                   </View>
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
-                  <View style={{ marginHorizontal: 15 }} onTouchStart={() => this.handleSubmit(20)} onTouchEnd={() => this.handleSubmit(-20)}>
+                  <View style={{ marginHorizontal: 15 }} 
+                  onTouchStart={() => this.controlUpdate(1<<0) }
+                  onTouchEnd={() => this.controlUpdate(-1<<0)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-left"
@@ -373,7 +394,10 @@ export default class App extends React.Component {
                       />
                     </TouchableOpacity>
                   </View>
-                  <View onTouchStart={() => this.handleSubmit(17)} onTouchEnd={() => this.handleSubmit(-17)}>
+                  <View 
+                  onTouchStart={() => this.controlUpdate(1<<1) }
+                  onTouchEnd={() => this.controlUpdate(-1<<1)}
+                  >
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-right"
