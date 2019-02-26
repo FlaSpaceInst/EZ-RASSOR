@@ -12,7 +12,7 @@ RATE = 30
 ARM_RANGE = (-2.5, 2.5)
 auto_function_command = 0
 
-# ROS Node Init Parameters     #/ezrassor/routine_responses
+# ROS Node Init Parameters    
 command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
 status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
 
@@ -86,9 +86,7 @@ def auto_reverse(distance):
 
 def auto_drive():
     """  """
-    
-    while(auto_function_command != -1):
-        if(world_state[''])
+    print("hello")
 
 
 
@@ -146,7 +144,7 @@ def ai_control():
     rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, jointCallBack)
     rospy.Subscriber('ez_rassor/obstacles', ObstacleDetection, visionCallBack)
-    rospy.Subscriber('/ezrassor/routine_toggles' Int8, autoCommandCallBack)
+    rospy.Subscriber('/ezrassor/routine_toggles', Int8, autoCommandCallBack)
 
     #auto_dig(10)
 
