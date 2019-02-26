@@ -53,7 +53,7 @@ def visionCallBack(data):
     """ Set world_state vision data. """
     global world_state
 
-    world_state['warning_flag'] = data.warning_flag
+    world_state['warning_flag'] = data.data
 
 def autoCommandCallBack(data):
     """ Set auto_function_command to the current choice. """
@@ -61,12 +61,14 @@ def autoCommandCallBack(data):
 
     auto_function_command = data
 
-def auto_forward(distance):
+def auto_drive():
     """ Travel forward distance meters in a straight line. Avoid obstacles while maintaining heading. """
 
     start_pos = (world_state['positionX'], world_state['positionY'])
     
-    while euclidean_distance(start_pos[0], world_state['positionX'], start_pos[1], world_state['positionY']) < distance:
+    while auto_function_command != 0:
+        while(world_state['warning_flag'] == 1):
+            command_pub.publish(commands['turn_right'])
         command_pub.publish(commands['forward'])
         rate.sleep()
 
@@ -83,11 +85,6 @@ def auto_reverse(distance):
         rate.sleep()
 
     command_pub.publish(commands['null'])
-
-def auto_drive():
-    """  """
-    print("hello")
-
 
 
 def auto_dig(duration):
