@@ -9,7 +9,7 @@
   <arg name="debug" default="false"/>
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/AI_Demo.world"/>
+    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/ez_rassor.world"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
@@ -27,7 +27,7 @@
 
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/ez_rassor" args="left_wheel_back_velocity_controller left_wheel_front_velocity_controller right_wheel_back_velocity_controller right_wheel_front_velocity_controller arm_front_velocity_controller arm_back_velocity_controller joint_state_controller"/>
+    output="screen" ns="/ez_rassor" args="left_wheel_back_velocity_controller left_wheel_front_velocity_controller right_wheel_back_velocity_controller right_wheel_front_velocity_controller arm_front_velocity_controller arm_back_velocity_controller drum_front_velocity_controller drum_back_velocity_controller joint_state_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
