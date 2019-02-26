@@ -10,10 +10,10 @@ import math
 # Constants
 RATE = 30
 ARM_RANGE = (-2.5, 2.5)
-auto_function_command = 0
+auto_function_command = 1
 
-# ROS Node Init Parameters    
-command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
+# ROS Node Init Parameters      # ezrassor/routine_responses
+command_pub = rospy.Publisher('ez_main_topic', Int16, queue_size=100)
 status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
 
 rospy.init_node('ai_control_node', anonymous=True)
@@ -58,17 +58,21 @@ def visionCallBack(data):
 def autoCommandCallBack(data):
     """ Set auto_function_command to the current choice. """
     global auto_function_command
-
-    auto_function_command = data
+    print(data.data)
+    auto_function_command = data.data
 
 def auto_drive():
     """ Travel forward distance meters in a straight line. Avoid obstacles while maintaining heading. """
-
-    start_pos = (world_state['positionX'], world_state['positionY'])
+    print("Auto Driving")
     
     while auto_function_command != 0:
         while(world_state['warning_flag'] == 1):
-            command_pub.publish(commands['turn_right'])
+            command_pub.publish(commands['right'])
+            rate.sleep()
+        while(world_state['warning_flag'] == 2):
+            command_pub.publish(commands['left'])
+            rate.sleep()
+        
         command_pub.publish(commands['forward'])
         rate.sleep()
 
@@ -140,16 +144,15 @@ def ai_control():
 
     rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, jointCallBack)
-    rospy.Subscriber('ez_rassor/obstacles', ObstacleDetection, visionCallBack)
+    rospy.Subscriber('ez_rassor/obstacle_detect', Int8, visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, autoCommandCallBack)
 
-    #auto_dig(10)
-
-    '''
+    set_back_arm_angle(.6)
+    set_front_arm_angle(.6)
     while(True):
         
         while auto_function_command == 0:
-            pass
+            rate.sleep()
 
         if auto_function_command == 1:
             auto_drive()
@@ -161,8 +164,7 @@ def ai_control():
         else:
             print("Error")
             #status_pub.publish("Error Incorrect Auto Function Request {}".format(auto_function_command))
-    ''' 
-    print("hello")
+
 
 if __name__ == "__main__":
     try:
