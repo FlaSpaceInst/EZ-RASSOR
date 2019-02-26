@@ -167,7 +167,7 @@ def ai_control():
             print("Error")
             #status_pub.publish("Error Incorrect Auto Function Request {}".format(auto_function_command))
     ''' 
-
+    print("hello")
 
 if __name__ == "__main__":
     try:
