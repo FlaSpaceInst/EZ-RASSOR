@@ -11,7 +11,7 @@
   </gazebo>
 
   <gazebo reference="drum_back">
-    <material>Gazebo/Orange</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="arm_front">
@@ -19,7 +19,7 @@
   </gazebo>
 
   <gazebo reference="drum_front">
-    <material>Gazebo/Orange</material>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="stereo_camera_front">
