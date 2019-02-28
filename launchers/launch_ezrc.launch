@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <node name="http_server" pkg="ez_rassor_communication" type="http_server.py" output="screen"/>
+    <node name="request_switcher" pkg="ez_rassor_communication" type="request_switcher.py" output="screen"/>
+    <node name="drums_driver" pkg="ezrc_control" type="drums_driver.py" output="screen"/>
+    <node name="arms_driver" pkg="ezrc_control" type="arms_driver.py" output="screen"/>
+    <node name="wheels_driver" pkg="ezrc_control" type="wheels_driver.py" output="screen"/>
+</launch>
