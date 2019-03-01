@@ -49,7 +49,7 @@ def odometryCallBack(data):
     world_state['positionX'] = data.pose.pose.position.z
     world_state['positionY'] = data.pose.pose.position.y
     world_state['heading'] = data.twist.twist.linear.z
-    print(world_state['positionX'], world_state['positionY'])
+    
 
 def visionCallBack(data):
     """ Set world_state vision data. """
@@ -144,6 +144,8 @@ def set_back_arm_angle(target_angle):
 def onStartUp():
     set_back_arm_angle(.785)
     set_front_arm_angle(.785)
+
+    #status_pub.publish()
 
 def ai_control():
     """
