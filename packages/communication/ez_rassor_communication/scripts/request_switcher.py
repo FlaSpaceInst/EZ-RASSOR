@@ -64,7 +64,7 @@ try:
 
     # Publish to the routine toggles topic and movement toggles topic.
     routine_toggles_publisher = rospy.Publisher(ROUTINE_TOGGLES_TOPIC,
-                                                std_msgs.msg.Int16,
+                                                std_msgs.msg.Int8,
                                                 queue_size=QUEUE_SIZE)
     movement_toggles_publisher = rospy.Publisher(MOVEMENT_TOGGLES_TOPIC,
                                                  std_msgs.msg.Int16,
@@ -80,7 +80,7 @@ try:
             continue
 
         # Divide the bitstring into its components.
-        kill_bit = get_masked_bits(bitstring.data, AI_KILL_MASK)
+        kill_toggle = get_masked_bits(bitstring.data, AI_KILL_MASK)
         ai_toggles = get_masked_bits(bitstring.data, AI_TOGGLES_MASK)
         movement_toggles = get_masked_bits(bitstring.data, MOVEMENT_TOGGLES_MASK)
 
@@ -89,7 +89,7 @@ try:
         if ignoring_user:
             if topic == REQUESTS_TOPIC:
                 continue
-            elif kill_bit:
+            elif kill_toggle:
                 ignoring_user = False
             else:
                 movement_toggles_publisher.publish(movement_toggles)

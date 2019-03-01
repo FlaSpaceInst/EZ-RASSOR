@@ -18,7 +18,7 @@ FREQUENCY = 60
 SHIFT_AMOUNT = 5
 REAR_CHANNEL = 12
 FORWARD_CHANNEL = 15
-SLEEP_DURATION = .025
+SLEEP_DURATION = .012
 MASK = 0b000011110000
 
 # These constants are the boundary wavelengths for the servos that control the
@@ -32,12 +32,12 @@ FORWARD_GROUND_WAVELENGTH = 675
 REAR_VERTICAL_WAVELENGTH = 700
 REAR_GROUND_WAVELENGTH = 325
 
-NODE_NAME = "arms_node"
-TOPIC_NAME = "ezmain_topic"
+NODE_NAME = "arms_driver"
+MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
-def move_arms(nibble_queue,
+def move_arms(toggle_queue,
               forward_channel,
               rear_channel,
               shift_amount,
@@ -50,7 +50,7 @@ def move_arms(nibble_queue,
     """Move the arms of the EZRC.
     
     The arms are controlled by sending boolean 4-tuples to this function via
-    the nibble queue. This function is run as a separate process from the ROS
+    the toggle queue. This function is run as a separate process from the ROS
     subscription code so that both actions (moving the arms and listening to
     the ROS topic) can occur simultaneously. 
     """
@@ -74,16 +74,16 @@ def move_arms(nibble_queue,
 
     while True:
 
-        # Attempt to read a nibble (4-tuple) from the queue. If nothing is
+        # Attempt to read some toggles (a 4-tuple) from the queue. If nothing is
         # available then the movement booleans remain unchanged. If the None
         # type is retrieved from the queue, break the loop and let the function
-        # end. Otherwise, split the fetched nibble between the 4 movement booleans.
+        # end. Otherwise, split the fetched toggles between the 4 movement booleans.
         try:
-            nibble = nibble_queue.get(False)
-            if nibble == None:
+            toggles = toggle_queue.get(False)
+            if toggles == None:
                 break
             else:
-                up_forward, down_forward, up_rear, down_rear = nibble
+                up_forward, down_forward, up_rear, down_rear = toggles
         except Queue.Empty:
             pass
 
@@ -121,11 +121,11 @@ def move_arms(nibble_queue,
     driver.set_pwm(forward_channel, 0, forward_vertical_wavelength)
 
 
-def print_status(nibble, message_format):
-    """Print status information based on the provided nibble."""
-    up_forward, down_forward, up_rear, down_rear = nibble
+def print_status(toggles, message_format):
+    """Print status information based on the provided toggles."""
+    up_forward, down_forward, up_rear, down_rear = toggles
 
-    if not any(nibble):
+    if not any(toggles):
         print message_format % "Stopping both arms"
     else:
         if up_forward:
@@ -142,9 +142,9 @@ def print_status(nibble, message_format):
 try:
 
     # Create a queue and process to move the arms.
-    nibble_queue = multiprocessing.Queue()
+    toggle_queue = multiprocessing.Queue()
     movement_process = multiprocessing.Process(target=move_arms,
-                                               args=(nibble_queue,
+                                               args=(toggle_queue,
                                                      FORWARD_CHANNEL,
                                                      REAR_CHANNEL,
                                                      SHIFT_AMOUNT,
@@ -157,11 +157,11 @@ try:
     movement_process.start()
 
     # Initialize this node as a subscriber.
-    rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME,
+    rospy.init_node(NODE_NAME)
+    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
-                     callback=utilities.enqueue_nibble,
-                     callback_args=(nibble_queue,
+                     callback=utilities.enqueue_toggles,
+                     callback_args=(toggle_queue,
                                     MASK,
                                     MESSAGE_FORMAT,
                                     print_status))
@@ -173,5 +173,5 @@ except rospy.ROSInterruptException:
 # Finally, send a kill message (None) to the movement process and wait for it
 # to die, then exit.
 finally:
-    nibble_queue.put(None, False)
+    toggle_queue.put(None, False)
     movement_process.join()

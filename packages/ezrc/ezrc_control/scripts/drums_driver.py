@@ -20,12 +20,12 @@ MASK = 0b000000001111
 REAR_PINS = (13, 19, 26)
 FORWARD_PINS = (20, 21, 16)
 
-NODE_NAME = "drums_node"
-TOPIC_NAME = "ezmain_topic"
+NODE_NAME = "drums_driver"
+MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 MESSAGE_FORMAT = "EZRC ({0}.py): %s.".format(NODE_NAME)
 
 
-def rotate_drums(nibble_queue,
+def rotate_drums(toggle_queue,
                  forward_pins,
                  rear_pins,
                  sleep_duration,
@@ -34,7 +34,7 @@ def rotate_drums(nibble_queue,
     """Rotate the drums of the EZRC.
     
     The drums are controlled by sending boolean 4-tuples to this function via
-    the nibble queue. This function is run as a separate process from the ROS
+    the toggle queue. This function is run as a separate process from the ROS
     subscription code so that both actions (rotating the drums and listening to
     the ROS topic) can occur simultaneously. 
     """
@@ -62,16 +62,16 @@ def rotate_drums(nibble_queue,
 
     while True:
 
-        # Attempt to read a nibble (4-tuple) from the queue. If nothing is
+        # Attempt to read some toggles (a 4-tuple) from the queue. If nothing is
         # available then the rotation booleans remain unchanged. If the None
         # type is retrieved from the queue, break the loop and let the function
-        # end. Otherwise, split the fetched nibble between the 4 rotation booleans.
+        # end. Otherwise, split the fetched toggles between the 4 rotation booleans.
         try:
-            nibble = nibble_queue.get(False)
-            if nibble == None:
+            toggles = toggle_queue.get(False)
+            if toggles == None:
                 break
             else:
-                dig_forward, dump_forward, dig_rear, dump_rear = nibble
+                dig_forward, dump_forward, dig_rear, dump_rear = toggles
         except Queue.Empty:
             pass
 
@@ -96,11 +96,11 @@ def rotate_drums(nibble_queue,
     utilities.turn_off_pins(forward_pins, rear_pins)
 
 
-def print_status(nibble, message_format):
-    """Print status information based on the provided nibble."""
-    dig_forward, dump_forward, dig_rear, dump_rear = nibble
+def print_status(toggles, message_format):
+    """Print status information based on the provided toggles."""
+    dig_forward, dump_forward, dig_rear, dump_rear = toggles
 
-    if not any(nibble):
+    if not any(toggles):
         print message_format % "Stopping both drums"
     else:
         if dig_forward:
@@ -117,20 +117,20 @@ def print_status(nibble, message_format):
 try:
 
     # Create a queue and process to rotate the drums.
-    nibble_queue = multiprocessing.Queue()
+    toggle_queue = multiprocessing.Queue()
     rotator_process = multiprocessing.Process(target=rotate_drums,
-                                              args=(nibble_queue,
+                                              args=(toggle_queue,
                                                     FORWARD_PINS,
                                                     REAR_PINS,
                                                     SLEEP_DURATION))
     rotator_process.start()
 
     # Initialize this node as a subscriber.
-    rospy.init_node(NODE_NAME, anonymous=True)
-    rospy.Subscriber(TOPIC_NAME,
+    rospy.init_node(NODE_NAME)
+    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
                      std_msgs.msg.Int16,
-                     callback=utilities.enqueue_nibble,
-                     callback_args=(nibble_queue,
+                     callback=utilities.enqueue_toggles,
+                     callback_args=(toggle_queue,
                                     MASK,
                                     MESSAGE_FORMAT,
                                     print_status))
@@ -142,5 +142,5 @@ except rospy.ROSInterruptException:
 # Finally, send a kill message (None) to the rotator process and wait for it to
 # die, then exit.
 finally:
-    nibble_queue.put(None, False)
+    toggle_queue.put(None, False)
     rotator_process.join()

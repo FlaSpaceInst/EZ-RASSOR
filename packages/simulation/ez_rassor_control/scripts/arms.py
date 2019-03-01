@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """A ROS node that moves the arms on the EZRC.
 
-Written by Tiger Sachse.
+Written by Harrison Black and Tiger Sachse.
 Part of the EZ-RASSOR suite of software.
 """
 import rospy
@@ -45,35 +45,30 @@ def handle_arm_movements(instruction):
 
     arm_speed = 1
 
-    if not any((arm1_up, arm1_down, arm2_up, arm2_down)):
-        # print MESSAGE_FORMAT % "Stopping both arms"
-        # stop both arms
-        pub_FA.publish(0)
-        pub_BA.publish(0)
+    # The arms are mirrored and the model so arm1 needs negative velocity to move up.
+
+    # raise arm 1
+    if arm1_up:
+        pub_FA.publish(-arm_speed)
+
+    # lower arm 1
+    elif arm1_down:
+        pub_FA.publish(arm_speed)
 
     else:
-
-        # The arms are mirrored and the model so arm1 needs negative velocity to move up.
-        if arm1_up:
-            # print MESSAGE_FORMAT % "Raising arm 1"
-            # raise arm 1
-            pub_FA.publish(-arm_speed)
-
-        if arm1_down:
-            # print MESSAGE_FORMAT % "Lowering arm 1"
-            # lower arm 1
-            pub_FA.publish(arm_speed)
+        pub_FA.publish(0)
 
 
-        if arm2_up:
-            # print MESSAGE_FORMAT % "Raising arm 2"
-            # raise arm 2
-            pub_BA.publish(arm_speed)
+    # raise arm 2
+    if arm2_up:
+        pub_BA.publish(arm_speed)
 
-        if arm2_down:
-            # print MESSAGE_FORMAT % "Lowering arm 2"
-            # lower arm 2
-            pub_BA.publish(-arm_speed)
+    # lower arm 2
+    elif arm2_down:
+        pub_BA.publish(-arm_speed)
+
+    else:
+        pub_BA.publish(0)
 
 
 
