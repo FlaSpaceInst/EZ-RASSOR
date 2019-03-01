@@ -6,25 +6,20 @@ Part of the EZ-RASSOR suite of software.
 import RPi.GPIO as GPIO
 
 
-def get_nibble(bitstring, mask):
-    """Retrieve a nibble of data from the bitstring, using a given mask."""
+def get_toggles(bitstring, mask):
+    """Retrieve individual toggles from the bitstring, using a given mask."""
+    toggles = []
 
-    # Use a mask to remove unnecessary bits.
-    nibble = bitstring & mask
-
-    # Shift the result so the nibble is in the least significant position.
-    # The shift amount is determined by the mask.
-    while mask % 2 == 0:
-        nibble >>= 1
+    # Extract toggles from the bitstring.
+    while mask > 0:
+        if mask & 0b1 == 1:
+            toggles.append(bitstring & 0b1 == 1)
+        bitstring >>= 1
         mask >>= 1
 
-    # Return the nibble as 4 boolean values.
-    return (
-        nibble & 0b1000 != 0,
-        nibble & 0b100 != 0,
-        nibble & 0b10 != 0,
-        nibble & 0b1 != 0
-    )
+    # Return the toggles in reversed order (so the least significant toggle is
+    # last in the list).
+    return tuple(reversed(toggles))
 
 
 def turn_off_pins(*pin_iterables):
@@ -34,15 +29,15 @@ def turn_off_pins(*pin_iterables):
             GPIO.output(pin, GPIO.LOW)
 
 
-def enqueue_nibble(instruction, additional_arguments):
-    """Decode a nibble from the instruction and enqueue it.
+def enqueue_toggles(instruction, additional_arguments):
+    """Decode some toggles from the instruction and enqueue them.
     
     Arguments after instruction are passed as a single tuple because of how ROS
     callbacks work.
     """
-    nibble_queue, mask, message_format, print_status = additional_arguments
+    toggle_queue, mask, message_format, print_status = additional_arguments
 
-    nibble = get_nibble(instruction.data, mask)
-    nibble_queue.put(nibble, False)
+    toggles = get_toggles(instruction.data, mask)
+    toggle_queue.put(toggles, False)
 
-    print_status(nibble, message_format)
+    print_status(toggles, message_format)
