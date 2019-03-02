@@ -42,7 +42,7 @@ class WorldState():
         self.auto_function_command = data.data
 
 
-class RospyConfig():
+class ROSUtility():
 
     def __init__(self):
                                             # ezrassor/routine_responses

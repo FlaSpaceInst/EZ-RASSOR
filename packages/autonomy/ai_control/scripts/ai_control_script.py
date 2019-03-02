@@ -4,7 +4,7 @@ from std_msgs.msg import Int8, Int16, String
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-from ai_objects import WorldState, RospyConfig
+from ai_objects import WorldState, ROSUtility
 from auto_functions import *
 from nav_functions import *
 from utility_functions import *
@@ -17,9 +17,16 @@ commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b0
 
 
 def onStartUp():
-    world_state = WorldState()
-    rospy_config = RospyConfig()
+    """  """
 
+    # ROS Node Init Parameters 
+    rospy.init_node('ai_control_node', anonymous=True)
+    
+    #Create Utility Objects
+    world_state = WorldState()
+    ros_util = ROSUtility()
+
+    # Setup Subscriber Callbacks
     rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, world_state.jointCallBack)
     rospy.Subscriber('ez_rassor/obstacle_detect', Int8, world_state.visionCallBack)
@@ -49,10 +56,7 @@ def ai_control(world_state, rospy_config):
 
 
 if __name__ == "__main__":
-    try:
-        # ROS Node Init Parameters      # ezrassor/routine_responses
-        rospy.init_node('ai_control_node', anonymous=True)
-        
+    try:  
         world_state, rospy_config = onStartUp()
         ai_control(world_state, rospy_config)
 
