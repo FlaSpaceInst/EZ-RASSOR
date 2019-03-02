@@ -11,6 +11,8 @@ import std_msgs
 from std_msgs.msg import Int8
 import time
 
+LEFT = 0
+RIGHT = 1
 
 # Written by Tyler Duncan
 # The following code assumes Gazebo to be running and the EZ-RASSOR executing the following scripts:
@@ -37,10 +39,10 @@ def obst_detect(data):
     pub = rospy.Publisher('ez_rassor/obstacle_detect', Int8, queue_size=10)
 
     """Set thresholds.""" 
-    if data[1].min() > data[0].min() and data[0].min() < 1:
+    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
         print("MOVE RIGHT!")
         pub.publish(commands['forward'])
-    elif data[0].min() > data[1].min() and data[1].min() < 1:
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
         print("MOVE LEFT!")
         pub.publish(commands['left'])
     else:
