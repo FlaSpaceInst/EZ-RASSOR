@@ -9,8 +9,12 @@ from std_msgs.msg import Int8, Int16
 from sensor_msgs.msg import Joy
 import time
 
+NODE = "controller"
+TOPIC = "joy"
+
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
+# publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
+publisher = rospy.Publisher('/ezrassor/requests', Int16, queue_size = 10)
 tank_turn = False
 toggle_time = 0
 
@@ -138,11 +142,11 @@ def main():
 
 	print("Controller node started")
 	global publisher
-	rospy.init_node('ez_controller', anonymous = True)
+	rospy.init_node(NODE, anonymous = True)
 	rate = rospy.Rate(600) # number of hz
 	
 	# Topic subscriber for reading raw controller input	
-	rospy.Subscriber("joy", Joy, callback)
+	rospy.Subscriber(TOPIC, Joy, callback)
 
 	rospy.spin()
 
