@@ -41,13 +41,13 @@ def obst_detect(data):
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
         print("MOVE RIGHT!")
-        pub.publish(commands['forward'])
+        pub.publish(commands['right'])
     elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
         print("MOVE LEFT!")
         pub.publish(commands['left'])
     else:
          print("MOVE FORWARD!")
-         pub.publish(commands['right'])
+         pub.publish(commands['forward'])
 
 
 # 
