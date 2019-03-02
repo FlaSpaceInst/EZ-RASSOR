@@ -42,7 +42,7 @@ class ROSUtility():
 
     def __init__(self):
                                             # ezrassor/routine_responses
-        self.command_pub = rospy.Publisher('ez_main_topic', Int16, queue_size=100)
+        self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
         self.status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
         self.rate = rospy.Rate(30) # 30hz
 

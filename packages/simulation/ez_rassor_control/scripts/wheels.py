@@ -77,7 +77,7 @@ def main():
 
     print("Wheel node started")
     rospy.init_node('ez_wheels', anonymous = True)
-    rospy.Subscriber('ez_main_topic', Int16, wheel_movement_callback)
+    rospy.Subscriber("ezrassor/routine_responses", Int16, wheel_movement_callback)
     rospy.spin()
 
 if __name__ == '__main__':
