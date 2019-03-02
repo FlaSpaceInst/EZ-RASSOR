@@ -34,3 +34,7 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 def initial_check(world_state, ros_util):
     """  """
     pass
+
+def battery_check():
+    """  """
+    pass

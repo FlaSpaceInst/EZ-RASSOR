@@ -4,7 +4,7 @@ import rospy
 def auto_drive(world_state, ros_util):
     """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
     
-    while world_state.auto_function_command != 0:
+    while ros_util.auto_function_command != 0:
         while(world_state.state_flags['warning_flag'] == 1):
             ros_util.command_pub.publish(ros_util.commands['right'])
             ros_util.rate.sleep()
@@ -19,13 +19,19 @@ def auto_drive(world_state, ros_util):
 
 def auto_drive_location(world_state, ros_util, location):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-    pass
+
+    
+    while world_state.state_flags['positionX'] != location[0] and world_state.state_flags['positionY'] != location [1]:
+        pass
+
+
+    
 
 
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
 
-    while world_state.auto_function_command != 0:
+    while ros_util.auto_function_command != 0:
         while(world_state.state_flags['warning_flag_front'] == 1):
             ros_util.command_pub.publish(ros_util.commands['right'])
             ros_util.rate.sleep()
