@@ -50,7 +50,6 @@ def obst_detect(data):
          pub.publish(commands['forward'])
 
 
-# 
 def callback(data):
 
     """Convert disparity image message to Numpy matrix"""
