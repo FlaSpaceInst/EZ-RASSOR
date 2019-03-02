@@ -37,10 +37,6 @@ class WorldState():
 
         self.state_flags['warning_flag'] = data.data
 
-    def autoCommandCallBack(self, data):
-        """ Set auto_function_command to the current choice. """
-        self.auto_function_command = data.data
-
 
 class ROSUtility():
 
@@ -50,18 +46,16 @@ class ROSUtility():
         self.status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
         self.rate = rospy.Rate(30) # 30hz
 
+        self. auto_function_command = 0
+
         self.commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b001000000000, 'right' : 0b000100000000, 
                 'front_arm_up' : 0b000010000000, 'front_arm_down' : 0b000001000000, 'back_arm_up' : 0b000000100000, 'back_arm_down' : 0b000000010000,
                 'front_dig' : 0b000000001000, 'front_dump' : 0b000000000100, 'back_dig' : 0b000000000010, 'back_dump' : 0b000000000001,
                 'arms_up' : 0b000010100000, 'arms_down' : 0b000001010000, 'null': 0b000000000000}
 
+    def autoCommandCallBack(self, data):
+        """ Set auto_function_command to the current choice. """
+        self.auto_function_command = data.data
 
 
-if __name__ == "__main__":
-    state_flags = WorldState()
-
-    rospy.Subscriber('stereo_odometer/odometry', Odometry, state_flags.odometryCallBack)
-    rospy.Subscriber('ez_rassor/joint_states', JointState, state_flags.jointCallBack)
-    rospy.Subscriber('ez_rassor/obstacle_detect', Int8, state_flags.visionCallBack)
-    rospy.Subscriber('/ezrassor/routine_toggles', Int8, state_flags.autoCommandCallBack)
 
