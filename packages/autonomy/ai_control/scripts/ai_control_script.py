@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int8, Int16, String
+from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from ai_control.msg import ObstacleDetection
@@ -41,13 +42,14 @@ def jointCallBack(data):
     
 
 # This will be replaced to capture data from visual odometry once it is working.
-def linkCallBack(data):
+def odometryCallBack(data):
     """ Set world_state world position data. """
     global world_state
 
-    world_state['positionX'] = data.pose[1].position.x
-    world_state['positionY'] = data.pose[1].position.y
-    world_state['heading'] = 0
+    world_state['positionX'] = data.pose.pose.position.z
+    world_state['positionY'] = data.pose.pose.position.y
+    world_state['heading'] = data.twist.twist.linear.z
+    
 
 def visionCallBack(data):
     """ Set world_state vision data. """
@@ -58,12 +60,10 @@ def visionCallBack(data):
 def autoCommandCallBack(data):
     """ Set auto_function_command to the current choice. """
     global auto_function_command
-    print(data.data)
     auto_function_command = data.data
 
 def auto_drive():
-    """ Travel forward distance meters in a straight line. Avoid obstacles while maintaining heading. """
-    print("Auto Driving")
+    """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
     
     while auto_function_command != 0:
         while(world_state['warning_flag'] == 1):
@@ -78,30 +78,35 @@ def auto_drive():
 
     command_pub.publish(commands['null'])
 
+def auto_drive_location(location):
+    """ Navigate to location. Avoid obstacles while moving toward location. """
+    pass
+
 
 def auto_reverse(distance):
     """ Travel reverse distance meters in a straight line. Avoid obstacles while maintaining heading. """
-
-    start_pos = (world_state['positionX'], world_state['positionY'])
-    
-    while euclidean_distance(start_pos[0], world_state['positionX'], start_pos[1], world_state['positionY']) < distance:
-        command_pub.publish(commands['reverse'])
-        rate.sleep()
-
-    command_pub.publish(commands['null'])
+    pass
 
 
 def auto_dig(duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
 
-    set_back_arm_angle(-.05)
-    set_front_arm_angle(-.05)
-
-    for i in range(duration*RATE):
+    while auto_function_command != 0:
+        while(world_state['warning_flag_front'] == 1):
+            command_pub.publish(commands['right'])
+            rate.sleep()
+        while(world_state['warning_flag_front'] == 2):
+            command_pub.publish(commands['left'])
+            rate.sleep()
+        
         command_pub.publish(commands['forward'] | commands['front_dig'] | commands['back_dig'])
         rate.sleep()
 
     command_pub.publish(commands['null'])
+
+def auto_dock():
+    """ Dock with the hopper. """
+    pass
 
 
 def set_front_arm_angle(target_angle):
@@ -136,21 +141,23 @@ def set_back_arm_angle(target_angle):
     
     command_pub.publish(commands['null'])
 
+def onStartUp():
+    set_back_arm_angle(.785)
+    set_front_arm_angle(.785)
+
+    #status_pub.publish()
 
 def ai_control():
     """
     
     """
-
-    rospy.Subscriber('gazebo/link_states', LinkStates, linkCallBack)
+    rospy.Subscriber('stereo_odometer/odometry', Odometry, odometryCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, jointCallBack)
     rospy.Subscriber('ez_rassor/obstacle_detect', Int8, visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, autoCommandCallBack)
 
-    set_back_arm_angle(.6)
-    set_front_arm_angle(.6)
     while(True):
-        
+
         while auto_function_command == 0:
             rate.sleep()
 
@@ -159,15 +166,14 @@ def ai_control():
         elif auto_function_command == 2:
             auto_dig(10)
         elif auto_function_command == 3:
-            pass
-            #auto_dock()
+            auto_dock()
         else:
-            print("Error")
-            #status_pub.publish("Error Incorrect Auto Function Request {}".format(auto_function_command))
+            status_pub.publish("Error Incorrect Auto Function Request {}".format(auto_function_command))
 
 
 if __name__ == "__main__":
     try:
+        onStartUp()
         ai_control()
     except rospy.ROSInterruptException:
         pass

@@ -1,14 +1,25 @@
 #!/usr/bin/env python
+"""A ROS node that handles controll input on the EZRC.
+
+Written by Harrison Black and Tiger Sachse.
+Part of the EZ-RASSOR suite of software.
+"""
 import rospy
 from std_msgs.msg import Int8, Int16
 from sensor_msgs.msg import Joy
+import time
 
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('control_topic', Int16, queue_size = 10)
+publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
+tank_turn = False
+toggle_time = 0
 
 def callback(data):
 
 	global publisher
+	global tank_turn
+	global toggle_time
+	time_now = time.time()
 
 	# Raw controller input data indexes
 
@@ -37,24 +48,48 @@ def callback(data):
 
 	data_out = 0b000000000000
 
-	# Wheels
-
-	# F B L R
-	# 0 0 0 0
+	# The toggle can only be set once every 0.3 seconds. With out this the toggle will get spammed by Joy. 
+	if data.buttons[6] and (time_now - toggle_time) > 0.3:
+		tank_turn = not tank_turn
+		print("Tank turn: %r" % tank_turn)
+		toggle_time = time.time()
 
 	data_out <<= 4
 
-	if data.axes[1] > 0.5:
-		data_out |= 0b1000
-		
-	elif data.axes[1] < -0.5:
-		data_out |= 0b0100
+	# Wheels (Tank Turn)
 
-	elif data.axes[0] > 0.5:
-		data_out |= 0b0010
+	# LWF LWB RWF RWB
+	#  0   0   0   0
+	if tank_turn:
+		if data.axes[1] > 0.5:
+			data_out |= 0b1000
 		
-	elif data.axes[0] < -0.5:
-		data_out |= 0b0001
+		elif data.axes[1] < -0.5:
+			data_out |= 0b0100
+
+		if data.axes[4] > 0.5:
+			data_out |= 0b0010
+		
+		elif data.axes[4] < -0.5:
+			data_out |= 0b0001
+
+	# Wheels (Car Turn)
+
+	# F B L R
+	# 0 0 0 0
+	else:
+
+		if data.axes[1] > 0.5:
+			data_out |= 0b1010
+			
+		elif data.axes[1] < -0.5:
+			data_out |= 0b0101
+
+		elif data.axes[0] > 0.5:
+			data_out |= 0b0110
+			
+		elif data.axes[0] < -0.5:
+			data_out |= 0b1001
 
 	# Arms
 
@@ -96,11 +131,12 @@ def callback(data):
 		data_out |= 0b0001
 
 	publisher.publish(data_out)
-	rospy.loginfo("Controller: {0:012b}".format(data_out))
+	# rospy.loginfo("Controller: {0:012b}".format(data_out))
 
 	
 def main():
 
+	print("Controller node started")
 	global publisher
 	rospy.init_node('ez_controller', anonymous = True)
 	rate = rospy.Rate(600) # number of hz
