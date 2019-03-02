@@ -7,6 +7,8 @@ Part of the EZ-RASSOR suite of software.
 import rospy
 from std_msgs.msg import Int16, Float64
 
+NODE = "wheels"
+TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b111100000000
 
 # /ez_rassor/left_wheel_back_velocity_controller/command
@@ -76,8 +78,8 @@ def wheel_movement_callback(instruction):
 def main():
 
     print("Wheel node started")
-    rospy.init_node('ez_wheels', anonymous = True)
-    rospy.Subscriber('ez_main_topic', Int16, wheel_movement_callback)
+    rospy.init_node(NODE, anonymous = True)
+    rospy.Subscriber(TOPIC, Int16, wheel_movement_callback)
     rospy.spin()
 
 if __name__ == '__main__':

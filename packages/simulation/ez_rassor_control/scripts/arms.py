@@ -9,7 +9,7 @@ import std_msgs
 from std_msgs.msg import Int16, Float64
 
 NODE = "arms"
-TOPIC = "ez_main_topic"
+TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b000011110000
 MESSAGE_FORMAT = "EZRC (arms.py): %s."
 
@@ -58,7 +58,6 @@ def handle_arm_movements(instruction):
     else:
         pub_FA.publish(0)
 
-
     # raise arm 2
     if arm2_up:
         pub_BA.publish(arm_speed)
@@ -76,7 +75,7 @@ def handle_arm_movements(instruction):
 try:
     print("Arms node started")
     rospy.init_node(NODE, anonymous=True)
-    rospy.Subscriber(TOPIC, std_msgs.msg.Int16, handle_arm_movements)
+    rospy.Subscriber(TOPIC, Int16, handle_arm_movements)
     rospy.spin()
 except rospy.ROSInterruptException:
     pass
