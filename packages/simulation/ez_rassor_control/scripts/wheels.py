@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""A ROS node that moves the wheel on the EZRC.
+
+Written by Harrison Black and Tiger Sachse.
+Part of the EZ-RASSOR suite of software.
+"""
 import rospy
 from std_msgs.msg import Int16, Float64
 
@@ -33,55 +38,37 @@ def get_movements(integer, mask):
 
 
 def wheel_movement_callback(instruction):
-    # print("callback")
-    # data_in = data.data
 
-    # # mask = 0b111100000000
-    # data_in &= mask
-    # data_in >>= 8
-    # data_string = "Wheels:\t {0:04b}".format(data_in)
-
-    drive_forward, drive_reverse, turn_left, turn_right = get_movements(instruction.data, MASK)
+    left_wheel_forward, left_wheel_reverse, right_wheel_forward, right_wheel_reverse = get_movements(instruction.data, MASK)
 
     velocity = 5
-    turn_offset = 0.05
 
-    if drive_forward:
-        # data_string = data_string + " -> Drive Forward"
+    # Turning behaves odd with offset and tankturn. Set to zero for now.
+    turn_offset = 0
+
+    if left_wheel_forward:
         pub_LF.publish(velocity)
         pub_LB.publish(velocity)
-        pub_RF.publish(velocity)
-        pub_RB.publish(velocity)
 
-    elif drive_reverse:
-        # data_string = data_string + " -> Reverse"
-        pub_LF.publish(-velocity)
-        pub_LB.publish(-velocity)
-        pub_RF.publish(-velocity)
-        pub_RB.publish(-velocity)
-
-    elif turn_left:
-        # data_string = data_string + " -> Turn Left"
+    elif left_wheel_reverse:
         pub_LF.publish(-velocity + turn_offset)
         pub_LB.publish(-velocity + turn_offset)
+
+    else:
+        pub_LF.publish(0)
+        pub_LB.publish(0)
+
+    if right_wheel_forward:
         pub_RF.publish(velocity)
         pub_RB.publish(velocity)
 
-    elif turn_right:
-        # data_string = data_string + " -> Turn Right"
-        pub_LF.publish(velocity)
-        pub_LB.publish(velocity)
+    elif right_wheel_reverse:
         pub_RF.publish(-velocity + turn_offset)
         pub_RB.publish(-velocity + turn_offset)
 
     else:
-        # data_string = data_string + " -> Stop"
-        # Halt motor functions
-        pub_LF.publish(0)
-        pub_LB.publish(0)
         pub_RF.publish(0)
         pub_RB.publish(0)
-
 
 
     # print(data_string)

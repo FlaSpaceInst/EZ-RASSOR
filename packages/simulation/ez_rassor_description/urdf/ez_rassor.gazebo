@@ -3,6 +3,10 @@
 <robot>
 
   <gazebo reference="base_link">
+
+  </gazebo>
+
+  <gazebo reference="arm_front">
     <material>Gazebo/Black</material>
   </gazebo>
 
@@ -10,17 +14,13 @@
     <material>Gazebo/Black</material>
   </gazebo>
 
-  <gazebo reference="drum_back">
+  <!-- <gazebo reference="drum_front">
     <material>Gazebo/Grey</material>
-  </gazebo>
+  </gazebo> -->
 
-  <gazebo reference="arm_front">
-    <material>Gazebo/Black</material>
-  </gazebo>
-
-  <gazebo reference="drum_front">
+  <!-- <gazebo reference="drum_back">
     <material>Gazebo/Grey</material>
-  </gazebo>
+  </gazebo> -->
 
   <gazebo reference="stereo_camera_front">
     <sensor type="multicamera" name="stereo_camera">
@@ -165,6 +165,7 @@
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/ez_rassor</robotNamespace>
+      <!-- <legacyModeNS>true</legacyModeNS> -->
     </plugin>
   </gazebo>
 
