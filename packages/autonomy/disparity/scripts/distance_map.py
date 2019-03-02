@@ -24,24 +24,7 @@ import time
 #**************************************************************************************************
 #    These scripts utilize the Disparity map generation provided by ROS out of the box using the 
 #    stereo_image_proc package.  So far this has returned the fastest disparity map generation.  
-
-
-
 #==================================================================================================
-# TODO: I need to figure out how to get the disparityImage message in such a way 
-#         that I can use the focal length value, baseline value, and disparity matrix
-#        values to calculate a distance matrix. 
-#        
-#        Z[i][j] = fT / d[i][j], where
-#        
-#        -    Z[i][j] = the distance to pixel (i, j) 
-#        -    f = focal distance 
-#        -    T = baseline 
-#        -    d = disparity value of pixel (i, j). 
-#
-#        Numpy.reciprocal will invert all entries in the disparity matrix and then we simply need to
-#        multiply by fT on each entry to get depth information. 
-#===================================================================================================
 
 def obst_detect(data):
     pub = rospy.Publisher('ez_rassor/obstacle_detect', Int8, queue_size=10)
