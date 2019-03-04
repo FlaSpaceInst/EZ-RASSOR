@@ -1,4 +1,5 @@
 # rosrun ez_rassor_control ez_controller.py 
+killall gzserver &
 roslaunch ez_rassor_gazebo ez_rassor_world.launch
 
 sleep 5
