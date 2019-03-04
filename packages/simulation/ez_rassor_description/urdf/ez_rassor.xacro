@@ -181,10 +181,16 @@
   </link>
 
   <link name="drum_front">
-    <collision name="collision">
+    <!-- <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <robot_arm_drum />
+      </geometry>
+    </collision>-->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="0.1839" length="1.0"/>
       </geometry>
     </collision>
     <visual name="drum_front_visual">
@@ -205,10 +211,16 @@
   </link>
 
   <link name="drum_back">
-    <collision name="collision">
+    <!-- <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
       <geometry>
         <robot_arm_drum />
+      </geometry>
+    </collision> -->
+     <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="0.1839" length="1.0"/>
       </geometry>
     </collision>
     <visual name="drum_back">

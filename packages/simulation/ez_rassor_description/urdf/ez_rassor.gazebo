@@ -3,24 +3,39 @@
 <robot>
 
   <gazebo reference="base_link">
-
+    <selfCollide>0</selfCollide>
   </gazebo>
 
   <gazebo reference="arm_front">
     <material>Gazebo/Black</material>
+    <selfCollide>1</selfCollide>
   </gazebo>
 
   <gazebo reference="arm_back">
     <material>Gazebo/Black</material>
+    <selfCollide>1</selfCollide>
   </gazebo>
 
-  <!-- <gazebo reference="drum_front">
-    <material>Gazebo/Grey</material>
-  </gazebo> -->
+  <gazebo reference="left_wheel_front">
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <gazebo reference="right_wheel_front">
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <gazebo reference="left_wheel_back">
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <gazebo reference="right_wheel_back">
+    <selfCollide>1</selfCollide>
+  </gazebo>
 
-  <!-- <gazebo reference="drum_back">
-    <material>Gazebo/Grey</material>
-  </gazebo> -->
+  <gazebo reference="drum_front">
+    <selfCollide>1</selfCollide>
+  </gazebo>
+
+  <gazebo reference="drum_back">
+    <selfCollide>1</selfCollide>
+  </gazebo>
 
   <gazebo reference="stereo_camera_front">
     <sensor type="multicamera" name="stereo_camera">
