@@ -55,7 +55,7 @@ def start_node():
         # Subscribe to the requests topic and routine responses topic.
         rospy.Subscriber(
             REQUESTS_TOPIC,
-            std_msgs.msg.Int16,
+            std_msgs.msg.Int32,
             callback=enqueue_bitstring,
             callback_args=(
                 bitstring_queue,
