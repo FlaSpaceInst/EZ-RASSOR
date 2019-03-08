@@ -12,7 +12,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#5D6061"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,6 +22,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.NASA.EZApp"
     }
   }
 }
