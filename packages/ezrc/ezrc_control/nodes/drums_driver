@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """A ROS node that spins the drums on the EZRC.
 
 Written by Tiger Sachse.
@@ -124,6 +125,15 @@ try:
                                                     SLEEP_DURATION))
     rotator_process.start()
 
+    # 
+    debugging_messages = (
+        "Digging with forward drum",
+        "Dumping from forward drum",
+        "Digging with rear drum",
+        "Dumping from rear drum",
+    )
+    default_debugging_message = "Stopping both drums"
+
     # Initialize this node as a subscriber.
     rospy.init_node(NODE_NAME)
     rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
@@ -131,8 +141,7 @@ try:
                      callback=utilities.enqueue_toggles,
                      callback_args=(toggle_queue,
                                     MASK,
-                                    MESSAGE_FORMAT,
-                                    print_status))
+                                    MESSAGE_FORMAT))
     rospy.spin()
 
 except rospy.ROSInterruptException:
