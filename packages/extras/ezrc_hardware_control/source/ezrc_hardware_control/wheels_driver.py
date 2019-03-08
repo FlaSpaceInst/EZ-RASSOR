@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 
 
 # Relevant constants for this node.
-SPEED = 3500
+SPEED = 3000
 MASK = 0b111100000000
 NODE_NAME = "wheels_driver"
 REAR_LEFT_WHEEL_CHANNEL = 7
