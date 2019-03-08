@@ -3,7 +3,7 @@ import rospy
 from std_msgs.msg import Int16, Float64
 
 NODE = "drums"
-TOPIC = "ez_main_topic"
+TOPIC = "ezrassor/routine_responses"
 MASK = 0b000000001111
 
 
@@ -63,7 +63,7 @@ def drum_movement_callback(instruction):
 def main():
     print("Drums node started")
     rospy.init_node('ez_arms', anonymous = True)
-    rospy.Subscriber('ez_main_topic', Int16, drum_movement_callback)
+    rospy.Subscriber(TOPIC, Int16, drum_movement_callback)
     rospy.spin()
 
 if __name__ == '__main__':
