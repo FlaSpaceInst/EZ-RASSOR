@@ -45,8 +45,11 @@ def enqueue_toggles(instruction, additional_arguments):
 
 def print_status(message_format, toggles, messages, default_message):
     """Print status information based on the provided toggles."""
+    toggled = False
     for toggle, message in zip(toggles, messages):
         if toggle:
             print message_format.format(message)
-    else:
+            toggled = True
+
+    if not toggled:
         print message_format.format(default_message)

@@ -18,8 +18,8 @@ BRIGHTNESS = 2000
 MASK = 0b000000001111
 DRUM_SLEEP_DURATION = .2
 NODE_NAME = "drums_driver"
-REAR_DRUM_PINS = (12, 13, 14, 15)
-FORWARD_DRUM_PINS = (8, 9, 10, 11)
+REAR_DRUM_PINS = (8, 9, 10, 11)
+FORWARD_DRUM_PINS = (12, 13, 14, 15)
 HALT_MESSAGE = "Stopping both drums"
 DEBUGGING_MESSAGES = (
     "Digging with forward drum",
