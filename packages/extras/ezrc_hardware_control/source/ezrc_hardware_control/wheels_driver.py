@@ -14,17 +14,17 @@ import RPi.GPIO as GPIO
 
 
 # Relevant constants for this node.
-SPEED = 2000
+SPEED = 3500
 MASK = 0b111100000000
 NODE_NAME = "wheels_driver"
-REAR_LEFT_WHEEL_CHANNEL = 6
-REAR_RIGHT_WHEEL_CHANNEL = 7
-FRONT_LEFT_WHEEL_CHANNEL = 4
-FRONT_RIGHT_WHEEL_CHANNEL = 5
-REAR_LEFT_WHEEL_PINS = (5, 6)
-REAR_RIGHT_WHEEL_PINS = (13, 19)
-FRONT_LEFT_WHEEL_PINS = (20, 16)
-FRONT_RIGHT_WHEEL_PINS = (21, 26)
+REAR_LEFT_WHEEL_CHANNEL = 7
+FRONT_LEFT_WHEEL_CHANNEL = 5
+REAR_RIGHT_WHEEL_CHANNEL = 6
+FRONT_RIGHT_WHEEL_CHANNEL = 4
+REAR_LEFT_WHEEL_PINS = (19, 13)
+FRONT_LEFT_WHEEL_PINS = (21, 26)
+REAR_RIGHT_WHEEL_PINS = (5, 6)
+FRONT_RIGHT_WHEEL_PINS = (20, 16)
 HALT_MESSAGE = "Stopping the wheels"
 DEBUGGING_MESSAGES = (
     "Driving left side forward",
@@ -56,8 +56,8 @@ class Wheel:
             GPIO.output(self.gpio_pins[0], GPIO.HIGH)
             GPIO.output(self.gpio_pins[1], GPIO.LOW)
         elif direction == Wheel.BACKWARD:
-            GPIO.output(self.gpio_pins[0], GPIO.LOW)
             GPIO.output(self.gpio_pins[1], GPIO.HIGH)
+            GPIO.output(self.gpio_pins[0], GPIO.LOW)
         self.driver.set_pwm(self.pwm_pin, 0, SPEED)
 
     def stop(self):
