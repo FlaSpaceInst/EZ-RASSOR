@@ -10,7 +10,7 @@ from sensor_msgs.msg import Joy
 import time
 
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
+publisher = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size = 10)
 tank_turn = False
 toggle_time = 0
 

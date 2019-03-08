@@ -9,7 +9,7 @@ import std_msgs
 from std_msgs.msg import Int16, Float64
 
 NODE = "arms"
-TOPIC = "ez_main_topic"
+TOPIC = "ezrassor/routine_responses"
 MASK = 0b000011110000
 MESSAGE_FORMAT = "EZRC (arms.py): %s."
 
