@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A ROS node that moves the arms on the EZRC.
 
 Written by Tiger Sachse.
@@ -138,40 +137,41 @@ def print_status(toggles, message_format):
             print message_format % "Moving rear arm down"
 
 
-# Main entry point to this node.
-try:
+def start_node():
+    """"""
+    try:
 
-    # Create a queue and process to move the arms.
-    toggle_queue = multiprocessing.Queue()
-    movement_process = multiprocessing.Process(target=move_arms,
-                                               args=(toggle_queue,
-                                                     FORWARD_CHANNEL,
-                                                     REAR_CHANNEL,
-                                                     SHIFT_AMOUNT,
-                                                     FORWARD_VERTICAL_WAVELENGTH,
-                                                     FORWARD_GROUND_WAVELENGTH,
-                                                     REAR_VERTICAL_WAVELENGTH,
-                                                     REAR_GROUND_WAVELENGTH,
-                                                     FREQUENCY,
-                                                     SLEEP_DURATION))
-    movement_process.start()
+        # Create a queue and process to move the arms.
+        toggle_queue = multiprocessing.Queue()
+        movement_process = multiprocessing.Process(target=move_arms,
+                                                   args=(toggle_queue,
+                                                         FORWARD_CHANNEL,
+                                                         REAR_CHANNEL,
+                                                         SHIFT_AMOUNT,
+                                                         FORWARD_VERTICAL_WAVELENGTH,
+                                                         FORWARD_GROUND_WAVELENGTH,
+                                                         REAR_VERTICAL_WAVELENGTH,
+                                                         REAR_GROUND_WAVELENGTH,
+                                                         FREQUENCY,
+                                                         SLEEP_DURATION))
+        movement_process.start()
 
-    # Initialize this node as a subscriber.
-    rospy.init_node(NODE_NAME)
-    rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
-                     std_msgs.msg.Int16,
-                     callback=utilities.enqueue_toggles,
-                     callback_args=(toggle_queue,
-                                    MASK,
-                                    MESSAGE_FORMAT,
-                                    print_status))
-    rospy.spin()
+        # Initialize this node as a subscriber.
+        rospy.init_node(NODE_NAME)
+        rospy.Subscriber(MOVEMENT_TOGGLES_TOPIC,
+                         std_msgs.msg.Int16,
+                         callback=utilities.enqueue_toggles,
+                         callback_args=(toggle_queue,
+                                        MASK,
+                                        MESSAGE_FORMAT,
+                                        print_status))
+        rospy.spin()
 
-except rospy.ROSInterruptException:
-    pass
+    except rospy.ROSInterruptException:
+        pass
 
-# Finally, send a kill message (None) to the movement process and wait for it
-# to die, then exit.
-finally:
-    toggle_queue.put(None, False)
-    movement_process.join()
+    # Finally, send a kill message (None) to the movement process and wait for it
+    # to die, then exit.
+    finally:
+        toggle_queue.put(None, False)
+        movement_process.join()

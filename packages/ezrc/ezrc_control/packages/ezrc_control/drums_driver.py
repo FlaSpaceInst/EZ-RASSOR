@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A ROS node that spins the drums on the EZRC.
 
 Written by Tiger Sachse.

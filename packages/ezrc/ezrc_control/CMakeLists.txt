@@ -7,9 +7,10 @@ project(ezrc_control)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  rospy
-  std_msgs
+find_package(
+    catkin REQUIRED COMPONENTS
+        rospy
+        std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -19,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+#catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -101,11 +102,23 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ez_proto
+catkin_package()
+    #INCLUDE_DIRS include
+    #LIBRARIES ez_proto
 #  CATKIN_DEPENDS rospy std_msgs
 #  DEPENDS system_lib
+#)
+
+catkin_python_setup()
+
+catkin_install_python(
+    PROGRAMS
+        nodes/arms_driver
+        #nodes/wheels_driver
+        #nodes/drums_driver
+        #nodes/utilities.py
+    DESTINATION
+        ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ###########
@@ -114,10 +127,10 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
+#include_directories(
 # include
-  ${catkin_INCLUDE_DIRS}
-)
+#  ${catkin_INCLUDE_DIRS}
+#)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

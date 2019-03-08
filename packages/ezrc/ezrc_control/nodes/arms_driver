@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+import ezrc_control
+
+ezrc_control.start()
