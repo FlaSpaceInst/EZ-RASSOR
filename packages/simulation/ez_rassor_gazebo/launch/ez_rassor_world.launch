@@ -9,20 +9,9 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
 
-  <arg name="world" default="empty"/> 
-  <arg name="paused" default="false"/>
-  <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
-  <arg name="headless" default="false"/>
-  <arg name="debug" default="false"/>
-  
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/moon.world"/>
-    <arg name="paused" value="true"/>
-    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="gui" value="$(arg gui)"/>
-    <arg name="headless" value="$(arg headless)"/>
-    <arg name="debug" value="$(arg debug)"/>
+    <arg name="paused" value="false"/>
   </include>
 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find ez_rassor_description)/urdf/ez_rassor.xacro'"/>
@@ -44,5 +33,11 @@
     respawn="false" output="screen">
     <remap from="/joint_states" to="/ez_rassor/joint_states" />
   </node>
- 
+
+
+  <node pkg="ez_rassor_control" name="wheels_control" type="wheels.py"/>
+  <node pkg="ez_rassor_control" name="arms_control" type="arms.py"/>
+  <node pkg="ez_rassor_control" name="drums_control" type="drums.py"/>
+
+
 </launch>
