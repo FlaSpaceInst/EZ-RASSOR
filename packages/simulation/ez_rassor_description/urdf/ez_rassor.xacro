@@ -1,0 +1,498 @@
+<?xml version='1.0'?>
+
+<robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="cameraSize" value="0.05"/>
+  <xacro:property name="cameraMass" value="0.1"/>
+
+  <xacro:include filename="$(find ez_rassor_description)/urdf/ez_rassor.gazebo" />
+  <xacro:include filename="$(find ez_rassor_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find ez_rassor_description)/urdf/macros.xacro" />
+
+  <!--Below are all of the robot's Links/-->
+  <link name='base_link'>
+    <pose>0 0 0 0 0 0</pose>
+    <inertial>
+      <mass value="35.0"/>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <inertia
+          ixx="0.5" ixy="0" ixz="0"
+          iyy="1.0" iyz="0"
+          izz="0.1"
+      />
+    </inertial>
+    <collision name='collision'>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <geometry>
+        <base_unit/>
+      </geometry>
+    </collision>
+    <visual name='base_link_visual'>
+      <origin xyz="0 0 0" rpy=" 0 0 0"/>
+      <geometry>
+        <base_unit/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="left_wheel_front">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </collision>
+    <visual name="left_wheel_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="right_wheel_front">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </collision>
+    <visual name="right_wheel_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="left_wheel_back">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </collision>
+    <visual name="left_wheel_back_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="right_wheel_back">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </collision>
+    <visual name="right_wheel_back_visual">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_wheel />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+  
+  <link name="arm_front">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <drum_arm />
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <drum_arm />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link> 
+
+
+  <link name="arm_back">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+      <geometry>
+        <drum_arm />
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+      <geometry>
+        <drum_arm />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="drum_front">
+    <!-- <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_arm_drum />
+      </geometry>
+    </collision>-->
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="0.1839" length="1.0"/>
+      </geometry>
+    </collision>
+    <visual name="drum_front_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <robot_arm_drum />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <link name="drum_back">
+    <!-- <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_arm_drum />
+      </geometry>
+    </collision> -->
+     <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+      <geometry>
+        <cylinder radius="0.1839" length="1.0"/>
+      </geometry>
+    </collision>
+    <visual name="drum_back">
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <robot_arm_drum />
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <mass value="5"/>
+      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link> 
+
+  <!-- Transmissions -->
+  <transmission name="left_wheel_front_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_wheel_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_wheel_front_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="left_wheel_back_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_wheel_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_wheel_back_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="right_wheel_front_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_wheel_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_wheel_front_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="right_wheel_back_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_wheel_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_wheel_back_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="arm_front_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_front_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="arm_back_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="arm_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="arm_back_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="drum_front_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_front_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_front_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="drum_back_hinge_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="drum_back_hinge">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="drum_back_hinge_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <!-- Front Camera Added -->
+  <link name="stereo_camera_front">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+
+    <inertial>
+      <mass value="${cameraMass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <link name="stereo_camera_back">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+
+    <inertial>
+      <mass value="${cameraMass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <link name="imu_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+
+    <inertial>
+      <mass value="${cameraMass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <axis xyz="0 0 0" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+  </joint>
+
+  <joint name="camera_front_joint" type="fixed">
+    <origin xyz=".5 -0.005 0" rpy="0 0.785 0"/>
+    <axis xyz="0 1 0" />
+    <parent link="arm_front"/>
+    <child link="stereo_camera_front"/>
+  </joint>
+
+  <joint name="camera_back_joint" type="fixed">
+    <origin xyz="-.5 0.005 0" rpy="0 -0.785 3.14"/>
+    <axis xyz="0 1 0" />
+    <parent link="arm_back" />
+    <child link="stereo_camera_back"/>
+  </joint>  
+
+  <joint type="continuous" name="left_wheel_front_hinge">
+    <origin xyz="0.20 0.285 0" rpy="0 0 0"/>
+    <child link="left_wheel_front"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="right_wheel_front_hinge">
+    <origin xyz="0.20 -0.285 0" rpy="0 0 0"/>
+    <child link="right_wheel_front"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="left_wheel_back_hinge">
+    <origin xyz="-0.20 0.285 0" rpy="0 0 0"/>
+    <child link="left_wheel_back"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="right_wheel_back_hinge">
+    <origin xyz="-0.20 -0.285 0" rpy="0 0 0"/>
+    <child link="right_wheel_back"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+  
+  <joint type="continuous" name="arm_front_hinge">
+    <origin xyz="0.20 0 0" rpy="0 0 0"/>
+    <child link="arm_front"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="arm_back_hinge">
+    <origin xyz="-0.20 0 0" rpy="0 0 0"/>
+    <child link="arm_back"/>
+    <parent link="base_link"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint type="continuous" name="drum_front_hinge">
+    <origin xyz="0.388245 0 0" rpy="0 0 0"/>
+    <child link="drum_front"/>
+    <parent link="arm_front"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+  
+  <joint type="continuous" name="drum_back_hinge">
+    <origin xyz="-0.388245 0 0" rpy="0 0 0"/>
+    <child link="drum_back"/>
+    <parent link="arm_back"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+</robot>
