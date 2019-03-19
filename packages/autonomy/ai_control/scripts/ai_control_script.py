@@ -6,15 +6,7 @@ from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from ai_objects import WorldState, ROSUtility
 from auto_functions import * 
-from nav_functions import *
 from utility_functions import *
-
-# Bit String Commands
-commands = {'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b001000000000, 'right' : 0b000100000000, 
-                'front_arm_up' : 0b000010000000, 'front_arm_down' : 0b000001000000, 'back_arm_up' : 0b000000100000, 'back_arm_down' : 0b000000010000,
-                'front_dig' : 0b000000001000, 'front_dump' : 0b000000000100, 'back_dig' : 0b000000000010, 'back_dump' : 0b000000000001,
-                'arms_up' : 0b000010100000, 'arms_down' : 0b000001010000, 'null': 0b000000000000}
-
 
 def onStartUp():
     """  """
@@ -41,6 +33,8 @@ def ai_control(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
 
     while(True):
+        # Temp
+        ros_util.auto_function_command = 1
 
         while ros_util.auto_function_command == 0:
             ros_util.rate.sleep()
