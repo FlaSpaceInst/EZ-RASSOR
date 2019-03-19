@@ -1,0 +1,13 @@
+digraph G {
+"arm_back" -> "stereo_camera_back"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1807.649 sec old)\nBuffer length: 0.000 sec\n"];
+"base_link" -> "stereo_camera_front"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1807.649 sec old)\nBuffer length: 0.000 sec\n"];
+"base_link" -> "imu_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1807.649 sec old)\nBuffer length: 0.000 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1807.649"[ shape=plaintext ] ;
+ }->"arm_back";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1807.649"[ shape=plaintext ] ;
+ }->"base_link";
+}

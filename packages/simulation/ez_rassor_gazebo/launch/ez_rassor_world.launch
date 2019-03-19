@@ -17,7 +17,7 @@
   <arg name="debug" default="false"/>
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/moon.world"/>
+    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/ez_rassor.world"/>
     <arg name="paused" value="true"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
@@ -45,4 +45,7 @@
     <remap from="/joint_states" to="/ez_rassor/joint_states" />
   </node>
  
+  <!-- testing the creation of a custom frame broadcaster -->
+  <node pkg="ai_control" type="left_image_frame_broadcaster.py" name="left_image_frame_broadcaster"/>
+
 </launch>
