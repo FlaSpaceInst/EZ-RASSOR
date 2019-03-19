@@ -1,11 +1,17 @@
+"""All configuration constants for the EZRC ROS package.
+
+Written by Tiger Sachse.
+"""
 import RPi.GPIO
 
+# General constants.
 GPIO_MODE = GPIO.BCM
 DRIVER_FREQUENCY = 60
 ENABLE_GPIO_WARNINGS = False
 MESSAGE_FORMAT = "EZRC ({0}): %s."
 MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
 
+# Arms node constants.
 ARM_NODE_NAME = "arms_driver"
 ARM_MASK = 0b000011110000
 ARM_SHIFT_AMOUNT = 5
@@ -24,6 +30,7 @@ ARM_DEBUGGING_MESSAGES = (
     "Moving rear arm down",
 )
 
+# Drums node constants.
 DRUM_NODE_NAME = "drums_driver"
 DRUM_MASK = 0b000000001111
 DRUM_SLEEP_DURATION = .2
@@ -37,6 +44,7 @@ DRUM_DEBUGGING_MESSAGES = (
     "Dumping from rear drum",
 )
 
+# Wheels node constants.
 WHEEL_NODE_NAME = "wheels_driver"
 WHEEL_MASK = 0b111100000000
 WHEEL_SPEED = 2000

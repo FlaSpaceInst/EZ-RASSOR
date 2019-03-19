@@ -1,6 +1,7 @@
-""""""
-#from distutils.core import setup
-#from catkin_pkg.python_setup import generate_distutils_setup
+"""Setup the EZRC ROS package.
+
+Written by Tiger Sachse.
+"""
 import distutils.core
 import catkin_pkg.python_setup
 

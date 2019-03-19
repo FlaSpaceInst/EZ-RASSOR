@@ -1,4 +1,5 @@
-#
+# CMake installation file for the EZRC ROS package.
+# Written by Tiger Sachse.
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrc)
 find_package(

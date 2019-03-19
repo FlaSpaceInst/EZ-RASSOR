@@ -89,7 +89,7 @@ def move_arms(toggle_queue):
 
 
 def start_node():
-    """"""
+    """Initialize this node and start the action!"""
     try:
 
         # Create a queue and process to move the arms.
