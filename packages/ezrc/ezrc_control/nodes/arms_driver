@@ -1,4 +1,0 @@
-#!/usr/bin/env python
-import ezrc_control.arms_driver
-
-arms_driver.start()
