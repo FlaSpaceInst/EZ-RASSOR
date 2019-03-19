@@ -138,7 +138,7 @@ def main():
 
 	print("Controller node started")
 	global publisher
-	rospy.init_node('ez_controller', anonymous = True)
+	rospy.init_node('joy_translator', anonymous = True)
 	rate = rospy.Rate(600) # number of hz
 	
 	# Topic subscriber for reading raw controller input	

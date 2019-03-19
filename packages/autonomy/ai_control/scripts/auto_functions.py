@@ -20,14 +20,10 @@ def auto_drive(world_state, ros_util):
 def auto_drive_location(world_state, ros_util, location):
     """ Navigate to location. Avoid obstacles while moving toward location. """
 
-    
     while world_state.state_flags['positionX'] != location[0] and world_state.state_flags['positionY'] != location [1]:
         pass
-
-
-    
-
-
+        
+        
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
 
