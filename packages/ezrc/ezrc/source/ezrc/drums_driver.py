@@ -103,7 +103,7 @@ def rotate_drums(toggle_queue):
 
 
 def start_node():
-    """"""
+    """Initialize this node and start the fun!"""
     try:
 
         # Create a queue and process to rotate the drums.

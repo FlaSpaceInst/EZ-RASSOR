@@ -100,10 +100,8 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
 
 
 def start_node():
-    """"""
+    """Initialize this node and start the fun!"""
     try:
-
-        # Create a new driver for the PCA9685 board.
         driver = Adafruit_PCA9685.PCA9685()
         driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
@@ -118,7 +116,7 @@ def start_node():
             driver,
         )
 
-        # Create a queue and process to rotate the wheels.
+        # Create a queue and process that rotates the wheels.
         toggle_queue = multiprocessing.Queue()
         movement_process = multiprocessing.Process(
             target=rotate_wheels,

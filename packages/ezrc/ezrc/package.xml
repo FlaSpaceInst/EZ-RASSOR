@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- -->
+<!-- Package metadata for the EZRC ROS package, written by Tiger Sachse.-->
 <package format="2">
   <name>ezrc</name>
   <license>MIT</license>
@@ -9,11 +9,10 @@
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
-
   <exec_depend>rospy</exec_depend>
   <exec_depend>roslaunch</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>RPi.GPIO</exec_depend>
   <exec_depend>adafruit-pca9685</exec_depend>
+  <buildtool_depend>catkin</buildtool_depend>
 </package>
