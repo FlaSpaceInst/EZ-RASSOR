@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+""""""
+import ezrc
+
+ezrc.drums_driver.start_node()

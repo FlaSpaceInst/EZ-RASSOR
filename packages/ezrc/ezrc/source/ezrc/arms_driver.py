@@ -96,7 +96,9 @@ def start_node():
         toggle_queue = multiprocessing.Queue()
         movement_process = multiprocessing.Process(
             target=move_arms,
-            args=(toggle_queue),
+            args=(
+                toggle_queue,
+            ),
         )
         movement_process.start()
 
@@ -121,8 +123,8 @@ def start_node():
     except rospy.ROSInterruptException:
         pass
 
-    # Finally, send a kill message (None) to the movement process and wait for it
-    # to die, then exit.
+    # Finally, send a kill message (None) to the movement process and wait for
+    # it to die, then exit.
     finally:
         toggle_queue.put(None, False)
         movement_process.join()

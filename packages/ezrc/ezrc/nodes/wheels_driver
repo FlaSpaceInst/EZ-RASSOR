@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+""""""
+import ezrc
+
+ezrc.wheels_driver.start_node()
