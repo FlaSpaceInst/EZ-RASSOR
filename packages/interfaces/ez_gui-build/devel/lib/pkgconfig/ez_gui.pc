@@ -1,0 +1,8 @@
+prefix=/home/hansuto/mybot/src/ez_gui-build/devel
+
+Name: ez_gui
+Description: Description of ez_gui
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/hansuto/mybot/src/ez_gui-build/devel/lib 
+Requires: 
