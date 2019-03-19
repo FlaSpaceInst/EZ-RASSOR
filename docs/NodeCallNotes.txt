@@ -1,7 +1,12 @@
 ROS_NAMESPACE=ez_rassor/front_camera rosrun stereo_image_proc stereo_image_proc
 
-rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
-
-rosrun viso2_ros stereo_odometer stereo:=/ez_rassor/front_camera image:=/image_rect_color
-
+## To run visual odometry ##
+  1) Start the tf broadcaster :
+  
+    roslaunch viso2_ros start_tf.launch
+    
+  2) Start up viso2_ros with the following two commands:
+  
+    rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
+    rosrun viso2_ros stereo_odometer stereo:=/ez_rassor/front_camera image:=/image_rect_color
 
