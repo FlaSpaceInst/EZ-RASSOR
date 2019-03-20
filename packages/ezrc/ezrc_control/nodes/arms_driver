@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the arms_driver node in the ezrc_control module.
+
+Written by Tiger Sachse.
+"""
+import ezrc_control
+
+ezrc_control.arms_driver.start_node()

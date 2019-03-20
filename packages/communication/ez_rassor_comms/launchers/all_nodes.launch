@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all nodes in the ez_rassor_comms ROS package, written by Tiger Sachse. -->
+<launch>
+    <node name="http_server"
+          pkg="ez_rassor_comms"
+          type="http_server"
+          output="screen"
+    />
+    <node name="request_switcher"
+          pkg="ez_rassor_comms"
+          type="request_switcher"
+          output="screen"
+    />
+</launch>
