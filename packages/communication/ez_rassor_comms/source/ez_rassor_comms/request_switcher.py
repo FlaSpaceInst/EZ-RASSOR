@@ -84,6 +84,7 @@ def start_node():
             try:
                 topic, bitstring = bitstring_queue.get(False)
             except Queue.Empty:
+                rospy.rostime.wallsleep(0.5)
                 continue
 
             # Divide the bitstring into its components.
@@ -98,21 +99,24 @@ def start_node():
             # that the bitstring came from.
             if ignoring_user:
                 if topic == constants.REQUESTS_TOPIC:
-                    continue
+                    pass
                 elif kill_toggle:
                     ignoring_user = False
                 else:
                     movement_toggles_publisher.publish(movement_toggles)
             else:
                 if topic == constants.ROUTINE_RESPONSES_TOPIC:
-                    continue
+                    pass
                 elif ai_toggles:
                     ignoring_user = True
                     routine_toggles_publisher.publish(ai_toggles)
                 else:
                     movement_toggles_publisher.publish(movement_toggles)
+            rospy.rostime.wallsleep(0.5)
+
     except KeyboardInterrupt:
         rospy.core.logdebug("keyboard interrupt, shutting down")
         rospy.core.signal_shutdown("keyboard_interrupt")
+
     except rospy.ROSInterruptException:
         pass
