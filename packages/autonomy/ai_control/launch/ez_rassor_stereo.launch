@@ -1,0 +1,13 @@
+
+this still needs work
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<arg name="image" value="image_rect"/>
+	<arg name="stereo" value="ez_rassor/front_camera"/>
+	<group ns="ez_rassor/front_camera">
+		<node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc"/>
+	</group>
+	
+	<node pkg="image_view" type="stereo_view" name="stereo_view" args="-stereo $(arg stereo) -image $(arg image)" />
+	<node pkg="ai_control" type="distance_map.py" name="distance_map"/>
+</launch>

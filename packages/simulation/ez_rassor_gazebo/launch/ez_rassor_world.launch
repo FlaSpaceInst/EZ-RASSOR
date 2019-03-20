@@ -45,7 +45,7 @@
     <remap from="/joint_states" to="/ez_rassor/joint_states" />
   </node>
 
-
+  <node pkg="ai_control" name="left_image_frame_broadcaster" type="left_image_frame_broadcaster.py" />
   <node pkg="ez_rassor_control" name="wheels_control" type="wheels.py"/>
   <node pkg="ez_rassor_control" name="arms_control" type="arms.py"/>
   <node pkg="ez_rassor_control" name="drums_control" type="drums.py"/>
