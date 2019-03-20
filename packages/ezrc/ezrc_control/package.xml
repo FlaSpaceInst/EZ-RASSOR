@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Package metadata for the ezrc_control ROS package, written by Tiger Sachse.-->
+<!-- Package metadata for the ezrc_control ROS package, written by Tiger Sachse. -->
 <package format="2">
   <name>ezrc_control</name>
   <license>MIT</license>
