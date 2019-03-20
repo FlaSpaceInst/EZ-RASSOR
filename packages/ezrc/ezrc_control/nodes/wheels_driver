@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the wheels_driver node in the ezrc_control module.
+
+Written by Tiger Sachse.
+"""
+import ezrc_control
+
+ezrc_control.wheels_driver.start_node()

@@ -1,20 +1,20 @@
-#!/usr/bin/env python
 """Listen for and route POST requests to the ROS graph's requests topic.
 
 The HTTP server will not stop until a final POST request is received after
 ROS has shut down.
+
 Written by Tiger Sachse and Camilo Lozano.
 """
 import json
 import rospy
 import std_msgs
+import constants
 import BaseHTTPServer
 
 
+# Some module-specific constants for this node.
 PORT = 8080
-QUEUE_SIZE = 10
 NODE_NAME = "http_server"
-REQUESTS_TOPIC = "/ezrassor/requests"
 
 
 def get_custom_handler(requests_publisher):
@@ -38,19 +38,25 @@ def get_custom_handler(requests_publisher):
     return CustomRequestHandler
 
 
-# Entry point to this node.
-try:
-    rospy.init_node(NODE_NAME)
-    requests_publisher = rospy.Publisher(REQUESTS_TOPIC,
-                                         std_msgs.msg.Int16,
-                                         queue_size=QUEUE_SIZE)
-    
-    # Create an HTTP server.
-    server = BaseHTTPServer.HTTPServer(("", PORT),
-                                       get_custom_handler(requests_publisher))
+def start_node():
+    """Start the node and let the fun begin!"""
+    try:
+        rospy.init_node(NODE_NAME)
+        requests_publisher = rospy.Publisher(
+            constants.REQUESTS_TOPIC,
+            std_msgs.msg.Int16,
+            queue_size=constants.QUEUE_SIZE,
+        )
+        
+        # Create an HTTP server.
+        server = BaseHTTPServer.HTTPServer(
+            ("", PORT),
+            get_custom_handler(requests_publisher),
+        )
 
-    # Check for server requests while ROS is running.
-    while not rospy.core.is_shutdown():
-        server.handle_request()
-except rospy.ROSInterruptException:
-    pass
+        # Check for server requests while ROS is running.
+        while not rospy.core.is_shutdown():
+            server.handle_request()
+            rospy.rostime.wallsleep(0.5)
+    except rospy.ROSInterruptException:
+        pass
