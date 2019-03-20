@@ -8,6 +8,7 @@ from ai_control.msg import ObstacleDetection
 
 
 class WorldState():
+    """ World State Object Representing All Sensor Data """
 
     def __init__(self):
         self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
