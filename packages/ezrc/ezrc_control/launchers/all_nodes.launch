@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all nodes in the ezrc_control ROS package, written by Tiger Sachse. -->
+<launch>
+    <node name="drums_driver" pkg="ezrc_control" type="drums_driver" output="screen"/>
+    <node name="arms_driver" pkg="ezrc_control" type="arms_driver" output="screen"/>
+    <node name="wheels_driver" pkg="ezrc_control" type="wheels_driver" output="screen"/>
+</launch>
