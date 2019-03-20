@@ -14,7 +14,8 @@ import std_msgs
 import constants
 
 
-# This node's name.
+# This node's constants.
+SPIN_SLEEP_DURATION = 0.5
 NODE_NAME = "request_switcher"
 
 
@@ -84,7 +85,7 @@ def start_node():
             try:
                 topic, bitstring = bitstring_queue.get(False)
             except Queue.Empty:
-                rospy.rostime.wallsleep(0.5)
+                rospy.rostime.wallsleep(SPIN_SLEEP_DURATION)
                 continue
 
             # Divide the bitstring into its components.
@@ -112,7 +113,7 @@ def start_node():
                     routine_toggles_publisher.publish(ai_toggles)
                 else:
                     movement_toggles_publisher.publish(movement_toggles)
-            rospy.rostime.wallsleep(0.5)
+            rospy.rostime.wallsleep(SPIN_SLEEP_DURATION)
 
     except KeyboardInterrupt:
         rospy.core.logdebug("keyboard interrupt, shutting down")
