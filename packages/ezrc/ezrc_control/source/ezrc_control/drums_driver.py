@@ -13,6 +13,21 @@ import multiprocessing
 import RPi.GPIO as GPIO
 
 
+# Relevant constants for this node.
+NODE_NAME = "drums_driver"
+MASK = 0b000000001111
+DRUM_SLEEP_DURATION = .2
+REAR_DRUM_PINS = (13, 19, 26)
+FORWARD_DRUM_PINS = (20, 21, 16)
+HALT_MESSAGE = "Stopping both drums"
+DEBUGGING_MESSAGES = (
+    "Digging with forward drum",
+    "Dumping from forward drum",
+    "Digging with rear drum",
+    "Dumping from rear drum",
+)
+
+
 def rotate_drums(toggle_queue):
     """Rotate the drums of the EZRC.
     
@@ -26,8 +41,8 @@ def rotate_drums(toggle_queue):
     GPIO.setmode(constants.GPIO_MODE)
     GPIO.setwarnings(constants.ENABLE_GPIO_WARNINGS)
     pins = itertools.chain(
-        constants.FORWARD_DRUM_PINS,
-        constants.REAR_DRUM_PINS,
+        FORWARD_DRUM_PINS,
+        REAR_DRUM_PINS,
     )
     for pin in pins:
         GPIO.setup(pin, GPIO.OUT)
@@ -42,22 +57,10 @@ def rotate_drums(toggle_queue):
     # These iterators track the current pin that should be lit up to simulate
     # the rotation of a drum. The itertools.cycle iterable makes it easy to
     # loop through a tuple. :)
-    rear_iterator = iter(itertools.cycle(constants.REAR_DRUM_PINS))
-    forward_iterator = iter(itertools.cycle(constants.FORWARD_DRUM_PINS))
-    reversed_rear_iterator = iter(
-        itertools.cycle(
-            reversed(
-                constants.REAR_DRUM_PINS,
-            ),
-        ),
-    )
-    reversed_forward_iterator = iter(
-        itertools.cycle(
-            reversed(
-                constants.FORWARD_DRUM_PINS,
-            ),
-        ),
-    )
+    rear_iterator = iter(itertools.cycle(REAR_DRUM_PINS))
+    forward_iterator = iter(itertools.cycle(FORWARD_DRUM_PINS))
+    reversed_rear_iterator = iter(itertools.cycle(reversed(REAR_DRUM_PINS)))
+    reversed_forward_iterator = iter(itertools.cycle(reversed(FORWARD_DRUM_PINS)))
 
     while True:
 
@@ -87,18 +90,12 @@ def rotate_drums(toggle_queue):
         # If any pins were turned on this iteration, sleep for some duration
         # and turn off all pins after waking again.
         if any((dig_forward, dump_forward, dig_rear, dump_rear)):
-            time.sleep(constants.DRUM_SLEEP_DURATION)
-            utilities.turn_off_pins(
-                constants.FORWARD_DRUM_PINS,
-                constants.REAR_DRUM_PINS,
-            )
-            time.sleep(constants.DRUM_SLEEP_DURATION / 2)
+            time.sleep(DRUM_SLEEP_DURATION)
+            utilities.turn_off_pins(FORWARD_DRUM_PINS, REAR_DRUM_PINS)
+            time.sleep(DRUM_SLEEP_DURATION / 2)
 
     # Clean up after the loop is broken.
-    utilities.turn_off_pins(
-        constants.FORWARD_DRUM_PINS,
-        constants.REAR_DRUM_PINS,
-    )
+    utilities.turn_off_pins(FORWARD_DRUM_PINS, REAR_DRUM_PINS)
 
 
 def start_node():
@@ -116,19 +113,20 @@ def start_node():
         rotator_process.start()
 
         # Initialize this node as a subscriber.
-        rospy.init_node(constants.DRUM_NODE_NAME)
+        rospy.init_node(NODE_NAME)
         rospy.Subscriber(
             constants.MOVEMENT_TOGGLES_TOPIC,
             std_msgs.msg.Int16,
             callback=utilities.enqueue_toggles,
             callback_args=(
                 toggle_queue,
-                constants.DRUM_MASK,
+                MASK,
                 constants.MESSAGE_FORMAT.format(
-                    constants.DRUM_NODE_NAME,
+                    NODE_NAME,
+                    "{0}",
                 ),
-                constants.DRUM_DEBUGGING_MESSAGES,
-                constants.DRUM_HALT_MESSAGE,
+                DEBUGGING_MESSAGES,
+                HALT_MESSAGE,
             ),
         )
         rospy.spin()

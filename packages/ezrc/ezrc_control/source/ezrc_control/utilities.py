@@ -2,6 +2,7 @@
 
 Written by Tiger Sachse.
 """
+import constants
 import RPi.GPIO as GPIO
 
 
@@ -46,6 +47,6 @@ def print_status(message_format, toggles, messages, default_message):
     """Print status information based on the provided toggles."""
     for toggle, message in zip(toggles, messages):
         if toggle:
-            print message_format % message
+            print message_format.format(message)
     else:
-        print message_format % default_message
+        print message_format.format(default_message)

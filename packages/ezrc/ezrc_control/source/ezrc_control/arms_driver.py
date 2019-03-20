@@ -12,6 +12,26 @@ import multiprocessing
 import Adafruit_PCA9685
 
 
+# Relevant constants for this node.
+NODE_NAME = "arms_driver"
+MASK = 0b000011110000
+ARM_SHIFT_AMOUNT = 5
+REAR_ARM_CHANNEL = 12
+FORWARD_ARM_CHANNEL = 15
+ARM_SLEEP_DURATION = .012
+REAR_ARM_GROUND_WAVELENGTH = 325
+REAR_ARM_VERTICAL_WAVELENGTH = 700
+FORWARD_ARM_GROUND_WAVELENGTH = 675
+FORWARD_ARM_VERTICAL_LENGTH = 325
+HALT_MESSAGE = "Stopping both arms"
+DEBUGGING_MESSAGES = (
+    "Moving forward arm up",
+    "Moving forward arm down",
+    "Moving rear arm up",
+    "Moving rear arm down",
+)
+
+
 def move_arms(toggle_queue):
     """Move the arms of the EZRC.
     
@@ -33,10 +53,10 @@ def move_arms(toggle_queue):
     down_forward = False
 
     # Initialize both arms to be vertical.
-    rear_arm_wavelength = constants.REAR_ARM_VERTICAL_WAVELENGTH
-    forward_arm_wavelength = constants.FORWARD_ARM_VERTICAL_WAVELENGTH
-    driver.set_pwm(rear_channel, 0, rear_arm_wavelength)
-    driver.set_pwm(forward_channel, 0, forward_arm_wavelength)
+    rear_arm_wavelength = REAR_ARM_VERTICAL_WAVELENGTH
+    forward_arm_wavelength = FORWARD_ARM_VERTICAL_LENGTH
+    driver.set_pwm(REAR_ARM_CHANNEL, 0, rear_arm_wavelength)
+    driver.set_pwm(FORWARD_ARM_CHANNEL, 0, forward_arm_wavelength)
 
     while True:
 
@@ -58,33 +78,34 @@ def move_arms(toggle_queue):
         # steady at the boundary. Note that the apparent invertedness of the
         # forward servo is clear in the code below.
         if up_forward:
-            forward_arm_wavelength -= shift_amount
-            if forward_arm_wavelength < constants.FORWARD_ARM_VERTICAL_WAVELENGTH:
-                forward_arm_wavelength = constants.FORWARD_ARM_VERTICAL_WAVELENGTH
-            driver.set_pwm(forward_channel, 0, forward_arm_wavelength)
+            forward_arm_wavelength -= ARM_SHIFT_AMOUNT
+            if forward_arm_wavelength < FORWARD_ARM_VERTICAL_LENGTH:
+                forward_arm_wavelength = FORWARD_ARM_VERTICAL_LENGTH
+            driver.set_pwm(FORWARD_ARM_CHANNEL, 0, forward_arm_wavelength)
         if down_forward:
-            forward_arm_wavelength += shift_amount
-            if forward_arm_wavelength > constants.FORWARD_ARM_GROUND_WAVELENGTH:
-                forward_arm_wavelength = constants.FORWARD_ARM_GROUND_WAVELENGTH
-            driver.set_pwm(forward_channel, 0, forward_arm_wavelength)
+            forward_arm_wavelength += ARM_SHIFT_AMOUNT
+            if forward_arm_wavelength > FORWARD_ARM_GROUND_WAVELENGTH:
+                forward_arm_wavelength = FORWARD_ARM_GROUND_WAVELENGTH
+            driver.set_pwm(FORWARD_ARM_CHANNEL, 0, forward_arm_wavelength)
+
         if up_rear:
-            rear_arm_wavelength += shift_amount
-            if rear_arm_wavelength > constants.REAR_ARM_VERTICAL_WAVELENGTH:
-                rear_arm_wavelength = constants.REAR_ARM_VERTICAL_WAVELENGTH
-            driver.set_pwm(rear_channel, 0, rear_arm_wavelength)
+            rear_arm_wavelength += ARM_SHIFT_AMOUNT
+            if rear_arm_wavelength > REAR_ARM_VERTICAL_WAVELENGTH:
+                rear_arm_wavelength = REAR_ARM_VERTICAL_WAVELENGTH
+            driver.set_pwm(REAR_ARM_CHANNEL, 0, rear_arm_wavelength)
         if down_rear:
-            rear_arm_wavelength -= shift_amount
-            if rear_arm_wavelength < constants.REAR_ARM_GROUND_WAVELENGTH:
-                rear_arm_wavelength = constants.REAR_ARM_GROUND_WAVELENGTH
-            driver.set_pwm(rear_channel, 0, rear_arm_wavelength)
+            rear_arm_wavelength -= ARM_SHIFT_AMOUNT
+            if rear_arm_wavelength < REAR_ARM_GROUND_WAVELENGTH:
+                rear_arm_wavelength = REAR_ARM_GROUND_WAVELENGTH
+            driver.set_pwm(REAR_ARM_CHANNEL, 0, rear_arm_wavelength)
 
         # If either arm moved this iteration, sleep for some duration.
         if any((up_forward, down_forward, up_rear, down_rear)):
-            time.sleep(constants.ARM_SLEEP_DURATION)
+            time.sleep(ARM_SLEEP_DURATION)
 
     # Clean up after the loop is broken. 
-    driver.set_pwm(rear_channel, 0, constants.REAR_ARM_VERTICAL_WAVELENGTH)
-    driver.set_pwm(forward_channel, 0, constants.FORWARD_ARM_VERTICAL_WAVELENGTH)
+    driver.set_pwm(REAR_ARM_CHANNEL, 0, REAR_ARM_VERTICAL_WAVELENGTH)
+    driver.set_pwm(FORWARD_ARM_CHANNEL, 0, FORWARD_ARM_VERTICAL_LENGTH)
 
 
 def start_node():
@@ -102,19 +123,20 @@ def start_node():
         movement_process.start()
 
         # Initialize this node as a subscriber.
-        rospy.init_node(constants.ARM_NODE_NAME)
+        rospy.init_node(NODE_NAME)
         rospy.Subscriber(
             constants.MOVEMENT_TOGGLES_TOPIC,
             std_msgs.msg.Int16,
             callback=utilities.enqueue_toggles,
             callback_args=(
                 toggle_queue,
-                constants.ARM_MASK,
+                MASK,
                 constants.MESSAGE_FORMAT.format(
-                    constants.ARM_NODE_NAME,
+                    NODE_NAME,
+                    "{0}",
                 ),
-                constants.ARM_DEBUGGING_MESSAGES,
-                constants.ARM_HALT_MESSAGE,
+                DEBUGGING_MESSAGES,
+                HALT_MESSAGE,
             ),
         )
         rospy.spin()

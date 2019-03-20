@@ -13,6 +13,23 @@ import Adafruit_PCA9685
 import RPi.GPIO as GPIO
 
 
+# Relevant constants for this node.
+NODE_NAME = "wheels_driver"
+MASK = 0b111100000000
+SPEED = 2000
+LEFT_WHEEL_CHANNEL = 5
+RIGHT_WHEEL_CHANNEL = 4
+LEFT_WHEEL_PINS = (17, 18)
+RIGHT_WHEEL_PINS = (22, 27)
+HALT_MESSAGE = "Stopping the wheels"
+DEBUGGING_MESSAGES = (
+    "Driving left side forward",
+    "Driving left side backward",
+    "Driving right side forward",
+    "Driving right side backward",
+)
+
+
 class Wheel:
     """It rotates forwards and backwards!"""
     FORWARD = True
@@ -23,7 +40,6 @@ class Wheel:
         self.driver = driver
         self.pwm_pin = pwm_pin
         self.gpio_pins = gpio_pins
-        self.speed = constants.WHEEL_SPEED
 
         GPIO.setmode(constants.GPIO_MODE)
         GPIO.setwarnings(constants.ENABLE_GPIO_WARNINGS)
@@ -38,7 +54,7 @@ class Wheel:
         elif direction == Wheel.BACKWARD:
             GPIO.output(self.gpio_pins[0], GPIO.LOW)
             GPIO.output(self.gpio_pins[1], GPIO.HIGH)
-        driver.set_pwm(self.pwm_pin, 0, self.speed)
+        driver.set_pwm(self.pwm_pin, 0, SPEED)
 
     def stop(self):
         """Stop rotating!"""
@@ -78,16 +94,16 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
                 left_forward, left_backward, right_forward, right_backward = toggles
 
                 if left_forward:
-                    left_wheel.start(Wheel.FORWARD)
+                    left_wheel.start(left_wheel.FORWARD)
                 elif left_backward:
-                    left_wheel.start(Wheel.BACKWARD)
+                    left_wheel.start(left_wheel.BACKWARD)
                 else:
                     left_wheel.stop()
 
                 if right_forward:
-                    right_wheel.start(Wheel.FORWARD)
+                    right_wheel.start(right_wheel.FORWARD)
                 elif right_backward:
-                    right_wheel.start(Wheel.BACKWARD)
+                    right_wheel.start(right_wheel.BACKWARD)
                 else:
                     right_wheel.stop()
         except Queue.Empty:
@@ -105,13 +121,13 @@ def start_node():
         driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
         left_wheel = Wheel(
-            constants.LEFT_WHEEL_CHANNEL,
-            constants.LEFT_WHEEL_PINS,
+            LEFT_WHEEL_CHANNEL,
+            LEFT_WHEEL_PINS,
             driver,
         )
         right_wheel = Wheel(
-            constants.RIGHT_WHEEL_CHANNEL,
-            constants.RIGHT_WHEEL_PINS,
+            RIGHT_WHEEL_CHANNEL,
+            RIGHT_WHEEL_PINS,
             driver,
         )
 
@@ -128,19 +144,20 @@ def start_node():
         movement_process.start()
 
         # Initialize this node as a subscriber.
-        rospy.init_node(constants.WHEEL_NODE_NAME)
+        rospy.init_node(NODE_NAME)
         rospy.Subscriber(
             constants.MOVEMENT_TOGGLES_TOPIC,
             std_msgs.msg.Int16,
             callback=utilities.enqueue_toggles,
             callback_args=(
                 toggle_queue,
-                constants.WHEEL_MASK,
+                MASK,
                 constants.MESSAGE_FORMAT.format(
-                    constants.WHEEL_NODE_NAME,
+                    NODE_NAME,
+                    "{0}",
                 ),
-                constants.WHEEL_DEBUGGING_MESSAGES,
-                constants.WHEEL_HALT_MESSAGE,
+                DEBUGGING_MESSAGES,
+                HALT_MESSAGE,
             ),
         )
         rospy.spin()
