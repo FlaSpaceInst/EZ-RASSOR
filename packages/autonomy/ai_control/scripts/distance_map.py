@@ -71,6 +71,9 @@ def callback(data):
     This is done by performing a Hadamard Product (element-wise) on the disparty 
     matrix.  
     """
+    print("Focal Length")
+    print(data.f)
+    print(data.T)
     depth_mat = np.multiply((data.f * data.T), np.reciprocal(cv_image.astype("float64")))
 
     """Remove all infinite values and nan values from distance matrix that may be present."""
