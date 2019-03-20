@@ -1,8 +1,0 @@
-#!/usr/bin/env python
-"""Call the drums_driver node in the EZRC module.
-
-Written by Tiger Sachse.
-"""
-import ezrc
-
-ezrc.drums_driver.start_node()
