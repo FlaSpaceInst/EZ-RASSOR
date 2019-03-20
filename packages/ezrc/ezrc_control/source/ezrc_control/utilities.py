@@ -1,8 +1,8 @@
 """A collection of utilities that are shared among all moving parts nodes.
 
 Written by Tiger Sachse.
-Part of the EZ-RASSOR suite of software.
 """
+import constants
 import RPi.GPIO as GPIO
 
 
@@ -35,9 +35,18 @@ def enqueue_toggles(instruction, additional_arguments):
     Arguments after instruction are passed as a single tuple because of how ROS
     callbacks work.
     """
-    toggle_queue, mask, message_format, print_status = additional_arguments
+    toggle_queue, mask, message_format, messages, default_message = additional_arguments
 
     toggles = get_toggles(instruction.data, mask)
     toggle_queue.put(toggles, False)
 
-    print_status(toggles, message_format)
+    print_status(message_format, toggles, messages, default_message)
+
+
+def print_status(message_format, toggles, messages, default_message):
+    """Print status information based on the provided toggles."""
+    for toggle, message in zip(toggles, messages):
+        if toggle:
+            print message_format.format(message)
+    else:
+        print message_format.format(default_message)

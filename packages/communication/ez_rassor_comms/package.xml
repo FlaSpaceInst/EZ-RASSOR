@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
-<!-- Package metadata for the ezrc_control ROS package, written by Tiger Sachse. -->
+<!-- Package metadata for the ez_rassor_comms ROS package, written by Tiger Sachse. -->
 <package format="2">
-  <name>ezrc_control</name>
+  <name>ez_rassor_comms</name>
   <license>MIT</license>
   <version>1.0.0</version>
-  <description>Control the EZRC hardware!</description>
+  <description>Route communication data on the EZ-RASSOR.</description>
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
 
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <exec_depend>RPi.GPIO</exec_depend>
   <exec_depend>roslaunch</exec_depend>
-  <exec_depend>adafruit-pca9685</exec_depend>
   <buildtool_depend>catkin</buildtool_depend>
 </package>
