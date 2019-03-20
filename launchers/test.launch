@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find ezrc_control)/launch/all_nodes.launch"/>
+    <include file="$(find ez_rassor_comms)/launch/all_nodes.launch"/>
+</launch>

@@ -6,6 +6,7 @@
     <selfCollide>0</selfCollide>
   </gazebo>
 
+  <!-- Arms and Drums -->
   <gazebo reference="arm_front">
     <material>Gazebo/Black</material>
     <selfCollide>1</selfCollide>
@@ -16,27 +17,58 @@
     <selfCollide>1</selfCollide>
   </gazebo>
 
-  <gazebo reference="left_wheel_front">
-    <selfCollide>1</selfCollide>
-  </gazebo>
-  <gazebo reference="right_wheel_front">
-    <selfCollide>1</selfCollide>
-  </gazebo>
-  <gazebo reference="left_wheel_back">
-    <selfCollide>1</selfCollide>
-  </gazebo>
-  <gazebo reference="right_wheel_back">
-    <selfCollide>1</selfCollide>
+  <gazebo reference="drum_front_hinge">
+   <sensor name="force_torque" type="force_torque">
+    <update_rate>1</update_rate>
+   </sensor> 
   </gazebo>
 
   <gazebo reference="drum_front">
     <selfCollide>1</selfCollide>
   </gazebo>
-
+  
   <gazebo reference="drum_back">
     <selfCollide>1</selfCollide>
   </gazebo>
 
+  <!-- Wheels -->
+  <gazebo reference="left_wheel_front">
+    <selfCollide>1</selfCollide>    
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/> 
+  </gazebo>
+  
+  <gazebo reference="left_wheel_back">
+    <selfCollide>1</selfCollide>    
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/> 
+  </gazebo>
+
+  <gazebo reference="right_wheel_front">
+    <selfCollide>1</selfCollide>    
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/> 
+  </gazebo>
+  
+  <gazebo reference="right_wheel_back">
+    <selfCollide>1</selfCollide>
+    <mu1 value=".8"/>
+    <mu2 value=".8"/>
+    <kp  value="10000000.0" />
+    <kd  value="1.0" />
+    <fdir1 value="1 0 0"/> 
+  </gazebo>
+
+  <!-- Cameras -->
   <gazebo reference="stereo_camera_front">
     <sensor type="multicamera" name="stereo_camera">
       <update_rate>30.0</update_rate>
@@ -182,42 +214,6 @@
       <robotNamespace>/ez_rassor</robotNamespace>
       <!-- <legacyModeNS>true</legacyModeNS> -->
     </plugin>
-  </gazebo>
-
-  <gazebo reference="$right_wheel_back">
-    <mu1 value=".8"/>
-    <mu2 value=".8"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Red</material>
-  </gazebo>
-
-  <gazebo reference="$right_wheel_front">
-    <mu1 value=".8"/>
-    <mu2 value=".8"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Red</material>
-  </gazebo>
-
-  <gazebo reference="$left_wheel_back">
-    <mu1 value=".8"/>
-    <mu2 value=".8"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Red</material>
-  </gazebo>
-
-  <gazebo reference="$right_wheel_back">
-    <mu1 value=".8"/>
-    <mu2 value=".8"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
-    <fdir1 value="1 0 0"/>
-    <material>Gazebo/Red</material>
   </gazebo>
 
 </robot>
