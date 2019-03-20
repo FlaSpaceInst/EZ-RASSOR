@@ -1,6 +1,7 @@
 <?xml version='1.0'?>
 
 <robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Inertia Tensors Used: https://en.wikipedia.org/wiki/List_of_moments_of_inertia#List_of_3D_inertia_tensors -->
     <macro name="cylinder_inertia" params="m r h">
     <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
         iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
@@ -20,6 +21,21 @@
         iyy="${2*m*r*r/5}" iyz = "0"
         izz="${2*m*r*r/5}"
     />
+    </macro>
+
+    <macro name="slender_rod_along_y_inertia" params="m l mass_about">
+        <if value="${mass_about == 'end'}"> 
+            <inertia  
+                ixx="${1/3*m*(l*l)}" ixy = "0"
+                ixz = "0" iyy="0" 
+                iyz = "0" izz="${1/3*m*(l*l)}" />
+        </if> 
+        <unless value="${mass_about == 'center'}"> 
+            <inertia  
+                ixx="${1/12*m*(l*l)}" ixy = "0"
+                ixz = "0" iyy="0" 
+                iyz = "0" izz="${1/12*m*(l*l)}" />
+        </unless> 
     </macro>
 
     <macro name="robot_arm">
