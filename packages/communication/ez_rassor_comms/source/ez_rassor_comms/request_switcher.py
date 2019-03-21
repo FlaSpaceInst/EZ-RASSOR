@@ -14,8 +14,7 @@ import std_msgs
 import constants
 
 
-# This node's constants.
-SPIN_SLEEP_DURATION = 0.001
+# This node's name.
 NODE_NAME = "request_switcher"
 
 
@@ -81,12 +80,8 @@ def start_node():
         ignoring_user = False
         while not rospy.core.is_shutdown():
 
-            # If there is something new in the bitstring queue, dequeue it.
-            try:
-                topic, bitstring = bitstring_queue.get(False)
-            except Queue.Empty:
-                rospy.rostime.wallsleep(SPIN_SLEEP_DURATION)
-                continue
+            # Wait for something to appear in the queue.
+            topic, bitstring = bitstring_queue.get()
 
             # Divide the bitstring into its components.
             kill_toggle = get_masked_bits(bitstring.data, constants.AI_KILL_MASK)
@@ -113,7 +108,6 @@ def start_node():
                     routine_toggles_publisher.publish(ai_toggles)
                 else:
                     movement_toggles_publisher.publish(movement_toggles)
-            rospy.rostime.wallsleep(SPIN_SLEEP_DURATION)
 
     except KeyboardInterrupt:
         rospy.core.logdebug("keyboard interrupt, shutting down")
