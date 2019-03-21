@@ -57,6 +57,5 @@ def start_node():
         # Check for server requests while ROS is running.
         while not rospy.core.is_shutdown():
             server.handle_request()
-            rospy.rostime.wallsleep(0.5)
     except rospy.ROSInterruptException:
         pass
