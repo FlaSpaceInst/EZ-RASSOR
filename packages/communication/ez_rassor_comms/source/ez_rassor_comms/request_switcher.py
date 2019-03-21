@@ -79,12 +79,12 @@ def start_node():
         
         ignoring_user = False
         while not rospy.core.is_shutdown():
-
+            print("TEST")
             # If there is something new in the bitstring queue, dequeue it.
             try:
-                topic, bitstring = bitstring_queue.get(False)
+                topic, bitstring = bitstring_queue.get()
             except Queue.Empty:
-                rospy.rostime.wallsleep(0.5)
+                #rospy.rostime.wallsleep(0.001)
                 continue
 
             # Divide the bitstring into its components.
@@ -112,7 +112,7 @@ def start_node():
                     routine_toggles_publisher.publish(ai_toggles)
                 else:
                     movement_toggles_publisher.publish(movement_toggles)
-            rospy.rostime.wallsleep(0.5)
+            #rospy.rostime.wallsleep(0.001)
 
     except KeyboardInterrupt:
         rospy.core.logdebug("keyboard interrupt, shutting down")
