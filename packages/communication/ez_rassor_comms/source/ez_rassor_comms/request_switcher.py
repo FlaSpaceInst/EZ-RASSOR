@@ -15,7 +15,7 @@ import constants
 
 
 # This node's constants.
-SPIN_SLEEP_DURATION = 0.5
+SPIN_SLEEP_DURATION = 0.001
 NODE_NAME = "request_switcher"
 
 
