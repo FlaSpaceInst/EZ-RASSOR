@@ -14,7 +14,6 @@ import BaseHTTPServer
 
 # Some module-specific constants for this node.
 PORT = 8080
-SPIN_SLEEP_DURATION = 0.5
 NODE_NAME = "http_server"
 
 
@@ -58,6 +57,5 @@ def start_node():
         # Check for server requests while ROS is running.
         while not rospy.core.is_shutdown():
             server.handle_request()
-            rospy.rostime.wallsleep(SPIN_SLEEP_DURATION)
     except rospy.ROSInterruptException:
         pass
