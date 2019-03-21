@@ -14,7 +14,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="paused" default="true"/>
+  <arg name="paused" default="false"/>
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="$(arg paused)"/>
@@ -49,6 +49,7 @@
   <node pkg="ez_rassor_control" name="wheels_control" type="wheels.py"/>
   <node pkg="ez_rassor_control" name="arms_control" type="arms.py"/>
   <node pkg="ez_rassor_control" name="drums_control" type="drums.py"/>
+  <node pkg="ez_rassor_comms" name="request_switcher" type="request_switcher"/>
 
 
 </launch>
