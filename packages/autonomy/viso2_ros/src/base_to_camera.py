@@ -9,7 +9,7 @@ class base_link_to_camera():
  
     def __init__(self):
         # This will allow us to call the publish easiliy in the while loop
-        self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=1)
+        self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
 
         while not rospy.is_shutdown():
             # This will run the process at 10 Hertz
