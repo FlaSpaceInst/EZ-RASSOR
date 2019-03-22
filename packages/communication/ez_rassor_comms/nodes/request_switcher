@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the request_switcher node in the ez_rassor_comms module.
+
+Written by Tiger Sachse.
+"""
+import ez_rassor_comms
+
+ez_rassor_comms.request_switcher.start_node()

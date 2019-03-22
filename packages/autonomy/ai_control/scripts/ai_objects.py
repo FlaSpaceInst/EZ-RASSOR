@@ -8,11 +8,14 @@ from ai_control.msg import ObstacleDetection
 
 
 class WorldState():
+    """ World State Object Representing All Sensor Data """
 
     def __init__(self):
-        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
+        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0,
+                            'velocityX': 0, 'velocityY': 0, 'velocityZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
-                            'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0}
+                            'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
+                            'target_location': (10,12)}
 
         self. auto_function_command = 0
 
@@ -29,8 +32,17 @@ class WorldState():
 
         self.state_flags['positionX'] = data.pose.pose.position.z
         self.state_flags['positionY'] = data.pose.pose.position.y
-        self.state_flags['heading'] = data.twist.twist.linear.z
-        
+
+    def simStateCallBack(self, data):
+        """ More accurate position data to use for testing and experimentation. """
+
+        self.state_flags['positionX'] = data.pose[23].position.x
+        self.state_flags['positionY'] = data.pose[23].position.y
+
+    def imuCallBack(self, data):
+        " Heading data collected from orientation IMU data. "
+
+        self.state_flags['heading'] = data.orientation.z        
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """

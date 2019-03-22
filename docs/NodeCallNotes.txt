@@ -8,5 +8,5 @@ ROS_NAMESPACE=ez_rassor/front_camera rosrun stereo_image_proc stereo_image_proc
   2) Start up viso2_ros with the following two commands:
   
     rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
-    rosrun viso2_ros stereo_odometer stereo:=/ez_rassor/front_camera image:=/image_rect_color
+    rosrun viso2_ros stereo_odometer stereo:=/ez_rassor/front_camera image:=/image_rect_color base_link_frame_id:=/tf/transforms
 
