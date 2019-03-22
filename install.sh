@@ -4,6 +4,9 @@
 
 WORKSPACE_DIR="/tmp/EZRASSOR_TEMPORARY_CATKIN_WORKSPACE"
 SOURCE_DIR="$WORKSPACE_DIR/src"
+INSTALL_DIR="/opt/ros/kinetic"
+SUPERPACKAGE_DIR="packages"
+MOCK_INSTALL_DIR="install"
 
 # Configure APT to install from the ROS repository.
 add_ros_repository() {
@@ -14,6 +17,55 @@ add_ros_repository() {
     sudo apt update
 }
 
+link_and_install() {
+    rm -rf "$WORKSPACE_DIR"
+    mkdir -p "$SOURCE_DIR"
+
+    NEED_ROS_BASE=false
+    NEED_ROS_DESKTOP=false
+    NEED_ROS_DESKTOP_FULL=false
+
+    # For each specified superpackage, link all necessary packages.
+    for SUPERPACKAGE in "$@"; do
+        case "$SUPERPACKAGE" in
+            autonomy)
+                ;;
+            simulation)
+                ;;
+            communication)
+                NEED_ROS_BASE=true
+                link_package "communication" "ez_rassor_comms"
+                link_package "ezrc" "ezrc_control"
+                ;;
+            hardware)
+                ;;
+            dashboard)
+                ;;
+        esac
+    done
+
+    if [ "$NEED_ROS_DESKTOP_FULL" = true ]; then
+        sudo apt install -y ros-kinetic-desktop-full
+    elif [ "$NEED_ROS_DESKTOP" = true ]; then
+        sudo apt install -y ros-kinetic-desktop
+    elif [ "$NEED_ROS_BASE" = true ]; then
+        sudo apt install -y ros-kinetic-ros-base
+    fi
+    
+    cd "$WORKSPACE_DIR"
+    
+    sudo rosdep init
+    rosdep update
+    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
+    catkin_make
+    catkin_make install
+    sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
+
+    source_setup bash zsh
+
+    cd - &> /dev/null
+}
+
 link_package() {
     if [ -L "$SOURCE_DIR/$2" ]; then
         rm -f "$SOURCE_DIR/$2"
@@ -21,7 +73,7 @@ link_package() {
     else
         printf "Linking '%s'...\n" "$2"
     fi
-    ln -s "$PWD/$1/$2" "$SOURCE_DIR/$2"
+    ln -s "$PWD/$SUPERPACKAGE_DIR/$1/$2" "$SOURCE_DIR/$2"
 }
 
 # Source the setup script for each user shell passed to this function, if it is
@@ -58,45 +110,16 @@ source_setup() {
 }
 
 # Main entry point of the script.
-##add_ros_repository
+add_ros_repository
 
-mkdir -p $SOURCE_DIR
-NEED_ROS_DESKTOP_FULL=false
-NEED_ROS_DESKTOP=false
-NEED_ROS_BASE=false
-
-# For each specified superpackage, link all necessary packages.
-for SUPERPACKAGE in "$@"; do
-    case "$SUPERPACKAGE" in
-        autonomy)
-            ;;
-        simulation)
-            ;;
-        communication)
-            NEED_ROS_BASE=true
-            link_package "communication" "ez_rassor_comms"
-            link_package "ezrc" "ezrc_control"
-            ;;
-        hardware)
-            ;;
-        dashboard)
-            ;;
-    esac
-done
-
-if [ "$NEED_ROS_DESKTOP_FULL" = true ]; then
-    sudo apt install -y ros-kinetic-desktop-full
-else if [ "$NEED_ROS_DESKTOP" = true ]; then
-    sudo apt install -y ros-kinetic-desktop
-else if [ "$NEED_ROS_BASE" = true ]; then
-    sudo apt install -y ros-kinetic-base
+if [ "$#" = "0" ]; then
+    link_and_install "communication" "hardware" "autonomy"
+else
+    link_and_install "$@"
 fi
-##sudo rosdep init
-##rosdep update
 
 # build all packages
 
-##source_setup bash zsh
 
 ##sudo apt install -y python-rosdep \
 ##                    python-rosinstall-generator \
