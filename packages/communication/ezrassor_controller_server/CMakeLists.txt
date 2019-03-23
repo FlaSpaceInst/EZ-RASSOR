@@ -2,11 +2,7 @@
 # Written by Tiger Sachse.
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_controller_server)
-find_package(
-    catkin REQUIRED COMPONENTS
-        rospy
-        std_msgs
-)
+find_package(catkin REQUIRED)
 catkin_package()
 catkin_python_setup()
 catkin_install_python(
