@@ -58,3 +58,4 @@ Here are some example commands to get started.
   bash ezrassor.sh --relink -o ezrc_moving_parts lsd_slam
   
 .. _`LICENSE license`: LICENSE.txt
+.. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
