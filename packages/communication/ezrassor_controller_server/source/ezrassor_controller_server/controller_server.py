@@ -8,13 +8,14 @@ Written by Tiger Sachse and Camilo Lozano.
 import json
 import rospy
 import std_msgs
-import constants
 import BaseHTTPServer
 
 
-# Some module-specific constants for this node.
+# Some constants for this node.
 PORT = 8080
-NODE_NAME = "http_server"
+QUEUE_SIZE = 10
+NODE_NAME = "controller_server"
+REQUESTS_TOPIC = "/ezrassor/requests"
 
 
 def get_custom_handler(requests_publisher):
@@ -43,9 +44,9 @@ def start_node():
     try:
         rospy.init_node(NODE_NAME)
         requests_publisher = rospy.Publisher(
-            constants.REQUESTS_TOPIC,
+            REQUESTS_TOPIC,
             std_msgs.msg.Int16,
-            queue_size=constants.QUEUE_SIZE,
+            queue_size=QUEUE_SIZE,
         )
         
         # Create an HTTP server.
