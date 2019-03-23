@@ -6,6 +6,7 @@ find_package(
     catkin REQUIRED COMPONENTS
         rospy
         std_msgs
+        sensor_msgs
 )
 catkin_package()
 catkin_python_setup()
