@@ -13,4 +13,5 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
 </package>
