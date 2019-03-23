@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Launch all facilities required for the EZRC. Written by Tiger Sachse. -->
+  <arg name="use_wired_controls" default="true" doc="Use a wired controller."/>
+  <arg name="use_network_controls" default="false" doc="Use a controller on the network."/>
+  <include file="$(find ezrassor_launcher)/launch/communication.launch">
+    <arg name="use_wired_controls" value="$(arg use_wired_controls)"/>
+    <arg name="use_network_controls" value="$(arg use_network_controls)"/>
+  </include>
+  <include file="$(find ezrc_hardware_control)/launch/hardware_control.launch"/>
+</launch>
