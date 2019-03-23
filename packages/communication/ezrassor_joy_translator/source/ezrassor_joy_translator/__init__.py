@@ -2,5 +2,4 @@
 
 Written by Tiger Sachse.
 """
-import http_server
-import request_switcher
+import joy_translator
