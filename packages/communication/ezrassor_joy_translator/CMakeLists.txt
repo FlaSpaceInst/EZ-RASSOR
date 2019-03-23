@@ -11,3 +11,9 @@ catkin_install_python(
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+install(
+    DIRECTORY
+        launchers/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
