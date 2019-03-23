@@ -1,8 +1,8 @@
-CONTRIBUTING GUIDELINES
+CONTRIBUTING NOTICE
 ----
-fadsf
+This project is free and open-source under the `LICENSE license`_. Anyone can fork this repository and submit a pull request, however all pull requests are subject to review and approval by this project's `authors`_. All merged code becomes part of this project, and thus is subject to the same license as the rest of the code in this project. Any code in this repository may be deleted, modified, or rewritten at any time. **Ultimately the authors of this project, the Florida Space Institute, and NASA have final control over this project's code.** By submitting a pull request, you voluntarily surrender all the rights you possess over your code to the Florida Space Institute, NASA, and the authors of this project (with the good-faith expectation that your contributions will be adaquately credited to you). New authors may be named periodically, depending on contribution size and project demands.
 
-DEVELOPMENT GUIDELINES
+DEVELOPMENT INSTRUCTIONS
 ----
 This repository contains a script, ``ezrassor.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
 ::
@@ -56,3 +56,5 @@ Here are some example commands to get started.
 
   # Relink only the 'ezrc_moving_parts' and 'lsd_slam' packages.
   bash ezrassor.sh --relink -o ezrc_moving_parts lsd_slam
+  
+.. _`LICENSE license`: LICENSE.txt
