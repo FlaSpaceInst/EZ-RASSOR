@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the controller_server node in the ezrassor_controller_server package.
+
+Written by Tiger Sachse.
+"""
+import ezrassor_controller_server
+
+ezrassor_controller_server.controller_server.start_node()

@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the joy_translator node in the ezrassor_joy_translator package.
+
+Written by Tiger Sachse.
+"""
+import ezrassor_joy_translator
+
+ezrassor_joy_translator.joy_translator.start_node()

@@ -1,4 +1,4 @@
-"""Setup the ez_rassor_comms ROS package.
+"""Setup the ezrassor_controller_server ROS package.
 
 Written by Tiger Sachse.
 """
@@ -7,7 +7,7 @@ import catkin_pkg.python_setup
 
 setup_arguments = catkin_pkg.python_setup.generate_distutils_setup(
     packages=(
-        "ez_rassor_comms",
+        "ezrassor_controller_server",
     ),
     package_dir={
        "" : "source",
