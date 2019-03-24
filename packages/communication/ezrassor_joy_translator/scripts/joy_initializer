@@ -1,14 +1,10 @@
 #!/bin/sh
 
-if ! [ $(id -u) = 0 ]; then
-    printf "You must run this script as root!\n"
-    exit 1
-fi
+TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
 
-TEMPORARY_DIR="/tmp/JOY_INITIALIZATION_DIRECTORY"
-printf "This script will help you configure Joy!\n"
+printf "This script will configure Joy for you!\n"
+
 JOYSTICKS="$(ls /dev/input | grep 'js.')"
-
 printf "\nYou have these joysticks currently active:\n"
 for STICK in $JOYSTICKS; do
     printf " -> %s\n" "$STICK"
@@ -16,23 +12,19 @@ done
 
 printf "\n"
 printf "%s\n" \
-       "Lets perform a test to properly identify your joystick. All you" \
-       "need to do is press buttons on your joystick until I say stop."
+       "Lets perform a test to properly identify your joystick. I'll be running" \
+       "the 'jstest' command in the background to determine if your joystick is" \
+       "working. All you need to do is press buttons on your joystick until I" \
+       "say stop. Before we start, I'll need your sudo password for 'jstest'."
 
 while true; do
-    read -p "Are you ready? " RESPONSE
-    case $RESPONSE in
-        y|Y|yes|Yes|YES)
-            break
-            ;;
-        n|N|no|No|NO)
-            printf "Exiting...\n"
-            exit
-            ;;
-        *)
-            printf "Please respond with yes or no.\n"
-            ;;
-    esac
+    read -p "Sudo password: " PASSWORD
+    echo "$PASSWORD" | sudo -S [ "0" -eq "0" ] 1> /dev/null 2>&1
+    if [ "$?" -eq "0" ]; then
+        break
+    else
+        printf "Wrong password...\n"
+    fi
 done
 
 rm -rf "$TEMPORARY_DIR"
@@ -40,8 +32,10 @@ mkdir -p "$TEMPORARY_DIR"
 
 sleep 1
 printf "\nBeginning test!\n"
+exit 1
 for STICK in $JOYSTICKS; do
-    jstest --event "/dev/input/$STICK" 1> "$TEMPORARY_DIR/$STICK" &
+    sudo jstest --event "/dev/input/$STICK" 1> "$TEMPORARY_DIR/$STICK" &
+    # will be okay with sudo here
     # separate, let jstest run concurrently""
     printf "Testing %s" "$STICK"
     for DOT in 1 2 3 4; do
@@ -49,7 +43,7 @@ for STICK in $JOYSTICKS; do
         printf "."
     done
     printf "\n"
-    pkill jstest
+    sudo pkill jstest
 done
 
 ACTIVE_STICK=false
@@ -65,9 +59,9 @@ done
 
 if [ "$ACTIVE_STICK" = "false" ]; then
     printf "Stick not detected\n"
-    exit 1
+    #exit 1
 else
     printf "Your active stick is %s\n" "$ACTIVE_STICK"
 fi
 
-chmod a+rw "/dev/input/$ACTIVE_STICK"
+sudo chmod a+rw "/dev/input/$ACTIVE_STICK"
