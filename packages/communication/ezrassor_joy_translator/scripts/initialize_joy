@@ -99,9 +99,9 @@ update_config() {
 # Fail with grace.
 fail_to_update() {
     printf "%s\n" \
-           "The results of my test could not be automatically applied. Update your" \
+           "The results of my tests could not be automatically applied. Update your" \
            "'$CONFIG_FILE' in the '$SHARE_DIR/' directory of this package with this line:" \
-               "$YAML_PARAMETER : ${INPUT_PREFIX}$1"
+           "    $YAML_PARAMETER : ${INPUT_PREFIX}$1"
     exit_script
 }
 
