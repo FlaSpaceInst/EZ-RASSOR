@@ -9,6 +9,7 @@ catkin_install_python(
     PROGRAMS
         nodes/joy_translator
         scripts/initialize_joy
+        scripts/run_joystick_tests
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -17,4 +18,10 @@ install(
         launchers/
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
+install(
+    FILES
+        config.yaml
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

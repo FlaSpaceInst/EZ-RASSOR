@@ -1,23 +1,83 @@
 #!/bin/sh
-printf "Lets configure Joy!\n"
+
+TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
 JOYSTICKS="$(ls /dev/input | grep 'js.')"
+JOYSTICK_TEST_SCRIPT="run_joystick_tests"
+PACKAGE_NAME="ezrassor_joy_translator"
+ACTIVE_STICK_DEFAULT_COUNT=10
+CONFIG_FILE="config.yaml"
+SHARE_DIR="share"
 
-printf "\nYou have these joysticks currently active:\n"
-for STICK in $JOYSTICKS; do
-    printf " -> %s\n" "$STICK"
-done
+exit_script() {
+    printf "\nExiting script...\n"
+    exit 1
+}
 
-printf "%s\n" \
-       "Now I'll perform a test to properly identify your joystick. First, you'll" \
-       "have to enter your password. Then start pressing buttons on your joystick" \
-       "until I say to stop."
-printf "\n\nReady? Lets get started!\n"
+prepare_user() {
+    printf "This script will configure Joy for you!\n"
+    printf "\nYou have these joysticks currently active:\n"
+    for STICK in $JOYSTICKS; do
+        printf " -> %s\n" "$STICK"
+    done
+    printf "\n"
+    printf "%s\n" \
+           "Lets perform a test to properly identify your joystick. I'll be running" \
+           "the 'jstest' command in the background to determine if your joystick is" \
+           "working. All you need to do is press buttons on your joystick until I" \
+           "say stop. You may need to enter your password once to begin the process."
 
-for STICK in $JOYSTICKS; do
-    sudo jstest "/dev/input/$STICK" &
-    JSTEST_PID=$!
-    echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-    echo $JSTEST_PID
-    sleep 1
-    sudo kill $JSTEST_PID
-done
+    while true; do
+        read -p "Are you ready? " RESPONSE
+        case $RESPONSE in
+            y|Y|yes|YES|Yes)
+                break
+                ;;
+            n|N|no|NO|No)
+                exit_script
+                ;;
+            *)
+                printf "Please respond with 'yes' or 'no'.\n"
+                ;;
+        esac
+    done
+}
+
+get_active_joystick() {
+    ACTIVE_STICK=false
+    ACTIVE_STICK_EVENT_COUNT="$ACTIVE_STICK_DEFAULT_COUNT"
+    EVENT_LINE="^Event: type [0-9],.*$"
+    for STICK in $JOYSTICKS; do
+        STICK_EVENT_COUNT="$(grep "$EVENT_LINE" "$TEMPORARY_DIR/$STICK" | wc -l)"
+        if [ "$STICK_EVENT_COUNT" -gt "$ACTIVE_STICK_EVENT_COUNT" ]; then
+            ACTIVE_STICK_EVENT_COUNT="$STICK_EVENT_COUNT"
+            ACTIVE_STICK="$STICK"
+        fi
+    done
+
+    if [ "$ACTIVE_STICK" = "false" ]; then
+        printf "No joystick was detected!\n"
+        exit_script
+    else
+        printf "Your active joystick is %s\n" "$ACTIVE_STICK"
+        return "$(eval printf "$ACTIVE_STICK\n" | grep -o "[0-9]\+")"
+    fi
+}
+
+# Main entry point to the script.
+prepare_user
+
+# Change to this script's directory. '$0' will always be an absolute path when
+# this script is called with 'rosrun'. This directory change gives us access to
+# the joystick test script.
+cd "$(dirname "$0")"
+sudo sh "$JOYSTICK_TEST_SCRIPT" "$TEMPORARY_DIR"
+
+# Get the active joystick. If no joystick is detected, this function will halt
+# this script's execution. Afterwards, set the correct permissions for that joystick.
+get_active_joystick
+ACTIVE_STICK_NUMBER="$?"
+sudo chmod a+rw "/dev/input/js$ACTIVE_STICK_NUMBER"
+TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
+
+
+# write to yaml file
