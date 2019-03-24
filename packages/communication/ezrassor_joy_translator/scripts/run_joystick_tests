@@ -16,10 +16,11 @@ printf "\nStart pressing buttons!\n"
 for STICK in $JOYSTICKS; do
     jstest --event "/dev/input/$STICK" 1> "$TEMPORARY_DIR/$STICK" &
 done
-for TIMESTEP in 1 2 3 4 5 6; do
+for TIMESTEP in 1 2 3 4 5 6 7 8; do
     sleep 0.5
     printf "."
 done
 printf "\n"
 
 pkill jstest
+printf "\nTests complete!\n"

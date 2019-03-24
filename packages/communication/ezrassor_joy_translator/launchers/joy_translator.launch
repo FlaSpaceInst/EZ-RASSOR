@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Launch the joy node and its translator. Written by Tiger Sachse. -->
 <launch>
-  <param name="joy_node/dev" textfile="$(find ezrassor_joy_translator)/device.txt"/>
+  <rosparam command="load" file="$(find ezrassor_joy_translator)/config.yaml"/>
   <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
   <node name="joy_translator"
         pkg="ezrassor_joy_translator"

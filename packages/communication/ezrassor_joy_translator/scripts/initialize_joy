@@ -5,6 +5,8 @@ JOYSTICKS="$(ls /dev/input | grep 'js.')"
 JOYSTICK_TEST_SCRIPT="run_joystick_tests"
 PACKAGE_NAME="ezrassor_joy_translator"
 ACTIVE_STICK_DEFAULT_COUNT=10
+YAML_PARAMETER="joy_node/dev"
+INPUT_PREFIX="/dev/input/js"
 CONFIG_FILE="config.yaml"
 SHARE_DIR="share"
 
@@ -55,12 +57,47 @@ get_active_joystick() {
     done
 
     if [ "$ACTIVE_STICK" = "false" ]; then
-        printf "No joystick was detected!\n"
-        exit_script
+        #printf "No joystick detected!\n"
+        #exit_script
+        return 0
     else
         printf "Your active joystick is %s\n" "$ACTIVE_STICK"
         return "$(eval printf "$ACTIVE_STICK\n" | grep -o "[0-9]\+")"
     fi
+}
+    
+# Attempt to configure the joy translator node appropriately given the test results.
+# If the configuration file cannot be found, print the results to the screen for the user.
+update_config() {
+    TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
+    if [ -f "$TARGET_CONFIG_FILE" ]; then
+        printf "Attempting to update configuration file... "
+        SED_MATCH="s#$YAML_PARAMETER.*#$YAML_PARAMETER : /dev/input/js$ACTIVE_STICK_NUMBER#"
+        sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE"
+        if [ "$?" != "0" ]; then
+            printf "FAILED.\n"
+            printf "Escalating with sudo privileges... "
+            sudo sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE"
+            if [ "$?" != "0" ]; then
+                printf "FAILED.\n"
+                fail_to_update "$ACTIVE_STICK_NUMBER"
+            else
+                printf "SUCCESS.\n"
+            fi
+        else
+            printf "SUCCESS.\n"
+        fi
+    else
+        fail_to_update "$ACTIVE_STICK_NUMBER"
+    fi
+}
+
+fail_to_update() {
+    printf "%s\n" \
+           "The results of my test could not be automatically applied. Update" \
+           "your '$CONFIG_FILE' in the '$SHARE_DIR/' of this package with this line" \
+               "$YAML_PARAMETER : ${INPUT_PREFIX}$1"
+    exit_script
 }
 
 # Main entry point to the script.
@@ -76,8 +113,7 @@ sudo sh "$JOYSTICK_TEST_SCRIPT" "$TEMPORARY_DIR"
 # this script's execution. Afterwards, set the correct permissions for that joystick.
 get_active_joystick
 ACTIVE_STICK_NUMBER="$?"
-sudo chmod a+rw "/dev/input/js$ACTIVE_STICK_NUMBER"
-TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
+sudo chmod a+rw "${INPUT_PREFIX}${ACTIVE_STICK_NUMBER}"
 
-
-# write to yaml file
+update_config
+printf "Your system is properly configured! Have fun. :)\n"
