@@ -1,5 +1,12 @@
 #!/bin/sh
-printf "Lets configure Joy!\n"
+
+if ! [ $(id -u) = 0 ]; then
+    printf "You must run this script as root!\n"
+    exit 1
+fi
+
+TEMPORARY_DIR="/tmp/JOY_INITIALIZATION_DIRECTORY"
+printf "This script will help you configure Joy!\n"
 JOYSTICKS="$(ls /dev/input | grep 'js.')"
 
 printf "\nYou have these joysticks currently active:\n"
@@ -7,17 +14,59 @@ for STICK in $JOYSTICKS; do
     printf " -> %s\n" "$STICK"
 done
 
+printf "\n"
 printf "%s\n" \
-       "Now I'll perform a test to properly identify your joystick. First, you'll" \
-       "have to enter your password. Then start pressing buttons on your joystick" \
-       "until I say to stop."
-printf "\n\nReady? Lets get started!\n"
+       "Lets perform a test to properly identify your joystick. All you" \
+       "need to do is press buttons on your joystick until I say stop."
 
-for STICK in $JOYSTICKS; do
-    sudo jstest "/dev/input/$STICK" &
-    JSTEST_PID=$!
-    echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-    echo $JSTEST_PID
-    sleep 1
-    sudo kill $JSTEST_PID
+while true; do
+    read -p "Are you ready? " RESPONSE
+    case $RESPONSE in
+        y|Y|yes|Yes|YES)
+            break
+            ;;
+        n|N|no|No|NO)
+            printf "Exiting...\n"
+            exit
+            ;;
+        *)
+            printf "Please respond with yes or no.\n"
+            ;;
+    esac
 done
+
+rm -rf "$TEMPORARY_DIR"
+mkdir -p "$TEMPORARY_DIR"
+
+sleep 1
+printf "\nBeginning test!\n"
+for STICK in $JOYSTICKS; do
+    jstest --event "/dev/input/$STICK" 1> "$TEMPORARY_DIR/$STICK" &
+    printf "Testing %s" "$STICK"
+    for DOT in 1 2 3 4; do
+        sleep 0.5
+        printf "."
+    done
+    printf "\n"
+    pkill jstest
+done
+
+ACTIVE_STICK=false
+ACTIVE_STICK_EVENT_COUNT=10
+EVENT_LINE="^Event: type [0-9],.*$"
+for STICK in $JOYSTICKS; do
+    STICK_EVENT_COUNT="$(grep "$EVENT_LINE" "$TEMPORARY_DIR/$STICK" | wc -l)"
+    if [ "$STICK_EVENT_COUNT" -gt "$ACTIVE_STICK_EVENT_COUNT" ]; then
+        ACTIVE_STICK_EVENT_COUNT="$STICK_EVENT_COUNT"
+        ACTIVE_STICK="$STICK"
+    fi
+done
+
+if [ "$ACTIVE_STICK" = "false" ]; then
+    printf "Stick not detected\n"
+    exit 1
+else
+    printf "Your active stick is %s\n" "$ACTIVE_STICK"
+fi
+
+chmod a+rw "/dev/input/$ACTIVE_STICK"
