@@ -1,0 +1,23 @@
+#!/bin/sh
+printf "Lets configure Joy!\n"
+JOYSTICKS="$(ls /dev/input | grep 'js.')"
+
+printf "\nYou have these joysticks currently active:\n"
+for STICK in $JOYSTICKS; do
+    printf " -> %s\n" "$STICK"
+done
+
+printf "%s\n" \
+       "Now I'll perform a test to properly identify your joystick. First, you'll" \
+       "have to enter your password. Then start pressing buttons on your joystick" \
+       "until I say to stop."
+printf "\n\nReady? Lets get started!\n"
+
+for STICK in $JOYSTICKS; do
+    sudo jstest "/dev/input/$STICK" &
+    JSTEST_PID=$!
+    echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+    echo $JSTEST_PID
+    sleep 1
+    sudo kill $JSTEST_PID
+done

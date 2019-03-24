@@ -8,6 +8,7 @@ catkin_python_setup()
 catkin_install_python(
     PROGRAMS
         nodes/joy_translator
+        scripts/initialize_joy
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
