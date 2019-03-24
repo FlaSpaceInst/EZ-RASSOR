@@ -1,4 +1,6 @@
 #!/bin/sh
+# Initialize a joystick on the user's machine for the Joy ROS node.
+# Written by Tiger Sachse.
 
 TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
 JOYSTICKS="$(ls /dev/input | grep 'js.')"
@@ -10,23 +12,24 @@ INPUT_PREFIX="/dev/input/js"
 CONFIG_FILE="config.yaml"
 SHARE_DIR="share"
 
+# Exit this script with a farewell.
 exit_script() {
     printf "\nExiting script...\n"
     exit 1
 }
 
+# Prepare the user for the tests.
 prepare_user() {
     printf "This script will configure Joy for you!\n"
     printf "\nYou have these joysticks currently active:\n"
     for STICK in $JOYSTICKS; do
         printf " -> %s\n" "$STICK"
     done
-    printf "\n"
     printf "%s\n" \
            "Lets perform a test to properly identify your joystick. I'll be running" \
            "the 'jstest' command in the background to determine if your joystick is" \
            "working. All you need to do is press buttons on your joystick until I" \
-           "say stop. You may need to enter your password once to begin the process."
+           "say stop. You may need to enter your password in a moment before we begin."
 
     while true; do
         read -p "Are you ready? " RESPONSE
@@ -44,6 +47,7 @@ prepare_user() {
     done
 }
 
+# Determine the active joystick on the machine (based on the tests' results).
 get_active_joystick() {
     ACTIVE_STICK=false
     ACTIVE_STICK_EVENT_COUNT="$ACTIVE_STICK_DEFAULT_COUNT"
@@ -57,19 +61,19 @@ get_active_joystick() {
     done
 
     if [ "$ACTIVE_STICK" = "false" ]; then
-        #printf "No joystick detected!\n"
-        #exit_script
-        return 0
+        printf "No joystick detected!\n"
+        exit_script
     else
-        printf "Your active joystick is %s\n" "$ACTIVE_STICK"
-        return "$(eval printf "$ACTIVE_STICK\n" | grep -o "[0-9]\+")"
+        printf "Your active joystick is %s.\n" "$ACTIVE_STICK"
+        return "$(printf "$ACTIVE_STICK\n" | grep -o "[0-9]\+")"
     fi
 }
-    
-# Attempt to configure the joy translator node appropriately given the test results.
-# If the configuration file cannot be found, print the results to the screen for the user.
+
+# Update the configuration of the joy translator ROS node.
 update_config() {
     TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
+
+    # If the target configuration file exists, attempt to update it. Otherwise, fail.
     if [ -f "$TARGET_CONFIG_FILE" ]; then
         printf "Attempting to update configuration file... "
         SED_MATCH="s#$YAML_PARAMETER.*#$YAML_PARAMETER : /dev/input/js$ACTIVE_STICK_NUMBER#"
@@ -92,10 +96,11 @@ update_config() {
     fi
 }
 
+# Fail with grace.
 fail_to_update() {
     printf "%s\n" \
-           "The results of my test could not be automatically applied. Update" \
-           "your '$CONFIG_FILE' in the '$SHARE_DIR/' of this package with this line" \
+           "The results of my test could not be automatically applied. Update your" \
+           "'$CONFIG_FILE' in the '$SHARE_DIR/' directory of this package with this line:" \
                "$YAML_PARAMETER : ${INPUT_PREFIX}$1"
     exit_script
 }
@@ -115,5 +120,6 @@ get_active_joystick
 ACTIVE_STICK_NUMBER="$?"
 sudo chmod a+rw "${INPUT_PREFIX}${ACTIVE_STICK_NUMBER}"
 
+# Update the configuration. If everything goes well: print a nice message.
 update_config
 printf "Your system is properly configured! Have fun. :)\n"
