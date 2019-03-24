@@ -78,6 +78,6 @@ get_active_joystick
 ACTIVE_STICK_NUMBER="$?"
 sudo chmod a+rw "/dev/input/js$ACTIVE_STICK_NUMBER"
 TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
-
+echo "$TARGET_CONFIG_FILE"
 
 # write to yaml file
