@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Initialize the joy node. Written by Tiger Sachse. -->
-<launch>
-  <node name="initialize_joy.sh"
-        pkg="joy_translator"
-        type="initialize_joy"
-        output="screen"
-  />
-</launch>
