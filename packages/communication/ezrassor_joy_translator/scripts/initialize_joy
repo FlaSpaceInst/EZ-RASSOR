@@ -42,6 +42,7 @@ sleep 1
 printf "\nBeginning test!\n"
 for STICK in $JOYSTICKS; do
     jstest --event "/dev/input/$STICK" 1> "$TEMPORARY_DIR/$STICK" &
+    # separate, let jstest run concurrently""
     printf "Testing %s" "$STICK"
     for DOT in 1 2 3 4; do
         sleep 0.5
