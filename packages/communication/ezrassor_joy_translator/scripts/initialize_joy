@@ -6,10 +6,11 @@ TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
 JOYSTICKS="$(ls /dev/input | grep 'js.')"
 JOYSTICK_TEST_SCRIPT="run_joystick_tests"
 PACKAGE_NAME="ezrassor_joy_translator"
+CONFIG_FILE="joy_translator.yaml"
 ACTIVE_STICK_DEFAULT_COUNT=10
 YAML_PARAMETER="joy_node/dev"
 INPUT_PREFIX="/dev/input/js"
-CONFIG_FILE="config.yaml"
+CONFIG_DIR="config"
 SHARE_DIR="share"
 
 # Exit this script with a farewell.
@@ -71,7 +72,8 @@ get_active_joystick() {
 
 # Update the configuration of the joy translator ROS node.
 update_config() {
-    TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_DIR/$PACKAGE_NAME/$CONFIG_FILE"
+    SHARE_PATH="$SHARE_DIR/$PACKAGE_NAME/$CONFIG_DIR/$CONFIG_FILE"
+    TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_PATH"
 
     # If the target configuration file exists, attempt to update it. Otherwise, fail.
     if [ -f "$TARGET_CONFIG_FILE" ]; then
@@ -100,7 +102,7 @@ update_config() {
 fail_to_update() {
     printf "%s\n" \
            "The results of my tests could not be automatically applied. Update your" \
-           "'$CONFIG_FILE' in the '$SHARE_DIR/' directory of this package with this line:" \
+           "'$CONFIG_FILE' in the '$CONFIG_DIR/' directory of this package with this line:" \
            "    $YAML_PARAMETER : ${INPUT_PREFIX}$1"
     exit_script
 }
