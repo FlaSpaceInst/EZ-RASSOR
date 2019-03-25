@@ -28,6 +28,13 @@ namespace ez_gui {
             void on_checkbox_use_environment_stateChanged(int state);
 
             void updateLoggingView(); // no idea why this can't connect automatically
+            void updateCPU();
+            void updateVM();
+            void updateSM();
+            void updateDisk();
+            void updateBat();
+            void updateFrontCamera();
+            void updateBackCamera();
 
         private:
             Ui::MainWindowDesign ui;
