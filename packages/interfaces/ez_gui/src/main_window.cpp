@@ -1,5 +1,6 @@
 #include <QtGui>
 #include <QMessageBox>
+#include <QDebug>
 #include <iostream>
 #include "../include/ez_gui/main_window.hpp"
 
@@ -30,18 +31,26 @@ namespace ez_gui {
         **********************/
         QObject::connect(&qnode, SIGNAL(frontCamUpdated()), this, SLOT(updateFrontCamera()));
         QObject::connect(&qnode, SIGNAL(backCamUpdated()), this, SLOT(updateBackCamera()));
-        //ui.img_lbl->setPixmap(QPixmap(":/images/icon.png"));
+
+        // Swampworks Logo
+        int w = ui.swamp->width();
+        int h = ui.swamp->height();
+        QPixmap swamp = QPixmap(":/images/swamp.png");
+        ui.swamp->setPixmap(swamp.scaled(w,h,Qt::KeepAspectRatio));
 
         /*********************
         ** Usage
         **********************/
-
         QObject::connect(&qnode, SIGNAL(cpuUpdated()), this, SLOT(updateCPU()));
         QObject::connect(&qnode, SIGNAL(vmUpdated()), this, SLOT(updateVM()));
         QObject::connect(&qnode, SIGNAL(smUpdated()), this, SLOT(updateSM()));
         QObject::connect(&qnode, SIGNAL(diskUpdated()), this, SLOT(updateDisk()));
         QObject::connect(&qnode, SIGNAL(batteryUpdated()), this, SLOT(updateBat()));
 
+        /*********************
+        ** Node Launch
+        **********************/
+        QObject::connect(ui.button_launch, SIGNAL(clicked()), this, SLOT(nodeLaunch()));
         /*********************
         ** Auto Start
         **********************/
@@ -110,6 +119,14 @@ namespace ez_gui {
         ui.line_edit_host->setEnabled(enabled);
     }
 
+    void MainWindow::nodeLaunch()
+    {
+        //QStringList run;
+        QProcess process;
+        //run <<  ui.package_launch->text() << ui.node_launch->text();
+        process.execute("rostopic list");
+    }
+
     /**
      * This function is signalled by the underlying model. When the model changes,
      * this will drop the cursor down to the last line in the QListview to ensure
@@ -157,7 +174,6 @@ namespace ez_gui {
 
     void MainWindow::updateBackCamera()
     {
-        ROS_DEBUG_STREAM("we out here");
         int w = ui.back_camera->width();
         int h = ui.back_camera->height();
         QPixmap back = *qnode.backCameraPixmap();

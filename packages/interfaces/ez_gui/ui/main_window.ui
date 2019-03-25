@@ -116,7 +116,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; font-style:italic;&quot;&gt;Back Camera&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
-       <widget class="QLabel" name="front_camera_2">
+       <widget class="QLabel" name="disparity_camera">
         <property name="geometry">
          <rect>
           <x>280</x>
@@ -143,6 +143,25 @@
         </property>
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; font-style:italic;&quot;&gt;Disparity Map&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="swamp">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>310</y>
+          <width>261</width>
+          <height>211</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </widget>
@@ -502,7 +521,7 @@
             </spacer>
            </item>
            <item row="8" column="1">
-            <widget class="QLineEdit" name="lineEdit">
+            <widget class="QLineEdit" name="node_launch">
              <property name="inputMask">
               <string/>
              </property>
@@ -512,7 +531,7 @@
             </widget>
            </item>
            <item row="8" column="0">
-            <widget class="QLineEdit" name="lineEdit_2">
+            <widget class="QLineEdit" name="package_launch">
              <property name="autoFillBackground">
               <bool>false</bool>
              </property>
