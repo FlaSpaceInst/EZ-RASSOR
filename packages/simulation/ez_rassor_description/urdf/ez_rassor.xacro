@@ -180,13 +180,13 @@
     </inertial>
   </link>
 
-  <link name="drum_front">
-    <!-- <collision name="collision">
+ <link name="drum_front">
+    <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <robot_arm_drum />
       </geometry>
-    </collision>-->
+    </collision>
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -201,8 +201,8 @@
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="5"/>
-      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <mass value=".5"/>
+      <cylinder_inertia m=".5" r="0.1" h="0.05"/>
       <inertia
         ixx="1.0" ixy="0.0" ixz="0.0"
         iyy="1.0" iyz="0.0"
@@ -211,12 +211,12 @@
   </link>
 
   <link name="drum_back">
-    <!-- <collision name="collision">
+    <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
       <geometry>
         <robot_arm_drum />
       </geometry>
-    </collision> -->
+    </collision>
      <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -231,8 +231,8 @@
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
-      <mass value="5"/>
-      <cylinder_inertia m="5" r="0.1" h="0.05"/>
+      <mass value=".5"/>
+      <cylinder_inertia m=".5" r="0.1" h="0.05"/>
       <inertia
         ixx="1.0" ixy="0.0" ixz="0.0"
         iyy="1.0" iyz="0.0"
@@ -328,7 +328,6 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-
   <!-- Front Camera Added -->
   <link name="stereo_camera_front">
     <collision>
@@ -476,7 +475,6 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
-
   <joint type="continuous" name="drum_front_hinge">
     <origin xyz="0.388245 0 0" rpy="0 0 0"/>
     <child link="drum_front"/>
@@ -494,5 +492,4 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
-
 </robot>

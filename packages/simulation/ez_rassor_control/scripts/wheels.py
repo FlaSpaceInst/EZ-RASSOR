@@ -10,7 +10,7 @@ from std_msgs.msg import Int16, Float64
 NODE = "wheels"
 TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b111100000000
-
+velocity = 1
 # /ez_rassor/left_wheel_back_velocity_controller/command
 pub_LF = rospy.Publisher('/ez_rassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
 pub_LB = rospy.Publisher('/ez_rassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
@@ -40,10 +40,8 @@ def get_movements(integer, mask):
 
 
 def wheel_movement_callback(instruction):
-
     left_wheel_forward, left_wheel_reverse, right_wheel_forward, right_wheel_reverse = get_movements(instruction.data, MASK)
 
-    velocity = 5
 
     # Turning behaves odd with offset and tankturn. Set to zero for now.
     turn_offset = 0

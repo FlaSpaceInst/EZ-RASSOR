@@ -15,7 +15,7 @@ class WorldState():
                             'velocityX': 0, 'velocityY': 0, 'velocityZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': (10,12)}
+                            'target_location': [10,12]}
 
         self. auto_function_command = 0
 
@@ -36,13 +36,14 @@ class WorldState():
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
 
-        self.state_flags['positionX'] = data.pose[23].position.x
-        self.state_flags['positionY'] = data.pose[23].position.y
+        self.state_flags['positionX'] = data.pose[1].position.x
+        self.state_flags['positionY'] = data.pose[1].position.y
 
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
 
-        self.state_flags['heading'] = data.orientation.z        
+        #self.state_flags['heading'] = data.orientation.z        
+        pass
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
