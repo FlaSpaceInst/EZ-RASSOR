@@ -4,7 +4,7 @@ settings.json
 
 
 # Ignore React Native Module files
-node_modules/**/*
+node_modules/
 .expo/*
 npm-debug.*
 *.jks

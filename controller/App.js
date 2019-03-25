@@ -353,7 +353,7 @@ export default class App extends React.Component {
                   </View>
                 </View>
               </View>
-              <Image style={styles.image} source={require('../ControllerApp/assets/rassor.png')}/>
+              <Image style={styles.image} source={require('./assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
