@@ -46,7 +46,6 @@ def ai_control(world_state, ros_util):
             ros_util.rate.sleep()
 
         if ros_util.auto_function_command == 1:
-            print("Test")
             auto_drive_location(world_state, ros_util)
         elif ros_util.auto_function_command == 2:
             auto_dig(world_state, ros_util, 10)
