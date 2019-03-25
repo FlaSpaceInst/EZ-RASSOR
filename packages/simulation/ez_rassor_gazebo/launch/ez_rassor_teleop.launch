@@ -5,12 +5,14 @@
     <include file="$(find ez_rassor_gazebo)/launch/ez_rassor_world.launch">
         <arg name="paused" value="false" />
     </include>
-    
+
+    <!-- LAUNCH REQUEST SWITCHER -->
+    <include file="$(find ezrassor_launcher)/launch/communication.launch"/>
+
     <!-- LAUNCH CONTROLS -->
     <node pkg="joy" name="joy" type="joy_node" />
     <node pkg="ez_rassor_control" name="arms" type="arms.py" output="screen"/>
     <node pkg="ez_rassor_control" name="wheels" type="wheels.py" output="screen"/>
     <node pkg="ez_rassor_control" name="drums" type="drums.py" output="screen"/>
-    <node pkg="ez_rassor_control" name="controller" type="joy_translator.py" output="screen"/>
     
 </launch>
