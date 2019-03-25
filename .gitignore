@@ -1,3 +1,13 @@
 .vscode
 .vscode/
 settings.json
+
+
+# Ignore React Native Module files
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p12
+*.key
+*.mobileprovision
