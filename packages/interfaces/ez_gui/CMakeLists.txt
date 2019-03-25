@@ -14,6 +14,9 @@ project(ez_gui)
 find_package(catkin REQUIRED COMPONENTS 
     qt_build 
     sensor_msgs
+    geometry_msgs
+    rqt_gui
+    rqt_gui_cpp
     cv_bridge
     roscpp
     std_msgs

@@ -26,8 +26,18 @@ namespace ez_gui {
         /*********************
         ** Image Viewing
         **********************/
-        ui.img_lbl->setPixmap(qnode.frontCameraPixmap());
+        QObject::connect(&qnode, SIGNAL(frontCamUpdated()), this, SLOT(updateFrontCamera()));
         //ui.img_lbl->setPixmap(QPixmap(":/images/icon.png"));
+
+        /*********************
+        ** Usage
+        **********************/
+
+        QObject::connect(&qnode, SIGNAL(cpuUpdated()), this, SLOT(updateCPU()));
+        QObject::connect(&qnode, SIGNAL(vmUpdated()), this, SLOT(updateVM()));
+        QObject::connect(&qnode, SIGNAL(smUpdated()), this, SLOT(updateSM()));
+        QObject::connect(&qnode, SIGNAL(diskUpdated()), this, SLOT(updateDisk()));
+        QObject::connect(&qnode, SIGNAL(batteryUpdated()), this, SLOT(updateBat()));
 
         /*********************
         ** Auto Start
@@ -106,6 +116,44 @@ namespace ez_gui {
     void MainWindow::updateLoggingView()
     {
         ui.view_logging->scrollToBottom();
+    }
+
+    void MainWindow::updateCPU()
+    {
+        ui.cpuBar->setValue(*qnode.cpuBarUpdate());
+    }
+
+    void MainWindow::updateVM()
+    {
+        ui.vmBar->setValue(*qnode.vmBarUpdate());
+    }
+
+    void MainWindow::updateSM()
+    {
+        ui.smBar->setValue(*qnode.smBarUpdate());
+    }
+
+    void MainWindow::updateDisk()
+    {
+        ui.dBar->setValue(*qnode.diskBarUpdate());
+    }
+
+    void MainWindow::updateBat()
+    {
+        ui.batBar->setValue(*qnode.batteryBarUpdate());
+    }
+
+
+    void MainWindow::updateFrontCamera()
+    {
+        //ui.front_camera->resize(350, 387);
+        ui.front_camera->setPixmap(*qnode.frontCameraPixmap());
+    }
+
+    void MainWindow::updateBackCamera()
+    {
+        //ui.front_camera->resize(350, 387);
+        ui.back_camera->setPixmap(*qnode.backCameraPixmap());
     }
 
     void MainWindow::on_actionAbout_triggered()
