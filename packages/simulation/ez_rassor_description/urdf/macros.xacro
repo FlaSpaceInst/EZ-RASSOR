@@ -3,9 +3,10 @@
 <robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- Inertia Tensors Used: https://en.wikipedia.org/wiki/List_of_moments_of_inertia#List_of_3D_inertia_tensors -->
     <macro name="cylinder_inertia" params="m r h">
-    <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
-        iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
-        izz="${m*r*r/2}"
+    <inertia  
+        ixx="${m*((3*r*r)+(h*h))/12}" ixy = "0"                 ixz = "0"
+                                  iyy="${m*((3*r*r)+(h*h))/12}" iyz = "0"
+                                                            izz="${(m*(r*r))/2}"
     />
     </macro>
 
@@ -38,6 +39,7 @@
         </unless> 
     </macro>
 
+    <!-- VISUAL AND COLLISION MACROS -->
     <macro name="robot_arm">
         <mesh filename="package://ez_rassor_description/meshes/drum_arm_short.dae" scale="1.0 1.0 1.0"></mesh> 
     </macro>
@@ -47,7 +49,7 @@
     </macro>
 
     <macro name="robot_wheel">
-        <mesh filename="package://ez_rassor_description/meshes/wheel.dae" scale="0.35 0.35 0.35"></mesh> 
+        <mesh filename="package://ez_rassor_description/meshes/wheel.dae" scale="0.35 0.35 0.35"></mesh>  
     </macro>
     
     <macro name="base_unit">
