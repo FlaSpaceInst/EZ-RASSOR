@@ -3,7 +3,7 @@ import rospy
 from std_msgs.msg import Int16, Float64
 
 NODE = "drums"
-TOPIC = "ez_main_topic"
+TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b000000001111
 
 
@@ -11,8 +11,6 @@ MASK = 0b000000001111
 # /ez_rassor/drum_front_velocity_controller/command
 pub_FD = rospy.Publisher('/ez_rassor/drum_front_velocity_controller/command', Float64, queue_size = 10)
 pub_BD = rospy.Publisher('/ez_rassor/drum_back_velocity_controller/command', Float64, queue_size = 10)
-
-
 
 def get_movements(integer, mask):
     """Decode a bitstring to reveal the movement commands for this node."""
@@ -59,11 +57,11 @@ def drum_movement_callback(instruction):
     else:
         pub_BD.publish(0)
 
-
 def main():
     print("Drums node started")
-    rospy.init_node('ez_arms', anonymous = True)
-    rospy.Subscriber('ez_main_topic', Int16, drum_movement_callback)
+    rospy.init_node(NODE, anonymous = True)
+    # rospy.Subscriber('ez_main_topic', Int16, drum_movement_callback)
+    rospy.Subscriber(TOPIC, Int16, drum_movement_callback)
     rospy.spin()
 
 if __name__ == '__main__':

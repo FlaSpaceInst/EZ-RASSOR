@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- Package metadata for the ezrassor_launcher ROS package.
+     Written by Tiger Sachse. -->
+<package format="2">
+  <name>ezrassor_launcher</name>
+  <license>MIT</license>
+  <version>1.0.0</version>
+  <description>A large collection of launch files for the EZ-RASSOR</description>
+  <author email="tgsachse@gmail.com">Tiger Sachse</author>
+  <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
+  <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>roslaunch</exec_depend>
+</package>

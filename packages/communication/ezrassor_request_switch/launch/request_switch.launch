@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch the request switch. Written by Tiger Sachse. -->
+<launch>
+  <node name="request_switch"
+        pkg="ezrassor_request_switch"
+        type="request_switch"
+        output="screen"
+  />
+</launch>
