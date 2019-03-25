@@ -12,6 +12,8 @@ namespace ez_gui {
         ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
         QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 
+        setFixedSize(980,690);
+
         ReadSettings();
         setWindowIcon(QIcon(":/images/icon.png"));
         ui.tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
@@ -27,6 +29,7 @@ namespace ez_gui {
         ** Image Viewing
         **********************/
         QObject::connect(&qnode, SIGNAL(frontCamUpdated()), this, SLOT(updateFrontCamera()));
+        QObject::connect(&qnode, SIGNAL(backCamUpdated()), this, SLOT(updateBackCamera()));
         //ui.img_lbl->setPixmap(QPixmap(":/images/icon.png"));
 
         /*********************
@@ -146,19 +149,26 @@ namespace ez_gui {
 
     void MainWindow::updateFrontCamera()
     {
-        //ui.front_camera->resize(350, 387);
-        ui.front_camera->setPixmap(*qnode.frontCameraPixmap());
+        int w = ui.front_camera->width();
+        int h = ui.front_camera->height();
+        QPixmap front = *qnode.frontCameraPixmap();
+        ui.front_camera->setPixmap(front.scaled(w,h,Qt::KeepAspectRatio));
     }
 
     void MainWindow::updateBackCamera()
     {
-        //ui.front_camera->resize(350, 387);
-        ui.back_camera->setPixmap(*qnode.backCameraPixmap());
+        ROS_DEBUG_STREAM("we out here");
+        int w = ui.back_camera->width();
+        int h = ui.back_camera->height();
+        QPixmap back = *qnode.backCameraPixmap();
+        ui.back_camera->setPixmap(back.scaled(w,h,Qt::KeepAspectRatio));
     }
 
     void MainWindow::on_actionAbout_triggered()
     {
-        QMessageBox::about(this, tr("About ..."),tr("<h2>EZ-RASSOR</p>"));
+        QMessageBox::about(this,
+                           tr("About EZ-Rassor"),
+                           tr("<p>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASAs RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center."));
     }
 
     void MainWindow::ReadSettings()
