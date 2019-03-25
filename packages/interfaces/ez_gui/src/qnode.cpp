@@ -35,7 +35,7 @@ namespace ez_gui {
 
         //imu_subscriber = n.subscribe("/imu", 1000, &QNode::imuCallback, this);
         front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-        //back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+        back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageBackCallback, this);
         cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
         vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
         sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
@@ -61,7 +61,7 @@ namespace ez_gui {
 
         //imu_subscriber = n.subscribe("/imu", 100, &QNode::imuCallback, this);
         front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-        //back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+        back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageBackCallback, this);
         cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
         vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
         sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
