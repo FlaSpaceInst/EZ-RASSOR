@@ -43,7 +43,7 @@ def handle_arm_movements(instruction):
     """Move the arms of the EZRC per the commands encoded in the instruction."""
     arm1_up, arm1_down, arm2_up, arm2_down = get_movements(instruction.data, MASK)
 
-    arm_speed = 1
+    arm_speed = 3
 
     # The arms are mirrored and the model so arm1 needs negative velocity to move up.
 
