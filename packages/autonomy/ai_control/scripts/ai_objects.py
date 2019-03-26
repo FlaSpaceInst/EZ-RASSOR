@@ -11,8 +11,7 @@ class WorldState():
     """ World State Object Representing All Sensor Data """
 
     def __init__(self):
-        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0,
-                            'velocityX': 0, 'velocityY': 0, 'velocityZ': 0, 
+        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
                             'target_location': [10,10], 'kill_bit': 0b1000000000000}
@@ -32,6 +31,7 @@ class WorldState():
 
         self.state_flags['positionX'] = data.pose.pose.position.z
         self.state_flags['positionY'] = data.pose.pose.position.y
+        self.state_flags['heading'] = data.pose
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
