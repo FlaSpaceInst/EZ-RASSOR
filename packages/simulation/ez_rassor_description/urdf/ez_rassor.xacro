@@ -11,6 +11,10 @@
 
   <!--Below are all of the robot's Links/-->
   <link name='base_link'>
+   <pose>0 0 0 0 0 0</pose>
+  </link>
+
+  <link name='body'>
     <pose>0 0 0 0 0 0</pose>
     <inertial>
       <mass value="35.0"/>
@@ -350,6 +354,13 @@
     </inertial>
   </link>
 
+  <joint name="body_joint" type="fixed">
+    <axis xyz="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="body"/>
+  </joint>
+  
   <joint name="imu_joint" type="fixed">
     <axis xyz="0 0 0" />
     <origin xyz="0 0 0" rpy="0 0 0"/>
