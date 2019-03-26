@@ -10,7 +10,6 @@
     <include file="$(find ezrassor_launcher)/launch/communication.launch"/>
 
     <!-- LAUNCH CONTROLS -->
-    <node pkg="joy" name="joy" type="joy_node" />
     <node pkg="ez_rassor_control" name="arms" type="arms.py" output="screen"/>
     <node pkg="ez_rassor_control" name="wheels" type="wheels.py" output="screen"/>
     <node pkg="ez_rassor_control" name="drums" type="drums.py" output="screen"/>
