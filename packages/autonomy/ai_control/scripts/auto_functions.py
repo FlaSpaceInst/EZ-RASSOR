@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
 import math
+from nav_functions import *
+from utility_functions import *
 
 def auto_drive(world_state, ros_util):
     """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
@@ -8,13 +10,16 @@ def auto_drive(world_state, ros_util):
     while ros_util.auto_function_command != 0:
 
         # Avoid obstacles by turning left or right if warning flag is raised
-        while(world_state.state_flags['warning_flag'] == 1):
+        while world_state.state_flags['warning_flag'] == 1:
             ros_util.command_pub.publish(ros_util.commands['right'])
             ros_util.rate.sleep()
-        while(world_state.state_flags['warning_flag'] == 2):
+        while world_state.state_flags['warning_flag'] == 2:
             ros_util.command_pub.publish(ros_util.commands['left'])
             ros_util.rate.sleep()
         
+        if world_state.state_flags['warning_flag'] == 3:
+            reverse_turn(world_state, ros_util)
+
         ros_util.command_pub.publish(ros_util.commands['forward'])
         ros_util.rate.sleep()
 
@@ -28,13 +33,10 @@ def auto_drive_location(world_state, ros_util):
     while world_state.state_flags['positionX'] != world_state.state_flags['target_location'][0] and world_state.state_flags['positionY'] != world_state.state_flags['target_location'][1]:
         print(world_state.state_flags['positionX'], world_state.state_flags['positionY'])
         # Get new heading angle relative to current heading as (0,0)
-        new_heading = math.atan2( (world_state.state_flags['target_location'][0] - world_state.state_flags['positionY']), (world_state.state_flags['target_location'][1] - world_state.state_flags['positionX']) )
-        new_heading = int(360*new_heading/math.pi)
-        ros_util.status_pub.publish("New Heading: {}".format(new_heading))
+        new_heading = calculate_heading(world_state, ros_util)
 
         # Calculate angle difference needed to adjust heading
-        angle_difference = new_heading - world_state.state_flags['heading']
-        angle_difference = (angle_difference + 180) % 360 - 180
+        angle_difference = adjust_angle(world_state.state_flags['heading'], new_heading)
 
         if angle_difference > 0:
             direction = 'left'
@@ -59,7 +61,10 @@ def auto_drive_location(world_state, ros_util):
             ros_util.command_pub.publish(ros_util.commands['left'])
             world_state.state_flags['heading'] += delta # Temporary until we fix heading calculation using visual odometry
             ros_util.rate.sleep()
-        
+
+        if world_state.state_flags['warning_flag'] == 3:
+            reverse_turn(world_state, ros_util)
+
         # Otherwise go forward
         ros_util.command_pub.publish(ros_util.commands['forward'])
             

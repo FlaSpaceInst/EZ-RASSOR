@@ -38,16 +38,20 @@ def obst_detect(data):
 
     pub = rospy.Publisher('ez_rassor/obstacle_detect', Int16, queue_size=10)
 
-    """Set thresholds.""" 
-    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 5:
-        print("MOVE RIGHT!")
-        pub.publish(commands['right'])
-    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 5:
+    
+
+    if data[LEFT].min() < 3 and data[RIGHT].min() < 3:
+        print("MOVE BACK!")
+        pub.publish(3)
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 3:
         print("MOVE LEFT!")
-        pub.publish(commands['left'])
+        pub.publish(2)
+    elif data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 3:  
+        pub.publish(1)
+        print("MOVE RIGHT")
     else:
          print("MOVE FORWARD!")
-         pub.publish(commands['forward'])
+         pub.publish(0)
 
 
 def callback(data):

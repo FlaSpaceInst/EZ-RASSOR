@@ -23,12 +23,12 @@ def onStartUp():
     ros_util.status_pub.publish("Spinning Up AI Control")
 
     # Setup Subscriber Callbacks
-    #rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
+    rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('/imu', Imu, world_state.imuCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, world_state.jointCallBack)
     rospy.Subscriber('ez_rassor/obstacle_detect', Int16, world_state.visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)
-    rospy.Subscriber('gazebo/link_states', LinkStates, world_state.simStateCallBack)
+    #rospy.Subscriber('gazebo/link_states', LinkStates, world_state.simStateCallBack)
 
     set_back_arm_angle(world_state, ros_util, .785)
     set_front_arm_angle(world_state, ros_util, .785)
