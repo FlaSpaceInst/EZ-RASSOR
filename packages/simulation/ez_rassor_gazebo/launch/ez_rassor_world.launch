@@ -9,7 +9,7 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
 
-  <arg name="world" default="empty"/> 
+  <arg name="world" default="moon.world"/> 
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
@@ -18,7 +18,7 @@
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="$(arg paused)"/>
-    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/moon.world"/>
+    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/$(arg world)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
     <arg name="headless" value="$(arg headless)"/>
@@ -44,5 +44,10 @@
     respawn="false" output="screen">
     <remap from="/joint_states" to="/ez_rassor/joint_states" />
   </node>
- 
+
+  <!--><node pkg="ai_control" name="left_image_frame_broadcaster" type="left_image_frame_broadcaster.py" /><!-->
+  <node pkg="ai_control" name="self_right_action" type="self_right.py" args="$(arg world)"/>
+  
+
+
 </launch>
