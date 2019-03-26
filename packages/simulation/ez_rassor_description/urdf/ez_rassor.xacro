@@ -2,7 +2,7 @@
 
 <robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:property name="cameraSize" value="0.005"/>
+  <xacro:property name="cameraSize" value="0.05"/>
   <xacro:property name="cameraMass" value="0.1"/>
 
   <xacro:include filename="$(find ez_rassor_description)/urdf/ez_rassor.gazebo" />
@@ -160,13 +160,13 @@
     </inertial>
   </link>
 
- <link name="drum_front">
-    <collision name="collision">
+  <link name="drum_front">
+    <!-- <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <robot_arm_drum />
       </geometry>
-    </collision>
+    </collision>-->
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -187,12 +187,12 @@
   </link>
 
   <link name="drum_back">
-    <collision name="collision">
+    <!-- <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
       <geometry>
         <robot_arm_drum />
       </geometry>
-    </collision>
+    </collision> -->
      <collision name="collision">
       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
       <geometry>
@@ -326,7 +326,30 @@
     </inertial>
   </link>
 
-  <!-- IMU -->
+  <link name="stereo_camera_back">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+
+    <inertial>
+      <mass value="${cameraMass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
   <link name="imu_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -359,11 +382,18 @@
   </joint>
 
   <joint name="camera_front_joint" type="fixed">
-    <origin xyz="-.2 0 -.2" rpy="0 0.785 0"/>
+    <origin xyz=".5 -0.005 0" rpy="0 0.785 0"/>
     <axis xyz="0 1 0" />
     <parent link="arm_front"/>
     <child link="stereo_camera_front"/>
   </joint>
+
+  <joint name="camera_back_joint" type="fixed">
+    <origin xyz="-.5 0.005 0" rpy="0 -0.785 3.14"/>
+    <axis xyz="0 1 0" />
+    <parent link="arm_back" />
+    <child link="stereo_camera_back"/>
+  </joint>  
 
   <joint type="continuous" name="left_wheel_front_hinge">
     <origin xyz="0.20 0.285 0" rpy="0 0 0"/>
@@ -418,6 +448,7 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+
   <joint type="continuous" name="drum_front_hinge">
     <origin xyz="0.388245 0 0" rpy="0 0 0"/>
     <child link="drum_front"/>
@@ -435,4 +466,5 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
+
 </robot>
