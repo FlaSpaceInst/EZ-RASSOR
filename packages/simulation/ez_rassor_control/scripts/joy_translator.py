@@ -1,4 +1,4 @@
-    #!/usr/bin/env python
+#!/usr/bin/env python
 """A ROS node that handles controll input on the EZRC.
 
 Written by Harrison Black and Tiger Sachse.
