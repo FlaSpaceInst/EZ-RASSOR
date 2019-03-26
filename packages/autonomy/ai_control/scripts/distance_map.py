@@ -8,7 +8,7 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError 
 from stereo_msgs.msg import DisparityImage
 import std_msgs
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, Int16
 import time
 
 LEFT = 0
@@ -36,13 +36,13 @@ commands = {
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('ez_rassor/obstacle_detect', Int8, queue_size=10)
+    pub = rospy.Publisher('ez_rassor/obstacle_detect', Int16, queue_size=10)
 
     """Set thresholds.""" 
-    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
+    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 5:
         print("MOVE RIGHT!")
         pub.publish(commands['right'])
-    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 5:
         print("MOVE LEFT!")
         pub.publish(commands['left'])
     else:
