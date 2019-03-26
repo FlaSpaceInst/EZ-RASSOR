@@ -26,7 +26,7 @@ def onStartUp():
     #rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('/imu', Imu, world_state.imuCallBack)
     rospy.Subscriber('ez_rassor/joint_states', JointState, world_state.jointCallBack)
-    rospy.Subscriber('ez_rassor/obstacle_detect', Int8, world_state.visionCallBack)
+    rospy.Subscriber('ez_rassor/obstacle_detect', Int16, world_state.visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)
     rospy.Subscriber('gazebo/link_states', LinkStates, world_state.simStateCallBack)
 
@@ -40,9 +40,15 @@ def ai_control(world_state, ros_util):
 
     while(True):
         # Temp
-        ros_util.auto_function_command = 1
+        ros_util.auto_function_command = 0
+
+        auto_drive_location(world_state, ros_util)
+        world_state.state_flags['target_location'] = [10,-10]
+        auto_drive_location(world_state, ros_util)
+
 
         while ros_util.auto_function_command == 0:
+            ros_util.command_pub.publish(ros_util.commands['null'])
             ros_util.rate.sleep()
 
         if ros_util.auto_function_command == 1:

@@ -15,7 +15,7 @@ class WorldState():
                             'velocityX': 0, 'velocityY': 0, 'velocityZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': [10,12]}
+                            'target_location': [10,10], 'kill_bit': 0b1000000000000}
 
         self. auto_function_command = 0
 

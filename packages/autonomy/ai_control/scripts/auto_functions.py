@@ -18,15 +18,15 @@ def auto_drive(world_state, ros_util):
         ros_util.command_pub.publish(ros_util.commands['forward'])
         ros_util.rate.sleep()
 
-    # Otherwise go forward
     ros_util.command_pub.publish(ros_util.commands['null'])
+    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
 
     # Main loop until location is reached
     while world_state.state_flags['positionX'] != world_state.state_flags['target_location'][0] and world_state.state_flags['positionY'] != world_state.state_flags['target_location'][1]:
-        
+        print(world_state.state_flags['positionX'], world_state.state_flags['positionY'])
         # Get new heading angle relative to current heading as (0,0)
         new_heading = math.atan2( (world_state.state_flags['target_location'][0] - world_state.state_flags['positionY']), (world_state.state_flags['target_location'][1] - world_state.state_flags['positionX']) )
         new_heading = int(360*new_heading/math.pi)
@@ -38,13 +38,14 @@ def auto_drive_location(world_state, ros_util):
 
         if angle_difference > 0:
             direction = 'left'
-            delta = 1
+            delta = .5
         else:
             direction = 'right'
-            delta = -1
+            delta = -.5
 
         # Adjust heading until it matches new heading
         while not ((new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1)):
+            print(world_state.state_flags['heading'], new_heading)
             ros_util.command_pub.publish(ros_util.commands[direction])
             world_state.state_flags['heading'] += delta # Temporary until we fix heading calculation using visual odometry
             ros_util.rate.sleep()
@@ -65,6 +66,7 @@ def auto_drive_location(world_state, ros_util):
         ros_util.rate.sleep()
     
     ros_util.command_pub.publish(ros_util.commands['null'])
+    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
@@ -74,6 +76,8 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
+    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
