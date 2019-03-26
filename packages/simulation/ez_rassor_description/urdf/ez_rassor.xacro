@@ -300,6 +300,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+
   <!-- Front Camera Added -->
   <link name="stereo_camera_front">
     <collision>
@@ -325,30 +326,7 @@
     </inertial>
   </link>
 
-  <link name="stereo_camera_back">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
+  <!-- IMU -->
   <link name="imu_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -381,18 +359,11 @@
   </joint>
 
   <joint name="camera_front_joint" type="fixed">
-    <origin xyz=".5 -0.005 0" rpy="0 0.785 0"/>
+    <origin xyz="-.2 0 -.2" rpy="0 0.785 0"/>
     <axis xyz="0 1 0" />
     <parent link="arm_front"/>
     <child link="stereo_camera_front"/>
   </joint>
-
-  <joint name="camera_back_joint" type="fixed">
-    <origin xyz="-.5 0.005 0" rpy="0 -0.785 3.14"/>
-    <axis xyz="0 1 0" />
-    <parent link="arm_back" />
-    <child link="stereo_camera_back"/>
-  </joint>  
 
   <joint type="continuous" name="left_wheel_front_hinge">
     <origin xyz="0.20 0.285 0" rpy="0 0 0"/>

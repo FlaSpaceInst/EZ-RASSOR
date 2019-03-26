@@ -27,6 +27,7 @@
 
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find ez_rassor_description)/urdf/ez_rassor.xacro'"/>
 
+
   <node name="ez_rassor_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
       args="-urdf -param robot_description -model ez_rassor
       -x $(arg x) -y $(arg y) -z $(arg z)
@@ -49,7 +50,7 @@
   <node pkg="ez_rassor_control" name="wheels_control" type="wheels.py"/>
   <node pkg="ez_rassor_control" name="arms_control" type="arms.py"/>
   <node pkg="ez_rassor_control" name="drums_control" type="drums.py"/>
-  <node pkg="ezrassor_request_switch" name="request_switcher" type="request_switch"/>
+  
 
 
 </launch>
