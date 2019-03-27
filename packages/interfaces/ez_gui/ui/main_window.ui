@@ -7,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>975</width>
-    <height>720</height>
+    <height>640</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>970</width>
-    <height>720</height>
+    <width>975</width>
+    <height>640</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>975</width>
+    <height>640</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -36,6 +42,12 @@
         <height>0</height>
        </size>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>600</height>
+       </size>
+      </property>
       <property name="locale">
        <locale language="English" country="Australia"/>
       </property>
@@ -43,7 +55,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_image">
        <property name="font">
@@ -60,7 +72,7 @@
          <rect>
           <x>10</x>
           <y>50</y>
-          <width>261</width>
+          <width>281</width>
           <height>211</height>
          </rect>
         </property>
@@ -76,7 +88,7 @@
          <rect>
           <x>10</x>
           <y>310</y>
-          <width>261</width>
+          <width>281</width>
           <height>211</height>
          </rect>
         </property>
@@ -119,9 +131,9 @@
        <widget class="QLabel" name="disparity_camera">
         <property name="geometry">
          <rect>
-          <x>280</x>
+          <x>300</x>
           <y>50</y>
-          <width>261</width>
+          <width>281</width>
           <height>211</height>
          </rect>
         </property>
@@ -135,7 +147,7 @@
        <widget class="QLabel" name="label_11">
         <property name="geometry">
          <rect>
-          <x>280</x>
+          <x>300</x>
           <y>10</y>
           <width>171</width>
           <height>31</height>
@@ -148,9 +160,9 @@
        <widget class="QLabel" name="swamp">
         <property name="geometry">
          <rect>
-          <x>280</x>
+          <x>300</x>
           <y>310</y>
-          <width>261</width>
+          <width>281</width>
           <height>211</height>
          </rect>
         </property>
@@ -172,10 +184,10 @@
        <widget class="QWidget" name="verticalLayoutWidget_2">
         <property name="geometry">
          <rect>
-          <x>19</x>
-          <y>19</y>
-          <width>521</width>
-          <height>601</height>
+          <x>10</x>
+          <y>10</y>
+          <width>581</width>
+          <height>541</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="imu_viewer"/>
@@ -190,8 +202,8 @@
          <rect>
           <x>120</x>
           <y>30</y>
-          <width>411</width>
-          <height>81</height>
+          <width>461</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="value">
@@ -202,9 +214,9 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>140</y>
-          <width>411</width>
-          <height>81</height>
+          <y>120</y>
+          <width>461</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="value">
@@ -215,9 +227,9 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>250</y>
-          <width>411</width>
-          <height>81</height>
+          <y>210</y>
+          <width>461</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="value">
@@ -228,9 +240,9 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>360</y>
-          <width>411</width>
-          <height>81</height>
+          <y>300</y>
+          <width>461</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="value">
@@ -241,7 +253,7 @@
         <property name="geometry">
          <rect>
           <x>50</x>
-          <y>50</y>
+          <y>40</y>
           <width>61</width>
           <height>51</height>
          </rect>
@@ -254,7 +266,7 @@
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>160</y>
+          <y>130</y>
           <width>81</width>
           <height>51</height>
          </rect>
@@ -267,9 +279,9 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>470</y>
-          <width>411</width>
-          <height>81</height>
+          <y>390</y>
+          <width>461</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="value">
@@ -280,7 +292,7 @@
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>270</y>
+          <y>220</y>
           <width>81</width>
           <height>51</height>
          </rect>
@@ -293,7 +305,7 @@
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>380</y>
+          <y>310</y>
           <width>81</width>
           <height>51</height>
          </rect>
@@ -306,13 +318,39 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>480</y>
+          <y>400</y>
           <width>101</width>
           <height>51</height>
          </rect>
         </property>
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic;&quot;&gt;Battery &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic;&quot;&gt;Remaining &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QProgressBar" name="batBar_2">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>480</y>
+          <width>461</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>490</y>
+          <width>101</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic;&quot;&gt;Dank &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic;&quot;&gt;Meter &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </widget>
@@ -323,10 +361,10 @@
        <widget class="QWidget" name="verticalLayoutWidget">
         <property name="geometry">
          <rect>
-          <x>19</x>
-          <y>19</y>
-          <width>521</width>
-          <height>601</height>
+          <x>10</x>
+          <y>10</y>
+          <width>581</width>
+          <height>541</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="pc_viewer"/>
@@ -339,10 +377,10 @@
        <widget class="QWidget" name="verticalLayoutWidget_3">
         <property name="geometry">
          <rect>
-          <x>19</x>
-          <y>19</y>
-          <width>521</width>
-          <height>601</height>
+          <x>10</x>
+          <y>10</y>
+          <width>581</width>
+          <height>541</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="pose_viewer"/>
@@ -382,8 +420,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>398</width>
-     <height>516</height>
+     <width>350</width>
+     <height>600</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>350</width>
+     <height>600</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -516,9 +560,12 @@
               <enum>QFrame::Raised</enum>
              </property>
              <property name="text">
-              <string>Node Launcher</string>
+              <string>Launcher</string>
              </property>
             </widget>
+           </item>
+           <item row="8" column="0" colspan="2">
+            <widget class="QComboBox" name="comboBox"/>
            </item>
            <item row="9" column="1">
             <widget class="QPushButton" name="button_launch">
@@ -552,9 +599,6 @@
               <string>Ros Master Url</string>
              </property>
             </widget>
-           </item>
-           <item row="8" column="0" colspan="2">
-            <widget class="QComboBox" name="comboBox"/>
            </item>
            <item row="11" column="0" colspan="2">
             <widget class="QListView" name="view_logging"/>

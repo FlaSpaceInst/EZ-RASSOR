@@ -10,7 +10,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
     QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 
-    //setFixedSize(980,690);
+    setFixedSize(975,640);
 
     ReadSettings();
     setWindowIcon(QIcon(":/images/icon.png"));
