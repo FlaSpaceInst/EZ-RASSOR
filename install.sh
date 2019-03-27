@@ -85,7 +85,7 @@ link_and_install() {
     for SUPERPACKAGE in "$@"; do
         case "$SUPERPACKAGE" in
             autonomy)
-                NEED_ROS_DESKTOP=true
+                NEED_ROS_BASE=true
                 link_package "external/viso2" "viso2"
                 link_package "external/viso2" "libviso2"
                 link_package "external/viso2" "viso2_ros"
