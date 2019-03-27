@@ -84,6 +84,8 @@ link_and_install() {
     for SUPERPACKAGE in "$@"; do
         case "$SUPERPACKAGE" in
             autonomy)
+                NEED_ROS_BASE=true
+                link_package "autonomy" "ezrassor_autonomous_control"
                 ;;
             simulation)
                 ;;
