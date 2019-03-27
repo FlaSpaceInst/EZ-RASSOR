@@ -207,18 +207,30 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
       return;
     }
 
-    QImage::Format format=QImage::Format_RGB32;
-    int bpp=cv_ptr->image.channels();
+    //--------------------------------------------
+    cv::Mat float_img = cv_ptr->image;
+    cv::Mat mono8_img;
+
+    if(mono8_img.rows != float_img.rows || mono8_img.cols != float_img.cols)
+        mono8_img = cv::Mat(float_img.size(), CV_8UC1);
+
+    cv::convertScaleAbs(float_img, mono8_img, 100, 0.0);
+
+    //--------------------------------------------
+
+    QImage::Format format=QImage::Format_Grayscale8;
+
+    int bpp=mono8_img.channels();
 
     if(bpp==3) format=QImage::Format_RGB888;
 
-    QImage img(cv_ptr->image.cols,cv_ptr->image.rows,format);
+    QImage img(mono8_img.cols,mono8_img.rows,format);
     uchar *sptr,*dptr;
-    int linesize=cv_ptr->image.cols*bpp;
+    int linesize=mono8_img.cols*bpp;
 
-    for(int y = 0; y < cv_ptr->image.rows; y++)
+    for(int y = 0; y < mono8_img.rows; y++)
     {
-        sptr=cv_ptr->image.ptr(y);
+        sptr=mono8_img.ptr(y);
         dptr=img.scanLine(y);
         memcpy(dptr,sptr,linesize);
     }
