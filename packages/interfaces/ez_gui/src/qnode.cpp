@@ -28,7 +28,7 @@ bool QNode::init()
     ros::start(); // explicitly needed since our nodehandle is going out of scope.
     ros::NodeHandle n;
 
-     Q_EMIT startingPointCloud();
+     Q_EMIT startingRviz();
 
     // Add your ros communications here.
 
@@ -57,7 +57,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     ros::start(); // explicitly needed since our nodehandle is going out of scope.
     ros::NodeHandle n;
 
-    Q_EMIT startingPointCloud();
+    Q_EMIT startingRviz();
 
     // Add your ros communications here.
 

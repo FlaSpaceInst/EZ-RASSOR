@@ -22,11 +22,9 @@
 class RvizPlugin: public QObject{
     Q_OBJECT
 public:
-    RvizPlugin(QVBoxLayout* ui){
+    RvizPlugin(QVBoxLayout* ui, int type){
         rviz_panel = new rviz::RenderPanel;
         rvizManager =  new rviz::VisualizationManager(rviz_panel);
-        //viewManager = new rviz::ViewManager();
-
 
         rviz_panel->initialize(rvizManager->getSceneManager(), rvizManager);
         rviz_panel->setBackgroundColor( Ogre::ColourValue(0, 0,0,0.3)); //no use
@@ -40,9 +38,29 @@ public:
         viewManager = rvizManager->getViewManager();
         viewManager->setRenderPanel(rviz_panel);
         viewManager->setCurrentViewControllerType("rviz/Orbit");
-        viewManager->getCurrent()->subProp("Target Frame")->setValue("/base_link");
+        viewManager->getCurrent()->subProp("Focal Point")->subProp("X")->setValue(0);
+        viewManager->getCurrent()->subProp("Focal Point")->subProp("Y")->setValue(0);
+        viewManager->getCurrent()->subProp("Focal Point")->subProp("Z")->setValue(0);
+        viewManager->getCurrent()->subProp("Focal Shape Size")->setValue(0.05);
+        viewManager->getCurrent()->subProp("Yaw")->setValue(0.785398);
+        viewManager->getCurrent()->subProp("Pitch")->setValue(0.785398);
 
-        enablePointCloud2("/ez_rassor/front_camera/points2", "FlatColor", "1");
+        if (type == 1)
+        {
+            viewManager->getCurrent()->subProp("Distance")->setValue(10);
+            enablePointCloud2("/ez_rassor/front_camera/points2", "FlatColor", "1");
+        }
+        else if (type == 2)
+        {
+            viewManager->getCurrent()->subProp("Distance")->setValue(5);
+            enableImu("/imu", "FlatColor", "1");
+        }
+        else if (type == 3)
+        {
+            viewManager->getCurrent()->subProp("Distance")->setValue(3);
+            enablePose();
+        }
+
     }
 
     rviz::Display* enablePointCloud2(QString topic, QString corlorTransform, QString size){
@@ -53,6 +71,17 @@ public:
         pointCloud->subProp("Color Transformer")->setValue(corlorTransform);
         pointCloud->subProp("Invert Rainbow")->setValue("true");
         return pointCloud;
+    }
+
+    rviz::Display* enableImu(QString topic, QString corlorTransform, QString size){
+        rviz::Display *IMU = rvizManager->createDisplay("rviz_plugin_tutorials/Imu","Imu", true);
+        IMU->subProp("Topic")->setValue(topic);
+        return IMU;
+    }
+
+    rviz::Display* enablePose(){
+        rviz::Display *pose = rvizManager->createDisplay("rviz/RobotModel","RobotModel", true);
+        return pose;
     }
 
 
@@ -96,7 +125,7 @@ class MainWindow : public QMainWindow
         void updateFrontCamera();
         void updateBackCamera();
         void updateDisparityCamera();
-        void startPointCloud();
+        void startRviz();
 
     private:
         Ui::MainWindowDesign ui;

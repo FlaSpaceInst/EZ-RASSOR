@@ -20,7 +20,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     /*********************
     ** Rviz
     **********************/
-    QObject::connect(&qnode, SIGNAL(startingPointCloud()), this, SLOT(startPointCloud()));
+    QObject::connect(&qnode, SIGNAL(startingRviz()), this, SLOT(startRviz()));
     /*********************
     ** Logging
     **********************/
@@ -165,9 +165,11 @@ void MainWindow::updateBat()
     ui.batBar->setValue(*qnode.batteryBarUpdate());
 }
 
-void MainWindow::startPointCloud()
+void MainWindow::startRviz()
 {
-    RvizPlugin rvi(this->ui.pc_viewer);
+    RvizPlugin point(this->ui.pc_viewer, 1);
+    RvizPlugin imu(this->ui.imu_viewer, 2);
+    RvizPlugin pose(this->ui.pose_viewer, 3);
 }
 
 void MainWindow::updateFrontCamera()
