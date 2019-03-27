@@ -131,13 +131,13 @@ export default class App extends React.Component {
               <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10 << 12)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b11 << 12)}>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b100 << 12)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b100 << 12)}>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b1000 << 12)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b101 << 12)}>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10000 << 12)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
               </TouchableOpacity>
             </View>
