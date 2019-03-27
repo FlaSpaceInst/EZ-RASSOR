@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 import rospy
+import time
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -37,10 +37,6 @@ def initial_check(world_state, ros_util):
     """  """
     pass
 
-def battery_check():
-    """  """
-    pass
-
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
@@ -52,3 +48,18 @@ def reverse_turn(world_state, ros_util):
 
     while (new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1):
         ros_util.command_pub.publish(ros_util.commands['left'])
+
+def self_right_from_side(world_state, ros_util):
+    """ Flip EZ-RASSOR over from its side. """
+
+    self_right_execution_time = 0.5
+    start_time = time.time()
+    ros_util.status_pub.publish("Initiating Self Right")
+    while(time.time() - start_time < self_right_execution_time):
+        if world_state.state_flags['on_side'] == False:
+            ros_util.command_pub.publish(ros_util.commands['null'])
+            return
+        ros_util.command_pub.publish(ros_util.commands['back_arm_up'])
+        ros_util.command_pub.publish(ros_util.commands['front_arm_up'])
+            
+    ros_util.command_pub.publish(ros_util.commands['null'])

@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 import rospy
 import math
+from tf import transformations
 
 
 def euclidean_distance(x1, x2, y1, y2):
@@ -26,4 +26,11 @@ def adjust_angle(heading, new_heading):
     angle_difference = (angle_difference + 180) % 360 - 180
     
     return angle_difference
+
+def quaternion_to_euler(pose):
+    quaternion = (pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w)
+
+    euler = transformations.euler_from_quaternion(quaternion)
+    
+    return euler[2]
 
