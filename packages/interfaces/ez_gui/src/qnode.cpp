@@ -199,7 +199,7 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
     try
     {
       //cv_ptr = cv_bridge::toCvCopy(msg.image, sensor_msgs::image_encodings::BGR8);
-      cv_ptr = cv_bridge::toCvCopy(msg.image, sensor_msgs::image_encodings::BGR8);
+      cv_ptr = cv_bridge::toCvCopy(msg.image);
     }
     catch (cv_bridge::Exception& e)
     {

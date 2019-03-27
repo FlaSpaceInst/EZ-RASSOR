@@ -34,30 +34,20 @@ public:
 
         rvizManager->initialize();
         rvizManager->startUpdate();
-        rvizManager->setFixedFrame("camera_init");
+        rvizManager->setFixedFrame("base_link");
         rviz::Display *grid = rvizManager->createDisplay("rviz/Grid","Grid",true);
 
         viewManager = rvizManager->getViewManager();
         viewManager->setRenderPanel(rviz_panel);
         viewManager->setCurrentViewControllerType("rviz/Orbit");
-        viewManager->getCurrent()->subProp("Target Frame")->setValue("/aft_mapped");
+        viewManager->getCurrent()->subProp("Target Frame")->setValue("/base_link");
 
         enablePointCloud2("/ez_rassor/front_camera/points2", "FlatColor", "1");
-        rviz::Display* frameRgister=enablePointCloud2("/velodyne_cloud_registered", "Intensity", "2");
-        enableOdometry("/integrated_to_init", "10000", "Axes");
-
-    }
-
-    void enableOdometry(QString topic, QString keep, QString shape){
-        rviz::Display *odometry = rvizManager->createDisplay("rviz/Odometry","Odometry", true);
-        odometry->subProp("Topic")->setValue(topic);//"/apollo/sensor/velodyne64/PointCloud2");
-        odometry->subProp("Keep")->setValue(keep);
-        odometry->subProp("Shape")->setValue(shape);
     }
 
     rviz::Display* enablePointCloud2(QString topic, QString corlorTransform, QString size){
         rviz::Display *pointCloud = rvizManager->createDisplay("rviz/PointCloud2","PointCloud2", true);
-        pointCloud->subProp("Topic")->setValue(topic);//"/apollo/sensor/velodyne64/PointCloud2");
+        pointCloud->subProp("Topic")->setValue(topic);
         pointCloud->subProp("Style")->setValue("Points");
         pointCloud->subProp("Size (Pixels)")->setValue(size);
         pointCloud->subProp("Color Transformer")->setValue(corlorTransform);
