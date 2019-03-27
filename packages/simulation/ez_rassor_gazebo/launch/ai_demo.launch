@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-  <!-- Robot pose -->
-  <arg name="x" default="0"/>
-  <arg name="y" default="0"/>
-  <arg name="z" default="0.195"/>
-  <arg name="roll" default="0"/>
-  <arg name="pitch" default="0"/>
-  <arg name="yaw" default="0"/>
-
   <arg name="world" default="empty"/> 
+  <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="paused" default="false"/>
   
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/ez_rassor.world"/>
     <arg name="paused" value="$(arg paused)"/>
-    <arg name="world_name" value="$(find ez_rassor_gazebo)/worlds/moon.world"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
     <arg name="headless" value="$(arg headless)"/>
@@ -28,28 +20,19 @@
   <param name="robot_description" command="$(find xacro)/xacro.py '$(find ez_rassor_description)/urdf/ez_rassor.xacro'"/>
 
   <node name="ez_rassor_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-      args="-urdf -param robot_description -model ez_rassor
-      -x $(arg x) -y $(arg y) -z $(arg z)
-      -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+   args="-urdf -param robot_description -model ez_rassor" />
 
      <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find ez_rassor_control)/config/ez_rassor_control.yaml" command="load"/>
 
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/ez_rassor" args="left_wheel_front_velocity_controller left_wheel_back_velocity_controller right_wheel_front_velocity_controller right_wheel_back_velocity_controller arm_front_velocity_controller arm_back_velocity_controller drum_front_velocity_controller drum_back_velocity_controller joint_state_controller"/>
+    output="screen" ns="/ez_rassor" args="left_wheel_back_velocity_controller left_wheel_front_velocity_controller right_wheel_back_velocity_controller right_wheel_front_velocity_controller arm_front_velocity_controller arm_back_velocity_controller drum_front_velocity_controller drum_back_velocity_controller joint_state_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
     respawn="false" output="screen">
     <remap from="/joint_states" to="/ez_rassor/joint_states" />
   </node>
-
-  <node pkg="ai_control" name="left_image_frame_broadcaster" type="left_image_frame_broadcaster.py" />
-  <node pkg="ez_rassor_control" name="wheels_control" type="wheels.py"/>
-  <node pkg="ez_rassor_control" name="arms_control" type="arms.py"/>
-  <node pkg="ez_rassor_control" name="drums_control" type="drums.py"/>
-  <node pkg="ez_rassor_comms" name="request_switcher" type="request_switcher"/>
-
-
+ 
 </launch>

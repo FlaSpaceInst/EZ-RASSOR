@@ -20,8 +20,8 @@ install(
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
 install(
-    FILES
-        config.yaml
+    DIRECTORY
+        config/
     DESTINATION
-        ${CATKIN_PACKAGE_SHARE_DESTINATION}
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
