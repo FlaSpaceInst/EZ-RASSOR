@@ -22,7 +22,6 @@
 #include <QStringListModel>
 #include <QProgressBar>
 
-
 class QNode : public QThread
 {
     Q_OBJECT
