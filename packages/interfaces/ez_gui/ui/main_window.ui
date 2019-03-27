@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QRosApp</string>
+   <string>EZ-RASSOR Monitoring System</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/images.qrc">
@@ -305,6 +305,22 @@
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="tab_pc">
+       <attribute name="title">
+        <string>Point Cloud</string>
+       </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>19</x>
+          <y>9</y>
+          <width>521</width>
+          <height>601</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="pc_viewer"/>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -320,7 +336,7 @@
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>&amp;App</string>
+     <string>Info</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
@@ -375,21 +391,15 @@
            <string>    Ros Master</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="11" column="0" colspan="2">
-            <widget class="QListView" name="view_logging"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_12">
              <property name="text">
-              <string>Ros Master Url</string>
+              <string>EZ-RASSOR Messages</string>
              </property>
             </widget>
+           </item>
+           <item row="11" column="0" colspan="2">
+            <widget class="QListView" name="view_logging"/>
            </item>
            <item row="1" column="0" colspan="2">
             <widget class="QLineEdit" name="line_edit_master">
@@ -486,20 +496,6 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="0">
-            <widget class="QGroupBox" name="groupBox_12">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="title">
-              <string>EZ-RASSOR Messages</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_3"/>
-            </widget>
-           </item>
            <item row="9" column="1">
             <widget class="QPushButton" name="button_launch">
              <property name="text">
@@ -540,6 +536,19 @@
              </property>
              <property name="text">
               <string>Package</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="text">
+              <string>Ros Master Url</string>
              </property>
             </widget>
            </item>
