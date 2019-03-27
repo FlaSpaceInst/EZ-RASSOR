@@ -1,2 +1,11 @@
+ezrassor_launcher
+ezrc_hardware_control
+ai_control
+cv_camera
+libviso2
+viso2
 viso2_ros
-
+ez_rassor_comms
+ezrassor_controller_server
+ezrassor_joy_translator
+ezrassor_request_switch
