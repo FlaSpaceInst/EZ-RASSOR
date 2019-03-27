@@ -21,5 +21,6 @@
   <exec_depend>gazebo_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
 
 </package>

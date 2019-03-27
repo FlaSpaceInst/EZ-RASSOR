@@ -3,7 +3,6 @@ from std_msgs.msg import Int8, Int16, String
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-from ezrassor_autonomous_control.msg import ObstacleDetection
 from nav_functions import quaternion_to_euler
 
 
