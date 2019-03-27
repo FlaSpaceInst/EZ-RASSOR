@@ -49,7 +49,6 @@ def callback(data):
     # 7 cross key up/down : Function 1/4
 
     data_out = 0b000000000000
-
     # The toggle can only be set once every 0.3 seconds. With out this the toggle will get spammed by Joy. 
     if data.buttons[6] and (time_now - toggle_time) > 0.3:
         tank_turn = not tank_turn

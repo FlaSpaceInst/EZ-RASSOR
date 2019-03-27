@@ -1,21 +1,19 @@
-#!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int8, Int16, String
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-from ai_control.msg import ObstacleDetection
+from nav_functions import quaternion_to_euler
 
 
 class WorldState():
     """ World State Object Representing All Sensor Data """
 
     def __init__(self):
-        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0,
-                            'velocityX': 0, 'velocityY': 0, 'velocityZ': 0, 
+        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': [10,12]}
+                            'target_location': [10,10], 'kill_bit': 0b1000000000000}
 
         self. auto_function_command = 0
 
@@ -32,18 +30,25 @@ class WorldState():
 
         self.state_flags['positionX'] = data.pose.pose.position.z
         self.state_flags['positionY'] = data.pose.pose.position.y
+        self.state_flags['heading'] = quaternion_to_euler(data.pose.pose.orientation)
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
 
         self.state_flags['positionX'] = data.pose[1].position.x
         self.state_flags['positionY'] = data.pose[1].position.y
+        
+        self.state_flags['heading'] = quaternion_to_euler(data.pose[1])
 
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
 
-        #self.state_flags['heading'] = data.orientation.z        
-        pass
+        if abs(data.linear_acceleration.y) > 9:
+            self.state_flags['on_side'] = True
+        else:
+            self.state_flags['on_side'] = False
+
+        #self.state_flags['heading'] = quaternion_to_euler(data.pose.orientation)
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
@@ -54,7 +59,6 @@ class WorldState():
 class ROSUtility():
 
     def __init__(self):
-                                            # ezrassor/routine_responses
         self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
         self.status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
         self.rate = rospy.Rate(30) # 30hz

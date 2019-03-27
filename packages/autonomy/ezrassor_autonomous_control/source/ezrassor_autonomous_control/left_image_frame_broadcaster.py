@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 import rospy
 import tf
 
 
-if __name__ == "__main__":
+def run():
 	rospy.init_node('left_image_frame_broadcaster')
 	camera_left = tf.TransformBroadcaster()
 	camera_depth = tf.TransformBroadcaster()
