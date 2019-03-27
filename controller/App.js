@@ -40,8 +40,8 @@ export default class App extends React.Component {
       modal2Visible: false,
       ipModal: false,
       isLoading: true,
-      ip:'192.168.60.158',  
-      endpoint: '/manual',
+      ip:'192.168.4.1',  
+      endpoint: '/',
       control: 0,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -83,7 +83,7 @@ export default class App extends React.Component {
   
   handleSubmit(event){
 
-    url = 'http://'+this.state.ip+':5000'+this.state.endpoint
+    url = 'http://'+this.state.ip+':8080'+this.state.endpoint
     console.log(url)
     
     return fetch(
@@ -125,20 +125,20 @@ export default class App extends React.Component {
           >
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Auto Dig</Text>
+                <TouchableOpacity style={styles.modalButton} onPress={()=>this.handleSubmit(0b1 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Auto Dump</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self Right</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b11 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Z Config</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b100 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Explore</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b101 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
               </TouchableOpacity>
             </View>
           </TouchableHighlight>
