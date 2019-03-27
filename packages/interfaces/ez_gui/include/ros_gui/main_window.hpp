@@ -33,7 +33,6 @@ public:
         rvizManager->initialize();
         rvizManager->startUpdate();
         rvizManager->setFixedFrame("base_link");
-        rviz::Display *grid = rvizManager->createDisplay("rviz/Grid","Grid",true);
 
         viewManager = rvizManager->getViewManager();
         viewManager->setRenderPanel(rviz_panel);
@@ -47,12 +46,14 @@ public:
 
         if (type == 1)
         {
+            rvizManager->createDisplay("rviz/Grid","Grid",true);
             viewManager->getCurrent()->subProp("Distance")->setValue(10);
             enablePointCloud2("/ez_rassor/front_camera/points2", "FlatColor", "1");
         }
         else if (type == 2)
         {
-            viewManager->getCurrent()->subProp("Distance")->setValue(5);
+            rvizManager->createDisplay("rviz/Grid","Grid",true);
+            viewManager->getCurrent()->subProp("Distance")->setValue(6);
             enableImu("/imu", "FlatColor", "1");
         }
         else if (type == 3)
