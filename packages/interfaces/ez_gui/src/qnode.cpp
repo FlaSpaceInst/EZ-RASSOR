@@ -15,6 +15,13 @@ QNode::~QNode()
       ros::shutdown(); // explicitly needed since we use ros::start();
       ros::waitForShutdown();
     }
+
+    for (auto process : process_list) {
+        if (process->state() == QProcess::Running) {
+            process->kill();
+        }
+    }
+    
     wait();
 }
 
@@ -285,4 +292,18 @@ void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
     QVariant new_row(QString(logging_model_msg.str().c_str()));
     logging_model.setData(logging_model.index(logging_model.rowCount()-1),new_row);
     Q_EMIT loggingUpdated(); // used to readjust the scrollbar
+}
+
+void QNode::add_launchfile_package(QString launchfile, QString package)
+{
+    launchfile_package_map[launchfile] = package;
+}
+
+QString QNode::get_launchfile_package(QString launchfile)
+{
+    return launchfile_package_map[launchfile];
+}
+
+void QNode::addProcess(QProcess *process) {
+    process_list.push_back(process);
 }
