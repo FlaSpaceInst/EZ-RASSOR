@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>970</width>
+    <width>975</width>
     <height>720</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_image">
        <property name="font">
@@ -172,10 +172,10 @@
        <widget class="QWidget" name="verticalLayoutWidget_2">
         <property name="geometry">
          <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>531</width>
-          <height>611</height>
+          <x>19</x>
+          <y>19</y>
+          <width>521</width>
+          <height>601</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="imu_viewer"/>
@@ -324,7 +324,7 @@
         <property name="geometry">
          <rect>
           <x>19</x>
-          <y>9</y>
+          <y>19</y>
           <width>521</width>
           <height>601</height>
          </rect>
@@ -357,7 +357,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>970</width>
+     <width>975</width>
      <height>18</height>
     </rect>
    </property>
@@ -424,9 +424,6 @@
               <string>EZ-RASSOR Messages</string>
              </property>
             </widget>
-           </item>
-           <item row="11" column="0" colspan="2">
-            <widget class="QListView" name="view_logging"/>
            </item>
            <item row="1" column="0" colspan="2">
             <widget class="QLineEdit" name="line_edit_master">
@@ -543,29 +540,6 @@
              </property>
             </spacer>
            </item>
-           <item row="8" column="1">
-            <widget class="QLineEdit" name="node_launch">
-             <property name="inputMask">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Node</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0">
-            <widget class="QLineEdit" name="package_launch">
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="inputMask">
-              <string/>
-             </property>
-             <property name="text">
-              <string>Package</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="frameShape">
@@ -578,6 +552,12 @@
               <string>Ros Master Url</string>
              </property>
             </widget>
+           </item>
+           <item row="8" column="0" colspan="2">
+            <widget class="QComboBox" name="comboBox"/>
+           </item>
+           <item row="11" column="0" colspan="2">
+            <widget class="QListView" name="view_logging"/>
            </item>
           </layout>
          </widget>
