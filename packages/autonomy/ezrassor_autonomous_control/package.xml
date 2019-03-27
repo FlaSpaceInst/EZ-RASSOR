@@ -9,7 +9,6 @@
   <license>MIT</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend>python-pip</buildtool_depend>
 
   <build_depend>message_generation</build_depend>
   
@@ -24,6 +23,6 @@
   <exec_depend>tf</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>stereo_msgs</exec_depend>
-  
+
 
 </package>
