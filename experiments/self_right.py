@@ -27,7 +27,6 @@ def self_right_from_side():
     self_right_execution_time = 0.5
     arm_speed = 1
     start_time = time.time()
-    print "Initiating Self Right"
     while(time.time() - start_time < self_right_execution_time):
         pub_FA.publish(-arm_speed)
         pub_BA.publish(arm_speed)
@@ -55,7 +54,7 @@ def parse_imu(instruction):
             self_right_from_side()
 
     else:
-        time_on_side_start = 0;
+        time_on_side_start = 0
         time_on_side_start_found = False
 
 

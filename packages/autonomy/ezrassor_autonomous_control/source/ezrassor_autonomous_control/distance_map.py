@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import rospy
 import math
 import numpy as np 
@@ -106,8 +104,3 @@ def depth_estimator():
     rospy.Subscriber("/ez_rassor/front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 
-if __name__ == "__main__":
-    try:
-        depth_estimator()
-    except:
-        pass

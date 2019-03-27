@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import rospy
 import sys
 from std_msgs.msg import Int8, Int16, String
@@ -33,7 +32,7 @@ def onStartUp():
     set_back_arm_angle(world_state, ros_util, .785)
     set_front_arm_angle(world_state, ros_util, .785)
 
-    return world_state, ros_util
+    ai_control(world_state, ros_util)
 
 def ai_control(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
@@ -59,8 +58,3 @@ def ai_control(world_state, ros_util):
             world_state.auto_dock(world_state, ros_util)
         else:
             ros_util.status_pub.publish("Error Incorrect Auto Function Request {}".format(ros_util.auto_function_command))
-
-
-if __name__ == "__main__":
-    world_state, ros_util = onStartUp()
-    ai_control(world_state, ros_util)

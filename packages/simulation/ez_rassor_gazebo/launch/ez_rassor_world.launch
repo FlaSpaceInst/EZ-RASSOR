@@ -9,7 +9,7 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
 
-  <arg name="world" default="moon.world"/> 
+  <arg name="world" default="ez_rassor.world"/> 
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
