@@ -32,9 +32,9 @@ bool QNode::init()
 
     // Add your ros communications here.
 
-    //imu_subscriber = n.subscribe("/imu", 1000, &QNode::imuCallback, this);
+    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageBackCallback, this);
+    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
     disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
     cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
     vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
@@ -61,9 +61,9 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
 
     // Add your ros communications here.
 
-    //imu_subscriber = n.subscribe("/imu", 100, &QNode::imuCallback, this);
+    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/back_camera/left/image_raw", 1, &QNode::imageBackCallback, this);
+    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
     disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
     cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
     vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
@@ -111,7 +111,7 @@ void QNode::batteryCallback(const std_msgs::Float64& message_holder)
     Q_EMIT batteryUpdated();
 }
 
-void QNode::imuCallback(const sensor_msgs::Imu& message_holder)
+void QNode::logCallback(const std_msgs::Float64& message_holder)
 {
     log(Info, message_holder);
 }
@@ -231,7 +231,7 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
     Q_EMIT disparityUpdated();
 }
 
-void QNode::log( const LogLevel &level, const sensor_msgs::Imu &msg)//change sensor_msgs::Image for testing
+void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
 {
     logging_model.insertRows(logging_model.rowCount(),1);
     std::stringstream logging_model_msg;
