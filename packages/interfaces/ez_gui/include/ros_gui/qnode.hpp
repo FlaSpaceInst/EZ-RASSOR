@@ -21,6 +21,7 @@
 #include <QThread>
 #include <QStringListModel>
 #include <QProgressBar>
+#include <QProcess>
 
 class QNode : public QThread
 {
@@ -62,7 +63,11 @@ class QNode : public QThread
         int *smBarUpdate() { return &sm_Progress_Bar; }
         int *diskBarUpdate() { return &disk_Progress_Bar; }
         int *batteryBarUpdate() { return &battery_Progress_Bar; }
+        void add_launchfile_package(QString launchfile, QString package);
+        QString get_launchfile_package(QString launchfile);
+        void addProcess(QProcess* process);
         void log( const LogLevel &level, const std_msgs::Float64 &msg);
+
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -72,6 +77,7 @@ class QNode : public QThread
         QPixmap front_Camera_Pixmap;
         QPixmap back_Camera_Pixmap;
         QPixmap disparity_Pixmap;
+        std::map<QString, QString> launchfile_package_map;
 
     Q_SIGNALS:
         void loggingUpdated();
@@ -103,6 +109,7 @@ class QNode : public QThread
         ros::Subscriber disk_subscriber;
         ros::Subscriber battery_subscriber;
         QStringListModel logging_model;
+        std::vector<QProcess*> process_list;
 };
 
 #endif /* ez_gui_QNODE_HPP_ */
