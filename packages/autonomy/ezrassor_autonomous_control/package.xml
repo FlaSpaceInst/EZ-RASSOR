@@ -22,5 +22,8 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>stereo_msgs</exec_depend>
+  
 
 </package>
