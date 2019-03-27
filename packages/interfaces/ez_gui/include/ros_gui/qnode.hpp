@@ -86,7 +86,7 @@ class QNode : public QThread
         void backCamUpdated();
         void disparityUpdated();
 
-        void startingPointCloud();
+        void startingRviz();
 
         void rosShutdown();
 

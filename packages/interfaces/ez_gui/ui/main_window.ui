@@ -43,7 +43,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_image">
        <property name="font">
@@ -169,6 +169,17 @@
        <attribute name="title">
         <string>IMU Display</string>
        </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>531</width>
+          <height>611</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="imu_viewer"/>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_usage">
        <attribute name="title">
@@ -319,6 +330,22 @@
          </rect>
         </property>
         <layout class="QVBoxLayout" name="pc_viewer"/>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Pose Viewer</string>
+       </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>19</x>
+          <y>19</y>
+          <width>521</width>
+          <height>601</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="pose_viewer"/>
        </widget>
       </widget>
      </widget>
