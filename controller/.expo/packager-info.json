@@ -3,7 +3,7 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": "https://gv-pmk.camilozano.controller.exp.direct",
-  "packagerNgrokUrl": "https://packager.gv-pmk.camilozano.controller.exp.direct",
-  "ngrokPid": 6258
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
