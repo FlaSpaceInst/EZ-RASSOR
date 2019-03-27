@@ -30,7 +30,7 @@ RIGHT = 1
 
 # Commands to be sent to AI Control. 
 commands = {
-    'forward' : 0b100000000000, 'reverse' : 0b010000000000, 'left' : 0b001000000000, 'right' : 0b000100000000
+    'forward' : 0b101000000000, 'reverse' : 0b010100000000, 'left' : 0b011000000000, 'right' : 0b100100000000
 }
 
 # Obstacle Detection
@@ -45,6 +45,9 @@ def obst_detect(data):
     elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
         print("MOVE LEFT!")
         pub.publish(commands['left'])
+    elif data[LEFT].min() < 1 and data[RIGHT].min() < 1:
+        print("MOVE BACKWARD!")
+        pub.publish(commands['reverse'])
     else:
          print("MOVE FORWARD!")
          pub.publish(commands['forward'])
@@ -71,9 +74,7 @@ def callback(data):
     This is done by performing a Hadamard Product (element-wise) on the disparty 
     matrix.  
     """
-    print("Focal Length")
-    print(data.f)
-    print(data.T)
+
     depth_mat = np.multiply((data.f * data.T), np.reciprocal(cv_image.astype("float64")))
 
     """Remove all infinite values and nan values from distance matrix that may be present."""
@@ -91,7 +92,8 @@ def callback(data):
     mean_pool = depth_mat[:MK*K, :NL*L].reshape(MK, K, NL, L).mean(axis=(1,3))
     
     """Divide distance matrix into two vertical columns."""
-    div_mat = np.split(mean_pool, 2, axis=1)
+    div_mat = np.split(mean_pool[30], 2, axis=0)
+    # print(div_mat)
 
     """Perform obstacle detection."""
     obst_detect(div_mat)

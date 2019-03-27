@@ -1,7 +1,0 @@
-<launch>
-
-    <node name="base_link_to_camera" pkg="viso2_ros" type="base_to_camera.py" respawn="false" >
-    <param name="camera" type="string" value="camera" />
-    </node>
-
-  </launch>
