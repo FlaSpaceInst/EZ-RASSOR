@@ -31,7 +31,7 @@ class QNode : public QThread
         bool init();
         bool init(const std::string &master_url, const std::string &host_url);
         void run();
-        void imuCallback(const sensor_msgs::Imu &message_holder);
+        void logCallback(const std_msgs::Float64 &message_holder);
         void imageFrontCallback(const sensor_msgs::ImageConstPtr &message_holder);
         void imageBackCallback(const sensor_msgs::ImageConstPtr& msg);
         void disparityCallback(const stereo_msgs::DisparityImage & msg);
@@ -62,7 +62,7 @@ class QNode : public QThread
         int *smBarUpdate() { return &sm_Progress_Bar; }
         int *diskBarUpdate() { return &disk_Progress_Bar; }
         int *batteryBarUpdate() { return &battery_Progress_Bar; }
-        void log( const LogLevel &level, const sensor_msgs::Imu &msg);
+        void log( const LogLevel &level, const std_msgs::Float64 &msg);
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -93,7 +93,7 @@ class QNode : public QThread
     private:
         int init_argc;
         char** init_argv;
-        ros::Subscriber imu_subscriber;
+        ros::Subscriber log_subscriber;
         ros::Subscriber front_image_subscriber;
         ros::Subscriber back_image_subscriber;
         ros::Subscriber disparity_subscriber;
