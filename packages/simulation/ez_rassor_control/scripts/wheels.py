@@ -10,7 +10,7 @@ from std_msgs.msg import Int16, Float64
 NODE = "wheels"
 TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b111100000000
-velocity = 1
+velocity = 5
 # /ez_rassor/left_wheel_back_velocity_controller/command
 pub_LF = rospy.Publisher('/ez_rassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
 pub_LB = rospy.Publisher('/ez_rassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
