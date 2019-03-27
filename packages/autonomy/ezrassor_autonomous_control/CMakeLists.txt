@@ -20,7 +20,7 @@ add_message_files(
 generate_messages(
    DEPENDENCIES
    std_msgs
-   ai_control
+   ezrassor_autonomous_control
 )
 
 catkin_package(
