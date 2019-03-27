@@ -7,6 +7,7 @@ SOURCE_DIR="$WORKSPACE_DIR/src"
 INSTALL_DIR="/opt/ros/kinetic"
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
+EXTERNAL_DIR="external"
 
 # Configure APT to install from the ROS repository.
 add_ros_repository() {
@@ -26,7 +27,7 @@ link_package() {
     else
         printf "Linking '%s'...\n" "$2"
     fi
-    ln -s "$PWD/$SUPERPACKAGE_DIR/$1/$2" "$SOURCE_DIR/$2"
+    ln -s "$PWD/$1/$2" "$SOURCE_DIR/$2"
 }
 
 # Source the setup script for each user shell passed to this function if it is
@@ -84,16 +85,19 @@ link_and_install() {
     for SUPERPACKAGE in "$@"; do
         case "$SUPERPACKAGE" in
             autonomy)
-                NEED_ROS_BASE=true
-                link_package "autonomy" "ezrassor_autonomous_control"
+                NEED_ROS_DESKTOP=true
+                link_package "external/viso2" "viso2"
+                link_package "external/viso2" "libviso2"
+                link_package "external/viso2" "viso2_ros"
+                link_package "packages/autonomy" "ezrassor_autonomous_control"
                 ;;
             simulation)
                 ;;
             communication)
                 NEED_ROS_BASE=true
-                link_package "communication" "ezrassor_joy_translator"
-                link_package "communication" "ezrassor_request_switch"
-                link_package "communication" "ezrassor_controller_server"
+                link_package "packages/communication" "ezrassor_joy_translator"
+                link_package "packages/communication" "ezrassor_request_switch"
+                link_package "packages/communication" "ezrassor_controller_server"
                 ;;
             hardware)
                 ;;
