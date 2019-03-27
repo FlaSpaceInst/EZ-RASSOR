@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 from ezrassor_autonomous_control import ezrassor_autonomous_control
 
-ezrassor_autonomous_control.onStartUp()
+ezrassor_autonomous_control.on_start_up()

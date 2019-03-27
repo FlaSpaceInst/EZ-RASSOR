@@ -9,11 +9,11 @@ from ai_objects import WorldState, ROSUtility
 from auto_functions import * 
 from utility_functions import *
 
-def onStartUp():
+def on_start_up():
     """  """
     print("Spinning Up AI Control")
     # ROS Node Init Parameters 
-    rospy.init_node('ai_control_node', anonymous=True)
+    rospy.init_node('ezrassor_autonomous_control', anonymous=True)
     
     #Create Utility Objects
     world_state = WorldState()
@@ -32,9 +32,9 @@ def onStartUp():
     set_back_arm_angle(world_state, ros_util, .785)
     set_front_arm_angle(world_state, ros_util, .785)
 
-    ai_control(world_state, ros_util)
+    autonomous_control(world_state, ros_util)
 
-def ai_control(world_state, ros_util):
+def autonomous_control(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
 
     while(True):
