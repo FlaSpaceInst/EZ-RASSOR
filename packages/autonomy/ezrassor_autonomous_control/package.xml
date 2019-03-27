@@ -12,11 +12,10 @@
   <build_depend>message_generation</build_depend>
 
   <!-- These dependencies are required by Viso2, but they didn't include them in
-       their package.xml...
-  -->
+       their package.xml... -->
   <exec_depend>viso2</exec_depend>
-  <exec_depend>image_view</build_depend>
-  <exec_depend>stereo_image_proc</build_depend>
+  <exec_depend>image_view</exec_depend>
+  <exec_depend>stereo_image_proc</exec_depend>
 
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>roslaunch</exec_depend>
