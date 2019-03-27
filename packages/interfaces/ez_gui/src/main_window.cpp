@@ -1,6 +1,9 @@
 #include <QtGui>
+#include <QProcess>
 #include <QMessageBox>
 #include <iostream>
+#include <cstdlib>
+#include <cstddef>
 #include "../include/ros_gui/main_window.hpp"
 
 using namespace Qt;
@@ -52,13 +55,22 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     /*********************
     ** Node Launch
     **********************/
+    populateLaunchers();
     QObject::connect(ui.button_launch, SIGNAL(clicked()), this, SLOT(nodeLaunch()));
+
+
     /*********************
     ** Auto Start
     **********************/
     if ( ui.checkbox_remember_settings->isChecked() ) {
         on_button_connect_clicked(true);
     }
+
+    /*********************
+    ** Launch Files
+    **********************/
+    // TODO
+    // Connect Launch button to spawning a QProcess associated with selected launch file
 }
 
 MainWindow::~MainWindow() {}
@@ -121,13 +133,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state)
     ui.line_edit_host->setEnabled(enabled);
 }
 
-void MainWindow::nodeLaunch()
-{
-    //QStringList run;
-    QProcess process;
-    //run <<  ui.package_launch->text() << ui.node_launch->text();
-    process.execute("rostopic list");
-}
 
 /**
  * This function is signalled by the underlying model. When the model changes,
@@ -242,4 +247,84 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     WriteSettings();
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::nodeLaunch()
+{
+    // TODO make QProcess for launching
+    // roslaunch package thing.launch
+    //
+    // get launchfile from combobox,
+    // get package for it from qnode lf_pkg map,
+    // make process doing it
+    //
+    // test:
+    // std::cout << qnode.get_launchfile_package(QString::fromAscii("ai_demo.launch")) << std::endl;
+
+    QString launchfile = ui.comboBox->currentText();
+    QProcess *parent;
+    QStringList arguments;
+    arguments << qnode.get_launchfile_package(launchfile) << launchfile;
+    QProcess *launchProcess = new QProcess();
+    
+    launchProcess->setProcessChannelMode(QProcess::MergedChannels); 
+    launchProcess->start("roslaunch", arguments);
+
+    
+
+    qnode.addProcess(launchProcess);
+
+    return;
+}
+
+
+std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
+{
+    std::stringstream entirePath(path);
+    std::string grab;
+    std::string package, launchfile;
+    std::size_t lastSlash;
+    int dir_index = 0;
+
+    std::getline(entirePath, grab, '/');
+    std::getline(entirePath, grab, '/');
+    std::getline(entirePath, grab, '/');
+    std::getline(entirePath, package, '/');
+    
+    std::string patharoni = entirePath.str();
+    lastSlash = patharoni.find_last_of('/');
+
+    return std::make_pair(QString::fromStdString(patharoni.substr(lastSlash + 1)), QString::fromStdString(package));
+}
+
+void MainWindow::populateLaunchers()
+{
+    char pipe_output_buffer[128];
+    QStringList launchfile_paths;
+    std::size_t lastSlash;
+    std::string launchFile;
+    std::string entirePath = "";
+    std::pair<QString, QString> launchfile_package_pair;
+
+    FILE* pipe = popen("find . -name \"*.launch\"", "r");
+    if (!pipe)
+        throw std::runtime_error("couldn't open pipe");
+
+    try
+    {
+        while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
+        {
+            launchfile_package_pair = launchfile_and_package_from_path(pipe_output_buffer);
+            qnode.add_launchfile_package(launchfile_package_pair.first, launchfile_package_pair.second);
+            launchfile_paths << launchfile_package_pair.first;
+        }
+    } catch (...)
+    {
+        pclose(pipe);
+        throw;
+    }
+
+    pclose(pipe);
+
+    ui.comboBox->addItems(launchfile_paths);
 }

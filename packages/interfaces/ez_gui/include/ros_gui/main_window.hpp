@@ -127,6 +127,7 @@ class MainWindow : public QMainWindow
         void updateBackCamera();
         void updateDisparityCamera();
         void startRviz();
+        void populateLaunchers();
 
     private:
         Ui::MainWindowDesign ui;
