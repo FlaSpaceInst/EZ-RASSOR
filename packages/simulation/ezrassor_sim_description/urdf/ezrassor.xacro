@@ -1,19 +1,23 @@
 <?xml version='1.0'?>
 
-<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:property name="cameraSize" value="0.05"/>
+  <xacro:property name="cameraSize" value="0.04"/>
   <xacro:property name="cameraMass" value="0.1"/>
 
-  <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor.gazebo" />
-  <xacro:include filename="$(find ezrassor_sim_description)/urdf/materials.xacro" />
-  <xacro:include filename="$(find ezrassor_sim_description)/urdf/macros.xacro" />
+  <xacro:include filename="$(find ez_rassor_description)/urdf/ez_rassor.gazebo" />
+  <xacro:include filename="$(find ez_rassor_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find ez_rassor_description)/urdf/macros.xacro" />
 
   <!--Below are all of the robot's Links/-->
   <link name='base_link'>
+   <pose>0 0 0 0 0 0</pose>
+  </link>
+
+  <link name='body'>
     <pose>0 0 0 0 0 0</pose>
     <inertial>
-      <mass value="35.0"/>
+      <mass value="15.0"/>
       <origin xyz="0 0 0" rpy=" 0 0 0"/>
       <inertia
           ixx="0.5" ixy="0" ixz="0"
@@ -41,6 +45,18 @@
       <geometry>
         <robot_wheel />
       </geometry>
+      <surface>
+        <friction>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
+        </friction>
+      </surface>
+      <surface>
+        <friction>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
+        </friction>
+      </surface>
     </collision>
     <visual name="left_wheel_front_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -61,6 +77,12 @@
       <geometry>
         <robot_wheel />
       </geometry>
+      <surface>
+        <friction>
+        <mu> .6 </mu>
+        <mu2> .6 </mu2>
+        </friction>
+      </surface>
     </collision>
     <visual name="right_wheel_front_visual">
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
@@ -81,6 +103,12 @@
       <geometry>
         <robot_wheel />
       </geometry>
+        <surface>
+          <friction>
+            <mu> .6 </mu>
+            <mu2> .6 </mu2>
+         </friction>
+        </surface>
     </collision>
     <visual name="left_wheel_back_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -101,6 +129,12 @@
       <geometry>
         <robot_wheel />
       </geometry>
+      <surface>
+        <friction>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
+        </friction>
+      </surface>
     </collision>
     <visual name="right_wheel_back_visual">
       <origin xyz="0 0 0" rpy="0 0 3.14159"/>
@@ -326,30 +360,6 @@
     </inertial>
   </link>
 
-  <link name="stereo_camera_back">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
-      </geometry>
-      <material name="green"/>
-    </visual>
-
-    <inertial>
-      <mass value="${cameraMass}" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
   <link name="imu_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -374,6 +384,13 @@
     </inertial>
   </link>
 
+  <joint name="body_joint" type="fixed">
+    <axis xyz="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="body"/>
+  </joint>
+  
   <joint name="imu_joint" type="fixed">
     <axis xyz="0 0 0" />
     <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -382,18 +399,11 @@
   </joint>
 
   <joint name="camera_front_joint" type="fixed">
-    <origin xyz=".5 -0.005 0" rpy="0 0.785 0"/>
+    <origin xyz=".3 0 -.1" rpy="0 0 0"/>
     <axis xyz="0 1 0" />
-    <parent link="arm_front"/>
+    <parent link="base_link"/>
     <child link="stereo_camera_front"/>
   </joint>
-
-  <joint name="camera_back_joint" type="fixed">
-    <origin xyz="-.5 0.005 0" rpy="0 -0.785 3.14"/>
-    <axis xyz="0 1 0" />
-    <parent link="arm_back" />
-    <child link="stereo_camera_back"/>
-  </joint>  
 
   <joint type="continuous" name="left_wheel_front_hinge">
     <origin xyz="0.20 0.285 0" rpy="0 0 0"/>
