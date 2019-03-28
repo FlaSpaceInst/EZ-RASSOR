@@ -45,7 +45,7 @@ def start_node():
         rospy.init_node(NODE_NAME)
         requests_publisher = rospy.Publisher(
             REQUESTS_TOPIC,
-            std_msgs.msg.Int16,
+            std_msgs.msg.Int32,
             queue_size=QUEUE_SIZE,
         )
         
