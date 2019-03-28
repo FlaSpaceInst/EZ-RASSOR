@@ -11,10 +11,10 @@
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend>python-pip</buildtool_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>roslaunch</exec_depend>
-  <exec_depend>python-rpi.gpio</exec_depend>
-  <exec_depend>adafruit-pca9685-pip</exec_depend>
+  <depend>python-pip</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>roslaunch</depend>
+  <depend>python-rpi.gpio</depend>
+  <depend>adafruit-pca9685-pip</depend>
 </package>

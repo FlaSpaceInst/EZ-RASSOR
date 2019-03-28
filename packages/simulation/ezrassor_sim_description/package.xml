@@ -10,8 +10,10 @@
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>gazebo_ros</build_depend>
-  <build_export_depend>gazebo_ros</build_export_depend> 
-  <exec_depend>gazebo_ros</exec_depend>
-  <exec_depend>roslaunch</exec_depend>
+  <depend>gazebo_ros</depend>
+  <depend>roslaunch</depend>
+  <depend>xacro</depend>
+  <depend>rviz</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
 </package>
