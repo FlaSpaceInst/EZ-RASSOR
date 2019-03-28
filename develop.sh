@@ -15,27 +15,6 @@ setup_environment() {
     cd - > /dev/null 2>&1
 }
 
-# Kill all running ROS nodes.
-kill_ros() {
-    rosnode kill --all
-    killall -SIGTERM roscore
-    printf "\nROS has been shut down.\n"
-}
-
-# Build all packages.
-build_packages() {
-    cd "$WORKSPACE_DIR"
-    catkin_make
-    cd - > /dev/null 2>&1
-}
-
-# Install all packages that have been built.
-install_packages() {
-    cd "$WORKSPACE_DIR"
-    catkin_make install
-    cd - > /dev/null 2>&1
-}
-
 # Create a new ROS package in source control.
 new_package() {
     mkdir -p "$SUPERPACKAGE_DIR/$1"
@@ -46,14 +25,6 @@ new_package() {
     shift
     catkin_create_pkg "$@"
 
-    cd - > /dev/null 2>&1
-}
-
-# Purge packages in the ROS workspace.
-purge_packages() {
-    cd "$SOURCE_DIR"
-    echo "Purging all packages in /src..."
-    find . ! -name "CMakeLists.txt" -type l -exec rm -f {} +
     cd - > /dev/null 2>&1
 }
 
@@ -119,6 +90,35 @@ argument_in_list() {
     return 1
 }
 
+# Purge packages in the ROS workspace.
+purge_packages() {
+    cd "$SOURCE_DIR"
+    echo "Purging all packages in /src..."
+    find . ! -name "CMakeLists.txt" -type l -exec rm -f {} +
+    cd - > /dev/null 2>&1
+}
+
+# Build all packages.
+build_packages() {
+    cd "$WORKSPACE_DIR"
+    catkin_make
+    cd - > /dev/null 2>&1
+}
+
+# Install all packages that have been built.
+install_packages() {
+    cd "$WORKSPACE_DIR"
+    catkin_make install
+    cd - > /dev/null 2>&1
+}
+
+# Kill all running ROS nodes.
+kill_ros() {
+    rosnode kill --all
+    killall -SIGTERM roscore
+    printf "\nROS has been shut down.\n"
+}
+
 # Main entry point of the script.
 case $1 in
     setup)
@@ -127,15 +127,6 @@ case $1 in
     new)
         shift
         new_package "$@"
-        ;;
-    build)
-        build_packages
-        ;;
-    install)
-        install_packages
-        ;;
-    kill)
-        kill_ros
         ;;
     link)
         shift
@@ -148,5 +139,14 @@ case $1 in
         shift
         purge_packages
         link_packages "$@"
+        ;;
+    build)
+        build_packages
+        ;;
+    install)
+        install_packages
+        ;;
+    kill)
+        kill_ros
         ;;
 esac
