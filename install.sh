@@ -8,6 +8,7 @@ INSTALL_DIR="/opt/ros/kinetic"
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
 EXTERNAL_DIR="external"
+SETUP_FILE="setup.bash"
 
 # Configure APT to install from the ROS repository.
 add_ros_repository() {
@@ -92,6 +93,10 @@ link_and_install() {
                 link_package "packages/autonomy" "ezrassor_autonomous_control"
                 ;;
             simulation)
+                NEED_ROS_BASE=true
+                link_package "packages/simulation" "ezrassor_sim_gazebo"
+                link_package "packages/simulation" "ezrassor_sim_control"
+                link_package "packages/simulation" "ezrassor_sim_description"
                 ;;
             communication)
                 NEED_ROS_BASE=true
@@ -108,12 +113,16 @@ link_and_install() {
 
     # Install the appropriate version of ROS for the required packages.
     if [ "$NEED_ROS_DESKTOP_FULL" = true ]; then
+        link_package "packages/extras" "ezrassor_launcher"
         sudo apt install -y ros-kinetic-desktop-full
     elif [ "$NEED_ROS_DESKTOP" = true ]; then
+        link_package "packages/extras" "ezrassor_launcher"
         sudo apt install -y ros-kinetic-desktop
     elif [ "$NEED_ROS_BASE" = true ]; then
+        link_package "packages/extras" "ezrassor_launcher"
         sudo apt install -y ros-kinetic-ros-base
     fi
+    source "$INSTALL_DIR/$SETUP_FILE"
     
     install_developer_tools
     sudo rosdep init

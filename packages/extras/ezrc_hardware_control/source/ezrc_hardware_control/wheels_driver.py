@@ -17,10 +17,10 @@ import RPi.GPIO as GPIO
 NODE_NAME = "wheels_driver"
 MASK = 0b111100000000
 SPEED = 2000
-LEFT_WHEEL_CHANNEL = 5
-RIGHT_WHEEL_CHANNEL = 4
-LEFT_WHEEL_PINS = (17, 18)
-RIGHT_WHEEL_PINS = (22, 27)
+LEFT_WHEEL_CHANNEL = 6
+RIGHT_WHEEL_CHANNEL = 7
+LEFT_WHEEL_PINS = (5, 6)
+RIGHT_WHEEL_PINS = (13, 19)
 HALT_MESSAGE = "Stopping the wheels"
 DEBUGGING_MESSAGES = (
     "Driving left side forward",
@@ -54,11 +54,11 @@ class Wheel:
         elif direction == Wheel.BACKWARD:
             GPIO.output(self.gpio_pins[0], GPIO.LOW)
             GPIO.output(self.gpio_pins[1], GPIO.HIGH)
-        driver.set_pwm(self.pwm_pin, 0, SPEED)
+        self.driver.set_pwm(self.pwm_pin, 0, SPEED)
 
     def stop(self):
         """Stop rotating!"""
-        driver.set_pwm(self.pwm_pin, 0, 0)
+        self.driver.set_pwm(self.pwm_pin, 0, 0)
         GPIO.output(self.gpio_pins[0], GPIO.LOW)
         GPIO.output(self.gpio_pins[1], GPIO.LOW)
 
@@ -87,7 +87,7 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
         # end. Otherwise, split the fetched toggles between the 4 rotation
         # booleans and give commands to the wheels.
         try:
-            toggles = toggle_queue.get(False)
+            toggles = toggle_queue.get()
             if toggles == None:
                 break
             else:
@@ -106,7 +106,7 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
                     right_wheel.start(right_wheel.BACKWARD)
                 else:
                     right_wheel.stop()
-        except Queue.Empty:
+        except Queue.Empty:#
             pass
 
     # Clean up and stop the wheels after the loop is broken. 
@@ -121,14 +121,14 @@ def start_node():
         driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
         left_wheel = Wheel(
+            driver,
             LEFT_WHEEL_CHANNEL,
             LEFT_WHEEL_PINS,
-            driver,
         )
         right_wheel = Wheel(
+            driver,
             RIGHT_WHEEL_CHANNEL,
             RIGHT_WHEEL_PINS,
-            driver,
         )
 
         # Create a queue and process that rotates the wheels.
@@ -162,8 +162,10 @@ def start_node():
         )
         rospy.spin()
 
-    except rospy.ROSInterruptException:
-        pass
+    except Exception as e:
+        print e
+    #except rospy.ROSInterruptException:
+    #    pass
 
     # Finally, send a kill message (None) to the movement process and wait for it
     # to die, then exit.

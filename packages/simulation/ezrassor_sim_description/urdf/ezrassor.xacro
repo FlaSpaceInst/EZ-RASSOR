@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:property name="cameraSize" value="0.04"/>
   <xacro:property name="cameraMass" value="0.1"/>

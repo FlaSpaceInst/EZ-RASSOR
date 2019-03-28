@@ -4,6 +4,12 @@
 #   www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 # Written by Tiger Sachse.
 
+# Ensure the user is root!
+if [ ! "$(id -u)" -eq "0" ]; then
+    printf "This script must be run as root!\n"
+    exit 1
+fi
+
 # Default network settings for this script.
 SSID="EZRC"
 INTERFACE="wlan1"
