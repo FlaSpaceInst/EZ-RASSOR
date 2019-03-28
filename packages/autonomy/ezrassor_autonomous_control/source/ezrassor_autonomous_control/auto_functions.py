@@ -1,11 +1,27 @@
 import rospy
 import math
-from ai_objects import WorldState, ROSUtility
-from utility_functions import self_check, reverse_turn 
-from nav_functions import calculate_heading, adjust_angle
+import utility_functions as uf
+import nav_functions as nf
+
+def at_target(world_state):
+    positionX = world_state.state_flags['positionX']
+    positionY = world_state.state_flags['positionY']
+
+    targetX = world_state.state_flags['target_location'][0]
+    targetY = world_state.state_flags['target_location'][1]
+    
+    value = ((targetX - .5) < positionX < (targetX + .5) 
+            and (targetY - .5) < positionY < (targetY + .5))
+
+    return not value
+
 
 def auto_drive(world_state, ros_util):
-    """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
+    """ 
+    Travel forward in a straight line. 
+    Avoid obstacles while maintaining heading. 
+    """
+    
     # Main loop until command is canceled
     while ros_util.auto_function_command != 0:
 
@@ -24,27 +40,27 @@ def auto_drive(world_state, ros_util):
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.kill_bit)
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
     print("Auto Driving to {}".format(world_state.state_flags['target_location']))
+    
     # Main loop until location is reached
-    while world_state.state_flags['positionX'] != world_state.state_flags['target_location'][0] and world_state.state_flags['positionY'] != world_state.state_flags['target_location'][1]:
+    while at_target(world_state):
         # Get new heading angle relative to current heading as (0,0)
-        new_heading = calculate_heading(world_state, ros_util)
+        new_heading = nf.calculate_heading(world_state, ros_util)
 
-        # Calculate angle difference needed to adjust heading
-        angle_difference = adjust_angle(world_state.state_flags['heading'], new_heading)
+        angle_difference = nf.adjust_angle(world_state.state_flags['heading'], new_heading)
 
-        if angle_difference > 0:
-            direction = 'left'
-        else:
+        if angle_difference < 0:
             direction = 'right'
+        else:
+            direction = 'left'
 
         # Adjust heading until it matches new heading
-        while not ((new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1)):
+        while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
             print(world_state.state_flags['heading'], new_heading)
+            print(world_state.state_flags['target_location'], [world_state.state_flags['positionX'], world_state.state_flags['positionY']])
             ros_util.command_pub.publish(ros_util.commands[direction])
             ros_util.rate.sleep()
 
@@ -55,9 +71,8 @@ def auto_drive_location(world_state, ros_util):
         while(world_state.state_flags['warning_flag'] == 2):
             ros_util.command_pub.publish(ros_util.commands['left'])
             ros_util.rate.sleep()
-
         if world_state.state_flags['warning_flag'] == 3:
-            reverse_turn(world_state, ros_util)
+            uf.reverse_turn(world_state, ros_util)
 
         # Otherwise go forward
         ros_util.command_pub.publish(ros_util.commands['forward'])
@@ -65,19 +80,19 @@ def auto_drive_location(world_state, ros_util):
         ros_util.rate.sleep()
     
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.kill_bit)
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
     print("Auto Digging for {} Seconds".format(duration))
+    combo_command = ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig']
+    
     t = 0
-    while t < duration*30:        
-        ros_util.command_pub.publish(ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig'])
+    while t < duration*40:        
+        ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.kill_bit)
 
 
 def auto_dock(world_state, ros_util):
@@ -108,4 +123,3 @@ def auto_dump(world_state, ros_util, duration):
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.kill_bit)
