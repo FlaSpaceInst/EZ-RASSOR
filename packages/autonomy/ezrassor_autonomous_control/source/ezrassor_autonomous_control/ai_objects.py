@@ -3,14 +3,13 @@ from std_msgs.msg import Int8, Int16, String
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-from nav_functions import quaternion_to_yaw
-
+import nav_functions as nf
+import math
 
 class WorldState():
     """ World State Object Representing All Sensor Data """
 
     def __init__(self):
-        self.kill_bit = 0b1000000000000
         self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
@@ -32,7 +31,7 @@ class WorldState():
 
         self.state_flags['positionX'] = data.pose.pose.position.z
         self.state_flags['positionY'] = data.pose.pose.position.y
-        self.state_flags['heading'] = quaternion_to_yaw(data.pose.pose.orientation)
+        self.state_flags['heading'] = nf.quaternion_to_yaw(data.pose.pose.orientation)
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
@@ -40,7 +39,12 @@ class WorldState():
         self.state_flags['positionX'] = data.pose[1].position.x
         self.state_flags['positionY'] = data.pose[1].position.y
         
-        self.state_flags['heading'] = quaternion_to_yaw(data.pose[1])
+        heading = nf.quaternion_to_yaw(data.pose[1]) * 180/math.pi
+
+        if heading > 0:
+            self.state_flags['heading'] = heading
+        else:
+            self.state_flags['heading'] = 360 + heading
 
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
@@ -50,7 +54,7 @@ class WorldState():
         else:
             self.state_flags['on_side'] = False
 
-        #self.state_flags['heading'] = quaternion_to_euler(data.pose.orientation)
+        #self.state_flags['heading'] = nf.quaternion_to_euler(data.pose.orientation)
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
@@ -61,9 +65,10 @@ class WorldState():
 class ROSUtility():
 
     def __init__(self):
+        self.kill_bit = 0b1000000000000
         self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
         self.status_pub = rospy.Publisher('ezrassor/status', String, queue_size=100)
-        self.rate = rospy.Rate(10) # 10hz
+        self.rate = rospy.Rate(45) # 10hz
 
         self. auto_function_command = 0
 
