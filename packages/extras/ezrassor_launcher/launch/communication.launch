@@ -2,13 +2,15 @@
 <launch>
   <!-- Launch a controller node and the request switcher for the EZ-RASSOR.
        Written by Tiger Sachse. -->
-  <arg name="use_wired_controls" default="true" doc="Use a wired controller."/>
-  <arg name="use_network_controls" default="false" doc="Use a controller on the network."/>
+  <arg name="control_method"
+       default="gamepad"
+       doc="Specify the control method ('gamepad' or 'app')."
+  />
   <include file="$(find ezrassor_request_switch)/launch/request_switch.launch"/>
   <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
-           if="$(arg use_wired_controls)"
+           if="$(eval control_method == 'gamepad')"
   />
   <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
-           if="$(arg use_network_controls)"
+           if="$(eval control_method == 'app')"
   />
 </launch>
