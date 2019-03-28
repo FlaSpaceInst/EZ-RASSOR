@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ezrassor_autonomous_control</name>
+  <version>1.0.0</version>
+  <description>The ezrassor_autonomous_control package</description>
+  <maintainer email="cetaylorfl@gmail.com"> Cameron Taylor </maintainer>
+  <author email="cetaylorfl@gmail.com"> Cameron Taylor </author>
+  <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+
+  <!-- These dependencies are required by Viso2, but they didn't include them in
+       their package.xml... -->
+  <exec_depend>viso2</exec_depend>
+  <exec_depend>image_view</exec_depend>
+  <exec_depend>stereo_image_proc</exec_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>python-numpy</exec_depend>
+  <exec_depend>python-opencv</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>gazebo_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>stereo_msgs</exec_depend>
+
+
+</package>
