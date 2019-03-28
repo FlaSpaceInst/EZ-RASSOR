@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py '$(find ez_rassor_description)/urdf/ez_rassor.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
 
   <!-- send fake joint values -->
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
