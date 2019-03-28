@@ -92,6 +92,10 @@ link_and_install() {
                 link_package "packages/autonomy" "ezrassor_autonomous_control"
                 ;;
             simulation)
+                NEED_ROS_BASE=true
+                link_package "packages/simulation" "ezrassor_sim_gazebo"
+                link_package "packages/simulation" "ezrassor_sim_control"
+                link_package "packages/simulation" "ezrassor_sim_description"
                 ;;
             communication)
                 NEED_ROS_BASE=true
