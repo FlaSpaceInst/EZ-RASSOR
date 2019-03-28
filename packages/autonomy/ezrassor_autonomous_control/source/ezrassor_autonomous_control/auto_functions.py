@@ -1,8 +1,8 @@
 import rospy
 import math
-from ezrassor_autonomous_control.ai_objects import WorldState, ROSUtility
-from ezrassor_autonomous_control.utility_functions import self_check, reverse_turn 
-from ezrassor_autonomous_control.nav_functions import *
+from ai_objects import WorldState, ROSUtility
+from utility_functions import self_check, reverse_turn 
+from nav_functions import calculate_heading, adjust_angle
 
 def auto_drive(world_state, ros_util):
     """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
@@ -28,7 +28,7 @@ def auto_drive(world_state, ros_util):
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-
+    print("Auto Driving to {}".format(world_state.state_flags['target_location']))
     # Main loop until location is reached
     while world_state.state_flags['positionX'] != world_state.state_flags['target_location'][0] and world_state.state_flags['positionY'] != world_state.state_flags['target_location'][1]:
         # Get new heading angle relative to current heading as (0,0)
@@ -69,6 +69,7 @@ def auto_drive_location(world_state, ros_util):
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
+    print("Auto Digging for {} Seconds".format(duration))
     t = 0
     while t < duration*30:        
         ros_util.command_pub.publish(ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig'])
@@ -81,11 +82,13 @@ def auto_dig(world_state, ros_util, duration):
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
+    print("Auto Returning to {}".format([0,0]))
     world_state.state_flags['target_location'] = [0,0]
     auto_drive_location(world_state, ros_util)
 
 def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
+    print("Auto Dumping")
     t = 0
     while t < duration*30:        
         ros_util.command_pub.publish(ros_util.commands['front_dump'])

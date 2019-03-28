@@ -1,6 +1,6 @@
 import rospy
 import time
-from ezrassor_autonomous_control.auto_functions import auto_drive_location
+from auto_functions import auto_drive_location
 
 
 def set_front_arm_angle(world_state, ros_util, target_angle):

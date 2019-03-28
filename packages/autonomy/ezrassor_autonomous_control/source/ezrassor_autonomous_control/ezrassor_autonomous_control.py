@@ -5,9 +5,9 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
-from ezrassor_autonomous_control.ai_objects import WorldState, ROSUtility
-from ezrassor_autonomous_control.auto_functions import *
-from ezrassor_autonomous_control.utility_functions import self_check, set_front_arm_angle, set_back_arm_angle, self_right_from_side
+from ai_objects import WorldState, ROSUtility
+from auto_functions import auto_drive_location, auto_drive, auto_dig, auto_dump, auto_dock
+from utility_functions import self_check, set_front_arm_angle, set_back_arm_angle, self_right_from_side
 import numpy as np
 
 def on_start_up():
@@ -25,8 +25,8 @@ def on_start_up():
     # Setup Subscriber Callbacks
     #rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('/imu', Imu, world_state.imuCallBack)
-    rospy.Subscriber('ez_rassor/joint_states', JointState, world_state.jointCallBack)
-    rospy.Subscriber('ez_rassor/obstacle_detect', Int16, world_state.visionCallBack)
+    rospy.Subscriber('ezrassor/joint_states', JointState, world_state.jointCallBack)
+    rospy.Subscriber('ezrassor/obstacle_detect', Int16, world_state.visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)
     rospy.Subscriber('gazebo/link_states', LinkStates, world_state.simStateCallBack)
 
@@ -48,6 +48,9 @@ def full_autonomy(world_state, ros_util):
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
+
+    # Temp
+    ros_util.auto_function_command = 16
 
     while(True):
 
