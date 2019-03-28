@@ -6,10 +6,10 @@ TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b000000001111
 
 
-# /ez_rassor/drum_back_velocity_controller/command
-# /ez_rassor/drum_front_velocity_controller/command
-pub_FD = rospy.Publisher('/ez_rassor/drum_front_velocity_controller/command', Float64, queue_size = 10)
-pub_BD = rospy.Publisher('/ez_rassor/drum_back_velocity_controller/command', Float64, queue_size = 10)
+# /ezrassor/drum_back_velocity_controller/command
+# /ezrassor/drum_front_velocity_controller/command
+pub_FD = rospy.Publisher('/ezrassor/drum_front_velocity_controller/command', Float64, queue_size = 10)
+pub_BD = rospy.Publisher('/ezrassor/drum_back_velocity_controller/command', Float64, queue_size = 10)
 
 def get_movements(integer, mask):
     """Decode a bitstring to reveal the movement commands for this node."""

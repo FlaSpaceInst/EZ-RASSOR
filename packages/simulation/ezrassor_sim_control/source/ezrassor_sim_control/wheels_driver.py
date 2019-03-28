@@ -10,11 +10,11 @@ NODE = "wheels"
 TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b111100000000
 
-# /ez_rassor/left_wheel_back_velocity_controller/command
-pub_LF = rospy.Publisher('/ez_rassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_LB = rospy.Publisher('/ez_rassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
-pub_RF = rospy.Publisher('/ez_rassor/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_RB = rospy.Publisher('/ez_rassor/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+# /ezrassor/left_wheel_back_velocity_controller/command
+pub_LF = rospy.Publisher('/ezrassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_LB = rospy.Publisher('/ezrassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_RF = rospy.Publisher('/ezrassor/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_RB = rospy.Publisher('/ezrassor/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):
