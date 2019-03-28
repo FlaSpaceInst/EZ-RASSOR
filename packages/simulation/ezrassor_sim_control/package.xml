@@ -9,17 +9,10 @@
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>joint_state_controller</build_depend>
-  <build_depend>robot_state_publisher</build_depend>
-  <build_export_depend>controller_manager</build_export_depend>
-  <build_export_depend>joint_state_controller</build_export_depend>
-  <build_export_depend>robot_state_publisher</build_export_depend>
-  <exec_depend>controller_manager</exec_depend>
-  <exec_depend>joint_state_controller</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>roslaunch</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-
+  <depend>controller_manager</depend>
+  <depend>joint_state_controller</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>rospy</depend>
+  <depend>roslaunch</depend>
+  <depend>std_msgs</depend>
 </package>
