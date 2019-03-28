@@ -2,9 +2,9 @@
 # A collection of functions to make development of this repository easier.
 # Written by Tiger Sachse.
 
-SUPERPACKAGE_DIR="packages"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
+SUPERPACKAGE_DIR="packages"
 
 # Set up the development environment.
 setup_environment() {
@@ -12,6 +12,7 @@ setup_environment() {
     mkdir -p "$SOURCE_DIR"
     cd "$SOURCE_DIR"
     catkin_init_workspace
+    cd - > /dev/null 2>&1
 }
 
 # Kill all running ROS nodes.
@@ -25,12 +26,14 @@ kill_ros() {
 build_packages() {
     cd "$WORKSPACE_DIR"
     catkin_make
+    cd - > /dev/null 2>&1
 }
 
 # Install all packages that have been built.
 install_packages() {
     cd "$WORKSPACE_DIR"
     catkin_make install
+    cd - > /dev/null 2>&1
 }
 
 # Create a new ROS package in source control.
@@ -40,7 +43,10 @@ new_package() {
 
     # Create a new catkin package with all the arguments
     # passed to this function (after the first argument).
-    catkin_create_pkg "${@:2}"
+    shift
+    catkin_create_pkg "$@"
+
+    cd - > /dev/null 2>&1
 }
 
 # Purge packages in the ROS workspace.
@@ -48,33 +54,45 @@ purge_packages() {
     cd "$SOURCE_DIR"
     echo "Purging all packages in /src..."
     find . ! -name "CMakeLists.txt" -type l -exec rm -f {} +
+    cd - > /dev/null 2>&1
 }
 
 # Link packages into your workspace.
 link_packages() {
     cd "$SUPERPACKAGE_DIR"
 
+    LINK_ONLY_IN_LIST=false
+    LINK_EXCEPT_IN_LIST=false
+    case "$1" in
+        -o|--only)
+            LINK_ONLY_IN_LIST=true
+            shift
+            ;;
+        -e|--except)
+            LINK_EXCEPT_IN_LIST=true
+            shift
+            ;;
+    esac
+
     for SUPERPACKAGE_DIR in *; do
         cd "$SUPERPACKAGE_DIR"
         for PACKAGE_DIR in *; do
-            case "$1" in
-                -o|--only)
-                    if argument_in_list "$PACKAGE_DIR" "${@:2}"; then
-                        link_package "$PACKAGE_DIR"
-                    fi
-                    ;;
-                -e|--except)
-                    if ! argument_in_list "$PACKAGE_DIR" "${@:2}"; then
-                        link_package "$PACKAGE_DIR"
-                    fi
-                    ;;
-                *)
+            if [ "$LINK_ONLY_IN_LIST" = "true" ]; then
+                if argument_in_list "$PACKAGE_DIR" "$@"; then
                     link_package "$PACKAGE_DIR"
-                    ;;
-            esac
+                fi
+            elif [ "$LINK_EXCEPT_IN_LIST" = "true" ]; then
+                if ! argument_in_list "$PACKAGE_DIR" "$@"; then
+                    link_package "$PACKAGE_DIR"
+                fi
+            else
+                link_package "$PACKAGE_DIR"
+            fi
         done
         cd ..
     done
+
+    cd - > /dev/null 2>&1
 }
 
 # Helper function that links a single package.
@@ -90,8 +108,10 @@ link_package() {
 
 # Helper function that determines if an argument is in a list.
 argument_in_list() {
-    for ARGUMENT in "${@:2}"; do
-        if [ "$1" = "$ARGUMENT" ]; then
+    TARGET="$1"
+    shift
+    for ARGUMENT in "$@"; do
+        if [ "$TARGET" = "$ARGUMENT" ]; then
             return 0
         fi
     done
@@ -100,16 +120,13 @@ argument_in_list() {
 }
 
 # Main entry point of the script.
-. /opt/ros/kinetic/setup.sh
 case $1 in
     setup)
         setup_environment
         ;;
     new)
-        new_package "${@:2}"
-        ;;
-    link)
-        link_packages "${@:2}"
+        shift
+        new_package "$@"
         ;;
     build)
         build_packages
@@ -120,11 +137,16 @@ case $1 in
     kill)
         kill_ros
         ;;
+    link)
+        shift
+        link_packages "$@"
+        ;;
     purge)
         purge_packages
         ;;
     relink)
+        shift
         purge_packages
-        link_packages "${@:2}"
+        link_packages "$@"
         ;;
 esac
