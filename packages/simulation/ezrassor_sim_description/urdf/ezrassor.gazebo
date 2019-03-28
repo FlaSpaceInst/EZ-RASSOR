@@ -114,7 +114,7 @@
         <focalLength>0</focalLength>
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>ezrassor/front_camera</cameraName>
+        <cameraName>ez_rassor/front_camera</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>left_camera_optical_frame</frameName>
@@ -152,7 +152,7 @@
   
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/ezrassor</robotNamespace>
+      <robotNamespace>/ez_rassor</robotNamespace>
       <!-- <legacyModeNS>true</legacyModeNS> -->
     </plugin>
   </gazebo>
