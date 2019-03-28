@@ -27,7 +27,7 @@ def adjust_angle(heading, new_heading):
     
     return angle_difference
 
-def quaternion_to_euler(pose):
+def quaternion_to_yaw(pose):
     quaternion = (pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w)
 
     euler = transformations.euler_from_quaternion(quaternion)

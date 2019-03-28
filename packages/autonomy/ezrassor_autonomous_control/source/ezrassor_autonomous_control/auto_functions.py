@@ -1,7 +1,8 @@
 import rospy
 import math
-from nav_functions import *
-from utility_functions import *
+from ezrassor_autonomous_control.ai_objects import WorldState, ROSUtility
+from ezrassor_autonomous_control.utility_functions import self_check, reverse_turn 
+from ezrassor_autonomous_control.nav_functions import *
 
 def auto_drive(world_state, ros_util):
     """ Travel forward in a straight line. Avoid obstacles while maintaining heading. """
@@ -23,7 +24,7 @@ def auto_drive(world_state, ros_util):
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+    ros_util.command_pub.publish(ros_util.kill_bit)
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
@@ -70,7 +71,7 @@ def auto_drive_location(world_state, ros_util):
         ros_util.rate.sleep()
     
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+    ros_util.command_pub.publish(ros_util.kill_bit)
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
@@ -80,7 +81,7 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.rate.sleep()
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-    ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+    ros_util.command_pub.publish(ros_util.kill_bit)
 
 
 def auto_dock(world_state, ros_util):
@@ -88,6 +89,6 @@ def auto_dock(world_state, ros_util):
     world_state.state_flags['target_location'] = [0,0]
     auto_drive_location(world_state, ros_util)
 
-def auto_self_right(world_state, ros_util):
+def auto_dump(world_state, ros_util):
     """  """
     pass
