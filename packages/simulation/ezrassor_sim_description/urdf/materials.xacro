@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<robot name="ez_rassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
   </material>
