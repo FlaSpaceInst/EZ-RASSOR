@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  <arg name="control_method"
+       default="gamepad"
+       doc="Specify the control method ('gamepad' or 'app')."
+  />
 
-    <!-- LAUNCH MODEL -->
-    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
-        <arg name="paused" value="false"/>
-    </include>
+  <include file="$(find ezrassor_launcher)/launch/communication.launch">
+    <arg name="control_method" value="$(arg control_method)"/>
+  </include>
 
-    <!-- LAUNCH COMMUNICATION SYSTEM -->
-    <include file="$(find ezrassor_launcher)/launch/communication.launch"/>
+  <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+    <arg name="paused" value="false"/>
+  </include>
 
-    <!-- LAUNCH CONTROLS --> 
-    <include file="$(find ezrassor_sim_control)/launch/control.launch"/>
+  <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
 </launch>
