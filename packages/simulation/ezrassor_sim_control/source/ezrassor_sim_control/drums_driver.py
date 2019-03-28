@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int16, Float64
 
@@ -57,17 +56,13 @@ def drum_movement_callback(instruction):
     else:
         pub_BD.publish(0)
 
-def main():
-    print("Drums node started")
-    rospy.init_node(NODE, anonymous = True)
-    # rospy.Subscriber('ez_main_topic', Int16, drum_movement_callback)
-    rospy.Subscriber(TOPIC, Int16, drum_movement_callback)
-    rospy.spin()
-
-if __name__ == '__main__':
-
+def start_node():
     try:
-        main()
+        print("Drums node started")
+        rospy.init_node(NODE, anonymous = True)
+        # rospy.Subscriber('ez_main_topic', Int16, drum_movement_callback)
+        rospy.Subscriber(TOPIC, Int16, drum_movement_callback)
+        rospy.spin()
 
     except rospy.ROSInterruptException:
         pass
