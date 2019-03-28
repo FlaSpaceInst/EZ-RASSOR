@@ -2,8 +2,8 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 8705,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "packagerPid": 9702,
+  "expoServerNgrokUrl": "https://gv-pmk.camilozano.controller.exp.direct",
+  "packagerNgrokUrl": "https://packager.gv-pmk.camilozano.controller.exp.direct",
+  "ngrokPid": 9716
 }
