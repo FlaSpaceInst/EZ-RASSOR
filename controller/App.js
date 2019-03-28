@@ -39,10 +39,13 @@ export default class App extends React.Component {
       modalVisible: false,
       modal2Visible: false,
       ipModal: false,
+      xyModal: false,
       isLoading: true,
       ip:'192.168.4.1',  
       endpoint: '/',
       control: 0,
+      xy: '(0,0)'
+
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -66,6 +69,14 @@ export default class App extends React.Component {
     this.setState({ipModal: visible});
   }
 
+  setXYModalVisible(visible){
+    this.setState({xyModal:visible});
+  }
+
+  changeXY(text){
+    console.log(text)
+    this.setState({xy:text})
+  }
   changeIP(text){
     this.setState({ip:text})
   }
@@ -125,7 +136,7 @@ export default class App extends React.Component {
           >
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-                <TouchableOpacity style={styles.modalButton} onPress={()=>this.handleSubmit(0b1 << 12)}>
+                <TouchableOpacity style={styles.modalButton} onPress={()=>this.setXYModalVisible(true)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10 << 12)}>
@@ -200,6 +211,27 @@ export default class App extends React.Component {
               onChangeText={(text) => this.changeIP(text)}
               value={this.state.ip}
               marginVertical={20} />
+          </KeyboardAvoidingView>
+        </Modal>
+        <Modal
+          style={styles.modalViewContainer}
+          isVisible={this.state.xyModal}
+          onSwipe={() => this.setXYModalVisible(false)}
+          swipeDirection='down'
+          onRequestClose={() => {this.setXYModalVisible(false)}}>
+          <KeyboardAvoidingView
+            paddingLeft={64}
+            paddingRight={64}>
+            <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>(X,Y)</Text>
+            <TextInput
+              style={styles.ipInputBox}
+              onChangeText={(text) => this.changeXY(text)}
+              value={this.state.xy}
+              marginVertical={20} />
+              <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}}
+                  onPress={()=> console.log('SENT:' + this.state.xy)}>
+                    <Text>Done</Text>
+              </TouchableOpacity>
           </KeyboardAvoidingView>
         </Modal>
 
