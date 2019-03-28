@@ -74,7 +74,6 @@ export default class App extends React.Component {
   }
 
   changeXY(text){
-    console.log(text)
     this.setState({xy:text})
   }
   changeIP(text){
@@ -91,6 +90,11 @@ export default class App extends React.Component {
     })
   
   }
+
+   sendXY(){
+      xy = this.state.xy
+      console.log(xy)
+   }
   
   handleSubmit(event){
 
@@ -229,7 +233,7 @@ export default class App extends React.Component {
               value={this.state.xy}
               marginVertical={20} />
               <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}}
-                  onPress={()=> console.log('SENT:' + this.state.xy)}>
+                  onPress={()=> this.sendXY()}>
                     <Text>Done</Text>
               </TouchableOpacity>
           </KeyboardAvoidingView>
