@@ -155,8 +155,6 @@
               <normal_map>__default__</normal_map>
             </shader>
           </material>
-          <cast_shadows>1</cast_shadows>
-          <transparency>0</transparency>
         </visual>
         <collision name='collision'>
           <laser_retro>0</laser_retro>

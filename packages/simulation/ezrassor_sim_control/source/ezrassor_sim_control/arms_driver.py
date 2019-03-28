@@ -12,9 +12,9 @@ TOPIC = "/ezrassor/movement_toggles"
 MASK = 0b000011110000
 MESSAGE_FORMAT = "EZRC (arms.py): %s."
 
-# /ez_rassor/arm_back_velocity_controller/command
-pub_FA = rospy.Publisher('/ez_rassor/arm_front_velocity_controller/command', Float64, queue_size = 10)
-pub_BA = rospy.Publisher('/ez_rassor/arm_back_velocity_controller/command', Float64, queue_size = 10)
+# /ezrassor/arm_back_velocity_controller/command
+pub_FA = rospy.Publisher('/ezrassor/arm_front_velocity_controller/command', Float64, queue_size = 10)
+pub_BA = rospy.Publisher('/ezrassor/arm_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):
