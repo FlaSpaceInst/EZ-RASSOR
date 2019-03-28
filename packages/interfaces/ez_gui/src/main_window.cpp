@@ -65,12 +65,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     if ( ui.checkbox_remember_settings->isChecked() ) {
         on_button_connect_clicked(true);
     }
-
-    /*********************
-    ** Launch Files
-    **********************/
-    // TODO
-    // Connect Launch button to spawning a QProcess associated with selected launch file
 }
 
 MainWindow::~MainWindow() {}
@@ -251,16 +245,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::nodeLaunch()
 {
-    // TODO make QProcess for launching
-    // roslaunch package thing.launch
-    //
-    // get launchfile from combobox,
-    // get package for it from qnode lf_pkg map,
-    // make process doing it
-    //
-    // test:
-    // std::cout << qnode.get_launchfile_package(QString::fromAscii("ai_demo.launch")) << std::endl;
-
     QString launchfile = ui.comboBox->currentText();
     QProcess *parent;
     QStringList arguments;
@@ -270,11 +254,7 @@ void MainWindow::nodeLaunch()
     launchProcess->setProcessChannelMode(QProcess::MergedChannels); 
     launchProcess->start("roslaunch", arguments);
 
-    
-
     qnode.addProcess(launchProcess);
-
-    return;
 }
 
 
@@ -286,9 +266,8 @@ std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
     std::size_t lastSlash;
     int dir_index = 0;
 
-    std::getline(entirePath, grab, '/');
-    std::getline(entirePath, grab, '/');
-    std::getline(entirePath, grab, '/');
+    for (int i = 0; i < 3; i++)
+        std::getline(entirePath, grab, '/');
     std::getline(entirePath, package, '/');
     
     std::string patharoni = entirePath.str();
