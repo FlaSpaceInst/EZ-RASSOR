@@ -4,7 +4,8 @@
        Written by Tiger Sachse. -->
   <arg name="control_method"
        default="gamepad"
-       doc="Specify the control method ('gamepad' or 'app')."/>
+       doc="Specify the control method ('gamepad' or 'app')."
+  />
   <include file="$(find ezrassor_request_switch)/launch/request_switch.launch"/>
   <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
            if="$(eval control_method == 'gamepad')"
