@@ -1,5 +1,7 @@
 import rospy
 import time
+from ezrassor_autonomous_control.auto_functions import auto_drive_location
+
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -14,7 +16,6 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
             ros_util.command_pub.publish(ros_util.commands['front_arm_down'])
             ros_util.rate.sleep()
 
-    
     ros_util.command_pub.publish(ros_util.commands['null'])
 
 
@@ -33,9 +34,24 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.command_pub.publish(ros_util.commands['null'])
 
-def initial_check(world_state, ros_util):
+def self_check(world_state, ros_util):
     """  """
-    pass
+    if world_state.state_flags['on_side'] == True:
+        ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
+        self_right_from_side(world_state, ros_util)
+        return 1
+    if world_state.state_flags['battery'] < 10:
+        ros_util.status_pub.publish("Low Battery - Returning to Base")
+        world_state.state_flags['target_location'] = [0,0]
+        auto_drive_location(world_state, ros_util)
+        return 1
+    if world_state.state_flags['hardware_status'] == False:
+        ros_util.status_pub.publish("Hardware Failure Shutting Down")
+        ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+    else:
+        ros_util.status_pub.publish("Passed Status Check")
+        
+
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
