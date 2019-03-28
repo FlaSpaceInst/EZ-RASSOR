@@ -5,9 +5,9 @@
   <xacro:property name="cameraSize" value="0.04"/>
   <xacro:property name="cameraMass" value="0.1"/>
 
-  <xacro:include filename="$(find ez_rassor_description)/urdf/ez_rassor.gazebo" />
-  <xacro:include filename="$(find ez_rassor_description)/urdf/materials.xacro" />
-  <xacro:include filename="$(find ez_rassor_description)/urdf/macros.xacro" />
+  <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor.gazebo" />
+  <xacro:include filename="$(find ezrassor_sim_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find ezrassor_sim_description)/urdf/macros.xacro" />
 
   <!--Below are all of the robot's Links/-->
   <link name='base_link'>
