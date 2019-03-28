@@ -35,7 +35,12 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
     ros_util.command_pub.publish(ros_util.commands['null'])
 
 def self_check(world_state, ros_util):
-    """  """
+    """ Check for unfavorable states in the system and handle or quit gracefully. """
+    if ros_util.auto_function_command == 32:
+        ros_util.status_pub.publish("Cancel Auto Function Command Recieved")
+        ros_util.command_pub.publish(ros_util.commands['null'])
+        ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+        return -1
     if world_state.state_flags['on_side'] == True:
         ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
         self_right_from_side(world_state, ros_util)
@@ -47,9 +52,12 @@ def self_check(world_state, ros_util):
         return 1
     if world_state.state_flags['hardware_status'] == False:
         ros_util.status_pub.publish("Hardware Failure Shutting Down")
+        ros_util.command_pub.publish(ros_util.commands['null'])
         ros_util.command_pub.publish(ros_util.commands['kill_bit'])
+        return -1
     else:
         ros_util.status_pub.publish("Passed Status Check")
+        return 1
         
 
 

@@ -14,7 +14,8 @@ class WorldState():
         self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': [10,10], 'on_side': False}
+                            'target_location': [10,10], 'on_side': False, 'battery': 100,
+                            'hardware_status': True}
 
         self. auto_function_command = 0
 
@@ -62,7 +63,7 @@ class ROSUtility():
     def __init__(self):
         self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
         self.status_pub = rospy.Publisher('ez_rassor/status', String, queue_size=100)
-        self.rate = rospy.Rate(30) # 30hz
+        self.rate = rospy.Rate(10) # 10hz
 
         self. auto_function_command = 0
 
