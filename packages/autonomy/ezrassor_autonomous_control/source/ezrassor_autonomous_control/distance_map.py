@@ -19,9 +19,9 @@ RIGHT = 1
 #
 #**************************************************************************************************
 #
-#   ROS_NAMESPACE=ez_rassor/front_camera rosrun stereo_image_proc stereo_image_proc
+#   ROS_NAMESPACE=ezrassor/front_camera rosrun stereo_image_proc stereo_image_proc
 #
-#   rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
+#   rosrun image_view stereo_view stereo:=ezrassor/front_camera image:=image_rect
 #
 #**************************************************************************************************
 #    These scripts utilize the Disparity map generation provided by ROS out of the box using the 
@@ -36,7 +36,7 @@ commands = {
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('ez_rassor/obstacle_detect', Int8, queue_size=10)
+    pub = rospy.Publisher('ezrassor/obstacle_detect', Int8, queue_size=10)
 
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
@@ -101,6 +101,6 @@ def callback(data):
 
 def depth_estimator():
     rospy.init_node('depth_estimator')
-    rospy.Subscriber("/ez_rassor/front_camera/disparity", DisparityImage, callback)
+    rospy.Subscriber("/ezrassor/front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 
