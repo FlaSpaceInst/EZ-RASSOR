@@ -10,5 +10,5 @@ observation_sources: point_cloud_sensor #laser_scan_sensor
 
 #laser_scan_sensor: {sensor_frame: frame_name, data_type: LaserScan, topic: topic_name, marking: true, clearing: true}
 
-point_cloud_sensor: {sensor_frame: left_camera_optical_frame, data_type: PointCloud, topic: /ez_rassor/front_camera/points2
+point_cloud_sensor: {sensor_frame: left_camera_optical_frame, data_type: PointCloud, topic: /ezrassor/front_camera/points2
 , marking: true, clearing: true}
