@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ezrassor_sim_description</name>
+  <version>1.0.0</version>
+  <description>The ezrassor simulation model description (based on XACRO standard)</description>
+  <maintainer email="Guitartaliaferro@yahoo.com">Chris</maintainer>
+  <maintainer email="Ronald.Marrero@outlook.com">Ron</maintainer>
+  <maintainer email="Cetaylorfl@gmail.com">Cameron</maintainer>
+  <license>MIT</license>
+  <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_export_depend>gazebo_ros</build_export_depend> 
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+</package>
