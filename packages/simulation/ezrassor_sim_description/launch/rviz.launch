@@ -13,5 +13,4 @@
 
   <!-- Show in Rviz   -->
   <node name="rviz" pkg="rviz" type="rviz"/>
-
 </launch>
