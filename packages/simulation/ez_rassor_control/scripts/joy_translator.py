@@ -13,12 +13,12 @@ NODE = "controller"
 TOPIC = "joy"
 
 # Global so topic initiated at start of node
-# publisher = rospy.Publisher('ez_main_topic', Int16, queue_size = 10)
-publisher = rospy.Publisher('/ezrassor/requests', Int16, queue_size = 10)
+publisher = rospy.Publisher("/ezrassor/requests", Int16, queue_size=10)
 tank_turn = False
 toggle_time = 0
 
 def callback(data):
+	""" Parse joy data and convert to control string. """
 
 	global publisher
 	global tank_turn
@@ -52,7 +52,8 @@ def callback(data):
 
 	data_out = 0b000000000000
 
-	# The toggle can only be set once every 0.3 seconds. With out this the toggle will get spammed by Joy. 
+	# The toggle can only be set once every 0.3 seconds. 
+	# With out this the toggle will get spammed by Joy. 
 	if data.buttons[6] and (time_now - toggle_time) > 0.3:
 		tank_turn = not tank_turn
 		print("Tank turn: %r" % tank_turn)
@@ -114,7 +115,6 @@ def callback(data):
 	if data.axes[2] < -0.5:
 		data_out |= 0b0001
 
-
 	# Drums
 
 	# FDG FDP BDG BDP
@@ -135,14 +135,12 @@ def callback(data):
 		data_out |= 0b0001
 
 	publisher.publish(data_out)
-	# rospy.loginfo("Controller: {0:012b}".format(data_out))
 
 	
 def main():
-
 	print("Controller node started")
 	global publisher
-	rospy.init_node(NODE, anonymous = True)
+	rospy.init_node(NODE, anonymous=True)
 	rate = rospy.Rate(600) # number of hz
 	
 	# Topic subscriber for reading raw controller input	
