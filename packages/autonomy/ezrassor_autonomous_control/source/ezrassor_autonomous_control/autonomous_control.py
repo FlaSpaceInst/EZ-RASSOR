@@ -9,9 +9,10 @@ import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
 import numpy as np
+import random
 
 def on_start_up():
-    """  """
+    """ Initialization Function  """
     print("Spinning Up AI Control")
     # ROS Node Init Parameters 
     rospy.init_node('ezrassor_autonomous_control', anonymous=True)
@@ -25,17 +26,17 @@ def on_start_up():
     # Setup Subscriber Callbacks
     #rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('/imu', Imu, world_state.imuCallBack)
-    rospy.Subscriber('ezrassor/joint_states', JointState, world_state.jointCallBack)
-    rospy.Subscriber('ezrassor/obstacle_detect', Int16, world_state.visionCallBack)
+    rospy.Subscriber('/ezrassor/joint_states', JointState, world_state.jointCallBack)
+    rospy.Subscriber('/ezrassor/obstacle_detect', Int16, world_state.visionCallBack)
     rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)
-    rospy.Subscriber('gazebo/link_states', LinkStates, world_state.simStateCallBack)
+    rospy.Subscriber('/gazebo/link_states', LinkStates, world_state.simStateCallBack)
 
     result = uf.self_check(world_state, ros_util)
 
     if result == 2:
         uf.self_right_from_side(world_state, ros_util)
     if result == 3:
-        af.auto_dock()
+        af.auto_dock(world_state, ros_util)
 
     uf.set_back_arm_angle(world_state, ros_util, .785)
     uf.set_front_arm_angle(world_state, ros_util, .785)
@@ -45,10 +46,16 @@ def on_start_up():
 def full_autonomy(world_state, ros_util):
     print("Full Autonomy Activated")
     while(True):
-        world_state.state_flags['target_location'] = [np.random.randint(10,20), np.random.randint(10,20)]
+        world_state.state_flags['target_location'] = random_points()
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
+
+def random_points():
+    x = random.choice((np.random.randint(-20,-10), np.random.randint(10,20)))
+    y = random.choice((np.random.randint(-20,-10), np.random.randint(10,20)))
+
+    return [x, y]
 
 
 def autonomous_control_loop(world_state, ros_util):
