@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A ROS node that moves the wheel on the EZRC.
 
 Written by Harrison Black and Tiger Sachse.
@@ -75,17 +74,12 @@ def wheel_movement_callback(instruction):
 
     # print(data_string)
 
-def main():
-
-    print("Wheel node started")
-    rospy.init_node(NODE, anonymous = True)
-    rospy.Subscriber(TOPIC, Int16, wheel_movement_callback)
-    rospy.spin()
-
-if __name__ == '__main__':
-
+def start_node():
     try:
-        main()
+        print("Wheel node started")
+        rospy.init_node(NODE, anonymous = True)
+        rospy.Subscriber(TOPIC, Int16, wheel_movement_callback)
+        rospy.spin()
 
     except rospy.ROSInterruptException:
         pass

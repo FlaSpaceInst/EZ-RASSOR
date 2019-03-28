@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A ROS node that moves the arms on the EZRC.
 
 Written by Harrison Black and Tiger Sachse.
@@ -70,12 +69,12 @@ def handle_arm_movements(instruction):
         pub_BA.publish(0)
 
 
-
-# Main entry point to the node.
-try:
-    print("Arms node started")
-    rospy.init_node(NODE, anonymous=True)
-    rospy.Subscriber(TOPIC, Int16, handle_arm_movements)
-    rospy.spin()
-except rospy.ROSInterruptException:
-    pass
+def start_node():
+    # Main entry point to the node.
+    try:
+        print("Arms node started")
+        rospy.init_node(NODE, anonymous=True)
+        rospy.Subscriber(TOPIC, Int16, handle_arm_movements)
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
