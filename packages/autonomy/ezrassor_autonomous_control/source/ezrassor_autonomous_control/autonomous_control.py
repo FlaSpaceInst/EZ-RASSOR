@@ -50,10 +50,11 @@ def full_autonomy(world_state, ros_util):
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
+        af.auto_dump(world_state, ros_util, 10)
 
 def random_points():
-    x = random.choice((np.random.randint(-20,-10), np.random.randint(10,20)))
-    y = random.choice((np.random.randint(-20,-10), np.random.randint(10,20)))
+    x = np.random.randint(10,20)
+    y = np.random.randint(10,20)
 
     return [x, y]
 
