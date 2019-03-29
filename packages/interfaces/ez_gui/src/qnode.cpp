@@ -48,6 +48,7 @@ bool QNode::init()
     sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
     disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
     battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
 }
@@ -77,6 +78,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
     disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
     battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
 }
@@ -199,7 +201,7 @@ void QNode::imageBackCallback(const sensor_msgs::ImageConstPtr& msg)
     Q_EMIT backCamUpdated();
 }
 
-void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
+void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
 {
     cv_bridge::CvImagePtr cv_ptr;
 
@@ -248,6 +250,26 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
         disparity_Pixmap = QPixmap::fromImage(img);
 
     Q_EMIT disparityUpdated();
+}
+
+void QNode::imuLabelsCallback(const sensor_msgs::Imu::ConstPtr &msg)
+{
+    float imuArray[9] = { };
+
+    imuArray[0] = msg->orientation.x;
+    imuArray[1] = msg->orientation.y;
+    imuArray[2] = msg->orientation.z;
+
+    imuArray[3] = msg->angular_velocity.x;
+    imuArray[4] = msg->angular_velocity.y;
+    imuArray[5] = msg->angular_velocity.z;
+
+    imuArray[6] = msg->linear_acceleration.x;
+    imuArray[6] = msg->linear_acceleration.y;
+    imuArray[6] = msg->linear_acceleration.z;
+
+    imu_labels = imuArray;
+    Q_EMIT imuLabelsUpdated();
 }
 
 void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)

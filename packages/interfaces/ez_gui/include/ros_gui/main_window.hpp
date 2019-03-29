@@ -128,6 +128,7 @@ class MainWindow : public QMainWindow
         void updateDisparityCamera();
         void startRviz();
         void populateLaunchers();
+        void updateImuLabels();
 
     private:
         Ui::MainWindowDesign ui;

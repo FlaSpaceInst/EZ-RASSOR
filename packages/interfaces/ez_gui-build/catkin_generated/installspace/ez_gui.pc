@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: ez_gui
+Description: Description of ez_gui
+Version: 0.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 

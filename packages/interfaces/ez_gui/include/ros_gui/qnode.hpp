@@ -41,6 +41,7 @@ class QNode : public QThread
         void smCallback(const std_msgs::Float64 &message_holder);
         void diskCallback(const std_msgs::Float64 &message_holder);
         void batteryCallback(const std_msgs::Float64 &message_holder);
+        void imuLabelsCallback(const sensor_msgs::Imu::ConstPtr &msg);
 
         /*********************
         ** Logging
@@ -67,7 +68,7 @@ class QNode : public QThread
         QString get_launchfile_package(QString launchfile);
         void addProcess(QProcess* process);
         void log( const LogLevel &level, const std_msgs::Float64 &msg);
-
+        float **imuLabels() { return &imu_labels; }
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -78,6 +79,7 @@ class QNode : public QThread
         QPixmap back_Camera_Pixmap;
         QPixmap disparity_Pixmap;
         std::map<QString, QString> launchfile_package_map;
+        float *imu_labels;
 
     Q_SIGNALS:
         void loggingUpdated();
@@ -91,6 +93,8 @@ class QNode : public QThread
         void frontCamUpdated();
         void backCamUpdated();
         void disparityUpdated();
+
+        void imuLabelsUpdated();
 
         void startingRviz();
 
@@ -108,8 +112,10 @@ class QNode : public QThread
         ros::Subscriber sm_subscriber;
         ros::Subscriber disk_subscriber;
         ros::Subscriber battery_subscriber;
+        ros::Subscriber imu_subscriber;
         QStringListModel logging_model;
         std::vector<QProcess*> process_list;
+
 };
 
 #endif /* ez_gui_QNODE_HPP_ */
