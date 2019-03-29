@@ -178,13 +178,13 @@ public:
         tab_imu->setObjectName(QStringLiteral("tab_imu"));
         verticalLayoutWidget_2 = new QWidget(tab_imu);
         verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(10, 10, 571, 411));
+        verticalLayoutWidget_2->setGeometry(QRect(10, 10, 571, 401));
         imu_viewer = new QVBoxLayout(verticalLayoutWidget_2);
         imu_viewer->setObjectName(QStringLiteral("imu_viewer"));
         imu_viewer->setContentsMargins(0, 0, 0, 0);
         layoutWidget = new QWidget(tab_imu);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 430, 571, 105));
+        layoutWidget->setGeometry(QRect(10, 415, 571, 121));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -193,6 +193,11 @@ public:
         verticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
         label_4 = new QLabel(layoutWidget);
         label_4->setObjectName(QStringLiteral("label_4"));
+        QFont font1;
+        font1.setBold(true);
+        font1.setUnderline(true);
+        font1.setWeight(75);
+        label_4->setFont(font1);
         label_4->setLayoutDirection(Qt::LeftToRight);
         label_4->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
@@ -220,6 +225,7 @@ public:
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         label_15 = new QLabel(layoutWidget);
         label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setFont(font1);
         label_15->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         verticalLayout_2->addWidget(label_15);
@@ -246,7 +252,14 @@ public:
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         label_17 = new QLabel(layoutWidget);
         label_17->setObjectName(QStringLiteral("label_17"));
-        label_17->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        QFont font2;
+        font2.setBold(true);
+        font2.setUnderline(true);
+        font2.setWeight(75);
+        font2.setStrikeOut(false);
+        label_17->setFont(font2);
+        label_17->setTextFormat(Qt::RichText);
+        label_17->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
 
         verticalLayout_3->addWidget(label_17);
 
@@ -444,7 +457,7 @@ public:
         QObject::connect(action_Quit, SIGNAL(triggered()), MainWindowDesign, SLOT(close()));
         QObject::connect(quit_button, SIGNAL(clicked()), MainWindowDesign, SLOT(close()));
 
-        tab_manager->setCurrentIndex(1);
+        tab_manager->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindowDesign);
