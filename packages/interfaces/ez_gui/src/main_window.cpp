@@ -209,17 +209,17 @@ void MainWindow::updateImuLabels()
     // *qnode.imuLabels(); Array or map of values
 
 
-    ui.orient_x->setText("x: " + QString::number(labels[0]));
-    ui.orient_y->setText("y: " + QString::number(labels[0]));
-    ui.orient_z->setText("z: " + QString::number(labels[0]));
+    ui.orient_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.orient_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.orient_z->setText("<b>z:</b> " + QString::number(labels[0]));
 
-    ui.ang_x->setText("x: " + QString::number(labels[0]));
-    ui.ang_y->setText("y: " + QString::number(labels[0]));
-    ui.ang_z->setText("z: " + QString::number(labels[0]));
+    ui.ang_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.ang_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.ang_z->setText("<b>z:</b> " + QString::number(labels[0]));
 
-    ui.lin_x->setText("x: " + QString::number(labels[0]));
-    ui.lin_y->setText("y: " + QString::number(labels[0]));
-    ui.lin_z->setText("z: " + QString::number(labels[0]));
+    ui.lin_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.lin_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.lin_z->setText("<b>z:</b> " + QString::number(labels[0]));
 
    //QString testString = QString::number(test);
    //ui.orient_x->setText(testString);
