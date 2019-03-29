@@ -1,7 +1,5 @@
 import rospy
 import time
-from auto_functions import auto_drive_location
-
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -43,13 +41,11 @@ def self_check(world_state, ros_util):
         return -1
     if world_state.state_flags['on_side'] == True:
         ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
-        self_right_from_side(world_state, ros_util)
-        return 1
+        return 2
     if world_state.state_flags['battery'] < 10:
         ros_util.status_pub.publish("Low Battery - Returning to Base")
         world_state.state_flags['target_location'] = [0,0]
-        auto_drive_location(world_state, ros_util)
-        return 1
+        return 3
     if world_state.state_flags['hardware_status'] == False:
         ros_util.status_pub.publish("Hardware Failure Shutting Down")
         ros_util.command_pub.publish(ros_util.commands['null'])
