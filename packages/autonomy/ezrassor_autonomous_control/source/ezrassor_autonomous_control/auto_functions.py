@@ -88,11 +88,17 @@ def auto_dig(world_state, ros_util, duration):
     ros_util.status_pub.publish("Auto Digging for {} Seconds".format(duration))
     combo_command = ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig']
     
+    uf.set_front_arm_angle(world_state, ros_util, -.1)
+    uf.set_back_arm_angle(world_state, ros_util, -.1)
+
     t = 0
     while t < duration*40:        
         ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()
+    
+    uf.set_front_arm_angle(world_state, ros_util, 1.2)
+    uf.set_back_arm_angle(world_state, ros_util, 1.2)
 
     ros_util.command_pub.publish(ros_util.commands['null'])
 
