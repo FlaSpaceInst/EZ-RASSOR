@@ -4,58 +4,55 @@ This project is free and open-source under the `LICENSE license`_. Anyone can fo
 
 DEVELOPMENT INSTRUCTIONS
 ----
-This repository contains a script, ``ezrassor.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
+This repository contains a script, ``develop.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
 ::
-  bash ezrassor.sh <--flag> [args]
+  sh develop.sh <mode> [arguments]
   
-The flags supported by the script are listed below:
+The modes supported by the script are listed below:
  
-``-i, --install <collections...>``
-  Install one or many collections of software associated with this project. The current collections available are ``ezrc``, ``ros``, ``devtools``, ``ai``, and ``swarm``.
-``-c, --catkin``
+``setup``
   Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default.
-``-n, --new <superpackage> <package> [dependencies...]``
-  Create a new ROS package in the ``packages`` folder, under the appropriate superpackage. If the superpackage doesn't exist it is created. All arguments after package are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run the ``--catkin`` command ensure that you do that before trying to make a new package, otherwise you won't have a workspace to develop in!
-``-l, --link [-i, --ignore <packages...> | -o, --only <packages...>]``
-  Create a symlink from all packages in the ``packages`` directory to the ``src`` directory of your workspace. This is necessary after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll want to ``--purge`` before running this command (see below), otherwise your ``src`` directory could contain broken symlinks to removed/renamed packages. Ignore specific packages with the ``-i`` or ``--ignore`` flag. Relink specific packages with the ``-o`` or ``--only`` flag. When linking specific packages, all other packages are purged.
-``-p, --purge``
+``new <superpackage> <package> [dependencies...]``
+  Create a new ROS package in the ``packages`` folder, under the appropriate superpackage. If the superpackage doesn't exist it is created. All arguments after ``package`` are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run ``setup`` ensure that you do that before trying to make a new package, otherwise you won't have a workspace to develop in!
+``link [-e, --except <packages...> | -o, --only <packages...>]``
+  Create a symlink from all packages in the ``packages`` directory to the ``src`` directory of your workspace (so that you can build and test your software, without having to copy it into the workspace each time). You should execute this mode after creating a new workspace, or if you've renamed/reorganized the packages in ``packages``. If you've done this, you'll want to ``purge`` before running this command (see below), otherwise your ``src`` directory could contain broken symlinks to removed/renamed packages. Exclude specific packages with the ``-e`` or ``--except`` flag. Link specific packages with the ``-o`` or ``--only`` flag.
+``purge``
   Remove all symlinked packages from ``src``.
-``-r, --relink [-i, --ignore <packages...> | -o, --only <packages...>]``
-  Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-i`` or ``--ignore`` flag. Relink specific packages with the ``-o`` or ``--only`` flag. When relinking specific packages, all other packages are purged.
-``-b, --build``
+``relink [-e, --except <packages...> | -o, --only <packages...>]``
+  Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-e`` or ``--except`` flag. Relink specific packages with the ``-o`` or ``--only`` flag.
+``build``
   Call ``catkin_make`` in your workspace.
-``-s, --start <graph>``
-  Fire up a ROS graph. Available ROS graphs are ``ezrc``, ``control``, ``gazebo``, ``rviz``, ``slam-core``, and ``slam-viewer``. You must start ``control`` before ``slam-core`` and ``slam-viewer``.
-``-k, --kill``
-  Kill all running ROS nodes and `roscore`.
+``install``
+  Install all built packages into the install target in your workspace (via ``catkin_make install``).
+``kill``
+  Kill all running ROS nodes and ``roscore``.
 
 EXAMPLES
 ----
 Here are some example commands to get started.
 ::
-  # Install the ROS and EZRC software collections, then create a Catkin
-  # workspace and link all existing packages in the repository.
-  bash ezrassor.sh --install ros ezrc
-  bash ezrassor.sh --catkin
-  bash ezrassor.sh --link
+  # Set up a new Catkin workspace.
+  sh develop.sh setup
   
-  # Create a new package in the superpackage 'ezrc' called 'ezrc_cameras'.
-  bash ezrassor.sh --new ezrc ezrc_cameras
+  # Create a new package in the superpackage 'autonomy' called 'ezrassor_swarm'.
+  sh develop.sh new autonomy ezrassor_swarm
   
-  # Fire up the EZRC ROS graph.
-  bash ezrassor.sh --start ezrc
-  
-  # Kill all running ROS nodes.
-  bash ezrassor.sh --kill
-  
-  # Build the contents of 'src' in your Catkin workspace.
-  bash ezrassor.sh --build
+  # Link only your new package and 'ezrassor_launcher'.
+  sh develop.sh link --only ezrassor_swarm ezrassor_launcher
 
-  # Link all packages except the 'depreciated' package.
-  bash ezrassor.sh --link --ignore depreciated
+  # Build your linked packages.
+  sh develop.sh build
 
-  # Relink only the 'ezrc_moving_parts' and 'lsd_slam' packages.
-  bash ezrassor.sh --relink -o ezrc_moving_parts lsd_slam
+  # Something went wrong... relink all packages except 'ezrassor_swarm'.
+  sh develop.sh relink --except ezrassor_swarm
+
+  # Looks like you figured it out. Relink everything.
+  sh develop.sh relink
+
+  # Build and install your linked packages.
+  sh develop.sh build
+  sh develop.sh install
+
   
 .. _`LICENSE license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
