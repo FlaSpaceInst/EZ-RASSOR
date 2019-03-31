@@ -17,10 +17,14 @@ import RPi.GPIO as GPIO
 NODE_NAME = "wheels_driver"
 MASK = 0b111100000000
 SPEED = 2000
-LEFT_WHEEL_CHANNEL = 6
-RIGHT_WHEEL_CHANNEL = 7
-LEFT_WHEEL_PINS = (5, 6)
-RIGHT_WHEEL_PINS = (13, 19)
+LEFT_REAR_WHEEL_CHANNEL = 4
+RIGHT_REAR_WHEEL_CHANNEL = 5
+LEFT_FRONT_WHEEL_CHANNEL = 6
+RIGHT_FRONT_WHEEL_CHANNEL = 7
+LEFT_REAR_WHEEL_PINS = (16, 20)
+RIGHT_REAR_WHEEL_PINS = (26, 21)
+LEFT_FRONT_WHEEL_PINS = (5, 6)
+RIGHT_FRONT_WHEEL_PINS = (13, 19)
 HALT_MESSAGE = "Stopping the wheels"
 DEBUGGING_MESSAGES = (
     "Driving left side forward",
@@ -63,7 +67,12 @@ class Wheel:
         GPIO.output(self.gpio_pins[1], GPIO.LOW)
 
 
-def rotate_wheels(toggle_queue, left_wheel, right_wheel):
+def rotate_wheels(
+    toggle_queue,
+    left_front_wheel,
+    right_front_wheel,
+    left_rear_wheel,
+    right_rear_wheel):
     """Move the wheels of the EZRC.
     
     The wheels are controlled by sending boolean 4-tuples to this function via
@@ -87,31 +96,39 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
         # end. Otherwise, split the fetched toggles between the 4 rotation
         # booleans and give commands to the wheels.
         try:
-            toggles = toggle_queue.get()
+            toggles = toggle_queue.get(False)
             if toggles == None:
                 break
             else:
                 left_forward, left_backward, right_forward, right_backward = toggles
 
                 if left_forward:
-                    left_wheel.start(left_wheel.FORWARD)
+                    left_front_wheel.start(left_front_wheel.FORWARD)
+                    left_rear_wheel.start(left_rear_wheel.FORWARD)
                 elif left_backward:
-                    left_wheel.start(left_wheel.BACKWARD)
+                    left_front_wheel.start(left_front_wheel.BACKWARD)
+                    left_rear_wheel.start(left_rear_wheel.BACKWARD)
                 else:
-                    left_wheel.stop()
+                    left_front_wheel.stop()
+                    left_rear_wheel.stop()
 
                 if right_forward:
-                    right_wheel.start(right_wheel.FORWARD)
+                    right_front_wheel.start(right_front_wheel.FORWARD)
+                    right_rear_wheel.start(right_rear_wheel.FORWARD)
                 elif right_backward:
-                    right_wheel.start(right_wheel.BACKWARD)
+                    right_front_wheel.start(right_front_wheel.BACKWARD)
+                    right_rear_wheel.start(right_rear_wheel.BACKWARD)
                 else:
-                    right_wheel.stop()
-        except Queue.Empty:#
+                    right_front_wheel.stop()
+                    right_rear_wheel.stop()
+        except Queue.Empty:
             pass
 
     # Clean up and stop the wheels after the loop is broken. 
-    left_wheel.stop()
-    right_wheel.stop()
+    left_front_wheel.stop()
+    right_front_wheel.stop()
+    left_rear_wheel.stop()
+    right_rear_wheel.stop()
 
 
 def start_node():
@@ -120,15 +137,25 @@ def start_node():
         driver = Adafruit_PCA9685.PCA9685()
         driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
-        left_wheel = Wheel(
+        left_front_wheel = Wheel(
             driver,
-            LEFT_WHEEL_CHANNEL,
-            LEFT_WHEEL_PINS,
+            LEFT_FRONT_WHEEL_CHANNEL,
+            LEFT_FRONT_WHEEL_PINS,
         )
-        right_wheel = Wheel(
+        right_front_wheel = Wheel(
             driver,
-            RIGHT_WHEEL_CHANNEL,
-            RIGHT_WHEEL_PINS,
+            RIGHT_FRONT_WHEEL_CHANNEL,
+            RIGHT_FRONT_WHEEL_PINS,
+        )
+        left_rear_wheel = Wheel(
+            driver,
+            LEFT_REAR_WHEEL_CHANNEL,
+            LEFT_REAR_WHEEL_PINS,
+        )
+        right_rear_wheel = Wheel(
+            driver,
+            RIGHT_REAR_WHEEL_CHANNEL,
+            RIGHT_REAR_WHEEL_PINS,
         )
 
         # Create a queue and process that rotates the wheels.
@@ -137,8 +164,10 @@ def start_node():
             target=rotate_wheels,
             args=(
                 toggle_queue,
-                left_wheel,
-                right_wheel,
+                left_front_wheel,
+                right_front_wheel,
+                left_rear_wheel,
+                right_rear_wheel,
             ),
         )
         movement_process.start()
@@ -162,10 +191,8 @@ def start_node():
         )
         rospy.spin()
 
-    except Exception as e:
-        print e
-    #except rospy.ROSInterruptException:
-    #    pass
+    except rospy.ROSInterruptException:
+        pass
 
     # Finally, send a kill message (None) to the movement process and wait for it
     # to die, then exit.

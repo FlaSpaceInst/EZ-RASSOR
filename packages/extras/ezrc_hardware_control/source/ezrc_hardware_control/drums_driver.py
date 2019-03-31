@@ -17,8 +17,8 @@ import RPi.GPIO as GPIO
 NODE_NAME = "drums_driver"
 MASK = 0b000000001111
 DRUM_SLEEP_DURATION = .2
-REAR_DRUM_PINS = (13, 19, 26)
-FORWARD_DRUM_PINS = (20, 21, 16)
+REAR_DRUM_PINS = (8, 9, 10, 11)
+FORWARD_DRUM_PINS = (12, 13, 14, 15)
 HALT_MESSAGE = "Stopping both drums"
 DEBUGGING_MESSAGES = (
     "Digging with forward drum",
