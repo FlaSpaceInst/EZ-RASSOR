@@ -9,6 +9,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from stereo_msgs.msg import DisparityImage
 import std_msgs
 from std_msgs.msg import Int8
+from sensor_msgs.msg import LaserScan
 import time
 
 LEFT = 0
@@ -37,6 +38,26 @@ commands = {
 def obst_detect(data):
 
     pub = rospy.Publisher('ezrassor/obstacle_detect', Int8, queue_size=10)
+    laser_scan = rospy.Publisher('/scan', LaserScan, queue_size=10)
+
+    scan = LaserScan()
+
+    scan.header.stamp = rospy.Time.now()
+    scan.header.frame_id = "camera_depth_frame"
+    scan.angle_min = -0.698132
+    scan.angle_max = 0.698132
+    scan.angle_increment = 0.0174533
+    scan.time_increment = 1 / 60
+    scan.scan_time = 1 / 60
+    scan.range_min = 0
+    scan.range_max = 1000.0
+    scan.ranges = (np.append(data[LEFT],data[RIGHT]))[::-1]
+    scan.intensities = []
+
+    print(type(data[LEFT]))
+
+    laser_scan.publish(scan)
+
 
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
@@ -105,4 +126,7 @@ def depth_estimator():
     rospy.spin()
 
 if __name__ == "__main__":
-    depth_estimator()
+    try:
+        depth_estimator()
+    except:
+        pass

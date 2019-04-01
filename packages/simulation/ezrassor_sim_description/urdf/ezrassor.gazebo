@@ -71,7 +71,7 @@
   <!-- Cameras -->
   <gazebo reference="stereo_camera_front">
     <sensor type="multicamera" name="stereo_camera">
-      <update_rate>30.0</update_rate>
+      <update_rate>60.0</update_rate>
       <camera name="left">
         <focalLength>0</focalLength>
         <pose> 0 0.035 0 0 0 0 </pose>
