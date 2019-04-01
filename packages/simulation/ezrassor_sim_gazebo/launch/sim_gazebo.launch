@@ -40,5 +40,10 @@
     respawn="false" output="screen">
     <remap from="/joint_states" to="/ezrassor/joint_states" />
   </node>
+
+  <!-- broadcast left image frame for pointcloud -->
+
+  
+
  
 </launch>

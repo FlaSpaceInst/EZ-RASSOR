@@ -104,3 +104,5 @@ def depth_estimator():
     rospy.Subscriber("/ezrassor/front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 
+if __name__ == "__main__":
+    depth_estimator()
