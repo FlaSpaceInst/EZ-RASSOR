@@ -50,11 +50,11 @@ def obst_detect(data):
     scan.time_increment = 1 / 60
     scan.scan_time = 1 / 60
     scan.range_min = 0
-    scan.range_max = 1000.0
+    scan.range_max = 500.0
+    # data[LEFT][scan.range_min < data[LEFT] < scan.range_max] = inf
+    # data[RIGHT][scan.range_min < data[RIGHT] < scan.range_max] = inf
     scan.ranges = (np.append(data[LEFT],data[RIGHT]))[::-1]
     scan.intensities = []
-
-    print(type(data[LEFT]))
 
     laser_scan.publish(scan)
 
@@ -70,8 +70,8 @@ def obst_detect(data):
         print("MOVE BACKWARD!")
         pub.publish(commands['reverse'])
     else:
-         print("MOVE FORWARD!")
-         pub.publish(commands['forward'])
+        print("MOVE FORWARD!")
+        pub.publish(commands['forward'])
 
 
 def callback(data):

@@ -16,5 +16,12 @@
   	</node>
 
 	<node pkg="ezrassor_autonomous_control" type="tf_camera_broadcaster" name="tf_camera_broadcaster"/>
+	<!-- <node pkg="ezrassor_autonomous_control" type="odometry_tf_broadcaster" name="odometry_tf_broadcaster"/> -->
+
+	<!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" >
+		<param name="map_update_interval" value="5.0"/>
+		<param name="linearUpdate" value="1"/>
+	</node> -->
+
 
 </launch>
