@@ -16,7 +16,14 @@
   	</node>
 
 	<node pkg="ezrassor_autonomous_control" type="tf_camera_broadcaster" name="tf_camera_broadcaster"/>
-	<!-- <node pkg="ezrassor_autonomous_control" type="odometry_tf_broadcaster" name="odometry_tf_broadcaster"/> -->
+   
+    <node pkg="viso2_ros" type="stereo_odometer">
+        <param name="sensor_frame_id" value="left_camera_optical_frame"/>
+        <remap from="/stereo/left/image" to="ezrassor/front_camera/left/image_rect_color"/>
+        <remap from="/stereo/right/image" to="ezrassor/front_camera/right/image_rect_color"/>
+        <remap from="/stereo/left/image" to="ezrassor/front_camera/left/camera_info"/>
+        <remap from="/stereo/right/image" to="ezrassor/front_camera/right/camera_info"/>
+    </node>
 
 	<!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" >
 		<param name="map_update_interval" value="5.0"/>
