@@ -33,6 +33,7 @@ catkin_install_python(
         nodes/distance_map
         nodes/autonomous_control
         nodes/tf_camera_broadcaster
+        nodes/odometry_tf_broadcaster
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
