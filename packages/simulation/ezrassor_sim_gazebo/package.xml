@@ -12,4 +12,13 @@
   <depend>xacro</depend>
   <depend>gazebo_ros</depend>
   <depend>robot_state_publisher</depend>
+
+  <!-- This export hack is needed to allow Gazebo to reference the models in this package without needing to copy the files anywhere or do any special magic.
+  Example, the dem/ and materials/ folders in this package can be referenced by Gazebo using the package name. *magic* -->
+  
+  <export>
+    <gazebo_ros
+        gazebo_plugin_path="${prefix}/lib"
+        gazebo_model_path="${prefix}/.."/>
+  </export>
 </package>
