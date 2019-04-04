@@ -1,5 +1,6 @@
 import rospy
 import time
+import nav_functions as nf
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -68,6 +69,33 @@ def reverse_turn(world_state, ros_util):
 
     while (new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1):
         ros_util.command_pub.publish(ros_util.commands['left'])
+
+
+def dodge_left(world_state, ros_util):
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    while world_state.state_flags['warning_flag'] != 0:
+        ros_util.command_pub.publish(ros_util.commands['left'])
+        ros_util.rate.sleep()
+
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], start_y, world_state.state_flags['positionY']) < 2:
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
+
+
+def dodge_right(world_state, ros_util):
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    while world_state.state_flags['warning_flag'] != 0:
+        ros_util.command_pub.publish(ros_util.commands['right'])
+        ros_util.rate.sleep()
+
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], start_y, world_state.state_flags['positionY']) < 2:
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
+
 
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
