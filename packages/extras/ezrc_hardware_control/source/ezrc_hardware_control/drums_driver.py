@@ -10,15 +10,16 @@ import utilities
 import itertools
 import constants
 import multiprocessing
-import RPi.GPIO as GPIO
+import Adafruit_PCA9685
 
 
 # Relevant constants for this node.
-NODE_NAME = "drums_driver"
+BRIGHTNESS = 2000
 MASK = 0b000000001111
 DRUM_SLEEP_DURATION = .2
-REAR_DRUM_PINS = (13, 19, 26)
-FORWARD_DRUM_PINS = (20, 21, 16)
+NODE_NAME = "drums_driver"
+REAR_DRUM_PINS = (8, 9, 10, 11)
+FORWARD_DRUM_PINS = (12, 13, 14, 15)
 HALT_MESSAGE = "Stopping both drums"
 DEBUGGING_MESSAGES = (
     "Digging with forward drum",
@@ -36,16 +37,8 @@ def rotate_drums(toggle_queue):
     subscription code so that both actions (rotating the drums and listening to
     the ROS topic) can occur simultaneously. 
     """
-
-    # Initialize all required GPIO pins.
-    GPIO.setmode(constants.GPIO_MODE)
-    GPIO.setwarnings(constants.ENABLE_GPIO_WARNINGS)
-    pins = itertools.chain(
-        FORWARD_DRUM_PINS,
-        REAR_DRUM_PINS,
-    )
-    for pin in pins:
-        GPIO.setup(pin, GPIO.OUT)
+    driver = Adafruit_PCA9685.PCA9685()
+    driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
     # These rotation booleans tell the main function loop whether to rotate a
     # drum in a particular direction or not.
@@ -78,24 +71,33 @@ def rotate_drums(toggle_queue):
             pass
 
         # For each true rotation boolean, turn the appropriate pin on.
+        lit_pins = []
         if dig_forward:
-            GPIO.output(next(forward_iterator), GPIO.HIGH)
+            forward_pin = next(forward_iterator)
+            driver.set_pwm(forward_pin, 0, BRIGHTNESS)
+            lit_pins.append(forward_pin)
         if dump_forward:
-            GPIO.output(next(reversed_forward_iterator), GPIO.HIGH)
+            reversed_forward_pin = next(reversed_forward_iterator)
+            driver.set_pwm(reversed_forward_pin, 0, BRIGHTNESS)
+            lit_pins.append(reversed_forward_pin)
         if dig_rear:
-            GPIO.output(next(rear_iterator), GPIO.HIGH)
+            rear_pin = next(rear_iterator)
+            driver.set_pwm(rear_pin, 0, BRIGHTNESS)
+            lit_pins.append(rear_pin)
         if dump_rear:
-            GPIO.output(next(reversed_rear_iterator), GPIO.HIGH)
+            reversed_rear_pin = next(reversed_rear_iterator)
+            driver.set_pwm(reversed_rear_pin, 0, BRIGHTNESS)
+            lit_pins.append(reversed_rear_pin)
 
-        # If any pins were turned on this iteration, sleep for some duration
-        # and turn off all pins after waking again.
-        if any((dig_forward, dump_forward, dig_rear, dump_rear)):
+        # Turn off any lit pins after a delay.
+        for pin in lit_pins:
             time.sleep(DRUM_SLEEP_DURATION)
-            utilities.turn_off_pins(FORWARD_DRUM_PINS, REAR_DRUM_PINS)
+            driver.set_pwm(pin, 0, 0)
             time.sleep(DRUM_SLEEP_DURATION / 2)
 
     # Clean up after the loop is broken.
-    utilities.turn_off_pins(FORWARD_DRUM_PINS, REAR_DRUM_PINS)
+    for pin in itertools.chain(FORWARD_DRUM_PINS, REAR_DRUM_PINS):
+        driver.set_pwm(pin, 0, 0)
 
 
 def start_node():
