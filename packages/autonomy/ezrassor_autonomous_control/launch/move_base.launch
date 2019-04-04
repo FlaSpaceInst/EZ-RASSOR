@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  <!-- Arguments -->
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="odom_topic" default="odom" />
 
-   <master auto="start"/>
- <!-- Run the map server --> 
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find my_map_package)/my_map.pgm my_map_resolution"/>
 
- <!--- Run AMCL --> 
-    <include file="$(find amcl)/examples/amcl_diff.launch" />
-
-   <node pkg="ai_control" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find ai_control)/local_costmap_config.yaml" command="load" ns="global_costmap" /> 
-    <rosparam file="$(find ai_control)/common_costmap_config.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find ai_control)/local_costmap_config.yaml" command="load" />
-    <rosparam file="$(find ai_control)/global_costmap_config.yaml" command="load" /> 
-    <rosparam file="$(find ai_control)/common_costmap_config.yaml" command="load" />
- </node>
-
-</launch> 
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/costmap_common_config.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/local_costmap_config.yaml" command="load" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/global_costmap_config.yaml" command="load" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/move_base_config.yaml" command="load" />
+    <rosparam file="$(find ezrassor_autonomous_control)/config/dwa_local_planner_config.yaml" command="load" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+  </node>
+</launch>
