@@ -54,8 +54,6 @@ class WorldState():
         else:
             self.state_flags['on_side'] = False
 
-        #self.state_flags['heading'] = nf.quaternion_to_euler(data.pose.orientation)
-
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
 

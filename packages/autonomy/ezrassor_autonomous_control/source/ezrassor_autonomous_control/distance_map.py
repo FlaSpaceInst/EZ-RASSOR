@@ -41,16 +41,16 @@ def obst_detect(data):
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
         print("MOVE RIGHT!")
-        pub.publish(commands['right'])
+        pub.publish(1)
     elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
         print("MOVE LEFT!")
-        pub.publish(commands['left'])
+        pub.publish(2)
     elif data[LEFT].min() < 1 and data[RIGHT].min() < 1:
         print("MOVE BACKWARD!")
-        pub.publish(commands['reverse'])
+        pub.publish(3)
     else:
          print("MOVE FORWARD!")
-         pub.publish(commands['forward'])
+         pub.publish(0)
 
 
 def callback(data):
