@@ -13,6 +13,7 @@ import rospy
 import std_msgs
 
 
+
 # This node's name.
 QUEUE_SIZE = 10
 AUTONOMY_KILL_MASK = 0b1000000000000
@@ -22,7 +23,7 @@ NODE_NAME = "request_switch"
 REQUESTS_TOPIC = "/ezrassor/requests"
 ROUTINE_TOGGLES_TOPIC = "/ezrassor/routine_toggles"
 MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
-ROUTINE_RESPONSES_TOPIC = "ezrassor/routine_responses"
+ROUTINE_RESPONSES_TOPIC = "/ezrassor/routine_responses"
 
 
 def get_masked_bits(bitstring, mask):
@@ -48,6 +49,7 @@ def enqueue_bitstring(bitstring, additional_arguments):
 
 def start_node():
     """Fire up this node!"""
+    
     try:
         rospy.init_node(NODE_NAME)
         bitstring_queue = Queue.Queue()
@@ -62,6 +64,7 @@ def start_node():
                 REQUESTS_TOPIC,
             ),
         )
+
         rospy.Subscriber(
             ROUTINE_RESPONSES_TOPIC,
             std_msgs.msg.Int16,
