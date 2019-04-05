@@ -39,10 +39,13 @@ export default class App extends React.Component {
       modalVisible: false,
       modal2Visible: false,
       ipModal: false,
+      xyModal: false,
       isLoading: true,
-      ip:'192.168.60.158',  
-      endpoint: '/manual',
+      ip:'192.168.4.1',  
+      endpoint: '/',
       control: 0,
+      xy: '(0,0)'
+
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -66,6 +69,13 @@ export default class App extends React.Component {
     this.setState({ipModal: visible});
   }
 
+  setXYModalVisible(visible){
+    this.setState({xyModal:visible});
+  }
+
+  changeXY(text){
+    this.setState({xy:text})
+  }
   changeIP(text){
     this.setState({ip:text})
   }
@@ -80,10 +90,15 @@ export default class App extends React.Component {
     })
   
   }
+
+   sendXY(){
+      xy = this.state.xy
+      console.log(xy)
+   }
   
   handleSubmit(event){
 
-    url = 'http://'+this.state.ip+':5000'+this.state.endpoint
+    url = 'http://'+this.state.ip+':8080'+this.state.endpoint
     console.log(url)
     
     return fetch(
@@ -125,20 +140,20 @@ export default class App extends React.Component {
           >
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Auto Dig</Text>
+                <TouchableOpacity style={styles.modalButton} onPress={()=>this.setXYModalVisible(true)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Auto Dump</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self Right</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b100 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Z Config</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b1000 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton}>
-                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Explore</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={()=>this.handle.Submit(0b10000 << 12)}>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
               </TouchableOpacity>
             </View>
           </TouchableHighlight>
@@ -200,6 +215,27 @@ export default class App extends React.Component {
               onChangeText={(text) => this.changeIP(text)}
               value={this.state.ip}
               marginVertical={20} />
+          </KeyboardAvoidingView>
+        </Modal>
+        <Modal
+          style={styles.modalViewContainer}
+          isVisible={this.state.xyModal}
+          onSwipe={() => this.setXYModalVisible(false)}
+          swipeDirection='down'
+          onRequestClose={() => {this.setXYModalVisible(false)}}>
+          <KeyboardAvoidingView
+            paddingLeft={64}
+            paddingRight={64}>
+            <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>(X,Y)</Text>
+            <TextInput
+              style={styles.ipInputBox}
+              onChangeText={(text) => this.changeXY(text)}
+              value={this.state.xy}
+              marginVertical={20} />
+              <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}}
+                  onPress={()=> this.sendXY()}>
+                    <Text>Done</Text>
+              </TouchableOpacity>
           </KeyboardAvoidingView>
         </Modal>
 
@@ -353,7 +389,7 @@ export default class App extends React.Component {
                   </View>
                 </View>
               </View>
-              <Image style={styles.image} source={require('../ControllerApp/assets/rassor.png')}/>
+              <Image style={styles.image} source={require('./assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
