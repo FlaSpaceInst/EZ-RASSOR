@@ -18,6 +18,7 @@ def at_target(world_state):
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
+    
     print("Auto Driving to {}".format(world_state.state_flags['target_location']))
     ros_util.status_pub.publish("Auto Driving to {}".format(world_state.state_flags['target_location']))
     
@@ -58,7 +59,10 @@ def auto_dig(world_state, ros_util, duration):
     
     print("Auto Digging for {} Seconds".format(duration))
     ros_util.status_pub.publish("Auto Digging for {} Seconds".format(duration))
-    
+
+    uf.set_front_arm_angle(world_state, ros_util, -.1)
+    uf.set_back_arm_angle(world_state, ros_util, -.1)
+
     combo_command = ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig']
     
     # Perform Auto Dig for the desired Duration
@@ -67,6 +71,10 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()
+
+
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
     ros_util.command_pub.publish(ros_util.commands['null'])
 

@@ -5,7 +5,12 @@ import nav_functions as nf
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
 
-    ros_util.status_pub.publish("Setting Front Arm Angle to {} Radians".format(target_angle))
+    ros_util.status_pub.publish(
+        "Setting Front Arm Angle to {} Radians".format(
+            target_angle,
+        )
+    )
+
     if target_angle > world_state.state_flags['front_arm_angle']:
         while target_angle > world_state.state_flags['front_arm_angle']:
             ros_util.command_pub.publish(ros_util.commands['front_arm_up'])
@@ -21,7 +26,12 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
 
-    ros_util.status_pub.publish("Setting Back Arm Angle to {} Radians".format(target_angle))
+    ros_util.status_pub.publish(
+        "Setting Back Arm Angle to {} Radians".format(
+            target_angle,
+        ),
+    )
+
     if target_angle > world_state.state_flags['back_arm_angle']:
         while target_angle > world_state.state_flags['back_arm_angle']:
             ros_util.command_pub.publish(ros_util.commands['back_arm_up'])
@@ -35,6 +45,7 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
 def self_check(world_state, ros_util):
     """ Check for unfavorable states in the system and handle or quit gracefully. """
+    
     if ros_util.auto_function_command == 32:
         ros_util.status_pub.publish("Cancel Auto Function Command Recieved")
         ros_util.command_pub.publish(ros_util.commands['null'])
@@ -56,8 +67,6 @@ def self_check(world_state, ros_util):
         ros_util.status_pub.publish("Passed Status Check")
         return 1
         
-
-
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
@@ -65,7 +74,7 @@ def reverse_turn(world_state, ros_util):
         ros_util.command_pub.publish(ros_util.commands['reverse'])
         ros_util.rate.sleep()
 
-    new_heading = world_state.state_flags['heading'] + 60
+    new_heading = (world_state.state_flags['heading'] + 60) % 360
 
     while (new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1):
         ros_util.command_pub.publish(ros_util.commands['left'])
@@ -79,7 +88,8 @@ def dodge_left(world_state, ros_util):
         ros_util.command_pub.publish(ros_util.commands['left'])
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], start_y, world_state.state_flags['positionY']) < 2:
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], 
+                                start_y, world_state.state_flags['positionY']) < 2:
         ros_util.command_pub.publish(ros_util.commands['forward'])
         ros_util.rate.sleep()
 

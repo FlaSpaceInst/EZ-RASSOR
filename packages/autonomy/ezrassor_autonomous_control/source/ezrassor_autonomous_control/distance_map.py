@@ -28,24 +28,19 @@ RIGHT = 1
 #    stereo_image_proc package.  So far this has returned the fastest disparity map generation.  
 #==================================================================================================
 
-# Commands to be sent to AI Control. 
-commands = {
-    'forward' : 0b101000000000, 'reverse' : 0b010100000000, 'left' : 0b011000000000, 'right' : 0b100100000000
-}
-
 # Obstacle Detection
 def obst_detect(data):
 
     pub = rospy.Publisher('ezrassor/obstacle_detect', Int8, queue_size=10)
 
     """Set thresholds.""" 
-    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
+    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 2:
         print("MOVE RIGHT!")
         pub.publish(1)
-    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 2:
         print("MOVE LEFT!")
         pub.publish(2)
-    elif data[LEFT].min() < 1 and data[RIGHT].min() < 1:
+    elif data[LEFT].min() < 1 and data[RIGHT].min() < 2:
         print("MOVE BACKWARD!")
         pub.publish(3)
     else:
