@@ -49,6 +49,7 @@ def full_autonomy(world_state, ros_util):
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
+    
 
 
 def autonomous_control_loop(world_state, ros_util):
