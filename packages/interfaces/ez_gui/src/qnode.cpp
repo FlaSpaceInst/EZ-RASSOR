@@ -5,14 +5,14 @@
 #include <iostream>
 #include "../include/ros_gui/qnode.hpp"
 
-
 QNode::QNode(int argc, char** argv ) : init_argc(argc), init_argv(argv) {}
 
 QNode::~QNode()
 {
     if(ros::isStarted())
     {
-      ros::shutdown(); // explicitly needed since we use ros::start();
+      // explicitly needed since we use ros::start();	    
+      ros::shutdown();
       ros::waitForShutdown();
     }
 
@@ -32,13 +32,13 @@ bool QNode::init()
     if ( ! ros::master::check() )
         return false;
 
-    ros::start(); // explicitly needed since our nodehandle is going out of scope.
+    // Explicitly needed since our nodehandle is going out of scope.
+    ros::start(); 
     ros::NodeHandle n;
 
      Q_EMIT startingRviz();
 
-    // Add your ros communications here.
-
+    // ROS Communications
     log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
@@ -62,13 +62,14 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
 
     if ( !ros::master::check() )
         return false;
-    ros::start(); // explicitly needed since our nodehandle is going out of scope.
+
+    // explicitly needed since our nodehandle is going out of scope.
+    ros::start();
     ros::NodeHandle n;
 
     Q_EMIT startingRviz();
 
     // Add your ros communications here.
-
     log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
@@ -87,7 +88,9 @@ void QNode::run()
 {
     ros::spin();
     std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
-    Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
+
+    // used to signal the gui for a shutdown (useful to roslaunch)
+    Q_EMIT rosShutdown(); 
 }
 
 void QNode::cpuCallback(const std_msgs::Float64& message_holder)
@@ -207,7 +210,6 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
 
     try
     {
-      //cv_ptr = cv_bridge::toCvCopy(msg.image, sensor_msgs::image_encodings::BGR8);
       cv_ptr = cv_bridge::toCvCopy(msg.image);
     }
     catch (cv_bridge::Exception& e)
@@ -216,7 +218,6 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
       return;
     }
 
-    //--------------------------------------------
     cv::Mat float_img = cv_ptr->image;
     cv::Mat mono8_img;
 
@@ -224,9 +225,6 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
         mono8_img = cv::Mat(float_img.size(), CV_8UC1);
 
     cv::convertScaleAbs(float_img, mono8_img, 100, 0.0);
-
-    //--------------------------------------------
-
     QImage::Format format=QImage::Format_Grayscale8;
 
     int bpp=mono8_img.channels();

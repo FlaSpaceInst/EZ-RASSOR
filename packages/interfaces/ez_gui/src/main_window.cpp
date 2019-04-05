@@ -25,6 +25,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     ** Rviz
     **********************/
     QObject::connect(&qnode, SIGNAL(startingRviz()), this, SLOT(startRviz()));
+
     /*********************
     ** Logging
     **********************/
@@ -66,7 +67,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     populateLaunchers();
     QObject::connect(ui.button_launch, SIGNAL(clicked()), this, SLOT(nodeLaunch()));
 
-
     /*********************
     ** Auto Start
     **********************/
@@ -90,12 +90,6 @@ void MainWindow::showNoMasterMessage()
     msgBox.exec();
     close();
 }
-
-
-/*
- * These trigger whenever the button is clicked, regardless of whether it
- * is already checked or not.
- */
 
 void MainWindow::on_button_connect_clicked(bool check )
 {
@@ -140,13 +134,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state)
     ui.line_edit_master->setEnabled(enabled);
     ui.line_edit_host->setEnabled(enabled);
 }
-
-
-/**
- * This function is signalled by the underlying model. When the model changes,
- * this will drop the cursor down to the last line in the QListview to ensure
- * the user can always see the latest log message.
- */
 
 void MainWindow::updateLoggingView()
 {
@@ -272,7 +259,6 @@ void MainWindow::WriteSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     settings.setValue("remember_settings",QVariant(ui.checkbox_remember_settings->isChecked()));
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -301,8 +287,6 @@ void MainWindow::nodeLaunch()
     
     launchProcess->setProcessChannelMode(QProcess::MergedChannels); 
     launchProcess->start("roslaunch", arguments);
-
-    
 
     qnode.addProcess(launchProcess);
 
