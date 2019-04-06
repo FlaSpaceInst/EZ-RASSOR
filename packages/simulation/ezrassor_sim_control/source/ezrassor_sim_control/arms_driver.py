@@ -8,13 +8,13 @@ import std_msgs
 from std_msgs.msg import Int16, Float64
 
 NODE = "arms"
-TOPIC = "/ezrassor/movement_toggles"
+TOPIC = "movement_toggles"
 MASK = 0b000011110000
 MESSAGE_FORMAT = "EZRC (arms.py): %s."
 
 # /ezrassor/arm_back_velocity_controller/command
-pub_FA = rospy.Publisher('/ezrassor/arm_front_velocity_controller/command', Float64, queue_size = 10)
-pub_BA = rospy.Publisher('/ezrassor/arm_back_velocity_controller/command', Float64, queue_size = 10)
+pub_FA = rospy.Publisher('/arm_front_velocity_controller/command', Float64, queue_size = 10)
+pub_BA = rospy.Publisher('/arm_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):

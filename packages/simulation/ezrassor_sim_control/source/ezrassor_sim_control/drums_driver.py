@@ -2,14 +2,14 @@ import rospy
 from std_msgs.msg import Int16, Float64
 
 NODE = "drums"
-TOPIC = "/ezrassor/movement_toggles"
+TOPIC = "/movement_toggles"
 MASK = 0b000000001111
 
 
 # /ezrassor/drum_back_velocity_controller/command
 # /ezrassor/drum_front_velocity_controller/command
-pub_FD = rospy.Publisher('/ezrassor/drum_front_velocity_controller/command', Float64, queue_size = 10)
-pub_BD = rospy.Publisher('/ezrassor/drum_back_velocity_controller/command', Float64, queue_size = 10)
+pub_FD = rospy.Publisher('/drum_front_velocity_controller/command', Float64, queue_size = 10)
+pub_BD = rospy.Publisher('/drum_back_velocity_controller/command', Float64, queue_size = 10)
 
 def get_movements(integer, mask):
     """Decode a bitstring to reveal the movement commands for this node."""

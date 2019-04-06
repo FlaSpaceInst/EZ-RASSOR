@@ -7,14 +7,14 @@ import rospy
 from std_msgs.msg import Int16, Float64
 
 NODE = "wheels"
-TOPIC = "/ezrassor/movement_toggles"
+TOPIC = "/movement_toggles"
 MASK = 0b111100000000
 
 # /ezrassor/left_wheel_back_velocity_controller/command
-pub_LF = rospy.Publisher('/ezrassor/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_LB = rospy.Publisher('/ezrassor/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
-pub_RF = rospy.Publisher('/ezrassor/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_RB = rospy.Publisher('/ezrassor/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_LF = rospy.Publisher('/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_LB = rospy.Publisher('/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_RF = rospy.Publisher('/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_RB = rospy.Publisher('/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
 
 
 def get_movements(integer, mask):
