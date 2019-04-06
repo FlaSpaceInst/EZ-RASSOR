@@ -5,14 +5,14 @@
 #include <iostream>
 #include "../include/ros_gui/qnode.hpp"
 
-
 QNode::QNode(int argc, char** argv ) : init_argc(argc), init_argv(argv) {}
 
 QNode::~QNode()
 {
     if(ros::isStarted())
     {
-      ros::shutdown(); // explicitly needed since we use ros::start();
+      // explicitly needed since we use ros::start();	    
+      ros::shutdown();
       ros::waitForShutdown();
     }
 
@@ -32,13 +32,13 @@ bool QNode::init()
     if ( ! ros::master::check() )
         return false;
 
-    ros::start(); // explicitly needed since our nodehandle is going out of scope.
+    // Explicitly needed since our nodehandle is going out of scope.
+    ros::start(); 
     ros::NodeHandle n;
 
      Q_EMIT startingRviz();
 
-    // Add your ros communications here.
-
+    // ROS Communications
     log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
@@ -48,6 +48,7 @@ bool QNode::init()
     sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
     disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
     battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
 }
@@ -61,13 +62,14 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
 
     if ( !ros::master::check() )
         return false;
-    ros::start(); // explicitly needed since our nodehandle is going out of scope.
+
+    // explicitly needed since our nodehandle is going out of scope.
+    ros::start();
     ros::NodeHandle n;
 
     Q_EMIT startingRviz();
 
     // Add your ros communications here.
-
     log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
@@ -77,6 +79,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
     disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
     battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
 }
@@ -85,7 +88,9 @@ void QNode::run()
 {
     ros::spin();
     std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
-    Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
+
+    // used to signal the gui for a shutdown (useful to roslaunch)
+    Q_EMIT rosShutdown(); 
 }
 
 void QNode::cpuCallback(const std_msgs::Float64& message_holder)
@@ -199,13 +204,12 @@ void QNode::imageBackCallback(const sensor_msgs::ImageConstPtr& msg)
     Q_EMIT backCamUpdated();
 }
 
-void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
+void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
 {
     cv_bridge::CvImagePtr cv_ptr;
 
     try
     {
-      //cv_ptr = cv_bridge::toCvCopy(msg.image, sensor_msgs::image_encodings::BGR8);
       cv_ptr = cv_bridge::toCvCopy(msg.image);
     }
     catch (cv_bridge::Exception& e)
@@ -214,7 +218,6 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
       return;
     }
 
-    //--------------------------------------------
     cv::Mat float_img = cv_ptr->image;
     cv::Mat mono8_img;
 
@@ -222,9 +225,6 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
         mono8_img = cv::Mat(float_img.size(), CV_8UC1);
 
     cv::convertScaleAbs(float_img, mono8_img, 100, 0.0);
-
-    //--------------------------------------------
-
     QImage::Format format=QImage::Format_Grayscale8;
 
     int bpp=mono8_img.channels();
@@ -248,6 +248,26 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage & msg)
         disparity_Pixmap = QPixmap::fromImage(img);
 
     Q_EMIT disparityUpdated();
+}
+
+void QNode::imuLabelsCallback(const sensor_msgs::Imu::ConstPtr &msg)
+{
+    float imuArray[9] = { };
+
+    imuArray[0] = msg->orientation.x;
+    imuArray[1] = msg->orientation.y;
+    imuArray[2] = msg->orientation.z;
+
+    imuArray[3] = msg->angular_velocity.x;
+    imuArray[4] = msg->angular_velocity.y;
+    imuArray[5] = msg->angular_velocity.z;
+
+    imuArray[6] = msg->linear_acceleration.x;
+    imuArray[6] = msg->linear_acceleration.y;
+    imuArray[6] = msg->linear_acceleration.z;
+
+    imu_labels = imuArray;
+    Q_EMIT imuLabelsUpdated();
 }
 
 void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)

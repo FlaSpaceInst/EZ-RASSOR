@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstddef>
+#include <string>
 #include "../include/ros_gui/main_window.hpp"
 
 using namespace Qt;
@@ -24,6 +25,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     ** Rviz
     **********************/
     QObject::connect(&qnode, SIGNAL(startingRviz()), this, SLOT(startRviz()));
+
     /*********************
     ** Logging
     **********************/
@@ -37,7 +39,14 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     QObject::connect(&qnode, SIGNAL(backCamUpdated()), this, SLOT(updateBackCamera()));
     QObject::connect(&qnode, SIGNAL(disparityUpdated()), this, SLOT(updateDisparityCamera()));
 
-    // Swampworks Logo
+    /*********************
+    ** IMU Labels
+    **********************/
+    QObject::connect(&qnode, SIGNAL(imuLabelsUpdated()), this, SLOT(updateImuLabels()));
+
+    /*********************
+    ** Swampworks Logo
+    **********************/
     int w = ui.swamp->width();
     int h = ui.swamp->height();
     QPixmap swamp = QPixmap(":/images/swamp.png");
@@ -58,7 +67,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     populateLaunchers();
     QObject::connect(ui.button_launch, SIGNAL(clicked()), this, SLOT(nodeLaunch()));
 
-
     /*********************
     ** Auto Start
     **********************/
@@ -76,12 +84,6 @@ void MainWindow::showNoMasterMessage()
     msgBox.exec();
     close();
 }
-
-
-/*
- * These trigger whenever the button is clicked, regardless of whether it
- * is already checked or not.
- */
 
 void MainWindow::on_button_connect_clicked(bool check )
 {
@@ -126,13 +128,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state)
     ui.line_edit_master->setEnabled(enabled);
     ui.line_edit_host->setEnabled(enabled);
 }
-
-
-/**
- * This function is signalled by the underlying model. When the model changes,
- * this will drop the cursor down to the last line in the QListview to ensure
- * the user can always see the latest log message.
- */
 
 void MainWindow::updateLoggingView()
 {
@@ -187,12 +182,36 @@ void MainWindow::updateBackCamera()
     ui.back_camera->setPixmap(back.scaled(w,h,Qt::KeepAspectRatio));
 }
 
+void MainWindow::updateImuLabels()
+{
+    // TODO get object of values, break and set to labels
+
+    float *labels = *qnode.imuLabels();
+    // *qnode.imuLabels(); Array or map of values
+
+
+    ui.orient_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.orient_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.orient_z->setText("<b>z:</b> " + QString::number(labels[0]));
+
+    ui.ang_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.ang_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.ang_z->setText("<b>z:</b> " + QString::number(labels[0]));
+
+    ui.lin_x->setText("<b>x:</b> " + QString::number(labels[0]));
+    ui.lin_y->setText("<b>y:</b> " + QString::number(labels[0]));
+    ui.lin_z->setText("<b>z:</b> " + QString::number(labels[0]));
+
+   //QString testString = QString::number(test);
+   //ui.orient_x->setText(testString);
+}
+
 void MainWindow::updateDisparityCamera()
 {
-    int w = ui.back_camera->width();
-    int h = ui.back_camera->height();
-    QPixmap back = *qnode.disparityPixmap();
-    ui.disparity_camera->setPixmap(back.scaled(w,h,Qt::KeepAspectRatio));
+    int w = ui.disparity_camera->width();
+    int h = ui.disparity_camera->height();
+    QPixmap disparity = *qnode.disparityPixmap();
+    ui.disparity_camera->setPixmap(disparity.scaled(w,h,Qt::KeepAspectRatio));
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -234,7 +253,6 @@ void MainWindow::WriteSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     settings.setValue("remember_settings",QVariant(ui.checkbox_remember_settings->isChecked()));
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
