@@ -4,7 +4,9 @@ import utility_functions as uf
 import nav_functions as nf
 
 def at_target(world_state):
-    """ Determine if the current position is within the desired threshold of the target position. """
+    """ Determine if the current position is within 
+        the desired threshold of the target position. 
+    """
     positionX = world_state.positionX
     positionY = world_state.positionY
 
@@ -19,8 +21,8 @@ def at_target(world_state):
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
     
-    print("Auto Driving to {}".format(world_state.target_location))
-    ros_util.status_pub.publish("Auto Driving to {}".format(world_state.target_location))
+    ros_util.status_pub.publish("Auto Driving to {}"
+                                .format(world_state.target_location))
     
     # Main loop until location is reached
     while at_target(world_state, ros_util):
@@ -55,10 +57,12 @@ def auto_drive_location(world_state, ros_util):
     ros_util.publish_actions('stop', 0, 0, 0, 0)
         
 def auto_dig(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward for duration time in seconds. """
+    """ Rotate both drums inward and drive forward 
+        for duration time in seconds. 
+    """
     
-    print("Auto Digging for {} Seconds".format(duration))
-    ros_util.status_pub.publish("Auto Digging for {} Seconds".format(duration))
+    ros_util.status_pub.publish("Auto Digging for {} Seconds"
+                                .format(duration))
 
     uf.set_front_arm_angle(world_state, ros_util, -.1)
     uf.set_back_arm_angle(world_state, ros_util, -.1)
@@ -83,7 +87,8 @@ def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
 
     print("Auto Returning to {}".format([0,0]))
-    ros_util.status_pub.publish("Auto Returning to {}".format([0,0]))
+    ros_util.status_pub.publish("Auto Returning to {}"
+                                .format([0,0]))
 
     world_state.target_location.x = 0
     world_state.target_location.y = 0
@@ -91,7 +96,9 @@ def auto_dock(world_state, ros_util):
     ros_util.threshold = .5
 
 def auto_dump(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward for duration time in seconds. """
+    """ Rotate both drums inward and drive forward 
+        for duration time in seconds. 
+    """
     
     print("Auto Dumping")
     ros_util.status_pub.publish("Auto Dumping")
