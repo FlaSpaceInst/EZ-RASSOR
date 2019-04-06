@@ -33,17 +33,13 @@
   <node name="ezrassor_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
       args="-urdf -param robot_description -model ezrassor
       -x $(arg x) -y $(arg y) -z $(arg z)
-      -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+      -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"
+      />
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-    respawn="false" output="screen">
-    <remap from="/joint_states" to="ezrassor/joint_states" />
-  </node>
+    respawn="false" output="screen" />
 
   <!-- broadcast left image frame for pointcloud -->
 
-
-
- 
 </launch>

@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <launch>
   <!-- Launch the simulation with manual controls. 
-       Written by Ron Marrero and Tiger Sachse. -->
+        Written by Ron Marrero and Tiger Sachse. -->
   <arg name="control_method"
-       default="gamepad"
-       doc="Specify the control method ('gamepad' or 'app')."
+    default="gamepad"
+    doc="Specify the control method ('gamepad' or 'app')."
   /> 
   <arg name="world"
-       default="base"
-       doc="Specify the world name ('base', 'moon' or 'mars')." 
+    default="base"
+    doc="Specify the world name ('base', 'moon' or 'mars')." 
   />
   <arg name="id"
-        default="1"
-        doc="ID of the specific ezrassor to use for namespace." 
+    default="1"
+    doc="ID of the specific ezrassor to use for namespace." 
   />
-       
-  <include file="$(find ezrassor_launcher)/launch/communication.launch">
-    <arg name="control_method" value="$(arg control_method)">
-  </include>
 
-  <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+  <group ns="ezrassor$(arg id)">
+        
+        <include file="$(find ezrassor_launcher)/launch/communication.launch">
+          <arg name="control_method" value="$(arg control_method)"/>
+        </include>
 
-  <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
-    <arg name="paused" value="false"/>
-    <arg name="world" value="$(arg world)" />
-  </include>
+        <include file="$(find ezrassor_sim_control)/launch/sim_control.launch">
+        </include>
 
+        <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+          <arg name="paused" value="false"/>
+          <arg name="world" value="$(arg world)"/>
+        </include>
+
+  </group>
   
 </launch>

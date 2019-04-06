@@ -20,10 +20,10 @@ AUTONOMY_KILL_MASK = 0b1000000000000
 AUTONOMY_TOGGLES_MASK = 0b1111000000000000
 MOVEMENT_TOGGLES_MASK = 0b0000111111111111
 NODE_NAME = "request_switch"
-REQUESTS_TOPIC = "/ezrassor/requests"
-ROUTINE_TOGGLES_TOPIC = "/ezrassor/routine_toggles"
-MOVEMENT_TOGGLES_TOPIC = "/ezrassor/movement_toggles"
-ROUTINE_RESPONSES_TOPIC = "/ezrassor/routine_responses"
+REQUESTS_TOPIC = "/requests"
+ROUTINE_TOGGLES_TOPIC = "/routine_toggles"
+MOVEMENT_TOGGLES_TOPIC = "/movement_toggles"
+ROUTINE_RESPONSES_TOPIC = "/routine_responses"
 
 
 def get_masked_bits(bitstring, mask):
