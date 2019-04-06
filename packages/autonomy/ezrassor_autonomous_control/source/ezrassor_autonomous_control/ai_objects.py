@@ -40,6 +40,7 @@ class WorldState():
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
+<<<<<<< HEAD
         self.positionX = data.pose.pose.position.z
         self.positionY = data.pose.pose.position.y
         self.heading = nf.quaternion_to_yaw(data.pose.pose.orientation)
@@ -49,8 +50,25 @@ class WorldState():
 
         self.positionX = data.pose[1].position.x
         self.positionY = data.pose[1].position.y
+=======
+        self.state_flags['positionX'] = data.pose.pose.position.z
+        self.state_flags['positionY'] = data.pose.pose.position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[1]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
+
+        if heading > 0:
+            self.state_flags['heading'] = heading
+        else:
+            self.state_flags['heading'] = 360 + heading
+
+    def simStateCallBack(self, data):
+        """ More accurate position data to use for testing and experimentation. """
+>>>>>>> 7264289047b706e9406c927ba0516c09a70dff43
+        
+        self.state_flags['positionX'] = data.pose[2].position.x
+        self.state_flags['positionY'] = data.pose[2].position.y
+        
+        heading = nf.quaternion_to_yaw(data.pose[2]) * 180/math.pi
 
         if heading > 0:
             self.heading = heading
@@ -73,6 +91,7 @@ class WorldState():
 
 class ROSUtility():
 
+<<<<<<< HEAD
     def __init__(self, max_linear_velocity, max_angular_velocity):
         self.movement_pub = rospy.Publisher('autonomous_movement', Twist, queue_size=10)
         self.front_arm_pub = rospy.Publisher('autonomous_front_arm', Float32, queue_size=10)
@@ -82,6 +101,15 @@ class ROSUtility():
 
         self.status_pub = rospy.Publisher('status', String, queue_size=100)
         self.rate = rospy.Rate(45) # 10hz
+=======
+    def __init__(self):
+        self.kill_bit = 0b1000000000000
+        self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
+        self.status_pub = rospy.Publisher('ezrassor/status', String, queue_size=100)
+        self.rate = rospy.Rate(45) # 45hz
+
+        self.threshold = .5
+>>>>>>> 7264289047b706e9406c927ba0516c09a70dff43
 
         self.max_linear_velocity = 5
         self.max_angular_velocity = 5
