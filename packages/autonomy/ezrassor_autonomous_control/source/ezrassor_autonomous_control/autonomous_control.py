@@ -66,6 +66,8 @@ def autonomous_control_loop(world_state, ros_util):
             ros_util.publish_actions('stop', 0, 0, 0, 0)
             ros_util.rate.sleep()
 
+        ros_util.control_pub.publish(True)
+
         if ros_util.auto_function_command == 1:
             af.auto_drive_location(world_state, ros_util)
         elif ros_util.auto_function_command == 2:
@@ -80,3 +82,4 @@ def autonomous_control_loop(world_state, ros_util):
             ros_util.status_pub.publish("Error Incorrect Auto Function Request {}".format(ros_util.auto_function_command))
         
         ros_util.publish_actions('stop', 0, 0, 0, 0)
+        ros_util.control_pub.publish(False)
