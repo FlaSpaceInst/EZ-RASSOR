@@ -1,10 +1,2 @@
-
-# Disparity Maps and Point Cloud
-    ROS_NAMESPACE=ez_rassor/front_camera rosrun stereo_image_proc stereo_image_proc
-    rosrun image_view stereo_view stereo:=ez_rassor/front_camera image:=image_rect
-
-# TF Broadcaster   
-    roslaunch viso2_ros start_tf.launch
-    
 # Viso2_ROS
-    rosrun viso2_ros stereo_odometer stereo:=/ez_rassor/front_camera image:=/image_rect_color
+    rosrun viso2_ros stereo_odometer stereo:=/ezrassor/front_camera image:=/image_rect_color sensor_frame_id:=/left_camera_optical_frame
