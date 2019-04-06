@@ -31,7 +31,7 @@ RIGHT = 1
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('ezrassor/obstacle_detect', Int8, queue_size=10)
+    pub = rospy.Publisher('obstacle_detect', Int8, queue_size=10)
 
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 2:
@@ -95,7 +95,7 @@ def callback(data):
 
 
 def depth_estimator():
-    rospy.init_node('depth_estimator')
-    rospy.Subscriber("/ezrassor/front_camera/disparity", DisparityImage, callback)
+    rospy.init_node('depth_estimator', anonymous=True)
+    rospy.Subscriber("/front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 

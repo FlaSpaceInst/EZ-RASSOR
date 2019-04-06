@@ -10,13 +10,12 @@
  	</node>
 
   	<node pkg="image_view" type="stereo_view" name="stereo_view">
-  		<remap from="/stereo/disparity" to="/ezrassor/front_camera/disparity"></remap>
-  		<remap from="/stereo/left/image" to="/ezrassor/front_camera/left/image_rect"></remap>
-  		<remap from="/stereo/right/image" to="/ezrassor/front_camera/right/image_rect"></remap>
+  		<remap from="/stereo/disparity" to="/front_camera/disparity"></remap>
+  		<remap from="/stereo/left/image" to="/front_camera/left/image_rect"></remap>
+  		<remap from="/stereo/right/image" to="/front_camera/right/image_rect"></remap>
   	</node>
 
 	<node pkg="ezrassor_autonomous_control" type="tf_camera_broadcaster" name="tf_camera_broadcaster"/>
-	<!-- <node pkg="ezrassor_autonomous_control" type="odometry_tf_broadcaster" name="odometry_tf_broadcaster"/> -->
 
 	<!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" >
 		<param name="map_update_interval" value="5.0"/>

@@ -14,7 +14,7 @@ def on_start_up():
     """  """
     print("Spinning Up AI Control")
     # ROS Node Init Parameters 
-    rospy.init_node('ezrassor_autonomous_control', anonymous=True)
+    rospy.init_node('autonomous_control', anonymous=True)
     
     #Create Utility Objects
     world_state = obj.WorldState()
@@ -25,9 +25,9 @@ def on_start_up():
     # Setup Subscriber Callbacks
     #rospy.Subscriber('stereo_odometer/odometry', Odometry, world_state.odometryCallBack)
     rospy.Subscriber('/imu', Imu, world_state.imuCallBack)
-    rospy.Subscriber('/ezrassor/joint_states', JointState, world_state.jointCallBack)
-    rospy.Subscriber('/ezrassor/obstacle_detect', Int8, world_state.visionCallBack)
-    rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)
+    rospy.Subscriber('/joint_states', JointState, world_state.jointCallBack)
+    rospy.Subscriber('/obstacle_detect', Int8, world_state.visionCallBack)
+    rospy.Subscriber('/routine_toggles', Int8, ros_util.autoCommandCallBack)
     rospy.Subscriber('/gazebo/link_states', LinkStates, world_state.simStateCallBack)
 
     result = uf.self_check(world_state, ros_util)
@@ -45,7 +45,8 @@ def on_start_up():
 def full_autonomy(world_state, ros_util):
     print("Full Autonomy Activated")
     while(True):
-        world_state.state_flags['target_location'] = [np.random.randint(10,20), np.random.randint(10,20)]
+        world_state.target_location.x = np.random.randint(10,20)
+        world_state.target_location.y = np.random.randint(10,20)
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
@@ -61,7 +62,7 @@ def autonomous_control_loop(world_state, ros_util):
     while(True):
 
         while ros_util.auto_function_command == 0:
-            ros_util.command_pub.publish(ros_util.commands['null'])
+            ros_util.publish_actions('stop', 0, 0, 0, 0)
             ros_util.rate.sleep()
 
         if ros_util.auto_function_command == 1:
@@ -77,4 +78,4 @@ def autonomous_control_loop(world_state, ros_util):
         else:
             ros_util.status_pub.publish("Error Incorrect Auto Function Request {}".format(ros_util.auto_function_command))
         
-        ros_util.command_pub.publish(ros_util.kill_bit)
+        ros_util.publish_actions('stop', 0, 0, 0, 0)
