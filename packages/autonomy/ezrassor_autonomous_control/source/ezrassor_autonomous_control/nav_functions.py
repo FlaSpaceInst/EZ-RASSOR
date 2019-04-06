@@ -14,10 +14,10 @@ def calculate_heading(world_state, ros_util):
     location and the target location. 
     """
 
-    y2 = world_state.state_flags['target_location'][1]
-    y1 = world_state.state_flags['positionY'] 
-    x2 = world_state.state_flags['target_location'][0] 
-    x1 = world_state.state_flags['positionX']
+    y2 = world_state.target_location.y
+    y1 = world_state.positionY 
+    x2 = world_state.target_location.x
+    x1 = world_state.positionX
 
     dy = y2 - y1
     dx = x2 - x1

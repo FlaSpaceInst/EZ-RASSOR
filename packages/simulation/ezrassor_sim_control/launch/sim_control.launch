@@ -8,7 +8,9 @@
         right_wheel_back_velocity_controller right_wheel_front_velocity_controller 
         arm_front_velocity_controller arm_back_velocity_controller 
         drum_front_velocity_controller drum_back_velocity_controller
-        joint_state_controller"/>
+        joint_state_controller"
+        ns="/ezrassor/"    
+    />
     
     <!-- Load joint controller configurations from YAML file to parameter server -->
     <rosparam file="$(find ezrassor_sim_control)/config/sim_control.yaml" command="load"/>
