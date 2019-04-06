@@ -9,9 +9,10 @@ import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
 import numpy as np
+import random
 
 def on_start_up():
-    """  """
+    """ Initialization Function  """
     print("Spinning Up AI Control")
     # ROS Node Init Parameters 
     rospy.init_node('autonomous_control', anonymous=True)
@@ -35,7 +36,7 @@ def on_start_up():
     if result == 2:
         uf.self_right_from_side(world_state, ros_util)
     if result == 3:
-        af.auto_dock()
+        af.auto_dock(world_state, ros_util)
 
     uf.set_back_arm_angle(world_state, ros_util, 1.5)
     uf.set_front_arm_angle(world_state, ros_util, 1.5)

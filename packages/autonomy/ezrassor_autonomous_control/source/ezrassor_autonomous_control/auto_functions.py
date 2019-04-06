@@ -11,8 +11,8 @@ def at_target(world_state):
     targetX = world_state.target_location.x
     targetY = world_state.target_location.y
     
-    value = ((targetX - .5) < positionX < (targetX + .5) 
-            and (targetY - .5) < positionY < (targetY + .5))
+    value = ((targetX - threshold) < positionX < (targetX + threshold) 
+            and (targetY - threshold) < positionY < (targetY + threshold))
 
     return not value
 
@@ -23,7 +23,7 @@ def auto_drive_location(world_state, ros_util):
     ros_util.status_pub.publish("Auto Driving to {}".format(world_state.target_location))
     
     # Main loop until location is reached
-    while at_target(world_state):
+    while at_target(world_state, ros_util):
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
 
@@ -69,6 +69,9 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t+=1
         ros_util.rate.sleep()
+    
+    uf.set_front_arm_angle(world_state, ros_util, 1.2)
+    uf.set_back_arm_angle(world_state, ros_util, 1.2)
 
 
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
@@ -85,6 +88,7 @@ def auto_dock(world_state, ros_util):
     world_state.target_location.x = 0
     world_state.target_location.y = 0
     auto_drive_location(world_state, ros_util)
+    ros_util.threshold = .5
 
 def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """

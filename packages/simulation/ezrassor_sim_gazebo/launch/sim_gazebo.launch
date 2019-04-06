@@ -2,9 +2,9 @@
 <launch>
 
   <!-- Robot pose -->
-  <arg name="x" default="0"/>
-  <arg name="y" default="0"/>
-  <arg name="z" default="0.195"/>
+  <arg name="x" default="3"/>
+  <arg name="y" default="-4"/>
+  <arg name="z" default="0.2"/>
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
@@ -40,5 +40,10 @@
     respawn="false" output="screen">
     <remap from="/joint_states" to="ezrassor/joint_states" />
   </node>
+
+  <!-- broadcast left image frame for pointcloud -->
+
+
+
  
 </launch>
