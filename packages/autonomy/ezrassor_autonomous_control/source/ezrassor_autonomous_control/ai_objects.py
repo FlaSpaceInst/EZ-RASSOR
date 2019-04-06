@@ -45,7 +45,9 @@ class WorldState():
         self.heading = nf.quaternion_to_yaw(data.pose.pose.orientation)
 
     def simStateCallBack(self, data):
-        """ More accurate position data to use for testing and experimentation. """
+        """ More accurate position data to use for 
+            testing and experimentation. 
+        """
 
         self.positionX = data.pose[1].position.x
         self.positionY = data.pose[1].position.y
@@ -75,24 +77,47 @@ class WorldState():
 
 
 class ROSUtility():
+    """ ROS Utility class that provides publishers,
+        subscribers, and convinient ROS utilies.
+    """
 
-    def __init__(self, max_linear_velocity, max_angular_velocity):
-        self.movement_pub = rospy.Publisher('/autonomous_movement', Twist, queue_size=10)
-        self.front_arm_pub = rospy.Publisher('/autonomous_front_arm', Float32, queue_size=10)
-        self.back_arm_pub = rospy.Publisher('/autonomous_back_arm', Float32, queue_size=10)
-        self.front_drum_pub = rospy.Publisher('/autonomous_front_drum', Float32, queue_size=10)
-        self.back_drum_pub = rospy.Publisher('/autonomous_back_drum', Float32, queue_size=10)
+    def __init__(self, movement_topic, arms_topic, drums_topic, 
+                 max_linear_velocity, max_angular_velocity):
+        """  """
+        
+        self.movement_pub = rospy.Publisher(movement_topic, 
+                                            Twist, 
+                                            queue_size=10)
+        self.front_arm_pub = rospy.Publisher(arms_topic+'front', 
+                                             Float32, 
+                                             queue_size=10)
+        self.back_arm_pub = rospy.Publisher(arms_topic+'back', 
+                                            Float32, 
+                                            queue_size=10)
+        self.front_drum_pub = rospy.Publisher(drums_topic+'front', 
+                                              Float32, 
+                                              queue_size=10)
+        self.back_drum_pub = rospy.Publisher(drums_topic+'back', 
+                                             Float32, 
+                                             queue_size=10)
 
-        self.status_pub = rospy.Publisher('/status', String, queue_size=10)
-        self.control_pub = rospy.Publisher('/autonomous_override_toggle', Bool, queue_size=10)
+        self.status_pub = rospy.Publisher('/status', 
+                                          String, 
+                                          queue_size=10)
+        self.control_pub = rospy.Publisher('/autonomous_override_toggle', 
+                                           Bool, 
+                                           queue_size=10)
         self.rate = rospy.Rate(45) # 10hz
 
-        self.max_linear_velocity = 5
-        self.max_angular_velocity = 5
+        self.max_linear_velocity = max_linear_velocity
+        self.max_angular_velocity = max_angular_velocity
 
         self. auto_function_command = 0
 
-    def publish_actions(self, movement, front_arm, back_arm, front_drum, back_drum):
+    def publish_actions(self, movement, front_arm, back_arm, 
+                        front_drum, back_drum):
+        """ Publishes actions for all joints and motors """
+
         twist_message = Twist()
 
         if movement == 'forward':

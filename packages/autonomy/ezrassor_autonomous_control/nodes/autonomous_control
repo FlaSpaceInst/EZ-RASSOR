@@ -1,4 +1,20 @@
 #!/usr/bin/env python
+import argparse
 from ezrassor_autonomous_control import autonomous_control
 
-autonomous_control.on_start_up()
+parser = argparse.ArgumentParser()
+parser.add_argument('movement_topic')
+parser.add_argument('arms_topic')
+parser.add_argument('drums_topic')
+parser.add_argument('max_linear_velocity')
+parser.add_argument('max_angular_velocity')
+parser.add_argument('real_odometry')
+parser.parse_args()
+
+autonomous_control.on_start_up(parser.movement_topic, 
+                               parser.arms_topic,
+                               parser.drums_topic, 
+                               parser.max_linear_velocity,
+                               parser.max_angular_velocity,
+                               parser.real_odometry,
+)
