@@ -8,7 +8,9 @@ import nav_functions as nf
 import math
 
 class WorldState():
-    """ World State Object Representing All Sensor Data """
+    """ World State Object Representing 
+        All Sensor Data 
+    """
 
     def __init__(self):
         self.positionX = 0
@@ -88,16 +90,16 @@ class ROSUtility():
         self.movement_pub = rospy.Publisher(movement_topic, 
                                             Twist, 
                                             queue_size=10)
-        self.front_arm_pub = rospy.Publisher(arms_topic+'front', 
+        self.front_arm_pub = rospy.Publisher('front'+arms_topic, 
                                              Float32, 
                                              queue_size=10)
-        self.back_arm_pub = rospy.Publisher(arms_topic+'back', 
+        self.back_arm_pub = rospy.Publisher('back'+arms_topic, 
                                             Float32, 
                                             queue_size=10)
-        self.front_drum_pub = rospy.Publisher(drums_topic+'front', 
+        self.front_drum_pub = rospy.Publisher('front'+drums_topic, 
                                               Float32, 
                                               queue_size=10)
-        self.back_drum_pub = rospy.Publisher(drums_topic+'back', 
+        self.back_drum_pub = rospy.Publisher('back'+drums_topic, 
                                              Float32, 
                                              queue_size=10)
 
