@@ -52,7 +52,6 @@ def callback(data):
     # The toggle can only be set once every 0.3 seconds. With out this the toggle will get spammed by Joy. 
     if data.buttons[6] and (time_now - toggle_time) > 0.3:
         tank_turn = not tank_turn
-        print "Tank turn: %r" % tank_turn
         toggle_time = time.time()
 
     data_out <<= 4
@@ -137,7 +136,6 @@ def callback(data):
     
 def start_node():
     try:
-        print "Controller node started"
         global publisher
         rospy.init_node(NODE, anonymous = True)
         rate = rospy.Rate(600) # number of hz
