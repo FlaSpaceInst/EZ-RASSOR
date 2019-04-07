@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the topic_switch node in the ezrassor_topic_switch module.
+
+Written by Tiger Sachse.
+"""
+import ezrassor_topic_switch
+
+ezrassor_topic_switch.topic_switch.start_node()

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch the topic switch. Written by Tiger Sachse. -->
+<launch>
+  <node name="topic_switch"
+        pkg="ezrassor_topic_switch"
+        type="topic_switch"
+        output="screen"
+  />
+</launch>
