@@ -11,25 +11,21 @@
     default="base"
     doc="Specify the world name ('base', 'moon' or 'mars')." 
   />
-  <arg name="id"
-    default="1"
-    doc="ID of the specific ezrassor to use for namespace." 
-  />
+  <arg name="id" default="1" doc="Robot id number."/>
+
+  <env name="ROS_NAMESPACE" value="ezrassor$(arg id)"/>
         
-    <include file="$(find ezrassor_launcher)/launch/communication.launch">
-        <arg name="control_method" value="$(arg control_method)"/>
-        <arg name="id" value="$(arg id)"/>
-    </include>
+  <include file="$(find ezrassor_launcher)/launch/communication.launch">
+      <arg name="control_method" value="$(arg control_method)"/>
+  </include>
 
-    <include file="$(find ezrassor_sim_control)/launch/sim_control.launch">
-      <arg name="id" value="$(arg id)"/>
-    </include>
+  <include file="$(find ezrassor_sim_control)/launch/sim_control.launch">
+  </include>
 
-    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
-        <arg name="paused" value="false"/>
-        <arg name="world" value="$(arg world)"/>
-        <arg name="id" value="$(arg id)"/>
-    </include>
+  <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+      <arg name="paused" value="false"/>
+      <arg name="world" value="$(arg world)"/>
+  </include>
 
   
 </launch>

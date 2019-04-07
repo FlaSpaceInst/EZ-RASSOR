@@ -42,16 +42,16 @@ def on_start_up(movement_topic, arms_topic, drums_topic,
                          LinkStates, 
                          world_state.simStateCallBack)
     
-    rospy.Subscriber('/imu', 
+    rospy.Subscriber('imu', 
                      Imu, 
                      world_state.imuCallBack)
-    rospy.Subscriber('/joint_states', 
+    rospy.Subscriber('joint_states', 
                      JointState, 
                      world_state.jointCallBack)
-    rospy.Subscriber('/obstacle_detect', 
+    rospy.Subscriber('obstacle_detect', 
                      Int8, 
                      world_state.visionCallBack)
-    rospy.Subscriber('/routine_toggles', 
+    rospy.Subscriber('routine_toggles', 
                      Int8, 
                      ros_util.autoCommandCallBack)
 

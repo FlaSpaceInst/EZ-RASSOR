@@ -8,15 +8,15 @@ import std_msgs
 from std_msgs.msg import Float32, Float64
 
 NODE = "arms"
-FRONT_TOPIC = "/front_arm_instructions"
-BACK_TOPIC = "/back_arm_instructions"
+FRONT_TOPIC = "front_arm_instruction"
+BACK_TOPIC = "back_arm_instruction"
 MAX_ARM_SPEED = 1
 
 # /ezrassor/arm_back_velocity_controller/command
-pub_FA = rospy.Publisher('/arm_front_velocity_controller/command', 
+pub_FA = rospy.Publisher('arm_front_velocity_controller/command', 
                          Float64, 
                          queue_size = 10)
-pub_BA = rospy.Publisher('/arm_back_velocity_controller/command', 
+pub_BA = rospy.Publisher('arm_back_velocity_controller/command', 
                          Float64, 
                          queue_size = 10)
 

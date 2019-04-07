@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+
+  <arg name="id" default="1" doc="Robot id number."/>
+
+  <env name="ROS_NAMESPACE" value="ezrassor$(arg id)"/>
+
+  <rosparam command="load" file="$(find ezrassor_joy_translator)/config/joy_translator.yaml" ns="ezrassor$(arg id)"/>
+  <!-->
+  <param name="ezrassor$(arg id)/joy_node/dev" value="/dev/input/js1"/>
+  <-->
+
+  <node pkg="ezrassor_sim_control" name="arms_driver" type="arms_driver" output="screen"/>
+  <node pkg="ezrassor_sim_control" name="wheels_driver" type="wheels_driver" output="screen"/>
+  <node pkg="ezrassor_sim_control" name="drums_driver" type="drums_driver" output="screen"/>
+
+  <node pkg="ezrassor_autonomous_control" name="autonomous_control" type="autonomous_control">
+    <!-- These will be command line arguments or possibly just set differently depending on whether 
+         you're calling everything or just the ai and robot -->
+    <param name="movement_topic" value="autonomous_wheel_instruction"/>
+    <param name="arms_topic" value="autonomous_arm_instruction"/>
+    <param name="drums_topic" value="autonomous_drum_instruction"/>
+    <param name="max_linear_velocity" value="1"/>
+    <param name="max_angular_velocity" value="1"/>
+    <param name="real_odometry" value="True"/>
+  </node>
+  
+  <node pkg="ezrassor_autonomous_control" name="distance_map" type="distance_map"/>
+
+  <node name="request_switch" pkg="ezrassor_request_switch" type="request_switch" output="screen"/>
+
+  <node name="controller_server" pkg="ezrassor_controller_server" type="controller_server" output="screen"/>
+
+  <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
+  
+  <node name="joy_translator" pkg="ezrassor_joy_translator" type="joy_translator" output="screen"/>
+
+</launch>
