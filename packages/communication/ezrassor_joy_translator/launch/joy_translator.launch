@@ -7,10 +7,11 @@
        doc="Robot ID Number."/>
 
   <rosparam command="load" file="$(find ezrassor_joy_translator)/config/joy_translator.yaml" ns="ezrassor$(arg id)"/>
-  <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
+  <node name="joy_node" pkg="joy" type="joy_node" output="screen" ns="ezrassor$(arg id)"/>
   <node name="joy_translator"
         pkg="ezrassor_joy_translator"
         type="joy_translator"
         output="screen"
+        ns="ezrassor$(arg id)"
   />
 </launch>
