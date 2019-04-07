@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Launch the joy node and its translator. Written by Tiger Sachse. -->
 <launch>
-
-  <arg name="id"
-       default="1"
-       doc="Robot id number."
-  />
   
   <rosparam command="load" file="$(find ezrassor_joy_translator)/config/joy_translator.yaml"/>
   
-  <node name="joy_node" pkg="joy" type="joy_node" output="screen" ns="ezrassor$(arg id)"/>
+  <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
   
   <node name="joy_translator"
         pkg="ezrassor_joy_translator"
         type="joy_translator"
-        output="screen"
-        ns="ezrassor$(arg id)"        
+        output="screen"      
   />
 </launch>

@@ -8,34 +8,23 @@ from std_msgs.msg import Int16, Float64
 from geometry_msgs.msg import Twist
 
 NODE = "wheels"
-TOPIC = "/wheel_instructions"
+TOPIC = "wheel_instruction"
 MAX_VELOCITY = 3
 
-# /ezrassor/left_wheel_back_velocity_controller/command
-pub_LF = rospy.Publisher('/left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_LB = rospy.Publisher('/left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
-pub_RF = rospy.Publisher('/right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
-pub_RB = rospy.Publisher('/right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_LF = rospy.Publisher('left_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_LB = rospy.Publisher('left_wheel_back_velocity_controller/command', Float64, queue_size = 10)
+pub_RF = rospy.Publisher('right_wheel_front_velocity_controller/command', Float64, queue_size = 10)
+pub_RB = rospy.Publisher('right_wheel_back_velocity_controller/command', Float64, queue_size = 10)
 
 def wheel_movement_callback(twist):
     x = twist.linear.x
     z = twist.angular.z
-    
-    if x != 0:
-        pub_LB.publish(x)
-        pub_LF.publish(x)
-        pub_RB.publish(x)
-        pub_RF.publish(x)
-    elif twist.angular.z != 0:
-        pub_LB.publish(-z)
-        pub_LF.publish(-z)
-        pub_RB.publish(z)
-        pub_RF.publish(z)
-    else:
-        pub_LB.publish(0)
-        pub_LF.publish(0)
-        pub_RB.publish(0)
-        pub_RF.publish(0)
+
+    pub_LB.publish(x-z)
+    pub_LF.publish(x-z)
+    pub_RB.publish(x+z)
+    pub_RF.publish(x+z)
+
 
 def start_node():
     try:

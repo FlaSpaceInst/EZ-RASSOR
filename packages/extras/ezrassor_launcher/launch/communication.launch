@@ -6,26 +6,15 @@
        default="gamepad"
        doc="Specify the control method ('gamepad' or 'app')."
   />
-
-  <arg name="id"
-       default="1"
-       doc="Robot id number"
-  />
   
-  <include file="$(find ezrassor_request_switch)/launch/request_switch.launch">
-    <arg name="id" value="$(arg id)"/>
-  </include>
+  <include file="$(find ezrassor_request_switch)/launch/request_switch.launch"/>
 
   <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
            if="$(eval control_method == 'gamepad')"
-  >
-    <arg name="id" value="$(arg id)"/>
-  </include>
+  />
 
   <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
            if="$(eval control_method == 'app')"
-  >
-    <arg name="id" value="$(arg id)"/>
-  </include>  
+  />
 
 </launch>

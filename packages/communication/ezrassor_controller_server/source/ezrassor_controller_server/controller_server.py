@@ -15,7 +15,7 @@ import BaseHTTPServer
 PORT = 8080
 QUEUE_SIZE = 10
 NODE_NAME = "controller_server"
-REQUESTS_TOPIC = "/requests"
+REQUESTS_TOPIC = "requests"
 
 
 def get_custom_handler(requests_publisher):

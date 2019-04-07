@@ -12,7 +12,7 @@ NODE = "joy_translator"
 TOPIC = "joy"
 
 # Global so topic initiated at start of node
-publisher = rospy.Publisher('/requests', Int32, queue_size = 10)
+publisher = rospy.Publisher('requests', Int32, queue_size = 10)
 tank_turn = False
 toggle_time = 0
 

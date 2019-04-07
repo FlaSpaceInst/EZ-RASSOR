@@ -32,8 +32,8 @@ RIGHT = 1
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('/obstacle_detect', Int8, queue_size=10)
-    laser_scan = rospy.Publisher('/scan', LaserScan, queue_size=10)
+    pub = rospy.Publisher('obstacle_detect', Int8, queue_size=10)
+    laser_scan = rospy.Publisher('scan', LaserScan, queue_size=10)
 
     scan = LaserScan()
 
@@ -117,7 +117,7 @@ def callback(data):
 
 def depth_estimator():
     rospy.init_node('depth_estimator', anonymous=True)
-    rospy.Subscriber("/front_camera/disparity", DisparityImage, callback)
+    rospy.Subscriber("front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 
 if __name__ == "__main__":

@@ -90,23 +90,23 @@ class ROSUtility():
         self.movement_pub = rospy.Publisher(movement_topic, 
                                             Twist, 
                                             queue_size=10)
-        self.front_arm_pub = rospy.Publisher('front'+arms_topic, 
+        self.front_arm_pub = rospy.Publisher('front_'+arms_topic, 
                                              Float32, 
                                              queue_size=10)
-        self.back_arm_pub = rospy.Publisher('back'+arms_topic, 
+        self.back_arm_pub = rospy.Publisher('back_'+arms_topic, 
                                             Float32, 
                                             queue_size=10)
-        self.front_drum_pub = rospy.Publisher('front'+drums_topic, 
+        self.front_drum_pub = rospy.Publisher('front_'+drums_topic, 
                                               Float32, 
                                               queue_size=10)
-        self.back_drum_pub = rospy.Publisher('back'+drums_topic, 
+        self.back_drum_pub = rospy.Publisher('back_'+drums_topic, 
                                              Float32, 
                                              queue_size=10)
 
-        self.status_pub = rospy.Publisher('/status', 
+        self.status_pub = rospy.Publisher('status', 
                                           String, 
                                           queue_size=10)
-        self.control_pub = rospy.Publisher('/autonomous_override_toggle', 
+        self.control_pub = rospy.Publisher('autonomous_override_toggle', 
                                            Bool, 
                                            queue_size=10)
         self.rate = rospy.Rate(45) # 10hz

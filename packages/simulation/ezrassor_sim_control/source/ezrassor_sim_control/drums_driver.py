@@ -8,15 +8,15 @@ import std_msgs
 from std_msgs.msg import Float32, Float64
 
 NODE = "drums"
-FRONT_TOPIC = "/front_drum_instructions"
-BACK_TOPIC = "/back_drum_instructions"
+FRONT_TOPIC = "front_drum_instruction"
+BACK_TOPIC = "back_drum_instruction"
 MAX_DRUM_SPEED = 1
 
 # /ezrassor/drum_back_velocity_controller/command
-pub_FA = rospy.Publisher('/drum_front_velocity_controller/command', 
+pub_FA = rospy.Publisher('drum_front_velocity_controller/command', 
                          Float64, 
                          queue_size = 10)
-pub_BA = rospy.Publisher('/drum_back_velocity_controller/command', 
+pub_BA = rospy.Publisher('drum_back_velocity_controller/command', 
                          Float64, 
                          queue_size = 10)
 
@@ -43,9 +43,3 @@ def start_node():
     except rospy.ROSInterruptException:
         pass
 
-
-
-
-
-pub_FD = rospy.Publisher('/drum_front_velocity_controller/command', Float64, queue_size = 10)
-pub_BD = rospy.Publisher('/drum_back_velocity_controller/command', Float64, queue_size = 10)
