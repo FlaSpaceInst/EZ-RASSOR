@@ -3,6 +3,28 @@
 
 Written by Tiger Sachse.
 """
+import rospy
 import ezrassor_topic_switch
 
-ezrassor_topic_switch.topic_switch.start_node()
+
+# Node constants.
+QUEUE_SIZE = 10
+NODE_NAME = "topic_switch"
+OVERRIDE_TOPIC = "secondary_override_toggle"
+PARAMETER_PREFIX = rospy.get_namespace() + NODE_NAME
+PRIMARY_TOPIC = rospy.get_param(PARAMETER_PREFIX + "/primary_topic")
+SECONDARY_TOPIC = rospy.get_param(PARAMETER_PREFIX + "/secondary_topic")
+OUTPUT_TOPIC = rospy.get_param(PARAMETER_PREFIX + "/output_topic")
+TOPIC_TYPE = rospy.get_param(PARAMETER_PREFIX + "/topic_type")
+
+
+# Main entry point to this node.
+ezrassor_topic_switch.topic_switch.start_node(
+    NODE_NAME,
+    PRIMARY_TOPIC,
+    SECONDARY_TOPIC,
+    OUTPUT_TOPIC,
+    OVERRIDE_TOPIC,
+    TOPIC_TYPE,
+    QUEUE_SIZE,
+)
