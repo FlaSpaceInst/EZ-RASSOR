@@ -13,13 +13,11 @@ import rospy
 import std_msgs
 
 
-
-# This node's name.
 QUEUE_SIZE = 10
 AUTONOMY_KILL_MASK = 0b1000000000000
 AUTONOMY_TOGGLES_MASK = 0b1111000000000000
 MOVEMENT_TOGGLES_MASK = 0b0000111111111111
-NODE_NAME = "request_switch"
+NODE_NAME = "topic_switch"
 REQUESTS_TOPIC = "requests"
 ROUTINE_TOGGLES_TOPIC = "routine_toggles"
 MOVEMENT_TOGGLES_TOPIC = "movement_toggles"

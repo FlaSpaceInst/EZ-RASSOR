@@ -1,4 +1,4 @@
-"""Setup the ezrassor_request_switch ROS package.
+"""Setup the ezrassor_topic_switch ROS package.
 
 Written by Tiger Sachse.
 """
@@ -7,7 +7,7 @@ import catkin_pkg.python_setup
 
 setup_arguments = catkin_pkg.python_setup.generate_distutils_setup(
     packages=(
-        "ezrassor_request_switch",
+        "ezrassor_topic_switch",
     ),
     package_dir={
        "" : "source",
