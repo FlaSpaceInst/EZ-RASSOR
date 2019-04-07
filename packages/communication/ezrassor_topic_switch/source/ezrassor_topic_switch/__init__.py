@@ -2,4 +2,4 @@
 
 Written by Tiger Sachse.
 """
-import request_switch
+import topic_switch
