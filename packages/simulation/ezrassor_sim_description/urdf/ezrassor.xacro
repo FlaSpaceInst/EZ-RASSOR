@@ -47,8 +47,14 @@
       </geometry>
       <surface>
         <friction>
-          <mu> 100 </mu>
-          <mu2> 100 </mu2>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
+        </friction>
+      </surface>
+      <surface>
+        <friction>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
         </friction>
       </surface>
     </collision>
@@ -73,8 +79,8 @@
       </geometry>
       <surface>
         <friction>
-        <mu> 100 </mu>
-        <mu2> 100 </mu2>
+        <mu> .6 </mu>
+        <mu2> .6 </mu2>
         </friction>
       </surface>
     </collision>
@@ -99,8 +105,8 @@
       </geometry>
         <surface>
           <friction>
-            <mu> 100 </mu>
-            <mu2> 100 </mu2>
+            <mu> .6 </mu>
+            <mu2> .6 </mu2>
          </friction>
         </surface>
     </collision>
@@ -125,8 +131,8 @@
       </geometry>
       <surface>
         <friction>
-          <mu> 100 </mu>
-          <mu2> 100 </mu2>
+          <mu> .6 </mu>
+          <mu2> .6 </mu2>
         </friction>
       </surface>
     </collision>
