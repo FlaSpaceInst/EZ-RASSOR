@@ -8,7 +8,8 @@
   />
   <arg name="id"
        default=""
-       doc="Robot ID Number."/>
+       doc="Robot ID Number."
+  />
 
   <include file="$(find ezrassor_request_switch)/launch/request_switch.launch">
     <arg name="id" value="$(arg id)"/>

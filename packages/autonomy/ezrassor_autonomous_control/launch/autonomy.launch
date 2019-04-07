@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="id"
+       default=""
+       doc="Robot ID Number."
+  />
+
+  <arg name="plus_controller"
+       default="">
+
+  <group ns="ezrassor$(arg id)">
+  
+    <node pkg="ezrassor_autonomous_control" name="autonomous_control" type="autonomous_control">
+      <param name="movement_topic" value="wheel_instructions"/>
+      <param name="arms_topic" value="arm_instructions"/>
+      <param name="drums_topic" value="drum_instructions"/>
+      <param name="max_linear_velocity" value="1"/>
+      <param name="max_angular_velocity" value="1"/>
+      <param name="real_odometry" value="True"/>
+    </node>
+    
+    <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>
+  
+  </group>
+
+</launch>
