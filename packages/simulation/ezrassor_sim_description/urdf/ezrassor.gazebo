@@ -152,7 +152,6 @@
   
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/ezrassor3</robotNamespace>
     </plugin>
   </gazebo>
 

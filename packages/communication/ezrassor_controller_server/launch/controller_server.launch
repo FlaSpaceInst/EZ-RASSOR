@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Launch the controller server. Written by Tiger Sachse. -->
 <launch>
+  <arg name="id"
+       default=""
+       doc="Robot ID Number."/>
+
   <node name="controller_server"
         pkg="ezrassor_controller_server"
         type="controller_server"
         output="screen"
+        ns="ezrassor$(arg id)"
   />
 </launch>
