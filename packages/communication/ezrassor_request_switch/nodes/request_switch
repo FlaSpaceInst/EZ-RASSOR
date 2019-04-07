@@ -1,8 +1,0 @@
-#!/usr/bin/env python
-"""Call the request_switch node in the ezrassor_request_switch module.
-
-Written by Tiger Sachse.
-"""
-import ezrassor_request_switch
-
-ezrassor_request_switch.request_switch.start_node()
