@@ -85,7 +85,7 @@ class ROSUtility():
 
     def __init__(self, movement_topic, arms_topic, drums_topic, 
                  max_linear_velocity, max_angular_velocity):
-        """  """
+        """ Initialize the ROS Utility Object. """
         
         self.movement_pub = rospy.Publisher(movement_topic, 
                                             Twist, 
