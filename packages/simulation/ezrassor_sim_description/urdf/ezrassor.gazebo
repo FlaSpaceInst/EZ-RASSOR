@@ -114,7 +114,7 @@
         <focalLength>0</focalLength>
         <alwaysOn>true</alwaysOn>
         <updateRate>0.0</updateRate>
-        <cameraName>ezrassor/front_camera</cameraName>
+        <cameraName>front_camera</cameraName>
         <imageTopicName>image_raw</imageTopicName>
         <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <frameName>left_camera_optical_frame</frameName>
