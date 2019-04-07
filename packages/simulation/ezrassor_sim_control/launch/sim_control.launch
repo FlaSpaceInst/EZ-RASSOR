@@ -14,7 +14,7 @@
         joint_state_controller"/>
     
     <!-- Load joint controller configurations from YAML file to parameter server -->
-    <rosparam file="$(find ezrassor_sim_control)/config/sim_control.yaml" command="load" ns="ezrassor$(arg id)"/>
+    <rosparam file="$(find ezrassor_sim_control)/config/sim_control.yaml" command="load"/>
 
     <!-- Launch Controls --> 
     <node pkg="ezrassor_sim_control" name="arms_driver" type="arms_driver" output="screen"/>
