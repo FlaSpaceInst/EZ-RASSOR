@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch the topic switch. Written by Tiger Sachse. -->
+<!-- Launch a topic switch. Written by Tiger Sachse. -->
 <launch>
+  <arg name="node_name" doc="The name of this node."/>
+  <arg name="primary_topic" doc="The switch's primary topic."/>
+  <arg name="secondary_topic" doc="The switch's secondary topic."/>
+  <arg name="output_topic" doc="The switch's output topic."/>
+  <arg name="topic_type" doc="The switch's topics' types."/>
 
-  <arg name="primary_topic" default="primary_topic" doc="The switch's primary topic."/>
-  <arg name="secondary_topic" default="secondary_topic" doc="The switch's secondary topic."/>
-  <arg name="output_topic" default="output_topic" doc="The switch's output topic."/>
-  <arg name="topic_type" default="Float32" doc="The switch's topics' types."/>
-
-  <node name="topic_switch"
+  <node name="$(arg node_name)"
         pkg="ezrassor_topic_switch"
         type="topic_switch"
         output="screen">
+    <param name="node_name" value="$(arg node_name)"/>
     <param name="primary_topic" value="$(arg primary_topic)"/>
     <param name="secondary_topic" value="$(arg secondary_topic)"/>
     <param name="output_topic" value="$(arg output_topic)"/>
