@@ -23,6 +23,9 @@ def auto_drive_location(world_state, ros_util):
     
     # Main loop until location is reached
     while at_target(world_state, ros_util):
+
+        uf.self_check(world_state, ros_util)
+
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
         ros_util.status_pub.publish("Current Heading {}".format(new_heading))
