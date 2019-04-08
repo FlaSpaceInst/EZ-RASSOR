@@ -2,6 +2,7 @@ import rospy
 import math
 import utility_functions as uf
 import nav_functions as nf
+import arm_force as armf
 
 def at_target(world_state, ros_util):
     positionX = world_state.state_flags['positionX']
@@ -60,6 +61,7 @@ def auto_drive_location(world_state, ros_util):
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward for duration time in seconds. """
+
     ros_util.status_pub.publish("Auto Digging for {} Seconds".format(duration))
     combo_command = ros_util.commands['forward'] | ros_util.commands['front_dig'] | ros_util.commands['back_dig']
     
@@ -67,7 +69,8 @@ def auto_dig(world_state, ros_util, duration):
     uf.set_back_arm_angle(world_state, ros_util, -.1)
 
     t = 0
-    while t < duration*40:        
+    while t < duration*40:
+        armf.set_target_force(world_state, ros_util, .1) 
         ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()

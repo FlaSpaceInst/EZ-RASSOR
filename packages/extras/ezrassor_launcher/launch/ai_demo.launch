@@ -3,7 +3,7 @@
 <launch>
 
   <include file="$(find ezrassor_launcher)/launch/manual_simulation.launch">
-      <arg name="world" value="moon"/>
+      <arg name="world" value="base_ai_world"/>
   </include>
 
   <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>
