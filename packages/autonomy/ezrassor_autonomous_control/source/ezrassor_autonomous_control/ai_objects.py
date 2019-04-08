@@ -13,7 +13,7 @@ class WorldState():
         self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': [10,10], 'on_side': False, 'battery': 100,
+                            'target_location': [10,10], 'on_side': False, 'battery': 100, 'on_back': False,
                             'hardware_status': True}
 
         self. auto_function_command = 0
@@ -55,10 +55,17 @@ class WorldState():
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
 
+        # Check to see if its on its side. Uses the accleration of gravity to determine the directions
         if abs(data.linear_acceleration.y) > 9:
             self.state_flags['on_side'] = True
-        else:
+        else :
             self.state_flags['on_side'] = False
+
+        # Check to see if its on its back. Uses the acceleration of gravity to determine the directions.
+        if (data.linear_acceleration.z) > 9:
+            self.state_flags['on_back'] = True
+        else:
+            self.state_flags['on_back'] = False
 
         #self.state_flags['heading'] = nf.quaternion_to_euler(data.pose.orientation)
 
