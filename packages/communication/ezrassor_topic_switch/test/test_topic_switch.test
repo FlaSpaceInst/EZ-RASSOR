@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  -->
+<launch>
+  <test test-name="test_topic_switch"
+        pkg="ezrassor_topic_switch"
+        type="test_topic_switch"/>
+
+  <node name="$(arg node_name)"
+        pkg="ezrassor_topic_switch"
+        type="topic_switch"
+        output="screen">
+    <param name="node_name" value="topic_switch"/>
+    <param name="primary_topic" value="primary_topic"/>
+    <param name="secondary_topic" value="secondary_topic"/>
+    <param name="output_topic" value="output_topic"/>
+    <param name="topic_type" value="Float32"/>
+  </node>
+</launch>
