@@ -30,7 +30,7 @@ class WorldState():
         self.state_flags['front_arm_angle'] = -(data.position[1])
         self.state_flags['back_arm_angle'] = data.position[0]
 
-        self.state_flags['front_arm_force'], self.state_flags['back_arm_angle'] = get_arm_force()
+        self.state_flags['force_front_arm'], self.state_flags['force_back_arm'] = self.get_arm_force()
     
 
     def odometryCallBack(self, data):
@@ -49,10 +49,10 @@ class WorldState():
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
         
-        self.state_flags['positionX'] = data.pose[6].position.x
-        self.state_flags['positionY'] = data.pose[6].position.y
+        self.state_flags['positionX'] = data.pose[9].position.x
+        self.state_flags['positionY'] = data.pose[9].position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[6]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose[9]) * 180/math.pi
 
         if heading > 0:
             self.state_flags['heading'] = heading
