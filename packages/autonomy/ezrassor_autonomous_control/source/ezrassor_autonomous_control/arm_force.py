@@ -30,10 +30,11 @@ def set_target_force(world_state,ros_util,target_force):
                 msg += ros_util.commands['back_arm_up']
             elif target_force < world_state.state_flags['force_back_arm']:
                 msg += ros_util.commands['back_arm_down']
-
+        msg += ros_util.commands['front_dig']
+        msg += ros_util.commands['back_dig']
         ros_util.command_pub.publish(msg)
+        ros_util.rate.sleep()
 
-    ros_util.rate.sleep()
     ros_util.command_pub.publish(ros_util.commands['null'])
 
 
