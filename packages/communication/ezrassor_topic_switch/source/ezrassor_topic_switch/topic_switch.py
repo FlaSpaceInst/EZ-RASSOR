@@ -54,11 +54,10 @@ def start_node(default_node_name, override_topic, queue_size):
         rospy.init_node(default_node_name)
 
         # Load in parameters from the parameter server.
-        parameter_prefix = rospy.get_name()
-        primary_topic = rospy.get_param(parameter_prefix + "/primary_topic")
-        secondary_topic = rospy.get_param(parameter_prefix + "/secondary_topic")
-        output_topic = rospy.get_param(parameter_prefix + "/output_topic")
-        topic_type = rospy.get_param(parameter_prefix + "/topic_type")
+        primary_topic = rospy.get_param(rospy.get_name() + "/primary_topic")
+        secondary_topic = rospy.get_param(rospy.get_name() + "/secondary_topic")
+        output_topic = rospy.get_param(rospy.get_name() + "/output_topic")
+        topic_type = rospy.get_param(rospy.get_name() + "/topic_type")
 
         override_status = OverrideStatus(override_topic)
         topic_class = get_topic_class(topic_type)

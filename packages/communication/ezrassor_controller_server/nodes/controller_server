@@ -5,4 +5,20 @@ Written by Tiger Sachse.
 """
 import ezrassor_controller_server
 
-ezrassor_controller_server.controller_server.start_node()
+
+# Some constants for this node.
+QUEUE_SIZE = 10
+SLEEP_DURATION = .1
+DEFAULT_NODE_NAME = "controller_server"
+TARGET_COORDINATES_TOPIC = "target_coordinates"
+AUTONOMOUS_TOGGLES_TOPIC = "autonomous_toggles"
+
+
+# Main entry point to this node.
+ezrassor_controller_server.controller_server.start_node(
+    DEFAULT_NODE_NAME,
+    TARGET_COORDINATES_TOPIC,
+    AUTONOMOUS_TOGGLES_TOPIC,
+    QUEUE_SIZE,
+    SLEEP_DURATION,
+)
