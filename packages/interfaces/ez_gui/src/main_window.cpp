@@ -261,26 +261,31 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
+/* Launches a node selected in the drop-down menu
+ */
 void MainWindow::nodeLaunch()
 {
-    QString launchfile = ui.comboBox->currentText();
-    QProcess *parent;
-    QStringList arguments;
-    arguments << qnode.get_launchfile_package(launchfile) << launchfile;
-    QProcess *launchProcess = new QProcess();
-    
-    launchProcess->setProcessChannelMode(QProcess::MergedChannels); 
-    launchProcess->start("roslaunch", arguments);
+    QString executable = ui.comboBox->currentText();
 
-    qnode.addProcess(launchProcess);
+    char buffer[128];
+    FILE * pipe = popen(("rosrun " + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
+
+    try {
+        while (fgets(buffer, sizeof buffer, pipe))
+            std::cout << buffer << std::endl;
+    } catch (...) {
+        pclose(pipe);
+    }
+
+    qnode.addProcess(pipe);
 }
 
-
-std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
+/* Extract node and package from full path */
+std::pair<QString, QString> executable_and_package_from_path(const char *path)
 {
     std::stringstream entirePath(path);
     std::string grab;
-    std::string package, launchfile;
+    std::string package, executable;
     std::size_t lastSlash;
     int dir_index = 0;
 
@@ -294,34 +299,27 @@ std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
     return std::make_pair(QString::fromStdString(patharoni.substr(lastSlash + 1)), QString::fromStdString(package));
 }
 
+/* Populates the drop-down with everything that can be launched
+ * for launching from the GUI
+ */
 void MainWindow::populateLaunchers()
 {
     char pipe_output_buffer[128];
-    QStringList launchfile_paths;
-    std::size_t lastSlash;
-    std::string launchFile;
-    std::string entirePath = "";
-    std::pair<QString, QString> launchfile_package_pair;
+    QStringList executable_paths;
+    std::pair<QString, QString> executable_package_pair;
 
-    FILE* pipe = popen("find . -name \"*.launch\"", "r");
+    FILE* pipe = popen("find . -executable -path \"./packages/*/*\" -type f | grep -v \"\\.png\\|\\.m\"", "r");
     if (!pipe)
-        throw std::runtime_error("couldn't open pipe");
+        std::cout << "Couldn't open launch pipe" << std::endl;
 
-    try
+    while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
     {
-        while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
-        {
-            launchfile_package_pair = launchfile_and_package_from_path(pipe_output_buffer);
-            qnode.add_launchfile_package(launchfile_package_pair.first, launchfile_package_pair.second);
-            launchfile_paths << launchfile_package_pair.first;
-        }
-    } catch (...)
-    {
-        pclose(pipe);
-        throw;
+        executable_package_pair = executable_and_package_from_path(pipe_output_buffer);
+        qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
+        executable_paths << executable_package_pair.first;
     }
 
     pclose(pipe);
 
-    ui.comboBox->addItems(launchfile_paths);
+    ui.comboBox->addItems(executable_paths);
 }
