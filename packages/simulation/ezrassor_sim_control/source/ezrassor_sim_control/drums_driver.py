@@ -8,8 +8,8 @@ import std_msgs
 from std_msgs.msg import Float32, Float64
 
 NODE = "drums"
-FRONT_TOPIC = "front_drum_instruction"
-BACK_TOPIC = "back_drum_instruction"
+FRONT_TOPIC = "front_drum_instructions"
+BACK_TOPIC = "back_drum_instructions"
 MAX_DRUM_SPEED = 1
 
 # /ezrassor/drum_back_velocity_controller/command

@@ -8,7 +8,7 @@ from std_msgs.msg import Int16, Float64
 from geometry_msgs.msg import Twist
 
 NODE = "wheels"
-TOPIC = "wheel_instruction"
+TOPIC = "wheel_instructions"
 MAX_VELOCITY = 3
 
 pub_LF = rospy.Publisher('left_wheel_front_velocity_controller/command', Float64, queue_size = 10)

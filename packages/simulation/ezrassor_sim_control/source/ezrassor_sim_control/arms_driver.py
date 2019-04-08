@@ -8,8 +8,8 @@ import std_msgs
 from std_msgs.msg import Float32, Float64
 
 NODE = "arms"
-FRONT_TOPIC = "front_arm_instruction"
-BACK_TOPIC = "back_arm_instruction"
+FRONT_TOPIC = "front_arm_instructions"
+BACK_TOPIC = "back_arm_instructions"
 MAX_ARM_SPEED = 1
 
 # /ezrassor/arm_back_velocity_controller/command
