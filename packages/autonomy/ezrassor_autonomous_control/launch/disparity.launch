@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 	<!-- launch image and disparity nodelets -->
-  	<node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc" ns="/front_camera">
+  	<node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
         <param name="min_disparity" type="int" value="3"/>
         <!-- <param name="uniqueness_ratio" type="double" value="20"/>
         <param name="speckle_size" type="int" value="50"/> -->
