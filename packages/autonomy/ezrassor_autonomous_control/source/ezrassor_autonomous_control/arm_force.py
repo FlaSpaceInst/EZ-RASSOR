@@ -15,7 +15,7 @@ def is_force_target(world_state, target_force):
     return front_force and back_force
 
 ''' Given a target force sets both arms to the target '''
-def set_target_force(world_state,ros_util,target_force):
+def set_target_force(world_state,ros_util,target_force, t):
 
     while not is_force_target(world_state,target_force):
         msg = 0b0
@@ -32,13 +32,13 @@ def set_target_force(world_state,ros_util,target_force):
                 msg += ros_util.commands['back_arm_down']
         msg += ros_util.commands['front_dig']
         msg += ros_util.commands['back_dig']
+        msg += ros_util.commands['forward']
         ros_util.command_pub.publish(msg)
         ros_util.rate.sleep()
+        t += 1
 
     ros_util.command_pub.publish(ros_util.commands['null'])
-
-
-
+    return t
 
 ''' This is left here for debugging'''
 # threading.Thread(target=lambda: rospy.init_node('force_pub', disable_signals=True)).start()
