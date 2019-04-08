@@ -8,7 +8,7 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError 
 from stereo_msgs.msg import DisparityImage
 import std_msgs
-from std_msgs.msg import Int8
+from std_msgs.msg import Int16
 from sensor_msgs.msg import LaserScan
 import time
 
@@ -18,14 +18,11 @@ RIGHT = 1
 # Written by Tyler Duncan
 
 # Commands to be sent to AI Control. 
-commands = {
-    'forward' : 0b101000000000, 'reverse' : 0b010100000000, 'left' : 0b011000000000, 'right' : 0b100100000000
-}
 
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('ezrassor/obstacle_detect', Int8, queue_size=10)
+    pub = rospy.Publisher('ezrassor/obstacle_detect', Int16, queue_size=10)
     laser_scan = rospy.Publisher('/scan', LaserScan, queue_size=10)
 
     scan = LaserScan()
@@ -46,18 +43,18 @@ def obst_detect(data):
 
 
     """Set thresholds.""" 
-    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1:
+    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1.5:
         print("MOVE RIGHT!")
-        pub.publish(commands['right'])
-    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1:
+        pub.publish(1)
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1.5:
         print("MOVE LEFT!")
-        pub.publish(commands['left'])
-    elif data[LEFT].min() < 1 and data[RIGHT].min() < 1:
+        pub.publish(2)
+    elif data[LEFT].min() < 1 and data[RIGHT].min() < 1.5:
         print("MOVE BACKWARD!")
-        pub.publish(commands['reverse'])
+        pub.publish(3)
     else:
         print("MOVE FORWARD!")
-        pub.publish(commands['forward'])
+        pub.publish(0)
 
 
 def callback(data):

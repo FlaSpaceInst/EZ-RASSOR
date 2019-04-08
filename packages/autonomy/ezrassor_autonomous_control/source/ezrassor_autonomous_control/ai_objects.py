@@ -1,10 +1,14 @@
 import rospy
+
 from std_msgs.msg import Int8, Int16, String
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
+
 import nav_functions as nf
 import math
+
+from random import uniform
 
 class WorldState():
     """ World State Object Representing All Sensor Data """
@@ -13,7 +17,8 @@ class WorldState():
         self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
                             'front_arm_angle': 0, 'back_arm_angle': 0, 
                             'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'target_location': [10,10], 'on_side': False, 'battery': 100,
+                            'front_arm_force': 0, 'back_arm_force': 0, 'target_location': [10,10], 
+                            'on_side': False, 'battery': 100, 'on_back': False,
                             'hardware_status': True}
 
         self. auto_function_command = 0
@@ -24,6 +29,8 @@ class WorldState():
 
         self.state_flags['front_arm_angle'] = -(data.position[1])
         self.state_flags['back_arm_angle'] = data.position[0]
+
+        self.state_flags['force_front_arm'], self.state_flags['force_back_arm'] = self.get_arm_force()
     
 
     def odometryCallBack(self, data):
@@ -42,10 +49,10 @@ class WorldState():
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
         
-        self.state_flags['positionX'] = data.pose[2].position.x
-        self.state_flags['positionY'] = data.pose[2].position.y
+        self.state_flags['positionX'] = data.pose[9].position.x
+        self.state_flags['positionY'] = data.pose[9].position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[2]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose[9]) * 180/math.pi
 
         if heading > 0:
             self.state_flags['heading'] = heading
@@ -55,10 +62,17 @@ class WorldState():
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
 
+        # Check to see if its on its side. Uses the accleration of gravity to determine the directions
         if abs(data.linear_acceleration.y) > 9:
             self.state_flags['on_side'] = True
-        else:
+        else :
             self.state_flags['on_side'] = False
+
+        # Check to see if its on its back. Uses the acceleration of gravity to determine the directions.
+        if (data.linear_acceleration.z) <= -9:
+            self.state_flags['on_back'] = True
+        else:
+            self.state_flags['on_back'] = False
 
         #self.state_flags['heading'] = nf.quaternion_to_euler(data.pose.orientation)
 
@@ -66,6 +80,11 @@ class WorldState():
         """ Set state_flags vision data. """
 
         self.state_flags['warning_flag'] = data.data
+
+    def get_arm_force(self):
+        front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
+        back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
+        return front_arm_force, back_arm_force
 
 
 class ROSUtility():

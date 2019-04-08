@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+  <include file="$(find ezrassor_launcher)/launch/manual_simulation.launch">
+      <arg name="world" value="base_ai_world"/>
+  </include>
+
+  <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>
+
+  <!--node pkg="ezrassor_autonomous_control" type="autonomous_control" name="autonomous_control"/-->
+
+</launch>
