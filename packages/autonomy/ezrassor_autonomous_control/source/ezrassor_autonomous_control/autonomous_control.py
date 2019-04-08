@@ -37,6 +37,12 @@ def on_start_up():
         uf.self_right_from_side(world_state, ros_util)
     if result == 3:
         af.auto_dock(world_state, ros_util)
+    if result == 4:
+        uf.self_right_from_back(world_state, ros_util)
+   """ if result == 5:
+        uf.self_right_from_front(world_state, ros_util)
+    if result == 6:
+        uf.self_right_from_back(world_state, ros_util)"""
 
     uf.set_back_arm_angle(world_state, ros_util, .785)
     uf.set_front_arm_angle(world_state, ros_util, .785)
