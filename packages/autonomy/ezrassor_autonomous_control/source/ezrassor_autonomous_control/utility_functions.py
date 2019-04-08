@@ -1,5 +1,6 @@
 import rospy
 import time
+import nav_functions as nf
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -60,26 +61,49 @@ def self_check(world_state, ros_util):
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
-    while world_state.state_flags['warning_flag'] == 3:
-        ros_util.command_pub.publish(ros_util.commands['reverse'])
+    while world_state.warning_flag == 3:
+        ros_util.publish_actions('reverse', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    new_heading = world_state.state_flags['heading'] + 60
+    new_heading = (world_state.heading + 60) % 360
 
-    while (new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1):
+    while (new_heading - 1) < world_state.heading < (new_heading + 1):
+        ros_util.publish_actions('left', 0, 0, 0, 0)
+
+
+def dodge_left(world_state, ros_util):
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    new_heading = (world_state.state_flags['heading'] + 45) % 360
+
+    print(world_state.state_flags['heading'], new_heading) 
+
+    while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
         ros_util.command_pub.publish(ros_util.commands['left'])
+        ros_util.rate.sleep()
 
-def self_right_from_side(world_state, ros_util):
-    """ Flip EZ-RASSOR over from its side. """
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], 
+                                start_y, world_state.state_flags['positionY']) < 2:
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
 
-    self_right_execution_time = 0.5
-    start_time = time.time()
-    ros_util.status_pub.publish("Initiating Self Right")
-    while(time.time() - start_time < self_right_execution_time):
-        if world_state.state_flags['on_side'] == False:
-            ros_util.command_pub.publish(ros_util.commands['null'])
-            return
-        ros_util.command_pub.publish(ros_util.commands['back_arm_up'])
-        ros_util.command_pub.publish(ros_util.commands['front_arm_up'])
-            
-    ros_util.command_pub.publish(ros_util.commands['null'])
+
+def dodge_right(world_state, ros_util):
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    new_heading = (world_state.state_flags['heading'] - 45) % 360
+
+    print(world_state.state_flags['heading'], new_heading) 
+
+    while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
+        ros_util.command_pub.publish(ros_util.commands['right'])
+        ros_util.rate.sleep()
+
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], 
+                                start_y, world_state.state_flags['positionY']) < 2:
+        
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
+

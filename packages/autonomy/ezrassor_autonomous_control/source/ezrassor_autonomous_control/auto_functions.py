@@ -17,32 +17,6 @@ def at_target(world_state, ros_util):
 
     return not value
 
-
-def auto_drive(world_state, ros_util):
-    """ 
-    Travel forward in a straight line. 
-    Avoid obstacles while maintaining heading. 
-    """
-    
-    # Main loop until command is canceled
-    while ros_util.auto_function_command != 0:
-
-        # Avoid obstacles by turning left or right if warning flag is raised
-        while world_state.state_flags['warning_flag'] == 1:
-            ros_util.command_pub.publish(ros_util.commands['right'])
-            ros_util.rate.sleep()
-        while world_state.state_flags['warning_flag'] == 2:
-            ros_util.command_pub.publish(ros_util.commands['left'])
-            ros_util.rate.sleep()
-        
-        if world_state.state_flags['warning_flag'] == 3:
-            uf.reverse_turn(world_state, ros_util)
-
-        ros_util.command_pub.publish(ros_util.commands['forward'])
-        ros_util.rate.sleep()
-
-    ros_util.command_pub.publish(ros_util.commands['null'])
-
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
     ros_util.status_pub.publish("Auto Driving to {}".format(world_state.state_flags['target_location']))
@@ -67,12 +41,10 @@ def auto_drive_location(world_state, ros_util):
             ros_util.rate.sleep()
 
         # Avoid obstacles by turning left or right if warning flag is raised
-        while(world_state.state_flags['warning_flag'] == 1):
-            ros_util.command_pub.publish(ros_util.commands['right'])
-            ros_util.rate.sleep()
-        while(world_state.state_flags['warning_flag'] == 2):
-            ros_util.command_pub.publish(ros_util.commands['left'])
-            ros_util.rate.sleep()
+        if world_state.state_flags['warning_flag'] == 1:
+            uf.dodge_right(world_state, ros_util)
+        if world_state.state_flags['warning_flag'] == 2:
+            uf.dodge_left(world_state, ros_util)
         if world_state.state_flags['warning_flag'] == 3:
             uf.reverse_turn(world_state, ros_util)
 
@@ -106,7 +78,7 @@ def auto_dig(world_state, ros_util, duration):
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
     ros_util.status_pub.publish("Auto Returning to {}".format([0,0]))
-    ros_util.threshold = 4
+    ros_util.threshold = 2
     world_state.state_flags['target_location'] = [0,0]
     auto_drive_location(world_state, ros_util)
     ros_util.threshold = .5
