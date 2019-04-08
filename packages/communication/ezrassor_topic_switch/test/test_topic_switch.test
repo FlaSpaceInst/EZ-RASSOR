@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--  -->
 <launch>
-  <test test-name="test_topic_switch"
-        pkg="ezrassor_topic_switch"
-        type="test_topic_switch"/>
+  <arg name="node_name" default="single_topic_switch"/>
+  <arg name="primary_topic" default="primary_topic"/>
+  <arg name="secondary_topic" default="secondary_topic"/>
+  <arg name="output_topic" default="output_topic"/>
+  <arg name="topic_type" default="Float32"/>
 
-  <node name="$(arg node_name)"
+  <test test-name="test_$(arg node_name)"
         pkg="ezrassor_topic_switch"
-        type="topic_switch"
-        output="screen">
-    <param name="node_name" value="topic_switch"/>
-    <param name="primary_topic" value="primary_topic"/>
-    <param name="secondary_topic" value="secondary_topic"/>
-    <param name="output_topic" value="output_topic"/>
-    <param name="topic_type" value="Float32"/>
-  </node>
+        type="test_topic_switch">
+    <param name="node_name" value="test_$(arg node_name)"/>
+    <param name="primary_topic" value="$(arg primary_topic)"/>
+    <param name="secondary_topic" value="$(arg secondary_topic)"/>
+    <param name="output_topic" value="$(arg output_topic)"/>
+    <param name="topic_type" value="$(arg topic_type)"/>
+  </test>
+
+  <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <arg name="node_name" value="$(arg node_name)"/>
+    <arg name="primary_topic" value="$(arg primary_topic)"/>
+    <arg name="secondary_topic" value="$(arg secondary_topic)"/>
+    <arg name="output_topic" value="$(arg output_topic)"/>
+    <arg name="topic_type" value="$(arg topic_type)"/>
+  </include>
 </launch>
