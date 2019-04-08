@@ -16,10 +16,8 @@ QNode::~QNode()
       ros::waitForShutdown();
     }
 
-    for (auto process : process_list) {
-        if (process->state() == QProcess::Running) {
-            process->kill();
-        }
+    for (FILE * process : process_list) {
+        if (process) pclose(process);
     }
     
     wait();
@@ -314,16 +312,16 @@ void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
     Q_EMIT loggingUpdated(); // used to readjust the scrollbar
 }
 
-void QNode::add_launchfile_package(QString launchfile, QString package)
+void QNode::add_executable_package(QString executable, QString package)
 {
-    launchfile_package_map[launchfile] = package;
+    executable_package_map[executable] = package;
 }
 
-QString QNode::get_launchfile_package(QString launchfile)
+QString QNode::get_executable_package(QString executable)
 {
-    return launchfile_package_map[launchfile];
+    return executable_package_map[executable];
 }
 
-void QNode::addProcess(QProcess *process) {
+void QNode::addProcess(FILE *process) {
     process_list.push_back(process);
 }

@@ -64,9 +64,9 @@ class QNode : public QThread
         int *smBarUpdate() { return &sm_Progress_Bar; }
         int *diskBarUpdate() { return &disk_Progress_Bar; }
         int *batteryBarUpdate() { return &battery_Progress_Bar; }
-        void add_launchfile_package(QString launchfile, QString package);
-        QString get_launchfile_package(QString launchfile);
-        void addProcess(QProcess* process);
+        void add_executable_package(QString executable, QString package);
+        QString get_executable_package(QString executable);
+        void addProcess(FILE * process);
         void log( const LogLevel &level, const std_msgs::Float64 &msg);
         float **imuLabels() { return &imu_labels; }
 
@@ -78,7 +78,7 @@ class QNode : public QThread
         QPixmap front_Camera_Pixmap;
         QPixmap back_Camera_Pixmap;
         QPixmap disparity_Pixmap;
-        std::map<QString, QString> launchfile_package_map;
+        std::map<QString, QString> executable_package_map;
         float *imu_labels;
 
     Q_SIGNALS:
@@ -114,7 +114,7 @@ class QNode : public QThread
         ros::Subscriber battery_subscriber;
         ros::Subscriber imu_subscriber;
         QStringListModel logging_model;
-        std::vector<QProcess*> process_list;
+        std::vector<FILE*> process_list;
 
 };
 
