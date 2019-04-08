@@ -12,6 +12,9 @@
   <arg name="id"
        default=""
        doc="Robot ID Number."/>
+  <arg name="paused"
+       default="false"
+       doc="Start the simulation paused."/>
 
   <!--env name="ROS_NAMESPACE" value="ezrassor$(arg id)"/-->
   <!--     
@@ -24,8 +27,8 @@
       <arg name="id" value="$(arg id)"/>
   </include>
 
-  <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
-      <arg name="paused" value="false"/>
+    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+      <arg name="paused" value="$(arg paused)"/>
       <arg name="world" value="$(arg world)"/>
       <arg name="id" value="$(arg id)"/>
   </include>

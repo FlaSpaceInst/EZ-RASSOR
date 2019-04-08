@@ -16,4 +16,5 @@
   <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>roslaunch</depend>
+  <depend>geometry_msgs</depend>
 </package>
