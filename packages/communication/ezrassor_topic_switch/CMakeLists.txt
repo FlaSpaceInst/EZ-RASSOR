@@ -2,7 +2,7 @@
 # Written by Tiger Sachse.
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_topic_switch)
-find_package(catkin REQUIRED COMPONENTS rostest)
+find_package(catkin REQUIRED)
 catkin_package()
 catkin_python_setup()
 catkin_install_python(
@@ -18,5 +18,6 @@ install(
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
 if(CATKIN_ENABLE_TESTING)
+    find_package(rostest)
     add_rostest(test/test_topic_switch.test)
 endif()

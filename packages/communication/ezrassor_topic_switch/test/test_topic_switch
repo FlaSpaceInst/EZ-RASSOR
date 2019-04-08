@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+
+import rospy
+import rostest
+import unittest
+import threading
+import std_msgs.msg
+
+
+QUEUE_SIZE = 10
+PACKAGE_NAME = "ezrassor_topic_switch"
+DEFAULT_TEST_NAME = "test_single_topic_switch"
+
+
+class TestSingleTopicSwitch(unittest.TestCase):
+    """"""
+    def __init__(self, *arguments):
+        super(TestSingleTopicSwitch, self).__init__(*arguments)
+        rospy.init_node(DEFAULT_TEST_NAME)
+
+        self.primary_topic = rospy.get_param(
+            rospy.get_name() + "/primary_topic",
+        )
+        self.secondary_topic = rospy.get_param(
+            rospy.get_name() + "/secondary_topic",
+        )
+        self.output_topic = rospy.get_param(
+            rospy.get_name() + "/output_topic",
+        )
+
+        self.primary_publisher = rospy.publisher(
+            self.primary_topic,
+            std_msgs.msg.Float32,
+            queue_size=QUEUE_SIZE,
+        )
+        self.secondary_publisher = rospy.publisher(
+            self.secondary_topic,
+            std_msgs.msg.Float32,
+            queue_size=QUEUE_SIZE,
+        )
+        rospy.Subscriber(
+            self.output_topic,
+            std_msgs.msg.Float32,
+            callback=self._handle_topic_data,
+        )
+
+        self._topic_data_lock = threading.Lock()
+        self._has_new_topic_data = False
+        self._topic_data = None
+
+    def _get_topic_data(self):
+        """"""
+        try:
+            self._topic_data_lock.aquire()
+            if self._has_new_topic_data:
+                self._has_new_topic_data = False
+
+                return self._topic_data
+            else:
+                return None
+        finally:
+            self._topic_data_lock.release()
+
+
+    def _set_topic_data(self, data):
+        """"""
+        try:
+            self._topic_data_lock.aquire()
+            self._has_new_topic_data = True
+            self._topic_data = data.data
+        finally:
+            self._topic_data_lock.release()
+
+
+    def test_one_is_one(self):
+        self.assertEquals(1, 1)
+
+rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestSingleTopicSwitch)
