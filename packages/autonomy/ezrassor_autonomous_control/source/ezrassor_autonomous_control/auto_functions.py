@@ -70,7 +70,7 @@ def auto_dig(world_state, ros_util, duration):
 
     t = 0
     while t < duration*40:
-        armf.set_target_force(world_state, ros_util, .1) 
+        t = armf.set_target_force(world_state, ros_util, .1, t) 
         ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()
@@ -84,7 +84,7 @@ def auto_dig(world_state, ros_util, duration):
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
     ros_util.status_pub.publish("Auto Returning to {}".format([0,0]))
-    ros_util.threshold = 2
+    ros_util.threshold = 3
     world_state.state_flags['target_location'] = [0,0]
     auto_drive_location(world_state, ros_util)
     ros_util.threshold = .5
