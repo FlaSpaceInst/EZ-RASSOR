@@ -62,7 +62,7 @@ class WorldState():
             self.state_flags['on_side'] = False
 
         # Check to see if its on its back. Uses the acceleration of gravity to determine the directions.
-        if (data.linear_acceleration.z) > 9:
+        if (data.linear_acceleration.z) <= -9:
             self.state_flags['on_back'] = True
         else:
             self.state_flags['on_back'] = False
