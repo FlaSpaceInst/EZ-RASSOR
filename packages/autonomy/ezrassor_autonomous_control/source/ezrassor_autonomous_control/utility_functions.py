@@ -122,6 +122,7 @@ def dodge_right(world_state, ros_util):
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
+    print("SELF RIGHT")
     ros_util.status_pub.publish("Initiating Self Right")
     self_right_completed = False
     arms_straightened = False
@@ -157,12 +158,15 @@ def self_right_from_side(world_state, ros_util):
 
         ros_util.command_pub.publish(command)
 
+        ros_util.rate.sleep()
+
     ros_util.command_pub.publish(ros_util.commands['null'])
 
 
 def self_right_from_back(world_state, ros_util):
     """ Flip EZ-RASSOR over from its back. """
 
+    print("SELF RIGHT BACK")
     self_right_completed = False
     arms_straightened = False
     arms_90_degrees = False
@@ -218,6 +222,8 @@ def self_right_from_back(world_state, ros_util):
 
         if drum_spin_complete and arms_straightened:
             self_right_completed = True
+
+        ros_util.rate.sleep()
 
         ros_util.command_pub.publish(command)
 
