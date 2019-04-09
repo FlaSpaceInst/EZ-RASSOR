@@ -6,10 +6,13 @@
   <!-- Disparity  -->
   <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"></include>
 
+  <node pkg="ezrassor_autonomous_control" type="distance_map" name="depth_estimator" ns="/ezrassor"></node>
+
   <!-- SLAM: Gmapping -->
   <include file="$(find ezrassor_autonomous_control)/launch/ezrassor_gmapping.launch"></include>
 
-  <node pkg="ezrassor_autonomous_control" type="distance_map" name="depth_estimator" ns="/ezrassor"></node>
+  <include file="$(find ezrassor_autonomous_control)/launch/ezrassor_kalman_filter.launch"></include>
+
 
   <!-- Open RViz with saved settings -->
   <group if="$(arg open_rviz)"> 
