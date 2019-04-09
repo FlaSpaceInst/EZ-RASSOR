@@ -17,7 +17,24 @@ RIGHT = 1
 
 # Written by Tyler Duncan
 
-# Commands to be sent to AI Control. 
+# Offset Laserscan data
+def laser_scan_offset(data, increment):
+    ranges = []
+    number_of_scans = len(data)
+    theta = 1.39626
+    theta_prime = 2 * np.arctan(theta / 2)
+    for i in range(number_of_scans):
+        arc_length = data[i] * theta_prime
+        new_distance = np.sqrt(((0.5 * arc_length) ** 2) + (data[i] ** 2))
+        ranges.append(new_distance)
+        if i < number_of_scans / 2:
+            theta_prime -= increment * 2
+        elif i > number_of_scans / 2:
+            theta_prime += increment * 2
+        else:
+            theta_prime = 0
+
+    return ranges
 
 # Obstacle Detection
 def obst_detect(data):
@@ -36,7 +53,7 @@ def obst_detect(data):
     scan.scan_time = 1 / 60
     scan.range_min = 0
     scan.range_max = 500.0
-    scan.ranges = (np.append(data[LEFT],data[RIGHT]))[::-1]
+    scan.ranges = laser_scan_offset((np.append(data[LEFT],data[RIGHT]))[::-1], scan.angle_increment)
     scan.intensities = []
 
     laser_scan.publish(scan)
