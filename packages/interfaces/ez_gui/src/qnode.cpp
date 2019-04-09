@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
 #include "../include/ros_gui/qnode.hpp"
 
 QNode::QNode(int argc, char** argv ) : init_argc(argc), init_argv(argv) {}
@@ -16,8 +17,8 @@ QNode::~QNode()
       ros::waitForShutdown();
     }
 
-    for (FILE * process : process_list) {
-        if (process) pclose(process);
+    for (int process : process_list) {
+        if (process) kill(process, SIGKILL);
     }
     
     wait();
@@ -322,6 +323,6 @@ QString QNode::get_executable_package(QString executable)
     return executable_package_map[executable];
 }
 
-void QNode::addProcess(FILE *process) {
+void QNode::addProcess(pid_t process) {
     process_list.push_back(process);
 }

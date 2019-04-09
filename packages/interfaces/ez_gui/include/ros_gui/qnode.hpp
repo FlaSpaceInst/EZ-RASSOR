@@ -9,6 +9,8 @@
 //#include <rqt_image_view/image_view.h>
 #endif
 
+#include <unistd.h>
+
 //#include <QtGui/QMainWindow>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -66,7 +68,7 @@ class QNode : public QThread
         int *batteryBarUpdate() { return &battery_Progress_Bar; }
         void add_executable_package(QString executable, QString package);
         QString get_executable_package(QString executable);
-        void addProcess(FILE * process);
+        void addProcess(pid_t pid);
         void log( const LogLevel &level, const std_msgs::Float64 &msg);
         float **imuLabels() { return &imu_labels; }
 
@@ -114,7 +116,7 @@ class QNode : public QThread
         ros::Subscriber battery_subscriber;
         ros::Subscriber imu_subscriber;
         QStringListModel logging_model;
-        std::vector<FILE*> process_list;
+        std::vector<pid_t> process_list;
 
 };
 
