@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <unistd.h>
+#include <signal.h>
 #include "../include/ros_gui/qnode.hpp"
 
 QNode::QNode(int argc, char** argv ) : init_argc(argc), init_argv(argv) {}
@@ -20,7 +21,9 @@ QNode::~QNode()
     for (int process : process_list) {
         if (process) kill(process, SIGKILL);
     }
-    
+
+    system("killall rosmaster & killall gzserver & killall gzclient");
+
     wait();
 }
 
