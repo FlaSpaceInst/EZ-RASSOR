@@ -2,7 +2,7 @@
 
 Written by Tiger Sachse.
 """
-import RPi.GPIO
+import RPi.GPIO as GPIO
 
 
 GPIO_MODE = GPIO.BCM

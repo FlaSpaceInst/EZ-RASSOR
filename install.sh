@@ -2,70 +2,15 @@
 # ROS Kinetic on Ubuntu Xenial (16.04).
 # Written by Tiger Sachse.
 
-WORKSPACE_DIR="/tmp/EZRASSOR_TEMPORARY_CATKIN_WORKSPACE"
+WORKSPACE_DIR="/tmp/ezrassor_temporary_catkin_workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 INSTALL_DIR="/opt/ros/kinetic"
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
+EXTERNAL_DIR="external"
+SETUP_FILE="setup.bash"
 
-# Configure APT to install from the ROS repository.
-add_ros_repository() {
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
-        /etc/apt/sources.list.d/ros-latest.list'
-    sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-        --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-    sudo apt update
-}
-
-link_and_install() {
-    rm -rf "$WORKSPACE_DIR"
-    mkdir -p "$SOURCE_DIR"
-
-    NEED_ROS_BASE=false
-    NEED_ROS_DESKTOP=false
-    NEED_ROS_DESKTOP_FULL=false
-
-    # For each specified superpackage, link all necessary packages.
-    for SUPERPACKAGE in "$@"; do
-        case "$SUPERPACKAGE" in
-            autonomy)
-                ;;
-            simulation)
-                ;;
-            communication)
-                NEED_ROS_BASE=true
-                link_package "communication" "ez_rassor_comms"
-                link_package "ezrc" "ezrc_control"
-                ;;
-            hardware)
-                ;;
-            dashboard)
-                ;;
-        esac
-    done
-
-    if [ "$NEED_ROS_DESKTOP_FULL" = true ]; then
-        sudo apt install -y ros-kinetic-desktop-full
-    elif [ "$NEED_ROS_DESKTOP" = true ]; then
-        sudo apt install -y ros-kinetic-desktop
-    elif [ "$NEED_ROS_BASE" = true ]; then
-        sudo apt install -y ros-kinetic-ros-base
-    fi
-    
-    cd "$WORKSPACE_DIR"
-    
-    sudo rosdep init
-    rosdep update
-    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
-    catkin_make
-    catkin_make install
-    sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
-
-    source_setup bash zsh
-
-    cd - &> /dev/null
-}
-
+# Link a package into the workspace.
 link_package() {
     if [ -L "$SOURCE_DIR/$2" ]; then
         rm -f "$SOURCE_DIR/$2"
@@ -73,10 +18,10 @@ link_package() {
     else
         printf "Linking '%s'...\n" "$2"
     fi
-    ln -s "$PWD/$SUPERPACKAGE_DIR/$1/$2" "$SOURCE_DIR/$2"
+    ln -s "$PWD/$1/$2" "$SOURCE_DIR/$2"
 }
 
-# Source the setup script for each user shell passed to this function, if it is
+# Source the setup script for each user shell passed to this function if it is
 # not already sourced in the appropriate RC file and if that user shell's RC
 # file exists. Print a message if the user must restart her terminal.
 source_setup() {
@@ -109,28 +54,69 @@ source_setup() {
     fi
 }
 
+# Link and install a collection of packages from this repository.
+link_and_install() {
+    rm -rf "$WORKSPACE_DIR"
+    mkdir -p "$SOURCE_DIR"
+
+    # For each specified superpackage, link all necessary packages.
+    for SUPERPACKAGE in "$@"; do
+        case "$SUPERPACKAGE" in
+            autonomy)
+                link_package "external/viso2" "viso2"
+                link_package "external/viso2" "libviso2"
+                link_package "external/viso2" "viso2_ros"
+                link_package "packages/autonomy" "ezrassor_autonomous_control"
+                ;;
+            simulation)
+                link_package "packages/simulation" "ezrassor_sim_gazebo"
+                link_package "packages/simulation" "ezrassor_sim_control"
+                link_package "packages/simulation" "ezrassor_sim_description"
+                ;;
+            communication)
+                link_package "packages/communication" "ezrassor_joy_translator"
+                link_package "packages/communication" "ezrassor_request_switch"
+                link_package "packages/communication" "ezrassor_controller_server"
+                ;;
+            hardware)
+                ;;
+            dashboard)
+                ;;
+        esac
+    done
+    link_package "packages/extras" "ezrassor_launcher"
+    sudo apt install -y ros-kinetic-ros-base \
+                        python-rosdep \
+                        python-rosinstall-generator \
+                        python-wstool \
+                        python-rosinstall \
+                        build-essential
+
+    source "$INSTALL_DIR/$SETUP_FILE"
+    sudo rosdep init
+    rosdep update
+
+    # Install packages in the workspace from source.
+    cd "$WORKSPACE_DIR"
+    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
+    catkin_make
+    catkin_make install
+    sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
+    cd - &> /dev/null
+
+    source_setup bash zsh
+}
+
 # Main entry point of the script.
-add_ros_repository
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
+           /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv \
+             --keyserver hkp://ha.pool.sks-keyservers.net:80 \
+             --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+sudo apt update
 
 if [ "$#" = "0" ]; then
     link_and_install "communication" "hardware" "autonomy"
 else
     link_and_install "$@"
 fi
-
-# build all packages
-
-
-##sudo apt install -y python-rosdep \
-##                    python-rosinstall-generator \
-##                    python-wstool \
-##                    python-rosinstall \
-##                    build-essential
-##
-## Initialize rosdep.
-##rosinstall_generator ros_comm \
-##                     --rosdistro kinetic \
-##                     --deps --wet-only --tar > \
-##                     kinetic-ros_comm-wet.rosinstall
-##wstool init -j8 src kinetic-ros_comm-wet.rosinstall
-##rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
