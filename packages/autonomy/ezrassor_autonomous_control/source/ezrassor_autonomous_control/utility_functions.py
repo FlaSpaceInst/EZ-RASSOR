@@ -84,14 +84,15 @@ def reverse_turn(world_state, ros_util):
 
 
 def dodge_left(world_state, ros_util):
+    print("Dodge Left")
     start_x = world_state.state_flags['positionX']
     start_y = world_state.state_flags['positionY']
 
-    new_heading = (world_state.state_flags['heading'] + 45) % 360
+    threshold = 0
 
-    print(world_state.state_flags['heading'], new_heading) 
-
-    while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
+    while world_state.state_flags['warning_flag'] != 0 and (threshold < 20):
+        if world_state.state_flags['warning_flag'] == 0:
+            threshold+=1
         ros_util.command_pub.publish(ros_util.commands['left'])
         ros_util.rate.sleep()
 
@@ -102,14 +103,15 @@ def dodge_left(world_state, ros_util):
 
 
 def dodge_right(world_state, ros_util):
+    print("Dodge Right")
     start_x = world_state.state_flags['positionX']
     start_y = world_state.state_flags['positionY']
 
-    new_heading = (world_state.state_flags['heading'] - 45) % 360
+    threshold = 0
 
-    print(world_state.state_flags['heading'], new_heading) 
-
-    while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
+    while world_state.state_flags['warning_flag'] != 0 or (threshold < 20):
+        if world_state.state_flags['warning_flag'] == 0:
+            threshold+=1
         ros_util.command_pub.publish(ros_util.commands['right'])
         ros_util.rate.sleep()
 
@@ -122,7 +124,6 @@ def dodge_right(world_state, ros_util):
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
-    print("SELF RIGHT")
     ros_util.status_pub.publish("Initiating Self Right")
     self_right_completed = False
     arms_straightened = False
@@ -166,7 +167,6 @@ def self_right_from_side(world_state, ros_util):
 def self_right_from_back(world_state, ros_util):
     """ Flip EZ-RASSOR over from its back. """
 
-    print("SELF RIGHT BACK")
     self_right_completed = False
     arms_straightened = False
     arms_90_degrees = False
