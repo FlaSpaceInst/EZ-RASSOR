@@ -41,7 +41,7 @@ bool QNode::init()
      Q_EMIT startingRviz();
 
     // ROS Communications
-    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
+    log_subscriber = n.subscribe("/ez_rassor/status", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
     disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
@@ -72,7 +72,7 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     Q_EMIT startingRviz();
 
     // Add your ros communications here.
-    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
+    log_subscriber = n.subscribe("/ez_rassor/status", 1, &QNode::logCallback, this);
     front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
     back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
     disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
@@ -125,7 +125,7 @@ void QNode::batteryCallback(const std_msgs::Float64& message_holder)
     Q_EMIT batteryUpdated();
 }
 
-void QNode::logCallback(const std_msgs::Float64& message_holder)
+void QNode::logCallback(const std_msgs::String& message_holder)
 {
     log(Info, message_holder);
 }
@@ -254,25 +254,22 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
 
 void QNode::imuLabelsCallback(const sensor_msgs::Imu::ConstPtr &msg)
 {
-    float imuArray[9] = { };
+    imu_labels[0] = msg->orientation.x;
+    imu_labels[1] = msg->orientation.y;
+    imu_labels[2] = msg->orientation.z;
 
-    imuArray[0] = msg->orientation.x;
-    imuArray[1] = msg->orientation.y;
-    imuArray[2] = msg->orientation.z;
+    imu_labels[3] = msg->angular_velocity.x;
+    imu_labels[4] = msg->angular_velocity.y;
+    imu_labels[5] = msg->angular_velocity.z;
 
-    imuArray[3] = msg->angular_velocity.x;
-    imuArray[4] = msg->angular_velocity.y;
-    imuArray[5] = msg->angular_velocity.z;
+    imu_labels[6] = msg->linear_acceleration.x;
+    imu_labels[7] = msg->linear_acceleration.y;
+    imu_labels[8] = msg->linear_acceleration.z;
 
-    imuArray[6] = msg->linear_acceleration.x;
-    imuArray[6] = msg->linear_acceleration.y;
-    imuArray[6] = msg->linear_acceleration.z;
-
-    imu_labels = imuArray;
     Q_EMIT imuLabelsUpdated();
 }
 
-void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
+void QNode::log( const LogLevel &level, const std_msgs::String &msg)
 {
     logging_model.insertRows(logging_model.rowCount(),1);
     std::stringstream logging_model_msg;

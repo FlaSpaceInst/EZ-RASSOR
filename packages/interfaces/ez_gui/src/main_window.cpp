@@ -185,26 +185,17 @@ void MainWindow::updateBackCamera()
 
 void MainWindow::updateImuLabels()
 {
-    // TODO get object of values, break and set to labels
+    ui.orient_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[0]));
+    ui.orient_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[1]));
+    ui.orient_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[2]));
 
-    float *labels = *qnode.imuLabels();
-    // *qnode.imuLabels(); Array or map of values
+    ui.ang_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[3]));
+    ui.ang_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[4]));
+    ui.ang_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[5]));
 
-
-    ui.orient_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.orient_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.orient_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-    ui.ang_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.ang_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.ang_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-    ui.lin_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.lin_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.lin_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-   //QString testString = QString::number(test);
-   //ui.orient_x->setText(testString);
+    ui.lin_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[6]));
+    ui.lin_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[7]));
+    ui.lin_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[8]));
 }
 
 void MainWindow::updateDisparityCamera()
