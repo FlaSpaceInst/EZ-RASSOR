@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstddef>
 #include <string>
+#include <unistd.h>
 #include "../include/ros_gui/main_window.hpp"
 
 using namespace Qt;
@@ -268,16 +269,25 @@ void MainWindow::nodeLaunch()
     QString executable = ui.comboBox->currentText();
 
     char buffer[128];
-    FILE * pipe = popen(("rosrun " + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
 
+    pid_t pid = fork();
+
+    // parent process does this and ends here
+    if (pid != 0) {
+        qnode.addProcess(pid);
+        return;
+    }
+
+    // child process ----
+                        // job security
+    FILE * pipe = popen(((strstr(executable.toStdString().c_str(), ".launch")  ? "roslaunch " : "rosrun ") + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
+    
     try {
         while (fgets(buffer, sizeof buffer, pipe))
             std::cout << buffer << std::endl;
     } catch (...) {
         pclose(pipe);
     }
-
-    qnode.addProcess(pipe);
 }
 
 /* Extract node and package from full path */
@@ -321,5 +331,18 @@ void MainWindow::populateLaunchers()
 
     pclose(pipe);
 
+    pipe = popen("find . -name \"*.launch\"", "r");
+    if (!pipe)
+        std::cout << "Couldn't open find pipe" << std::endl;
+
+    while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
+    {
+        executable_package_pair = executable_and_package_from_path(pipe_output_buffer);
+        qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
+        executable_paths << executable_package_pair.first;
+    }
+
+    pclose(pipe);
+   
     ui.comboBox->addItems(executable_paths);
 }
