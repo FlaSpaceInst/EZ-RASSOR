@@ -17,6 +17,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
 #include <std_msgs/Float64.h>
+#include <std_msgs/String.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/image_encodings.h>
 #include <stereo_msgs/DisparityImage.h>
@@ -34,7 +35,7 @@ class QNode : public QThread
         bool init();
         bool init(const std::string &master_url, const std::string &host_url);
         void run();
-        void logCallback(const std_msgs::Float64 &message_holder);
+        void logCallback(const std_msgs::String &message_holder);
         void imageFrontCallback(const sensor_msgs::ImageConstPtr &message_holder);
         void imageBackCallback(const sensor_msgs::ImageConstPtr& msg);
         void disparityCallback(const stereo_msgs::DisparityImage & msg);
@@ -69,8 +70,7 @@ class QNode : public QThread
         void add_executable_package(QString executable, QString package);
         QString get_executable_package(QString executable);
         void addProcess(pid_t pid);
-        void log( const LogLevel &level, const std_msgs::Float64 &msg);
-        float **imuLabels() { return &imu_labels; }
+        void log( const LogLevel &level, const std_msgs::String &msg);
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -81,7 +81,7 @@ class QNode : public QThread
         QPixmap back_Camera_Pixmap;
         QPixmap disparity_Pixmap;
         std::map<QString, QString> executable_package_map;
-        float *imu_labels;
+        float imu_labels[9];
 
     Q_SIGNALS:
         void loggingUpdated();
