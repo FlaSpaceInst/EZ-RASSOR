@@ -21,10 +21,9 @@ def at_target(world_state, ros_util):
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
     ros_util.status_pub.publish("Auto Driving to {}".format(world_state.state_flags['target_location']))
-    
+
     # Main loop until location is reached
     while at_target(world_state, ros_util):
-
         uf.self_check(world_state, ros_util)
 
         # Get new heading angle relative to current heading as (0,0)
@@ -40,7 +39,6 @@ def auto_drive_location(world_state, ros_util):
 
         # Adjust heading until it matches new heading
         while not ((new_heading - 5) < world_state.state_flags['heading'] < (new_heading + 5)):
-            print(new_heading, world_state.state_flags['heading'])
             ros_util.command_pub.publish(ros_util.commands[direction])
             ros_util.rate.sleep()
 
@@ -70,7 +68,7 @@ def auto_dig(world_state, ros_util, duration):
 
     t = 0
     while t < duration*40:
-        t = armf.set_target_force(world_state, ros_util, .1, t) 
+        t = armf.set_target_force(world_state, ros_util, 0, t) 
         ros_util.command_pub.publish(combo_command)
         t+=1
         ros_util.rate.sleep()

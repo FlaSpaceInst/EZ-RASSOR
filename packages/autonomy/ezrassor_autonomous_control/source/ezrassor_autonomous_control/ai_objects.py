@@ -49,10 +49,10 @@ class WorldState():
     def simStateCallBack(self, data):
         """ More accurate position data to use for testing and experimentation. """
         
-        self.state_flags['positionX'] = data.pose[9].position.x
-        self.state_flags['positionY'] = data.pose[9].position.y
+        self.state_flags['positionX'] = data.pose[7].position.x
+        self.state_flags['positionY'] = data.pose[7].position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[9]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose[7]) * 180/math.pi
 
         if heading > 0:
             self.state_flags['heading'] = heading
@@ -63,13 +63,15 @@ class WorldState():
         " Heading data collected from orientation IMU data. "
 
         # Check to see if its on its side. Uses the accleration of gravity to determine the directions
-        if abs(data.linear_acceleration.y) > 9:
+        if 9.7 < abs(data.linear_acceleration.y) < 9.9:
+            print("ON SIDE {} ".format(data.linear_acceleration.y))
             self.state_flags['on_side'] = True
         else :
             self.state_flags['on_side'] = False
 
         # Check to see if its on its back. Uses the acceleration of gravity to determine the directions.
         if (data.linear_acceleration.z) <= -9:
+            print("ON BACK {}".format(data.linear_acceleration.z))
             self.state_flags['on_back'] = True
         else:
             self.state_flags['on_back'] = False
@@ -78,7 +80,7 @@ class WorldState():
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
-
+        print(data.data)
         self.state_flags['warning_flag'] = data.data
 
     def get_arm_force(self):
