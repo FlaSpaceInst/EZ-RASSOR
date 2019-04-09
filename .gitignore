@@ -1,6 +1,8 @@
 .vscode
 .vscode/
 settings.json
+*.pyc
+*.swp
 
 
 # Ignore React Native Module files

@@ -14,13 +14,17 @@ import RPi.GPIO as GPIO
 
 
 # Relevant constants for this node.
-NODE_NAME = "wheels_driver"
+SPEED = 3000
 MASK = 0b111100000000
-SPEED = 2000
-LEFT_WHEEL_CHANNEL = 5
-RIGHT_WHEEL_CHANNEL = 4
-LEFT_WHEEL_PINS = (17, 18)
-RIGHT_WHEEL_PINS = (22, 27)
+NODE_NAME = "wheels_driver"
+REAR_LEFT_WHEEL_CHANNEL = 7
+FRONT_LEFT_WHEEL_CHANNEL = 5
+REAR_RIGHT_WHEEL_CHANNEL = 6
+FRONT_RIGHT_WHEEL_CHANNEL = 4
+REAR_LEFT_WHEEL_PINS = (19, 13)
+FRONT_LEFT_WHEEL_PINS = (21, 26)
+REAR_RIGHT_WHEEL_PINS = (5, 6)
+FRONT_RIGHT_WHEEL_PINS = (20, 16)
 HALT_MESSAGE = "Stopping the wheels"
 DEBUGGING_MESSAGES = (
     "Driving left side forward",
@@ -52,18 +56,23 @@ class Wheel:
             GPIO.output(self.gpio_pins[0], GPIO.HIGH)
             GPIO.output(self.gpio_pins[1], GPIO.LOW)
         elif direction == Wheel.BACKWARD:
-            GPIO.output(self.gpio_pins[0], GPIO.LOW)
             GPIO.output(self.gpio_pins[1], GPIO.HIGH)
-        driver.set_pwm(self.pwm_pin, 0, SPEED)
+            GPIO.output(self.gpio_pins[0], GPIO.LOW)
+        self.driver.set_pwm(self.pwm_pin, 0, SPEED)
 
     def stop(self):
         """Stop rotating!"""
-        driver.set_pwm(self.pwm_pin, 0, 0)
+        self.driver.set_pwm(self.pwm_pin, 0, 0)
         GPIO.output(self.gpio_pins[0], GPIO.LOW)
         GPIO.output(self.gpio_pins[1], GPIO.LOW)
 
 
-def rotate_wheels(toggle_queue, left_wheel, right_wheel):
+def rotate_wheels(
+    toggle_queue,
+    rear_left_wheel,
+    rear_right_wheel,
+    front_left_wheel,
+    front_right_wheel):
     """Move the wheels of the EZRC.
     
     The wheels are controlled by sending boolean 4-tuples to this function via
@@ -94,24 +103,32 @@ def rotate_wheels(toggle_queue, left_wheel, right_wheel):
                 left_forward, left_backward, right_forward, right_backward = toggles
 
                 if left_forward:
-                    left_wheel.start(left_wheel.FORWARD)
+                    rear_left_wheel.start(rear_left_wheel.FORWARD)
+                    front_left_wheel.start(front_left_wheel.FORWARD)
                 elif left_backward:
-                    left_wheel.start(left_wheel.BACKWARD)
+                    rear_left_wheel.start(rear_left_wheel.BACKWARD)
+                    front_left_wheel.start(front_left_wheel.BACKWARD)
                 else:
-                    left_wheel.stop()
+                    rear_left_wheel.stop()
+                    front_left_wheel.stop()
 
                 if right_forward:
-                    right_wheel.start(right_wheel.FORWARD)
+                    rear_right_wheel.start(rear_right_wheel.FORWARD)
+                    front_right_wheel.start(front_right_wheel.FORWARD)
                 elif right_backward:
-                    right_wheel.start(right_wheel.BACKWARD)
+                    rear_right_wheel.start(rear_right_wheel.BACKWARD)
+                    front_right_wheel.start(front_right_wheel.BACKWARD)
                 else:
-                    right_wheel.stop()
+                    rear_right_wheel.stop()
+                    front_right_wheel.stop()
         except Queue.Empty:
             pass
 
     # Clean up and stop the wheels after the loop is broken. 
-    left_wheel.stop()
-    right_wheel.stop()
+    rear_left_wheel.stop()
+    rear_right_wheel.stop()
+    front_left_wheel.stop()
+    front_right_wheel.stop()
 
 
 def start_node():
@@ -120,15 +137,25 @@ def start_node():
         driver = Adafruit_PCA9685.PCA9685()
         driver.set_pwm_freq(constants.DRIVER_FREQUENCY)
 
-        left_wheel = Wheel(
-            LEFT_WHEEL_CHANNEL,
-            LEFT_WHEEL_PINS,
+        rear_left_wheel = Wheel(
             driver,
+            REAR_LEFT_WHEEL_CHANNEL,
+            REAR_LEFT_WHEEL_PINS,
         )
-        right_wheel = Wheel(
-            RIGHT_WHEEL_CHANNEL,
-            RIGHT_WHEEL_PINS,
+        rear_right_wheel = Wheel(
             driver,
+            REAR_RIGHT_WHEEL_CHANNEL,
+            REAR_RIGHT_WHEEL_PINS,
+        )
+        front_left_wheel = Wheel(
+            driver,
+            FRONT_LEFT_WHEEL_CHANNEL,
+            FRONT_LEFT_WHEEL_PINS,
+        )
+        front_right_wheel = Wheel(
+            driver,
+            FRONT_RIGHT_WHEEL_CHANNEL,
+            FRONT_RIGHT_WHEEL_PINS,
         )
 
         # Create a queue and process that rotates the wheels.
@@ -137,8 +164,10 @@ def start_node():
             target=rotate_wheels,
             args=(
                 toggle_queue,
-                left_wheel,
-                right_wheel,
+                rear_left_wheel,
+                rear_right_wheel,
+                front_left_wheel,
+                front_right_wheel,
             ),
         )
         movement_process.start()
