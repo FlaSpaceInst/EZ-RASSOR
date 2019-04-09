@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a topic switch. Written by Tiger Sachse. -->
+<!-- Launch a configurable topic switch. Written by Tiger Sachse. -->
 <launch>
   <arg name="node_name" doc="The name of this node."/>
   <arg name="primary_topic" doc="The switch's primary topic."/>
