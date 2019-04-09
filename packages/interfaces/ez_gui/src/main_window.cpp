@@ -279,14 +279,13 @@ void MainWindow::nodeLaunch()
     }
 
     // child process ----
-                        // job security
-    FILE * pipe = popen(((strstr(executable.toStdString().c_str(), ".launch")  ? "roslaunch " : "rosrun ") + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
+    FILE * fprocess = popen(("roslaunch " + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
     
     try {
-        while (fgets(buffer, sizeof buffer, pipe))
+        while (fgets(buffer, sizeof buffer, fprocess))
             std::cout << buffer << std::endl;
     } catch (...) {
-        pclose(pipe);
+        pclose(fprocess);
     }
 }
 
@@ -314,35 +313,22 @@ std::pair<QString, QString> executable_and_package_from_path(const char *path)
  */
 void MainWindow::populateLaunchers()
 {
-    char pipe_output_buffer[128];
+    char fprocess_output_buffer[128];
     QStringList executable_paths;
     std::pair<QString, QString> executable_package_pair;
 
-    FILE* pipe = popen("find . -executable -path \"./packages/*/*\" -type f | grep -v \"\\.png\\|\\.m\"", "r");
-    if (!pipe)
-        std::cout << "Couldn't open launch pipe" << std::endl;
+    FILE* fprocess = popen("find . -name \"*.launch\"", "r");
+    if (!fprocess)
+        std::cout << "Couldn't open find fprocess" << std::endl;
 
-    while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
+    while (fgets(fprocess_output_buffer, sizeof fprocess_output_buffer, fprocess))
     {
-        executable_package_pair = executable_and_package_from_path(pipe_output_buffer);
+        executable_package_pair = executable_and_package_from_path(fprocess_output_buffer);
         qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
         executable_paths << executable_package_pair.first;
     }
 
-    pclose(pipe);
-
-    pipe = popen("find . -name \"*.launch\"", "r");
-    if (!pipe)
-        std::cout << "Couldn't open find pipe" << std::endl;
-
-    while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
-    {
-        executable_package_pair = executable_and_package_from_path(pipe_output_buffer);
-        qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
-        executable_paths << executable_package_pair.first;
-    }
-
-    pclose(pipe);
+    pclose(fprocess);
    
     ui.comboBox->addItems(executable_paths);
 }
