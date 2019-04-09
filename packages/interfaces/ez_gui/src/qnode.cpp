@@ -41,15 +41,15 @@ bool QNode::init()
      Q_EMIT startingRviz();
 
     // ROS Communications
-    log_subscriber = n.subscribe("/ez_rassor/status", 1, &QNode::logCallback, this);
-    front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
-    disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
-    cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
-    vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
-    sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
-    disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
-    battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    log_subscriber = n.subscribe("/ezrassor/status", 1, &QNode::logCallback, this);
+    front_image_subscriber = n.subscribe("/ezrassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+    back_image_subscriber = n.subscribe("/ezrassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
+    disparity_subscriber = n.subscribe("/ezrassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
+    cpu_subscriber = n.subscribe("/ezrassor/cpuUsage", 100, &QNode::cpuCallback, this);
+    vm_subscriber = n.subscribe("/ezrassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
+    sm_subscriber = n.subscribe("/ezrassor/swapMemoryUsage", 100, &QNode::smCallback, this);
+    disk_subscriber = n.subscribe("/ezrassor/diskUsage", 100, &QNode::diskCallback, this);
+    battery_subscriber = n.subscribe("/ezrassor/batteryLeft", 100, &QNode::batteryCallback, this);
     imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
@@ -72,15 +72,15 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     Q_EMIT startingRviz();
 
     // Add your ros communications here.
-    log_subscriber = n.subscribe("/ez_rassor/status", 1, &QNode::logCallback, this);
-    front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
-    disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
-    cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
-    vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
-    sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
-    disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
-    battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    log_subscriber = n.subscribe("/ezrassor/status", 1, &QNode::logCallback, this);
+    front_image_subscriber = n.subscribe("/ezrassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+    back_image_subscriber = n.subscribe("/ezrassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
+    disparity_subscriber = n.subscribe("/ezrassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
+    cpu_subscriber = n.subscribe("/ezrassor/cpuUsage", 100, &QNode::cpuCallback, this);
+    vm_subscriber = n.subscribe("/ezrassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
+    sm_subscriber = n.subscribe("/ezrassor/swapMemoryUsage", 100, &QNode::smCallback, this);
+    disk_subscriber = n.subscribe("/ezrassor/diskUsage", 100, &QNode::diskCallback, this);
+    battery_subscriber = n.subscribe("/ezrassor/batteryLeft", 100, &QNode::batteryCallback, this);
     imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
