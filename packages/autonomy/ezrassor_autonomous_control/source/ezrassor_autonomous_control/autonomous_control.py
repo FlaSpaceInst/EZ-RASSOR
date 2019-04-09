@@ -35,8 +35,8 @@ def on_start_up():
 
     result = uf.self_check(world_state, ros_util)
 
-    uf.set_back_arm_angle(world_state, ros_util, .785)
-    uf.set_front_arm_angle(world_state, ros_util, .785)
+    uf.set_back_arm_angle(world_state, ros_util, 1.0)
+    uf.set_front_arm_angle(world_state, ros_util, 1.0)
     
     autonomous_control_loop(world_state, ros_util)
 
@@ -48,7 +48,7 @@ def full_autonomy(world_state, ros_util):
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
-        af.auto_dump(world_state, ros_util, 10)
+        af.auto_dump(world_state, ros_util, 4)
         i += 1
 
 def random_points():

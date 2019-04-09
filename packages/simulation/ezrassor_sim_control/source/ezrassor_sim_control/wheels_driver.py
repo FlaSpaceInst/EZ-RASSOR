@@ -42,7 +42,7 @@ def wheel_movement_callback(instruction):
 
     left_wheel_forward, left_wheel_reverse, right_wheel_forward, right_wheel_reverse = get_movements(instruction.data, MASK)
 
-    velocity = 5
+    velocity = 3.5
 
     # Turning behaves odd with offset and tankturn. Set to zero for now.
     turn_offset = 0
