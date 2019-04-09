@@ -3,8 +3,6 @@ from ai_objects import WorldState, ROSUtility
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64, Int8
 
-''' Used for debugging '''
-# import threading
 EPSILON = 0.05
 
 
@@ -39,10 +37,3 @@ def set_target_force(world_state,ros_util,target_force, t):
 
     ros_util.command_pub.publish(ros_util.commands['null'])
     return t
-
-''' This is left here for debugging'''
-# threading.Thread(target=lambda: rospy.init_node('force_pub', disable_signals=True)).start()
-# world = WorldState()
-# ros_util = ROSUtility()
-# rospy.Subscriber('/ezrassor/joint_states', JointState, forceCallBack, callback_args=(world,))
-# rospy.Subscriber('/ezrassor/routine_toggles', Int8, ros_util.autoCommandCallBack)

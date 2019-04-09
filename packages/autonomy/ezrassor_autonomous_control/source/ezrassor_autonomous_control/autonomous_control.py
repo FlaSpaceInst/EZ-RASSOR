@@ -11,6 +11,8 @@ import utility_functions as uf
 import numpy as np
 import random
 
+demo_targets = [[17,15], [12, 13], [20, 18]]
+
 def on_start_up():
     """ Initialization Function  """
     print("Spinning Up AI Control")
@@ -33,19 +35,21 @@ def on_start_up():
 
     result = uf.self_check(world_state, ros_util)
 
-    uf.set_back_arm_angle(world_state, ros_util, .785)
-    uf.set_front_arm_angle(world_state, ros_util, .785)
+    uf.set_back_arm_angle(world_state, ros_util, 1.0)
+    uf.set_front_arm_angle(world_state, ros_util, 1.0)
     
     autonomous_control_loop(world_state, ros_util)
 
 def full_autonomy(world_state, ros_util):
     print("Full Autonomy Activated")
+    i = 0
     while(True):
-        world_state.state_flags['target_location'] = random_points()
+        world_state.state_flags['target_location'] = demo_targets[i%3]
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 10)
         af.auto_dock(world_state, ros_util)
-        af.auto_dump(world_state, ros_util, 10)
+        af.auto_dump(world_state, ros_util, 4)
+        i += 1
 
 def random_points():
     x = np.random.randint(10,20)
