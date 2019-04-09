@@ -16,18 +16,6 @@ LEFT = 0
 RIGHT = 1
 
 # Written by Tyler Duncan
-# The following code assumes Gazebo to be running and the EZ-RASSOR executing the following scripts:
-#
-#**************************************************************************************************
-#
-#   ROS_NAMESPACE=ezrassor/front_camera rosrun stereo_image_proc stereo_image_proc
-#
-#   rosrun image_view stereo_view stereo:=ezrassor/front_camera image:=image_rect
-#
-#**************************************************************************************************
-#    These scripts utilize the Disparity map generation provided by ROS out of the box using the 
-#    stereo_image_proc package.  So far this has returned the fastest disparity map generation.  
-#==================================================================================================
 
 # Commands to be sent to AI Control. 
 
@@ -48,8 +36,6 @@ def obst_detect(data):
     scan.scan_time = 1 / 60
     scan.range_min = 0
     scan.range_max = 500.0
-    # data[LEFT][scan.range_min < data[LEFT] < scan.range_max] = inf
-    # data[RIGHT][scan.range_min < data[RIGHT] < scan.range_max] = inf
     scan.ranges = (np.append(data[LEFT],data[RIGHT]))[::-1]
     scan.intensities = []
 

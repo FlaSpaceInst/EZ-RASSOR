@@ -20,8 +20,8 @@
 
     <!--node pkg="viso2_ros" type="stereo_odometer" name="odometry">
         <param name="sensor_frame_id" value="left_camera_optical_frame"/>
-        <remap from="/stereo/left/image" to="/ezrassor/front_camera/left/image_rect_color"/>
-        <remap from="/stereo/right/image" to="/ezrassor/front_camera/right/image_rect_color"/>
+        <remap from="/stereo/left/image" to="/ezrassor/front_camera/left/image_rect"/>
+        <remap from="/stereo/right/image" to="/ezrassor/front_camera/right/image_rect"/>
         <remap from="/stereo/left/camera_info" to="/ezrassor/front_camera/left/camera_info"/>
         <remap from="/stereo/right/camera_info" to="/ezrassor/front_camera/right/camera_info"/>
     </node-->
