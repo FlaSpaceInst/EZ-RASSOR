@@ -4,7 +4,8 @@
 
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
-SUPERPACKAGE_DIR="packages"
+PACKAGES_DIR="packages"
+EXTERNAL_DIR="external"
 
 # Set up the development environment.
 setup_environment() {
@@ -17,8 +18,8 @@ setup_environment() {
 
 # Create a new ROS package in source control.
 new_package() {
-    mkdir -p "$SUPERPACKAGE_DIR/$1"
-    cd "$SUPERPACKAGE_DIR/$1"
+    mkdir -p "$PACKAGES_DIR/$1"
+    cd "$PACKAGES_DIR/$1"
 
     # Create a new catkin package with all the arguments
     # passed to this function (after the first argument).
@@ -30,8 +31,6 @@ new_package() {
 
 # Link packages into your workspace.
 link_packages() {
-    cd "$SUPERPACKAGE_DIR"
-
     LINK_ONLY_IN_LIST=false
     LINK_EXCEPT_IN_LIST=false
     case "$1" in
@@ -45,36 +44,38 @@ link_packages() {
             ;;
     esac
 
-    for SUPERPACKAGE_DIR in *; do
-        cd "$SUPERPACKAGE_DIR"
-        for PACKAGE_DIR in *; do
-            if [ "$LINK_ONLY_IN_LIST" = "true" ]; then
-                if argument_in_list "$PACKAGE_DIR" "$@"; then
+    for TARGET_DIR in "$PACKAGES_DIR" "$EXTERNAL_DIR"; do
+        for SUPERPACKAGE_DIR in "$PWD/$TARGET_DIR"/*; do
+            for PACKAGE_DIR in "$SUPERPACKAGE_DIR"/*; do
+                if [ ! -d "$PACKAGE_DIR" ]; then
+                    :
+                elif [ "$LINK_ONLY_IN_LIST" = "true" ]; then
+                    if argument_in_list "$(basename "$PACKAGE_DIR")" "$@"; then
+                        link_package "$PACKAGE_DIR"
+                    fi
+                elif [ "$LINK_EXCEPT_IN_LIST" = "true" ]; then
+                    if ! argument_in_list "$(basename "$PACKAGE_DIR")" "$@"; then
+                        link_package "$PACKAGE_DIR"
+                    fi
+                else
                     link_package "$PACKAGE_DIR"
                 fi
-            elif [ "$LINK_EXCEPT_IN_LIST" = "true" ]; then
-                if ! argument_in_list "$PACKAGE_DIR" "$@"; then
-                    link_package "$PACKAGE_DIR"
-                fi
-            else
-                link_package "$PACKAGE_DIR"
-            fi
+            done
         done
-        cd ..
     done
-
-    cd - > /dev/null 2>&1
 }
 
 # Helper function that links a single package.
 link_package() {
-    if [ -L "$SOURCE_DIR/$1" ]; then
-        rm -f "$SOURCE_DIR/$1"
-        printf "Relinking %s...\n" "$PWD/$1"
+    PACKAGE_PATH="$1"
+    PACKAGE_NAME="$(basename "$PACKAGE_PATH")"
+    if [ -L "$SOURCE_DIR/$PACKAGE_NAME" ]; then
+        rm -f "$SOURCE_DIR/$PACKAGE_NAME"
+        printf "Relinking %s...\n" "$PACKAGE_PATH"
     else
-        printf "Linking %s...\n" "$PWD/$1"
+        printf "Linking %s...\n" "$PACKAGE_PATH"
     fi
-    ln -s "$PWD/$1" "$SOURCE_DIR/$1"
+    ln -s "$PACKAGE_PATH" "$SOURCE_DIR/$PACKAGE_NAME"
 }
 
 # Helper function that determines if an argument is in a list.
