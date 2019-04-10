@@ -113,7 +113,7 @@ def callback(data):
     mean_pool = depth_mat[:MK*K, :NL*L].reshape(MK, K, NL, L).mean(axis=(1,3))
     
     """Divide distance matrix into two vertical columns."""
-    div_mat = np.split(mean_pool[30], 2, axis=0)
+    div_mat = np.split(mean_pool[20], 2, axis=0)
     # print(div_mat)
 
     """Perform obstacle detection."""

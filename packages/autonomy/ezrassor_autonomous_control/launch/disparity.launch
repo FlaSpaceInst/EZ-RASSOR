@@ -25,7 +25,7 @@
   		<remap from="/stereo/right/image" to="/ezrassor/front_camera/right/image_rect"></remap>
   	</node>
 
-    <!--node pkg="viso2_ros" type="stereo_odometer" name="odometry">
+    <node pkg="viso2_ros" type="stereo_odometer" name="odometry">
         <param name="sensor_frame_id" value="left_camera_optical_frame"/>
         <param name="ref_frame_motion_threshold" type="double" value="2.0"/>
         <param name="ref_frame_inlier_threshold" type="int" value="50"/>
@@ -33,7 +33,7 @@
         <remap from="/stereo/right/image" to="/ezrassor/front_camera/right/image_rect"/>
         <remap from="/stereo/left/camera_info" to="/ezrassor/front_camera/left/camera_info"/>
         <remap from="/stereo/right/camera_info" to="/ezrassor/front_camera/right/camera_info"/>
-    </node-->
+    </node>
 
     <node pkg="ezrassor_autonomous_control" type="distance_map" name="distance_map"/>
     
