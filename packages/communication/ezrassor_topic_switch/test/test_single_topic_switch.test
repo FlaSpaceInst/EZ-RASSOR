@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch the integration tests for a single topic switch.
+     Written by Tiger Sachse. -->
+<launch>
+  <arg name="startup_delay"
+       default="1"
+       doc="Delay in seconds after initialization of test class."/>
+  <arg name="communication_delay"
+       default="0.1"
+       doc="Delay in seconds between publishing to and subscribing from a topic."/>
+
+  <!-- Launch the integration test node. -->
+  <test test-name="test_single_topic_switch"
+        pkg="ezrassor_topic_switch"
+        type="test_single_topic_switch">
+    <param name="primary_topic" value="/primary_topic"/>
+    <param name="secondary_topic" value="/secondary_topic"/>
+    <param name="output_topic" value="/output_topic"/>
+    <param name="startup_delay" value="$(arg startup_delay)"/>
+    <param name="communication_delay" value="$(arg communication_delay)"/>
+  </test>
+
+  <!-- Launch a single topic switch. -->
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="single_topic_switch"/>
+    <arg name="primary_topic" value="/primary_topic"/>
+    <arg name="secondary_topic" value="/secondary_topic"/>
+    <arg name="output_topic" value="/output_topic"/>
+    <arg name="topic_type" value="Float32"/>
+  </include>
+</launch>

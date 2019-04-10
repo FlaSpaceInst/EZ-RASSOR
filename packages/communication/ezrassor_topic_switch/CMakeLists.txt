@@ -19,5 +19,5 @@ install(
 )
 if(CATKIN_ENABLE_TESTING)
     find_package(rostest)
-    add_rostest(test/test_topic_switch.test)
+    add_rostest(test/test_single_topic_switch.test)
 endif()
