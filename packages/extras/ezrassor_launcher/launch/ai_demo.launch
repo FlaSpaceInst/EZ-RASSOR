@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
+  
+  <arg name="world" default="mars"/>
 
   <include file="$(find ezrassor_launcher)/launch/manual_simulation.launch">
-      <arg name="world" value="mars"/>
+      <arg name="world" value="$(arg world)"/>
   </include>
 
   <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>
