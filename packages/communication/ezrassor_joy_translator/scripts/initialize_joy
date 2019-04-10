@@ -72,6 +72,7 @@ get_active_joystick() {
 
 # Update the configuration of the joy translator ROS node.
 update_config() {
+    pwd
     SHARE_PATH="$SHARE_DIR/$PACKAGE_NAME/$CONFIG_DIR/$CONFIG_FILE"
     TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_PATH"
 
@@ -79,11 +80,11 @@ update_config() {
     if [ -f "$TARGET_CONFIG_FILE" ]; then
         printf "Attempting to update configuration file... "
         SED_MATCH="s#$YAML_PARAMETER.*#$YAML_PARAMETER : /dev/input/js$ACTIVE_STICK_NUMBER#"
-        sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE"
+        sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE" 1>/dev/null 2>&1
         if [ "$?" != "0" ]; then
             printf "FAILED.\n"
             printf "Escalating with sudo privileges... "
-            sudo sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE"
+            sudo sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE" 1>/dev/null 2>&1
             if [ "$?" != "0" ]; then
                 printf "FAILED.\n"
                 fail_to_update "$ACTIVE_STICK_NUMBER"
