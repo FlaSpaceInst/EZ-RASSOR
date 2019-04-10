@@ -282,8 +282,8 @@ export default class App extends React.Component {
         <FadeInView style={styles.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
             <View style={styles.upAndDownDPad} 
-            onTouchStart={() => this.controlUpdate(1<<11) }
-            onTouchEnd={() => this.controlUpdate(-1<<11)}
+            onTouchStart={() => this.controlUpdate(0b1010<<8) }
+            onTouchEnd={() => this.controlUpdate(-0b1010<<8)}
             >
             <TouchableOpacity>  
               <FontAwesome
@@ -294,9 +294,9 @@ export default class App extends React.Component {
             </TouchableOpacity>
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
-              <View style={styles.dPadLeft} 
-              onTouchStart={() => this.controlUpdate(1<<9) }
-              onTouchEnd={() => this.controlUpdate(-1<<9)}
+              <View style={styles.dPadLeft}
+              onTouchStart={() => this.controlUpdate(0b1001<<8) }
+              onTouchEnd={() => this.controlUpdate(-0b1001<<8)}
               >
                 <TouchableOpacity>
                   <FontAwesome
@@ -307,8 +307,8 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.dPadRight} 
-              onTouchStart={() => this.controlUpdate(1<<8) }
-              onTouchEnd={() => this.controlUpdate(-1<<8)}
+              onTouchStart={() => this.controlUpdate(0b0110<<8) }
+              onTouchEnd={() => this.controlUpdate(-0b0110<<8)}
               >
                 <TouchableOpacity>
                   <FontAwesome
@@ -320,8 +320,8 @@ export default class App extends React.Component {
               </View>
             </View>
             <View style={styles.upAndDownDPad}
-            onTouchStart={() => this.controlUpdate(1<<10) }
-            onTouchEnd={() => this.controlUpdate(-1<<10)}
+            onTouchStart={() => this.controlUpdate(0b0101<<8) }
+            onTouchEnd={() => this.controlUpdate(-0b0101<<8)}
             >
               <TouchableOpacity>
                 <FontAwesome
