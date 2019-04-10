@@ -58,7 +58,6 @@ def start_node(default_node_name, override_topic, queue_size):
         secondary_topic = rospy.get_param(rospy.get_name() + "/secondary_topic")
         output_topic = rospy.get_param(rospy.get_name() + "/output_topic")
         topic_type = rospy.get_param(rospy.get_name() + "/topic_type")
-
         override_status = OverrideStatus(override_topic)
         topic_class = get_topic_class(topic_type)
 

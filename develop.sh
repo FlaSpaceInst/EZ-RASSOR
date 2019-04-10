@@ -120,6 +120,13 @@ kill_ros() {
     printf "\nROS has been shut down.\n"
 }
 
+# Test all packages in the workspace.
+test_packages() {
+    cd "$WORKSPACE_DIR"
+    catkin_make run_tests
+    cd - > /dev/null 2>&1
+}
+
 # Main entry point of the script.
 case $1 in
     setup)
@@ -149,5 +156,8 @@ case $1 in
         ;;
     kill)
         kill_ros
+        ;;
+    test)
+        test_packages
         ;;
 esac

@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+""""""
+import time
+import rospy
+import random
+import rostest
+import unittest
+import threading
+import std_msgs.msg
+
+
+# Some top-level constants for this test suite.
+QUEUE_SIZE = 10
+PACKAGE_NAME = "ezrassor_topic_switch"
+DEFAULT_TEST_NAME = "test_single_topic_switch"
+
+
+class TestSingleTopicSwitch(unittest.TestCase):
+    """"""
+    def __init__(self, *arguments):
+        """"""
+        super(TestSingleTopicSwitch, self).__init__(*arguments)
+        rospy.init_node(DEFAULT_TEST_NAME)
+
+        self.__output_data_lock = threading.Lock()
+        self.__has_new_output_data = False
+        self.__output_data = None
+
+        primary_topic = rospy.get_param(
+            rospy.get_name() + "/primary_topic",
+        )
+        secondary_topic = rospy.get_param(
+            rospy.get_name() + "/secondary_topic",
+        )
+        output_topic = rospy.get_param(
+            rospy.get_name() + "/output_topic",
+        )
+        startup_delay = float(
+            rospy.get_param(
+                rospy.get_name() + "/startup_delay",
+            ),
+        )
+        self.__communication_delay = float(
+            rospy.get_param(
+                rospy.get_name() + "/communication_delay",
+            ),
+        )
+
+        self.primary_publisher = rospy.Publisher(
+            primary_topic,
+            std_msgs.msg.Float32,
+            queue_size=QUEUE_SIZE,
+        )
+        self.secondary_publisher = rospy.Publisher(
+            secondary_topic,
+            std_msgs.msg.Float32,
+            queue_size=QUEUE_SIZE,
+        )
+        rospy.Subscriber(
+            output_topic,
+            std_msgs.msg.Float32,
+            callback=self.__collect_output_data,
+        )
+        time.sleep(startup_delay)
+
+    def __collect_output_data(self, data):
+        """"""
+        self.__output_data_lock.acquire()
+        self.__has_new_output_data = True
+        self.__output_data = data.data
+        self.__output_data_lock.release()
+
+    def __observe_output_data(self):
+        """"""
+        self.__output_data_lock.acquire()
+        output_data = None
+        if self.__has_new_output_data:
+            self.__has_new_output_data = False
+            output_data = self.__output_data
+        self.__output_data_lock.release()
+
+        return output_data
+
+    def test_primary_to_output(self):
+        for run in range(10):
+            random_float = float(random.randint(0, 1337))
+            self.primary_publisher.publish(random_float)
+            time.sleep(self.__communication_delay)
+            self.assertEqual(self.__observe_output_data(), random_float)
+
+
+#
+rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestSingleTopicSwitch)
