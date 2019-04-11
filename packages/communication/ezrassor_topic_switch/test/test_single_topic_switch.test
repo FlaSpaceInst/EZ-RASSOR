@@ -26,6 +26,7 @@
     <arg name="primary_topic" value="/primary_topic"/>
     <arg name="secondary_topic" value="/secondary_topic"/>
     <arg name="output_topic" value="/output_topic"/>
-    <arg name="topic_type" value="Float32"/>
+    <arg name="topic_type_module" value="std_msgs.msg"/>
+    <arg name="topic_type_class" value="Int32"/>
   </include>
 </launch>
