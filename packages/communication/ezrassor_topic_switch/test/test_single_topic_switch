@@ -13,6 +13,7 @@ import std_msgs.msg
 QUEUE_SIZE = 10
 PACKAGE_NAME = "ezrassor_topic_switch"
 DEFAULT_TEST_NAME = "test_single_topic_switch"
+OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
 
 
 class TestSingleTopicSwitch(unittest.TestCase):
@@ -48,20 +49,30 @@ class TestSingleTopicSwitch(unittest.TestCase):
 
         self.primary_publisher = rospy.Publisher(
             primary_topic,
-            std_msgs.msg.Float32,
+            std_msgs.msg.Int32,
             queue_size=QUEUE_SIZE,
         )
         self.secondary_publisher = rospy.Publisher(
             secondary_topic,
-            std_msgs.msg.Float32,
+            std_msgs.msg.Int32,
+            queue_size=QUEUE_SIZE,
+        )
+        self.toggle_publisher = rospy.Publisher(
+            OVERRIDE_TOGGLE_TOPIC,
+            std_msgs.msg.Bool,
             queue_size=QUEUE_SIZE,
         )
         rospy.Subscriber(
             output_topic,
-            std_msgs.msg.Float32,
+            std_msgs.msg.Int32,
             callback=self.__collect_output_data,
         )
         time.sleep(startup_delay)
+
+    def __publish(self, publisher, data):
+        """"""
+        publisher.publish(data)
+        time.sleep(self.__communication_delay)
 
     def __collect_output_data(self, data):
         """"""
@@ -81,12 +92,66 @@ class TestSingleTopicSwitch(unittest.TestCase):
 
         return output_data
 
-    def test_primary_to_output(self):
-        for run in range(10):
-            random_float = float(random.randint(0, 1337))
-            self.primary_publisher.publish(random_float)
+    def __do_publishing_run(self, run_range, publisher):
+        """"""
+        for run in run_range:
+            random_integer = random.randint(0, 1337)
+            publisher.publish(random_integer)
             time.sleep(self.__communication_delay)
-            self.assertEqual(self.__observe_output_data(), random_float)
+            self.assertEqual(self.__observe_output_data(), random_integer)
+
+
+    def test_primary_to_output(self):
+        """"""
+        self.toggle_publisher.publish(False)
+        time.sleep(self.__communication_delay)
+        self.__do_publishing_run(range(10), self.primary_publisher)
+
+    def test_secondary_to_output(self):
+        """"""
+        self.toggle_publisher.publish(True)
+        time.sleep(self.__communication_delay)
+        self.__do_publishing_run(range(10), self.secondary_publisher)
+        self.toggle_publisher.publish(False)
+
+    def test_single_switch(self):
+        """"""
+        self.toggle_publisher.publish(False)
+        time.sleep(self.__communication_delay)
+        self.__do_publishing_run(
+            range(random.randrange(5, 10)),
+            self.primary_publisher,
+        )
+        self.toggle_publisher.publish(True)
+        time.sleep(self.__communcation_delay)
+        self.__do_publishing_run(
+            range(random.randrange(5, 10)),
+            self.secondary_publisher,
+        )
+        self.toggle_publisher.publish(False)
+
+    def test_multiple_switches(self):
+        """"""
+        current_state = False
+        self.toggle_publisher.publish(current_state)
+        time.sleep(self.__communication_delay)
+
+        for run in range(5):
+            if random.random() > .5:
+                self.toggle_publisher.publish(not current_state)
+
+        self.__do_publishing_run(
+            range(random.randrange(5, 10)),
+            self.primary_publisher,
+        )
+        self.toggle_publisher.publish(True)
+        time.sleep(self.__communcation_delay)
+        self.__do_publishing_run(
+            range(random.randrange(5, 10)),
+            self.secondary_publisher,
+        )
+        self.toggle_publisher.publish(False)
+
 
 
 #
