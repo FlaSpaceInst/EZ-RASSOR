@@ -90,7 +90,7 @@ def dodge_left(world_state, ros_util):
 
     threshold = 0
 
-    while world_state.state_flags['warning_flag'] != 0 and (threshold < 20):
+    while world_state.state_flags['warning_flag'] != 0 or (threshold < 30):
         if world_state.state_flags['warning_flag'] == 0:
             threshold+=1
         ros_util.command_pub.publish(ros_util.commands['left'])
@@ -109,7 +109,7 @@ def dodge_right(world_state, ros_util):
 
     threshold = 0
 
-    while world_state.state_flags['warning_flag'] != 0 or (threshold < 20):
+    while world_state.state_flags['warning_flag'] != 0 or (threshold < 30):
         if world_state.state_flags['warning_flag'] == 0:
             threshold+=1
         ros_util.command_pub.publish(ros_util.commands['right'])
