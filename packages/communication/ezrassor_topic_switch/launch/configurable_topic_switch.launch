@@ -5,7 +5,9 @@
   <arg name="primary_topic" doc="The switch's primary topic."/>
   <arg name="secondary_topic" doc="The switch's secondary topic."/>
   <arg name="output_topic" doc="The switch's output topic."/>
-  <arg name="topic_type" doc="The switch's topics' types."/>
+  <arg name="topic_type_module"
+       doc="The topics' type's module, ('std_msgs.msg', 'my_package.msg', etc)."/>
+  <arg name="topic_type_class" doc="The topics' type's class name, ('Int8', 'Twist', etc)."/>
 
   <node name="$(arg node_name)"
         pkg="ezrassor_topic_switch"
@@ -15,6 +17,7 @@
     <param name="primary_topic" value="$(arg primary_topic)"/>
     <param name="secondary_topic" value="$(arg secondary_topic)"/>
     <param name="output_topic" value="$(arg output_topic)"/>
-    <param name="topic_type" value="$(arg topic_type)"/>
+    <param name="topic_type_module" value="$(arg topic_type_module)"/>
+    <param name="topic_type_class" value="$(arg topic_type_class)"/>
   </node>
 </launch>
