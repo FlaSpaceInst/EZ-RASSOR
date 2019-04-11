@@ -11,7 +11,7 @@ import utility_functions as uf
 import numpy as np
 import random
 
-demo_targets = [[17,15], [12, 13], [20, 18]]
+demo_targets = [[-3,34], [-8, 31], [-12, 29]]
 
 def on_start_up():
     """ Initialization Function  """
