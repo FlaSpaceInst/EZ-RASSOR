@@ -11,6 +11,10 @@ import std_msgs.msg
 
 # Some top-level constants for this test suite.
 QUEUE_SIZE = 10
+SMALL_RANGE = 5
+LARGE_RANGE = 10
+MINIMUM_RANDOM_INTEGER = 0
+MAXIMUM_RANDOM_INTEGER = 1337
 PACKAGE_NAME = "ezrassor_topic_switch"
 DEFAULT_TEST_NAME = "test_single_topic_switch"
 OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
@@ -18,9 +22,9 @@ OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
 
 class TestSingleTopicSwitch(unittest.TestCase):
     """"""
-    def __init__(self, *arguments):
+    def __init__(self, *arguments, **keyword_arguments):
         """"""
-        super(TestSingleTopicSwitch, self).__init__(*arguments)
+        super(TestSingleTopicSwitch, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
 
         self.__output_data_lock = threading.Lock()
@@ -69,11 +73,6 @@ class TestSingleTopicSwitch(unittest.TestCase):
         )
         time.sleep(startup_delay)
 
-    def __publish(self, publisher, data):
-        """"""
-        publisher.publish(data)
-        time.sleep(self.__communication_delay)
-
     def __collect_output_data(self, data):
         """"""
         self.__output_data_lock.acquire()
@@ -92,67 +91,68 @@ class TestSingleTopicSwitch(unittest.TestCase):
 
         return output_data
 
-    def __do_publishing_run(self, run_range, publisher):
+    def __publish_and_sleep(self, publisher, data):
+        """"""
+        publisher.publish(data)
+        time.sleep(self.__communication_delay)
+
+    def __test_pipeline(self, publisher, run_range):
         """"""
         for run in run_range:
-            random_integer = random.randint(0, 1337)
-            publisher.publish(random_integer)
-            time.sleep(self.__communication_delay)
+            random_integer = random.randint(
+                MINIMUM_RANDOM_INTEGER,
+                MAXIMUM_RANDOM_INTEGER,
+            )
+            self.__publish_and_sleep(publisher, random_integer)
             self.assertEqual(self.__observe_output_data(), random_integer)
-
 
     def test_primary_to_output(self):
         """"""
-        self.toggle_publisher.publish(False)
-        time.sleep(self.__communication_delay)
-        self.__do_publishing_run(range(10), self.primary_publisher)
+        self.__publish_and_sleep(toggle_publisher, False)
+        self.__test_pipeline(self.primary_publisher, range(1, LARGE_RANGE))
 
     def test_secondary_to_output(self):
         """"""
-        self.toggle_publisher.publish(True)
-        time.sleep(self.__communication_delay)
-        self.__do_publishing_run(range(10), self.secondary_publisher)
-        self.toggle_publisher.publish(False)
+        self.__publish(toggle_publisher, True)
+        self.__test_pipeline(self.secondary_publisher, range(1, LARGE_RANGE))
+        self.__publish(toggle_publisher, False)
 
     def test_single_switch(self):
         """"""
-        self.toggle_publisher.publish(False)
-        time.sleep(self.__communication_delay)
-        self.__do_publishing_run(
-            range(random.randrange(5, 10)),
+        self.__publish(toggle_publisher, False)
+        self.__test_pipeline(
             self.primary_publisher,
+            range(1, random.randrange(5, 10)),
         )
-        self.toggle_publisher.publish(True)
-        time.sleep(self.__communcation_delay)
-        self.__do_publishing_run(
-            range(random.randrange(5, 10)),
+        self.__publish(toggle_publisher, True)
+        self.__test_pipeline(
             self.secondary_publisher,
+            range(1, random.randrange(5, 10)),
         )
-        self.toggle_publisher.publish(False)
+        self.__publish(toggle_publisher, False)
 
+    """
     def test_multiple_switches(self):
-        """"""
+
         current_state = False
         self.toggle_publisher.publish(current_state)
-        time.sleep(self.__communication_delay)
-
         for run in range(5):
             if random.random() > .5:
                 self.toggle_publisher.publish(not current_state)
 
-        self.__do_publishing_run(
+        self.__test_pipeline(
             range(random.randrange(5, 10)),
             self.primary_publisher,
         )
         self.toggle_publisher.publish(True)
         time.sleep(self.__communcation_delay)
-        self.__do_publishing_run(
+        self.__test_pipeline(
             range(random.randrange(5, 10)),
             self.secondary_publisher,
         )
         self.toggle_publisher.publish(False)
-
-
+        pass
+    """
 
 #
 rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestSingleTopicSwitch)
