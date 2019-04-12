@@ -47,7 +47,7 @@ def callback(data, additional_arguments):
     # AI Kill Bit
     if data.buttons[10] > 0:
         pub_auto_toggles.publish(1)
-        break
+        return
     
     twist = Twist()
     twist.linear.x = ((data.axes[4] + data.axes[1]) / 2) * float(max_wheel_speed)
