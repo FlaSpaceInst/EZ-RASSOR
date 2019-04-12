@@ -14,6 +14,7 @@
         pkg="ezrassor_controller_server"
         type="test_controller_server">
     <param name="port" value="8080"/>
+    <param name="server_url" value="localhost"/>
     <param name="wheel_instructions_topic" value="/wheel_instructions"/>
     <param name="front_arm_instructions_topic" value="/front_arm_instructions"/>
     <param name="back_arm_instructions_topic" value="/back_arm_instructions"/>
