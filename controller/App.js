@@ -318,7 +318,7 @@ export default class App extends React.Component {
             <View style={{flex: 2 , flexDirection: 'row'}}>
               <View style={styles.dPadLeft}
               onTouchStart={() => this.twistUpdate({wheel_instruction:"left"}) }
-              onTouchStart={() => this.twistUpdate({wheel_instruction:"stop"}) }
+              onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
               >
                 <TouchableOpacity>
                   <FontAwesome
