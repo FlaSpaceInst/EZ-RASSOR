@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find ezrassor_joy_translator)/launch/configurable_joy_translator.launch">
+        <arg name="wheel_instructions_topic" value="wheel_instructions" />
+        <arg name="front_arm_instructions_topic" value="front_arms_instructions" />
+        <arg name="back_arm_instructions_topic" value="back_arm_instructions" />
+        <arg name="front_drum_instructions_topic" value="front_drum_instructions" />
+        <arg name="back_drum_instructions_topic" value="back_drum_instructions" />
+        <arg name="max_wheel_speed" value="1" />
+        <arg name="max_arm_speed" value="1" />
+        <arg name="max_drum_speed" value="1" />
+    </include>
+</launch>
