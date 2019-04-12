@@ -16,13 +16,12 @@
        default="false"
        doc="Start the simulation paused."/>
 
-  <!--env name="ROS_NAMESPACE" value="ezrassor$(arg id)"/-->
-  <!--     
+  
   <include file="$(find ezrassor_launcher)/launch/communication.launch">
     <arg name="control_method" value="$(arg control_method)"/>
     <arg name="id" value="$(arg id)"/>
   </include>
-  -->
+
   <include file="$(find ezrassor_sim_control)/launch/sim_control.launch">
       <arg name="id" value="$(arg id)"/>
   </include>

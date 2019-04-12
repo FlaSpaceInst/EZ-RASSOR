@@ -19,7 +19,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="paused" default="true"/>
+  <arg name="paused" default="false"/>
  
   <!-- Create World Environment -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -31,7 +31,7 @@
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
-  <group ns="ezrassor$(arg id)">
+  <!--group ns="ezrassor$(arg id)"-->
     <!-- Spawn Robot -->
     <param name="robot_description" command="$(find xacro)/xacro.py '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
 
@@ -46,7 +46,7 @@
     </node>
 
     <!-- broadcast left image frame for pointcloud -->
-  </group>
+  <!--/group-->
 
 
 
