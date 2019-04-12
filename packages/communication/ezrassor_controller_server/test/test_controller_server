@@ -4,17 +4,22 @@
 Written by Tiger Sachse.
 """
 import time
+import json
 import rospy
 import rostest
+import httplib
 import unittest
 import threading
 import std_msgs.msg
 import geometry_msgs.msg
 
 
-# 
+#
 PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
+POST_HEADER = {
+    "content-type" : "application/json",
+}
 
 
 class Instruction():
@@ -51,6 +56,8 @@ class TestControllerServer(unittest.TestCase):
         super(TestControllerServer, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
         
+        self.__server_url = rospy.get_param(rospy.get_name() + "/server_url")
+        self.__port = int(rospy.get_param(rospy.get_name() + "/port"))
         wheel_instructions_topic = rospy.get_param(
             rospy.get_name() + "/wheel_instructions_topic",
         )
@@ -110,6 +117,12 @@ class TestControllerServer(unittest.TestCase):
         # Sleep for a bit to give ROS and all other nodes time to start up.
         time.sleep(startup_delay)
 
+    def __post(self, payload):
+        """"""
+        connection = httplib.HTTPConnection(self.__server_url, self.__port)
+        #connection.close()
+        connection.request("POST", "", json.dumps(payload), POST_HEADER)
+
     def __collect_wheel_instruction(self, content):
         """"""
         self.__instructions["wheel"].collect(content)
@@ -151,7 +164,9 @@ class TestControllerServer(unittest.TestCase):
         return self.__instructions["back_drum"].get()
 
     def test_test_me_daddy(self):
-        self.assertEqual(1, 1)
+        """"""
+        self.__post({"autonomous_toggles" : 1})
+        self.assertEqual(1,1)
 
 
 # Start this node with some default values.
