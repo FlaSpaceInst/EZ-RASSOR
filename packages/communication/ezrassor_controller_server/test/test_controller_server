@@ -7,6 +7,7 @@ import time
 import rospy
 import rostest
 import unittest
+import threading
 import std_msgs.msg
 import geometry_msgs.msg
 
@@ -14,6 +15,33 @@ import geometry_msgs.msg
 # 
 PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
+
+
+class Instruction():
+    """"""
+    def __init__(self):
+        """"""
+        self.__content = None
+        self.__content_is_new = False
+        self.__content_lock = threading.Lock()
+
+    def update(self, content):
+        """"""
+        self.__content_lock.acquire()
+        self.__content_is_new = True
+        self.__content = content
+        self.__content_lock.release()
+
+    def get(self):
+        """"""
+        self.__content_lock.acquire()
+        content = None
+        if self.__content_is_new:
+            self.__content_is_new = False
+            content = self.__content
+        self.__content_lock.release()
+
+        return content
 
 
 class TestControllerServer(unittest.TestCase):
@@ -48,34 +76,82 @@ class TestControllerServer(unittest.TestCase):
         rospy.Subscriber(
             wheel_instructions_topic,
             geometry_msgs.msg.Twist,
-            callback=self.__collect_wheel_instructions,
+            callback=self.__collect_wheel_instruction,
         )
         rospy.Subscriber(
             front_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_front_arm_instructions,
+            callback=self.__collect_front_arm_instruction,
         )
         rospy.Subscriber(
             back_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_back_arm_instructions,
+            callback=self.__collect_back_arm_instruction,
         )
         rospy.Subscriber(
             front_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_front_drum_instructions,
+            callback=self.__collect_front_drum_instruction,
         )
         rospy.Subscriber(
             back_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_back_drum_instructions,
+            callback=self.__collect_back_drum_instruction,
         )
+
+        self.__instructions = {
+            "wheel" : Instruction(),
+            "front_arm" : Instruction(),
+            "back_arm" : Instruction(),
+            "front_drum" : Instruction(),
+            "back_drum" : Instruction(),
+        }
 
         # Sleep for a bit to give ROS and all other nodes time to start up.
         time.sleep(startup_delay)
 
-        def test_test(self):
-            self.assertEqual(1, 1)
+    def __collect_wheel_instruction(self, content):
+        """"""
+        self.__instructions["wheel"].collect(content)
+
+    def __collect_front_arm_instruction(self, content):
+        """"""
+        self.__instructions["front_arm"].collect(content)
+
+    def __collect_back_arm_instruction(self, content):
+        """"""
+        self.__instructions["back_arm"].collect(content)
+
+    def __collect_front_drum_instruction(self, content):
+        """"""
+        self.__instructions["front_drum"].collect(content)
+
+    def __collect_back_drum_instruction(self, content):
+        """"""
+        self.__instructions["back_drum"].collect(content)
+
+    def __observe_wheel_instruction(self):
+        """"""
+        return self.__instructions["wheel"].get()
+
+    def __observe_front_arm_instruction(self):
+        """"""
+        return self.__instructions["front_arm"].get()
+
+    def __observe_back_arm_instruction(self):
+        """"""
+        return self.__instructions["back_arm"].get()
+
+    def __observe_front_drum_instruction(self):
+        """"""
+        return self.__instructions["front_drum"].get()
+
+    def __observe_back_drum_instruction(self):
+        """"""
+        return self.__instructions["back_drum"].get()
+
+    def test_test_me_daddy(self):
+        self.assertEqual(1, 1)
 
 
 # Start this node with some default values.
