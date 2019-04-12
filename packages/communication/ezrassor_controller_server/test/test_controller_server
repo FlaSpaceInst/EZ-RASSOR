@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+"""
+
+Written by Tiger Sachse.
+"""
+import time
+import rospy
+import rostest
+import unittest
+import std_msgs.msg
+import geometry_msgs.msg
+
+
+# 
+PACKAGE_NAME = "ezrassor_controller_server"
+DEFAULT_TEST_NAME = "test_controller_server"
+
+
+class TestControllerServer(unittest.TestCase):
+    """"""
+    def __init__(self, *arguments, **keyword_arguments):
+        """"""
+        super(TestControllerServer, self).__init__(*arguments, **keyword_arguments)
+        rospy.init_node(DEFAULT_TEST_NAME)
+        
+        wheel_instructions_topic = rospy.get_param(
+            rospy.get_name() + "/wheel_instructions_topic",
+        )
+        front_arm_instructions_topic = rospy.get_param(
+            rospy.get_name() + "/front_arm_instructions_topic",
+        )
+        back_arm_instructions_topic = rospy.get_param(
+            rospy.get_name() + "/back_arm_instructions_topic",
+        )
+        front_drum_instructions_topic = rospy.get_param(
+            rospy.get_name() + "/front_drum_instructions_topic",
+        )
+        back_drum_instructions_topic = rospy.get_param(
+            rospy.get_name() + "/back_drum_instructions_topic",
+        )
+        startup_delay = float(
+            rospy.get_param(rospy.get_name() + "/startup_delay"),
+        )
+        self.__communication_delay = float(
+            rospy.get_param(rospy.get_name() + "/communication_delay"),
+        )
+
+        rospy.Subscriber(
+            wheel_instructions_topic,
+            geometry_msgs.msg.Twist,
+            callback=self.__collect_wheel_instructions,
+        )
+        rospy.Subscriber(
+            front_arm_instructions_topic,
+            std_msgs.msg.Float32,
+            callback=self.__collect_front_arm_instructions,
+        )
+        rospy.Subscriber(
+            back_arm_instructions_topic,
+            std_msgs.msg.Float32,
+            callback=self.__collect_back_arm_instructions,
+        )
+        rospy.Subscriber(
+            front_drum_instructions_topic,
+            std_msgs.msg.Float32,
+            callback=self.__collect_front_drum_instructions,
+        )
+        rospy.Subscriber(
+            back_drum_instructions_topic,
+            std_msgs.msg.Float32,
+            callback=self.__collect_back_drum_instructions,
+        )
+
+        # Sleep for a bit to give ROS and all other nodes time to start up.
+        time.sleep(startup_delay)
+
+        def test_test(self):
+            self.assertEqual(1, 1)
+
+
+# Start this node with some default values.
+rostest.rosrun(
+    PACKAGE_NAME,
+    DEFAULT_TEST_NAME,
+    TestControllerServer,
+)

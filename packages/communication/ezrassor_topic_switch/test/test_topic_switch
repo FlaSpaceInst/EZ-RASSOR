@@ -20,15 +20,15 @@ STATE_SWITCH_ODDS = 0.5
 MINIMUM_RANDOM_INTEGER = 0
 MAXIMUM_RANDOM_INTEGER = 1337
 PACKAGE_NAME = "ezrassor_topic_switch"
-DEFAULT_TEST_NAME = "test_single_topic_switch"
+DEFAULT_TEST_NAME = "test_topic_switch"
 OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
 
 
-class TestSingleTopicSwitch(unittest.TestCase):
+class TestTopicSwitch(unittest.TestCase):
     """A suite of tests that confirm the functionality of a single topic switch."""
     def __init__(self, *arguments, **keyword_arguments):
         """Initialize this test suite with several publishers and other variables."""
-        super(TestSingleTopicSwitch, self).__init__(*arguments, **keyword_arguments)
+        super(TestTopicSwitch, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
         
         # Read in all necessary ros parameters.
@@ -42,14 +42,10 @@ class TestSingleTopicSwitch(unittest.TestCase):
             rospy.get_name() + "/output_topic",
         )
         startup_delay = float(
-            rospy.get_param(
-                rospy.get_name() + "/startup_delay",
-            ),
+            rospy.get_param(rospy.get_name() + "/startup_delay"),
         )
         self.__communication_delay = float(
-            rospy.get_param(
-                rospy.get_name() + "/communication_delay",
-            ),
+            rospy.get_param(rospy.get_name() + "/communication_delay"),
         )
 
         # Create publishers and a subscriber that hook into a topic switch.
@@ -170,4 +166,4 @@ class TestSingleTopicSwitch(unittest.TestCase):
 
 
 # Start this node with some default values.
-rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestSingleTopicSwitch)
+rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestTopicSwitch)

@@ -10,9 +10,9 @@
        doc="Delay in seconds between publishing to and subscribing from a topic."/>
 
   <!-- Launch the integration test node. -->
-  <test test-name="test_single_topic_switch"
+  <test test-name="test_topic_switch"
         pkg="ezrassor_topic_switch"
-        type="test_single_topic_switch">
+        type="test_topic_switch">
     <param name="primary_topic" value="/primary_topic"/>
     <param name="secondary_topic" value="/secondary_topic"/>
     <param name="output_topic" value="/output_topic"/>
