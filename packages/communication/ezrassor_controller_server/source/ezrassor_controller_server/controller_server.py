@@ -64,13 +64,21 @@ def get_custom_handler(publishers):
                 self.wheel_instructions_publisher.publish(wheel_instruction)
 
             if "front_arm_instruction" in instructions:
-                self.front_arm_instructions_publisher.publish(instruction)
+                self.front_arm_instructions_publisher.publish(
+                    instructions["front_arm_instruction"],
+                )
             if "back_arm_instruction" in instructions:
-                self.back_arm_instructions_publisher.publish(instruction)
+                self.back_arm_instructions_publisher.publish(
+                    instructions["back_arm_instruction"],
+                )
             if "front_drum_instruction" in instructions:
-                self.front_drum_instructions_publisher.publish(instruction)
+                self.front_drum_instructions_publisher.publish(
+                    instructions["front_drum_instruction"],
+                )
             if "back_drum_instruction" in instructions:
-                self.back_drum_instructions_publisher.publish(instruction)
+                self.back_drum_instructions_publisher.publish(
+                    instructions["back_drum_instruction"],
+                )
 
     return CustomRequestHandler
 
