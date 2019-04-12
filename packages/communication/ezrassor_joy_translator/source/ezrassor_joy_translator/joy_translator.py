@@ -16,9 +16,10 @@ def callback(data, additional_arguments):
     pub_back_arm = additional_arguments[2]
     pub_front_drum = additional_arguments[3]
     pub_back_drum = additional_arguments[4]
-    max_wheel_speed = additional_arguments[5]
-    max_arm_speed = additional_arguments[6]
-    max_drum_speed = additional_arguments[7]
+    pub_auto_toggles = additional_arguments[5]
+    max_wheel_speed = additional_arguments[6]
+    max_arm_speed = additional_arguments[7]
+    max_drum_speed = additional_arguments[8]
     # Raw controller input data indexes
     # data.buttons[index]
     # 0 A : Back Drum Dump
@@ -43,9 +44,12 @@ def callback(data, additional_arguments):
     # 6 cross key left/right : Function 2/3
     # 7 cross key up/down : Function 1/4
 
+    # AI Kill Bit
+    if data.buttons[10] > 0:
+        pub_auto_toggles.publish(1)
+        break
+    
     twist = Twist()
-#     twist.linear.x = data.axes[1] * float(max_wheel_speed)
-#     twist.linear.z = data.axes[0] * float(max_wheel_speed)
     twist.linear.x = ((data.axes[4] + data.axes[1]) / 2) * float(max_wheel_speed)
     twist.angular.z = ((data.axes[4] - data.axes[1]) / 2) * float(max_wheel_speed)
     trigger_threshold = 0.0
@@ -105,6 +109,8 @@ def start_node():
                                                    + "/front_drum_instructions_topic")
         publish_topic_back_drum = rospy.get_param(rospy.get_name()
                                                   + "/back_drum_instructions_topic")
+        publish_topic_auto_toggles = rospy.get_param(rospy.get_name()
+                                                     + "/autonomous_toggles"
         max_wheel_speed = rospy.get_param(rospy.get_name() + "/max_wheel_speed")
         max_arm_speed = rospy.get_param(rospy.get_name() + "/max_arm_speed")
         max_drum_speed = rospy.get_param(rospy.get_name() + "/max_drum_speed")
@@ -124,14 +130,18 @@ def start_node():
                                        queue_size=10)
         # Drum Front
         pub_front_drum = rospy.Publisher(publish_topic_front_drum, 
-                                             Float32, 
-                                             queue_size=10)
+                                         Float32, 
+                                         queue_size=10)
         # Drum Back
         pub_back_drum = rospy.Publisher(publish_topic_back_drum,
                                         Float32, 
                                         queue_size=10)
+        # Autonomous Toggles
+        pub_auto_toggles = rospy.Publisher(publish_topic_auto_toggles,
+                                           Float32,
+                                           queue_size=10)
         print "Controller node started"
-        rate = rospy.Rate(600)
+        rate = rospy.Rate(60)
         rospy.Subscriber(TOPIC,
                          Joy,
                          callback,
@@ -140,6 +150,7 @@ def start_node():
                                         pub_back_arm,
                                         pub_front_drum,
                                         pub_back_drum,
+                                        pub_auto_toggles,
                                         max_wheel_speed,
                                         max_arm_speed,
                                         max_drum_speed))
