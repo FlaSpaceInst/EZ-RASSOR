@@ -44,8 +44,10 @@ def callback(data, additional_arguments):
     # 7 cross key up/down : Function 1/4
 
     twist = Twist()
-    twist.linear.x = data.axes[1] * float(max_wheel_speed)
-    twist.linear.z = data.axes[0] * float(max_wheel_speed)
+#     twist.linear.x = data.axes[1] * float(max_wheel_speed)
+#     twist.linear.z = data.axes[0] * float(max_wheel_speed)
+    twist.linear.x = ((data.index[4] + data.index[1]) / 2) * float(max_wheel_speed)
+    twist.angular.z = ((data.index[4] - data.index[1]) / 2) * float(max_wheel_speed)
     trigger_threshold = 0.0
 
     # Use "-(1-data.axes[5])/2" not -1 for variable speed
