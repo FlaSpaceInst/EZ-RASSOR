@@ -5,7 +5,7 @@
        doc="Robot ID Number."/>
 
     
-    <group ns="ezrassor$(arg id)">
+    <!--group ns="ezrassor$(arg id)"-->
         <!-- Load joint controller configurations from YAML file to parameter server -->
         <rosparam file="$(find ezrassor_sim_control)/config/sim_control.yaml" command="load"/>
 
@@ -22,6 +22,6 @@
         <node pkg="ezrassor_sim_control" name="arms_driver" type="arms_driver" output="screen"/>
         <node pkg="ezrassor_sim_control" name="wheels_driver" type="wheels_driver" output="screen"/>
         <node pkg="ezrassor_sim_control" name="drums_driver" type="drums_driver" output="screen"/>
-    </group>
+    <!--/group-->
     
 </launch>

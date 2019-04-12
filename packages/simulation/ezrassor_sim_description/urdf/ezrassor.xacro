@@ -172,13 +172,13 @@
 
   <link name="arm_back">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+      <origin xyz="0 0 0" rpy="3.1415 0 3.1415"/>
       <geometry>
         <drum_arm />
       </geometry>
     </collision>
     <visual name="visual">
-      <origin xyz="0 0 0" rpy="0 0 3.1415"/>
+      <origin xyz="0 0 0" rpy="3.1415 0 3.1415"/>
       <geometry>
         <drum_arm />
       </geometry>
@@ -234,7 +234,7 @@
       </geometry>
     </collision>
     <visual name="drum_back">
-      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <origin xyz="0 0 0" rpy="3.1415 0 3.14159"/>
       <geometry>
         <robot_arm_drum />
       </geometry>
@@ -442,7 +442,7 @@
   </joint>
   
   <joint type="continuous" name="arm_front_hinge">
-    <origin xyz="0.20 0 0" rpy="0 0 0"/>
+    <origin xyz="0.20 0 0" rpy="3.1415 0 0"/>
     <child link="arm_front"/>
     <parent link="base_link"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -460,7 +460,7 @@
   </joint>
 
   <joint type="continuous" name="drum_front_hinge">
-    <origin xyz="0.388245 0 0" rpy="0 0 0"/>
+    <origin xyz="0.388245 0 0" rpy="3.1415 0 0"/>
     <child link="drum_front"/>
     <parent link="arm_front"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -469,7 +469,7 @@
   </joint>
   
   <joint type="continuous" name="drum_back_hinge">
-    <origin xyz="-0.388245 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.388245 0 0" rpy="3.1415 0 0"/>
     <child link="drum_back"/>
     <parent link="arm_back"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>

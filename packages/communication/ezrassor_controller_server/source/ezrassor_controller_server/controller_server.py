@@ -63,38 +63,22 @@ def get_custom_handler(publishers):
                     wheel_instruction.angular.z = -1.0
                 self.wheel_instructions_publisher.publish(wheel_instruction)
 
-            self._check_float_instruction(
-                "front_arm_instruction",
-                instructions,
-                self.front_arm_instructions_publisher,
-            )
-            self._check_float_instruction(
-                "back_arm_instruction",
-                instructions,
-                self.back_arm_instructions_publisher,
-            )
-            self._check_float_instruction(
-                "front_drum_instruction",
-                instructions,
-                self.front_drum_instructions_publisher,
-            )
-            self._check_float_instruction(
-                "back_drum_instruction",
-                instructions,
-                self.back_drum_instructions_publisher,
-            )
-
-        def _check_float_instruction(
-            self,
-            instruction,
-            instructions,
-            instruction_publisher):
-            """Handle an up/down float instruction."""
-            if instruction in instructions:
-                if instructions[instruction] == "up":
-                    instruction_publisher.publish(1.0)
-                elif instructions[instruction] == "down":
-                    instruction_publisher.publish(-1.0)
+            if "front_arm_instruction" in instructions:
+                self.front_arm_instructions_publisher.publish(
+                    instructions["front_arm_instruction"],
+                )
+            if "back_arm_instruction" in instructions:
+                self.back_arm_instructions_publisher.publish(
+                    instructions["back_arm_instruction"],
+                )
+            if "front_drum_instruction" in instructions:
+                self.front_drum_instructions_publisher.publish(
+                    instructions["front_drum_instruction"],
+                )
+            if "back_drum_instruction" in instructions:
+                self.back_drum_instructions_publisher.publish(
+                    instructions["back_drum_instruction"],
+                )
 
     return CustomRequestHandler
 
