@@ -41,10 +41,22 @@ export default class App extends React.Component {
       ipModal: false,
       xyModal: false,
       isLoading: true,
-      ip:'192.168.4.1',  
+      ip:'128.217.243.159',  
       endpoint: '/',
       control: 0,
-      xy: '(0,0)'
+      xy: '(0,0)', 
+      twist: {
+        autonomous_toggles:0,
+        target_coordinate:{
+              x:0,y:0
+        },
+        wheel_instruction: "none",
+        front_arm_instruction:0,
+        back_arm_instruction:0,
+        front_drum_instruction:0,
+        back_drum_instruction:0
+       },
+
 
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -90,6 +102,16 @@ export default class App extends React.Component {
     })
   
   }
+
+   twistUpdate(input){
+       this.setState({twist:input},()=>{
+           msg=this.state.twist
+           msg = JSON.stringify(msg)
+           console.log(msg)
+           this.handleSubmit(msg)
+       }) 
+
+   }
 
    sendXY(){
       xy = this.state.xy
@@ -282,8 +304,8 @@ export default class App extends React.Component {
         <FadeInView style={styles.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
             <View style={styles.upAndDownDPad} 
-            onTouchStart={() => this.controlUpdate(0b1010<<8) }
-            onTouchEnd={() => this.controlUpdate(-0b1010<<8)}
+            onTouchStart={() => this.twistUpdate({wheel_instruction:"forward"}) }
+            onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
             >
             <TouchableOpacity>  
               <FontAwesome
@@ -295,8 +317,8 @@ export default class App extends React.Component {
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
               <View style={styles.dPadLeft}
-              onTouchStart={() => this.controlUpdate(0b1001<<8) }
-              onTouchEnd={() => this.controlUpdate(-0b1001<<8)}
+              onTouchStart={() => this.twistUpdate({wheel_instruction:"left"}) }
+              onTouchStart={() => this.twistUpdate({wheel_instruction:"stop"}) }
               >
                 <TouchableOpacity>
                   <FontAwesome
@@ -307,8 +329,8 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.dPadRight} 
-              onTouchStart={() => this.controlUpdate(0b0110<<8) }
-              onTouchEnd={() => this.controlUpdate(-0b0110<<8)}
+              onTouchStart={() => this.twistUpdate({wheel_instruction:"right"}) }
+              onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
               >
                 <TouchableOpacity>
                   <FontAwesome
@@ -320,8 +342,8 @@ export default class App extends React.Component {
               </View>
             </View>
             <View style={styles.upAndDownDPad}
-            onTouchStart={() => this.controlUpdate(0b0101<<8) }
-            onTouchEnd={() => this.controlUpdate(-0b0101<<8)}
+            onTouchStart={() => this.twistUpdate({wheel_instruction:"backward"}) }
+            onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
             >
               <TouchableOpacity>
                 <FontAwesome
@@ -338,8 +360,8 @@ export default class App extends React.Component {
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
-                  onTouchStart={() => this.controlUpdate(1<<7) }
-                  onTouchEnd={() => this.controlUpdate(-1<<7)}
+                  onTouchStart={() => this.twistUpdate({front_arm_instruction:1}) }
+                  onTouchEnd={() => this.twistUpdate({front_arm_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -350,8 +372,8 @@ export default class App extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.controlUpdate(1<<6) }
-                  onTouchEnd={() => this.controlUpdate(-1<<6)}
+                  onTouchStart={() => this.twistUpdate({front_arm_instruction:-1}) }
+                  onTouchEnd={() => this.twistUpdate({front_arm_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -364,8 +386,8 @@ export default class App extends React.Component {
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.controlUpdate(1<<5) }
-                  onTouchEnd={() => this.controlUpdate(-1<<5)}
+                  onTouchStart={() => this.twistUpdate({back_arm_instruction:1}) }
+                  onTouchEnd={() => this.twistUpdate({back_arm_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -376,8 +398,8 @@ export default class App extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View 
-                  onTouchStart={() => this.controlUpdate(1<<4) }
-                  onTouchEnd={() => this.controlUpdate(-1<<4)}
+                  onTouchStart={() => this.twistUpdate({back_arm_instruction:-1}) }
+                  onTouchEnd={() => this.twistUpdate({back_arm_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -393,8 +415,8 @@ export default class App extends React.Component {
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
-                  onTouchStart={() => this.controlUpdate(1<<3) }
-                  onTouchEnd={() => this.controlUpdate(-1<<3)}
+                  onTouchStart={() => this.twistUpdate({front_drum_instruction:-1}) }
+                  onTouchEnd={() => this.twistUpdate({front_drum_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -405,8 +427,8 @@ export default class App extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.controlUpdate(1<<2) }
-                  onTouchEnd={() => this.controlUpdate(-1<<2)}
+                  onTouchStart={() => this.twistUpdate({front_drum_instruction:1}) }
+                  onTouchEnd={() => this.twistUpdate({front_drum_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -419,8 +441,8 @@ export default class App extends React.Component {
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.controlUpdate(1<<0) }
-                  onTouchEnd={() => this.controlUpdate(-1<<0)}
+                  onTouchStart={() => this.twistUpdate({back_drum_instruction:-1}) }
+                  onTouchEnd={() => this.twistUpdate({back_drum_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
@@ -431,8 +453,8 @@ export default class App extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View 
-                  onTouchStart={() => this.controlUpdate(1<<1) }
-                  onTouchEnd={() => this.controlUpdate(-1<<1)}
+                  onTouchStart={() => this.twistUpdate({back_drum_instruction:1}) }
+                  onTouchEnd={() => this.twistUpdate({back_drum_instruction:0}) }
                   >
                     <TouchableOpacity>
                       <FontAwesome
