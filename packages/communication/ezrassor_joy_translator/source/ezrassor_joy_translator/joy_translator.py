@@ -3,7 +3,7 @@
 Written by Harrison Black.
 """
 import rospy
-from std_msgs.msg import Float32
+from std_msgs.msg import Float32, Int8
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 
@@ -46,7 +46,7 @@ def callback(data, additional_arguments):
 
     # AI Kill Bit
     if data.buttons[10] > 0:
-        pub_auto_toggles.publish(1)
+        pub_auto_toggles.publish(100000)
         return
     
     twist = Twist()
@@ -137,7 +137,7 @@ def start_node():
                                         queue_size=10)
         # Autonomous Toggles
         pub_auto_toggles = rospy.Publisher(publish_topic_auto_toggles,
-                                           Float32,
+                                           Int8,
                                            queue_size=10)
         print "Controller node started"
         rate = rospy.Rate(60)
