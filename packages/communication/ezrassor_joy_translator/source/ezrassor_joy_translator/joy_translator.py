@@ -110,7 +110,7 @@ def start_node():
         publish_topic_back_drum = rospy.get_param(rospy.get_name()
                                                   + "/back_drum_instructions_topic")
         publish_topic_auto_toggles = rospy.get_param(rospy.get_name()
-                                                     + "/autonomous_toggles"
+                                                     + "/autonomous_toggles")
         max_wheel_speed = rospy.get_param(rospy.get_name() + "/max_wheel_speed")
         max_arm_speed = rospy.get_param(rospy.get_name() + "/max_arm_speed")
         max_drum_speed = rospy.get_param(rospy.get_name() + "/max_drum_speed")
