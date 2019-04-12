@@ -101,9 +101,12 @@ def get_custom_handler(publishers):
 
 def kill_server(server, sleep_duration):
     """Wait for roscore to die, then kill the server."""
-    while not rospy.core.is_shutdown():
-        rospy.sleep(sleep_duration)
-    server.shutdown()
+    try:
+        while not rospy.core.is_shutdown():
+            rospy.sleep(sleep_duration)
+        server.shutdown()
+    except Exception:
+        server.shutdown()
 
 
 def start_node(
