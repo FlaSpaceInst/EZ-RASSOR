@@ -41,7 +41,7 @@ export default class App extends React.Component {
       ipModal: false,
       xyModal: false,
       isLoading: true,
-      ip:'128.217.243.159',  
+      ip:'128.217.243.159:8080',  
       endpoint: '/',
       control: 0,
       xy: '(0,0)', 
@@ -120,7 +120,7 @@ export default class App extends React.Component {
   
   handleSubmit(event){
 
-    url = 'http://'+this.state.ip+':8080'+this.state.endpoint
+    url = 'http://'+this.state.ip+this.state.endpoint
     console.log(url)
     
     return fetch(
