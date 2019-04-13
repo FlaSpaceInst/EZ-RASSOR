@@ -255,7 +255,7 @@ def num_cpus():
 def publisher():
 
     # Create the publisher instance
-    pub = rospy.Publisher('/ez_rassor/cpuUsage', Float64, queue_size=10)
+    pub = rospy.Publisher('/ezrassor/cpuUsage', Float64, queue_size=10)
     rospy.init_node('publisher', anonymous=True)
 
     # Begin publishing CPU data

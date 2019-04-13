@@ -30,7 +30,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     /*********************
     ** Logging
     **********************/
-    ui.view_logging->setModel(qnode.loggingModel());
     QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
 
     /*********************
@@ -129,11 +128,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state)
     ui.line_edit_host->setEnabled(enabled);
 }
 
-void MainWindow::updateLoggingView()
-{
-    ui.view_logging->scrollToBottom();
-}
-
 void MainWindow::updateCPU()
 {
     ui.cpuBar->setValue(*qnode.cpuBarUpdate());
@@ -210,6 +204,11 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this,
                        tr("About EZ-Rassor"),
                        tr("<p>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASAs RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center."));
+}
+
+void MainWindow::updateLoggingView()
+{
+    ui.view_logging->append(qnode.logging_model);
 }
 
 void MainWindow::ReadSettings()

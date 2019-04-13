@@ -58,7 +58,6 @@ class QNode : public QThread
              Fatal
         };
 
-        QStringListModel* loggingModel() { return &logging_model; }
         QPixmap *frontCameraPixmap() { return &front_Camera_Pixmap; }
         QPixmap *backCameraPixmap() { return &back_Camera_Pixmap; }
         QPixmap *disparityPixmap() { return &disparity_Pixmap; }
@@ -70,7 +69,7 @@ class QNode : public QThread
         void add_executable_package(QString executable, QString package);
         QString get_executable_package(QString executable);
         void addProcess(pid_t pid);
-        void log( const LogLevel &level, const std_msgs::String &msg);
+        void log( const LogLevel &level, std::string msg);
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -83,6 +82,8 @@ class QNode : public QThread
         std::map<QString, QString> executable_package_map;
         float imu_labels[9];
         std::map<std::string, int> label_port_map; // maps EZ-RASSOR label to port
+        QString logging_model;
+
 
     Q_SIGNALS:
         void loggingUpdated();
@@ -116,7 +117,6 @@ class QNode : public QThread
         ros::Subscriber disk_subscriber;
         ros::Subscriber battery_subscriber;
         ros::Subscriber imu_subscriber;
-        QStringListModel logging_model;
         std::vector<pid_t> process_list;
 
 };
