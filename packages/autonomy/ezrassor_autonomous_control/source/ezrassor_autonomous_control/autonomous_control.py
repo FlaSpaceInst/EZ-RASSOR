@@ -13,7 +13,8 @@ import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
 
-def on_start_up(movement_topic, arms_topic, drums_topic, 
+def on_start_up(target_x, target_y, movement_topic, front_arm_topic, 
+                back_arm_topic, front_drum_topic, back_drum_topic,
                 max_linear_velocity=1, max_angular_velocity=1, 
                 real_odometry=False):
     """ Initialization Function  """
@@ -24,10 +25,19 @@ def on_start_up(movement_topic, arms_topic, drums_topic,
     #Create Utility Objects
     world_state = obj.WorldState()
     ros_util = obj.ROSUtility(movement_topic, 
-                              arms_topic, 
-                              drums_topic, 
+                              front_arm_topic,
+                              back_arm_topic, 
+                              front_drum_topic,
+                              back_drum_topic, 
                               max_linear_velocity, 
                               max_angular_velocity)
+
+    target_location = Point()
+
+    target_location.x = target_x
+    target_location.y = target_y
+
+    world_state.target_location = target_location
 
     ros_util.status_pub.publish('Spinning Up AI Control')
 
@@ -51,16 +61,9 @@ def on_start_up(movement_topic, arms_topic, drums_topic,
     rospy.Subscriber('obstacle_detect', 
                      Int8, 
                      world_state.visionCallBack)
-    rospy.Subscriber('routine_toggles', 
+    rospy.Subscriber('autonomous_toggles', 
                      Int8, 
                      ros_util.autoCommandCallBack)
-
-    result = uf.self_check(world_state, ros_util)
-
-    if result == 2:
-        uf.self_right_from_side(world_state, ros_util)
-    if result == 3:
-        af.auto_dock(world_state, ros_util)
 
     uf.set_back_arm_angle(world_state, ros_util, 1.5)
     uf.set_front_arm_angle(world_state, ros_util, 1.5)
@@ -73,15 +76,16 @@ def full_autonomy(world_state, ros_util):
     ros_util.status_pub.publish('Full Autonomy Activated.')
 
     while(True):
-        world_state.target_location.x = r.randint(10,20)
-        world_state.target_location.y = r.randint(10,20)
         af.auto_drive_location(world_state, ros_util)
-        af.auto_dig(world_state, ros_util, 10)
+        af.auto_dig(world_state, ros_util, 7)
         af.auto_dock(world_state, ros_util)
+        af.auto_dump(world_state, ros_util, 4)
     
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
+    print("Entered Control Loop")
+    print(ros_util.auto_function_command)
 
     while(True):
 

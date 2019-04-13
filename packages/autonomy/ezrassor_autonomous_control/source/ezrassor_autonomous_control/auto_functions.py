@@ -3,7 +3,7 @@ import math
 import utility_functions as uf
 import nav_functions as nf
 
-def at_target(world_state):
+def at_target(world_state, ros_util):
     """ Determine if the current position is within 
         the desired threshold of the target position. 
     """
@@ -13,8 +13,8 @@ def at_target(world_state):
     targetX = world_state.target_location.x
     targetY = world_state.target_location.y
     
-    value = ((targetX - threshold) < positionX < (targetX + threshold) 
-            and (targetY - threshold) < positionY < (targetY + threshold))
+    value = ((targetX - ros_util.threshold) < positionX < (targetX + ros_util.threshold) 
+            and (targetY - ros_util.threshold) < positionY < (targetY + ros_util.threshold))
 
     return not value
 
@@ -87,9 +87,10 @@ def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
 
     print("Auto Returning to {}".format([0,0]))
+    
     ros_util.status_pub.publish("Auto Returning to {}"
                                 .format([0,0]))
-
+    ros_util.threshold = 3
     world_state.target_location.x = 0
     world_state.target_location.y = 0
     auto_drive_location(world_state, ros_util)

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch"/>
+
+    <group ns="ezrassor1">
+        
+        <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
+            <arg name="x" value="-4"/>
+            <arg name="id" value="1"/>
+        </include>
+        
+        <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+
+    </group>
+
+    <group ns="ezrassor2">
+        
+        <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
+            <arg name="x" value="0"/>
+            <arg name="id" value="2"/>
+        </include>
+        
+        <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+
+    </group>
+
+    <group ns="ezrassor3">
+        
+        <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
+            <arg name="x" value="4"/>
+            <arg name="id" value="3"/>
+        </include>
+        
+        <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+  
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+
+    </group>
+
+</launch>

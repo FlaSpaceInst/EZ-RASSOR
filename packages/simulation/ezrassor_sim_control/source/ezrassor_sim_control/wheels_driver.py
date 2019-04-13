@@ -20,10 +20,10 @@ def wheel_movement_callback(twist):
     x = twist.linear.x
     z = twist.angular.z
 
-    pub_LB.publish(x-z)
-    pub_LF.publish(x-z)
-    pub_RB.publish(x+z)
-    pub_RF.publish(x+z)
+    pub_LB.publish((x-z)*5)
+    pub_LF.publish((x-z)*5)
+    pub_RB.publish((x+z)*5)
+    pub_RF.publish((x+z)*5)
 
 
 def start_node():
