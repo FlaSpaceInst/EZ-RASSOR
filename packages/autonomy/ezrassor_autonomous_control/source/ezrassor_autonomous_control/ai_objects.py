@@ -29,13 +29,12 @@ class WorldState():
         self.battery = 100
         self.hardware_status = True
 
-        self. auto_function_command = 0
-
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
+        #print(data.position[0], data.position[1])
 
-        self.front_arm_angle = -(data.position[1])
+        self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
     
 
@@ -51,13 +50,17 @@ class WorldState():
             testing and experimentation. 
         """
 
-        self.positionX = data.pose[1].position.x
-        self.positionY = data.pose[1].position.y
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+
+        index = data.name.index(namespace)
+        self.positionX = data.pose[index].position.x
+        self.positionY = data.pose[index].position.y
         
-        self.state_flags['positionX'] = data.pose[2].position.x
-        self.state_flags['positionY'] = data.pose[2].position.y
+        self.positionX = data.pose[index].position.x
+        self.positionY = data.pose[index].position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[2]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose[index]) * 180/math.pi
 
         if heading > 0:
             self.heading = heading
@@ -83,23 +86,24 @@ class ROSUtility():
         subscribers, and convinient ROS utilies.
     """
 
-    def __init__(self, movement_topic, arms_topic, drums_topic, 
+    def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
+                 front_drum_topic, back_drum_topic, 
                  max_linear_velocity, max_angular_velocity):
         """ Initialize the ROS Utility Object. """
         
         self.movement_pub = rospy.Publisher(movement_topic, 
                                             Twist, 
                                             queue_size=10)
-        self.front_arm_pub = rospy.Publisher('front_'+arms_topic, 
+        self.front_arm_pub = rospy.Publisher(front_arm_topic, 
                                              Float32, 
                                              queue_size=10)
-        self.back_arm_pub = rospy.Publisher('back_'+arms_topic, 
+        self.back_arm_pub = rospy.Publisher(back_arm_topic, 
                                             Float32, 
                                             queue_size=10)
-        self.front_drum_pub = rospy.Publisher('front_'+drums_topic, 
+        self.front_drum_pub = rospy.Publisher(front_drum_topic, 
                                               Float32, 
                                               queue_size=10)
-        self.back_drum_pub = rospy.Publisher('back_'+drums_topic, 
+        self.back_drum_pub = rospy.Publisher(back_drum_topic, 
                                              Float32, 
                                              queue_size=10)
 
@@ -114,7 +118,9 @@ class ROSUtility():
         self.max_linear_velocity = max_linear_velocity
         self.max_angular_velocity = max_angular_velocity
 
-        self. auto_function_command = 0
+        self.auto_function_command = 16
+
+        self.threshold = .5
 
     def publish_actions(self, movement, front_arm, back_arm, 
                         front_drum, back_drum):
@@ -123,13 +129,13 @@ class ROSUtility():
         twist_message = Twist()
 
         if movement == 'forward':
-            twist_message.linear.x = max_linear_velocity
+            twist_message.linear.x = self.max_linear_velocity
         elif movement == 'reverse':
-            twist_message.linear.x = -max_linear_velocity
+            twist_message.linear.x = -self.max_linear_velocity
         elif movement == 'left':
-            twist_message.angular.z = max_angular_velocity
+            twist_message.angular.z = self.max_angular_velocity
         elif movement == 'right':
-            twist_message.angular.z = -max_angular_velocity
+            twist_message.angular.z = -self.max_angular_velocity
         else:
             pass
 

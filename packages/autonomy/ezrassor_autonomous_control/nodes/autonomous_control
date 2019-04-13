@@ -2,17 +2,24 @@
 import rospy
 from ezrassor_autonomous_control import autonomous_control
 
+target_x = rospy.get_param('autonomous_control/target-x')
+target_y = rospy.get_param('autonomous_control/target-y')
+movement_topic = rospy.get_param('autonomous_control/movement_topic')
+front_arm_topic = rospy.get_param('autonomous_control/front_arm_topic')
+back_arm_topic = rospy.get_param('autonomous_control/back_arm_topic')
+front_drum_topic = rospy.get_param('autonomous_control/front_drum_topic')
+back_drum_topic = rospy.get_param('autonomous_control/back_drum_topic')
+max_linear_velocity = rospy.get_param('autonomous_control/max_linear_velocity')
+max_angular_velocity = rospy.get_param('autonomous_control/max_angular_velocity')
+real_odometry = rospy.get_param('autonomous_control/real_odometry')
 
-movement_topic = rospy.get_param('/autonomous_control/movement_topic')
-arms_topic = rospy.get_param('/autonomous_control/arms_topic')
-drums_topic = rospy.get_param('/autonomous_control/drums_topic')
-max_linear_velocity = rospy.get_param('/autonomous_control/max_linear_velocity')
-max_angular_velocity = rospy.get_param('/autonomous_control/max_angular_velocity')
-real_odometry = rospy.get_param('/autonomous_control/real_odometry')
-
-autonomous_control.on_start_up(movement_topic, 
-                               arms_topic,
-                               drums_topic, 
+autonomous_control.on_start_up(target_x,
+                               target_y,
+                               movement_topic, 
+                               front_arm_topic,
+                               back_arm_topic,
+                               front_drum_topic,
+                               back_drum_topic, 
                                float(max_linear_velocity),
                                float(max_angular_velocity),
                                bool(real_odometry))
