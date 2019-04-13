@@ -1,5 +1,7 @@
 import rospy
 import time
+import nav_functions as nf
+import math
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -38,48 +40,191 @@ def self_check(world_state, ros_util):
         ros_util.status_pub.publish("Cancel Auto Function Command Recieved")
         ros_util.command_pub.publish(ros_util.commands['null'])
         ros_util.command_pub.publish(ros_util.commands['kill_bit'])
-        return -1
     if world_state.state_flags['on_side'] == True:
         ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
-        return 2
+        self_right_from_side(world_state, ros_util)
     if world_state.state_flags['battery'] < 10:
         ros_util.status_pub.publish("Low Battery - Returning to Base")
         world_state.state_flags['target_location'] = [0,0]
-        return 3
+        # Some Function
+    if world_state.state_flags['on_back'] == True:
+        ros_util.status_pub.publish("On Back - Attempting Auto Self Right")
+        self_right_from_back(world_state, ros_util)
+    """
+    # The following if statement needs to be implemented still
+    if world_state.state_flags['standing_on_front'] == True:
+        ros_util.status_pub.publish("Standing On Front - Attempting Auto Self Right")
+        return 5
+
+    # The following if statement needs to be implemented still
+    if world_state.state_flags['standing_on_back'] == True:
+        ros_util.status_pub.publish("Standing on Back - Attmepting Auto Self RIght")
+        return 6
+    """
     if world_state.state_flags['hardware_status'] == False:
         ros_util.status_pub.publish("Hardware Failure Shutting Down")
         ros_util.command_pub.publish(ros_util.commands['null'])
         ros_util.command_pub.publish(ros_util.commands['kill_bit'])
-        return -1
-    else:
-        ros_util.status_pub.publish("Passed Status Check")
-        return 1
-        
+        # Some Function
 
+    ros_util.status_pub.publish("Passed Status Check")
+    return 1
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
-    while world_state.state_flags['warning_flag'] == 3:
-        ros_util.command_pub.publish(ros_util.commands['reverse'])
+    while world_state.warning_flag == 3:
+        ros_util.publish_actions('reverse', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    new_heading = world_state.state_flags['heading'] + 60
+    new_heading = (world_state.heading + 60) % 360
 
-    while (new_heading - 1) < world_state.state_flags['heading'] < (new_heading + 1):
+    while (new_heading - 1) < world_state.heading < (new_heading + 1):
+        ros_util.publish_actions('left', 0, 0, 0, 0)
+
+
+def dodge_left(world_state, ros_util):
+    print("Dodge Left")
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    threshold = 0
+
+    while world_state.state_flags['warning_flag'] != 0 or (threshold < 30):
+        if world_state.state_flags['warning_flag'] == 0:
+            threshold+=1
         ros_util.command_pub.publish(ros_util.commands['left'])
+        ros_util.rate.sleep()
+
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], 
+                                start_y, world_state.state_flags['positionY']) < 2:
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
+
+
+def dodge_right(world_state, ros_util):
+    print("Dodge Right")
+    start_x = world_state.state_flags['positionX']
+    start_y = world_state.state_flags['positionY']
+
+    threshold = 0
+
+    while world_state.state_flags['warning_flag'] != 0 or (threshold < 30):
+        if world_state.state_flags['warning_flag'] == 0:
+            threshold+=1
+        ros_util.command_pub.publish(ros_util.commands['right'])
+        ros_util.rate.sleep()
+
+    while nf.euclidean_distance(start_x, world_state.state_flags['positionX'], 
+                                start_y, world_state.state_flags['positionY']) < 2:
+        
+        ros_util.command_pub.publish(ros_util.commands['forward'])
+        ros_util.rate.sleep()
 
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
-    self_right_execution_time = 0.5
-    start_time = time.time()
     ros_util.status_pub.publish("Initiating Self Right")
-    while(time.time() - start_time < self_right_execution_time):
+    self_right_completed = False
+    arms_straightened = False
+    while(not self_right_completed):
         if world_state.state_flags['on_side'] == False:
             ros_util.command_pub.publish(ros_util.commands['null'])
             return
-        ros_util.command_pub.publish(ros_util.commands['back_arm_up'])
-        ros_util.command_pub.publish(ros_util.commands['front_arm_up'])
-            
+
+        command = 0
+        if not arms_straightened:
+            if world_state.state_flags['front_arm_angle'] != 0:
+                if world_state.state_flags['front_arm_angle'] < 0:
+                        command |= ros_util.commands['front_arm_up']
+                elif world_state.state_flags['front_arm_angle'] > 0:
+                        command |= ros_util.commands['front_arm_down']
+            if world_state.state_flags['back_arm_angle'] != 0:
+                if world_state.state_flags['back_arm_angle'] < 0:
+                        command |= ros_util.commands['back_arm_up']
+                elif world_state.state_flags['back_arm_angle'] > 0:
+                        command |= ros_util.commands['back_arm_down']
+
+        if world_state.state_flags['front_arm_angle'] == 0 and world_state.state_flags['back_arm_angle'] == 0:
+            arms_straightened = True
+
+        if arms_straightened:
+            if world_state.state_flags['front_arm_angle'] < math.PI / 4:
+                command |= ros_util.commands['front_arm_up']
+            if world_state.state_flags['back_arm_angle'] < math.PI / 4:
+                command |= ros_util.commands['back_arm_up']
+            if world_state.state_flags['front_arm_angle'] >= math.PI / 4 and world_state.state_flags['back_arm_angle'] >= math.PI / 4:
+                self_right_completed = True
+                command = ros_util.commands['null']
+
+        ros_util.command_pub.publish(command)
+
+        ros_util.rate.sleep()
+
+    ros_util.command_pub.publish(ros_util.commands['null'])
+
+
+def self_right_from_back(world_state, ros_util):
+    """ Flip EZ-RASSOR over from its back. """
+
+    self_right_completed = False
+    arms_straightened = False
+    arms_90_degrees = False
+    tilt_complete = False
+    drum_spin_complete = False
+    front_arm_tilt = 1.9
+    back_arm_tilt= 1.2
+    while(not self_right_completed):
+        # Might need a different flag for this case
+        if world_state.state_flags['on_back'] == False:
+            ros_util.command_pub.publish(ros_util.commands['null'])
+            return
+
+        command = ros_util.commands['null']
+        if not arms_straightened:
+            if world_state.state_flags['front_arm_angle'] != 0:
+                if world_state.state_flags['front_arm_angle'] < 0:
+                        command |= ros_util.commands['front_arm_up']
+                elif world_state.state_flags['front_arm_angle'] > 0:
+                        command |= ros_util.commands['front_arm_down']
+            if world_state.state_flags['back_arm_angle'] != 0:
+                if world_state.state_flags['back_arm_angle'] < 0:
+                        command |= ros_util.commands['back_arm_up']
+                elif world_state.state_flags['back_arm_angle'] > 0:
+                        command |= ros_util.commands['back_arm_down']
+
+        if world_state.state_flags['front_arm_angle'] == 0 and world_state.state_flags['back_arm_angle'] == 0:
+            arms_straightened = True
+
+        if arms_straightened and not arms_90_degrees:
+            if world_state.state_flags['front_arm_angle'] < math.PI / 2:
+                command |= ros_util.commands['front_arm_up']
+            if world_state.state_flags['back_arm_angle'] < math.PI / 2:
+                command |= ros_util.commands['back_arm_up']
+            if world_state.state_flags['front_arm_angle'] >= math.PI / 2 and world_state.state_flags['back_arm_angle'] >= math.PI / 2:
+                arms_90_degrees = True
+
+        if arms_90_degrees and not tilt_complete:
+            if world_state.state_flags['front_arm_angle'] < front_arm_tilt:
+                command |= ros_util.commands['front_arm_up']
+            if world_state.state_flags['back_arm_angle'] > back_arm_tilt:
+                command |= ros_util.commands['back_arm_down']
+
+        if world_state.state_flags['front_arm_angle'] >= front_arm_tilt and world_state.state_flags['back_arm_angle'] <= back_arm_tilt:
+            tilt_complete = True
+
+        if tilt_complete:
+            command |= ros_util.commands['front_arm_dig']
+            arms_straightened = False
+            if world_state.state_flags['positionZ'] > -0.4:
+                drum_spin_complete = True
+                command = ros_util.commands['null']
+
+        if drum_spin_complete and arms_straightened:
+            self_right_completed = True
+
+        ros_util.rate.sleep()
+
+        ros_util.command_pub.publish(command)
+
     ros_util.command_pub.publish(ros_util.commands['null'])
