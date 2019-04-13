@@ -54,5 +54,5 @@ Here are some example commands to get started.
   sh develop.sh install
 
   
-.. _`LICENSE license`: LICENSE.txt
+.. _`MIT license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
