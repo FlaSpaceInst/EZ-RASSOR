@@ -2,8 +2,8 @@
 import rospy
 from ezrassor_autonomous_control import autonomous_control
 
-target_x = rospy.get_param('autonomous_control/target-x')
-target_y = rospy.get_param('autonomous_control/target-y')
+target_x = rospy.get_param('autonomous_control/target_x')
+target_y = rospy.get_param('autonomous_control/target_y')
 movement_topic = rospy.get_param('autonomous_control/movement_topic')
 front_arm_topic = rospy.get_param('autonomous_control/front_arm_topic')
 back_arm_topic = rospy.get_param('autonomous_control/back_arm_topic')
