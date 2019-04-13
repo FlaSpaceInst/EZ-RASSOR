@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+  
+  <arg name="world" default="mars"/>
+
+  <include file="$(find ezrassor_launcher)/launch/ai_demo.launch">
+      <arg name="world" value="$(arg world)"/>
+  </include>
+
+  <node pkg="ez_gui" type="ez_gui" name="ez_gui"/>
+  <node pkg="ez_gui" type="monitor" name="monitor"/>
+
+</launch>
