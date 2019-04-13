@@ -12,7 +12,10 @@
         
         <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
 
-        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
+          <arg name="target_x" value="15"/>
+          <arg name="target_y" value="15"/>
+        </include>
 
     </group>
 
@@ -25,7 +28,10 @@
         
         <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
 
-        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
+          <arg name="target_x" value="-15"/>
+          <arg name="target_y" value="15"/>
+        </include>
 
     </group>
 
@@ -38,7 +44,10 @@
         
         <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
   
-        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch"/>
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
+          <arg name="target_x" value="-15"/>
+          <arg name="target_y" value="-15"/>
+        </include>
 
     </group>
 
