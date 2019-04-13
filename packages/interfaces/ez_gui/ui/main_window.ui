@@ -590,7 +590,25 @@
           </widget>
          </item>
          <item row="8" column="0">
-          <widget class="QComboBox" name="comboBox"/>
+          <widget class="QComboBox" name="comboBox">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+           <property name="insertPolicy">
+            <enum>QComboBox::InsertAtBottom</enum>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToContents</enum>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_2">
@@ -656,7 +674,7 @@
           </widget>
          </item>
          <item row="11" column="0">
-          <widget class="QListView" name="view_logging"/>
+          <widget class="QTextBrowser" name="view_logging"/>
          </item>
         </layout>
        </item>
