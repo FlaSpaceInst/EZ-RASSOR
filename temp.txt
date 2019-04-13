@@ -1,1 +1,0 @@
-cat CONTRIBUTING.rst | grep '^' -A 1 | sed 's//*/g' | sed 's/  /    /g'
