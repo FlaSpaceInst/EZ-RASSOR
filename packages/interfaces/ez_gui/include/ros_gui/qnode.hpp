@@ -82,6 +82,7 @@ class QNode : public QThread
         QPixmap disparity_Pixmap;
         std::map<QString, QString> executable_package_map;
         float imu_labels[9];
+        std::map<std::string, int> label_port_map; // maps EZ-RASSOR label to port
 
     Q_SIGNALS:
         void loggingUpdated();
