@@ -315,7 +315,7 @@ void MainWindow::populateLaunchers()
     {
         executable_package_pair = executable_and_package_from_path(fprocess_output_buffer);
         qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
-        executable_paths << executable_package_pair.first;
+        executable_paths << executable_package_pair.first.left(executable_package_pair.first.length()-1);
     }
 
     pclose(fprocess);
