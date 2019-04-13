@@ -31,4 +31,4 @@ printf "\n"
 
 # Kill all running instances of jstest.
 pkill jstest
-printf "\nTests complete!\n"
+printf "\nTests complete.\n"
