@@ -52,8 +52,10 @@ class WorldState():
 
         namespace = rospy.get_namespace()
         namespace = namespace[1:-1]+"::base_link"
-
-        index = data.name.index(namespace)
+        try:
+            index = data.name.index(namespace)
+        except Exception:
+            pass
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
         

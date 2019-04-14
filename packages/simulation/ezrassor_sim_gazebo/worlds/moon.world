@@ -22,7 +22,6 @@
         <uri>model://sun</uri>
     </include>
     <!-- Own physics settings to speed up simulation -->
-    <physics type='ode'>
     <light name='sun' type='directional'>
       <cast_shadows>1</cast_shadows>
       <pose frame=''>0 0 10 0 -0 0</pose>
