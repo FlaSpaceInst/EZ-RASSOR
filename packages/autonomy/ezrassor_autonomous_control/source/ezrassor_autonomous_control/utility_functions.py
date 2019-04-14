@@ -67,7 +67,6 @@ def self_check(world_state, ros_util):
         ros_util.command_pub.publish(ros_util.commands['kill_bit'])
         # Some Function
 
-    ros_util.status_pub.publish("Passed Status Check")
     return 1
 
 def reverse_turn(world_state, ros_util):

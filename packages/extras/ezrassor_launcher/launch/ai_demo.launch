@@ -3,9 +3,11 @@
 <launch>
   
   <arg name="world" default="mars"/>
+  <arg name="gui" default="true" />
 
   <include file="$(find ezrassor_launcher)/launch/manual_simulation.launch">
       <arg name="world" value="$(arg world)"/>
+      <arg name="gui" value="$(arg gui)" />
   </include>
 
   <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>

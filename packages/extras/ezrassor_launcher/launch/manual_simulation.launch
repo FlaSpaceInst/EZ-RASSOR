@@ -8,7 +8,9 @@
   <arg name="world"
        default="base"
        doc="Specify the world name ('base', 'moon' or 'mars')." />
-       
+  <arg name="gui"
+       default="true" />
+
   <include file="$(find ezrassor_launcher)/launch/communication.launch">
     <arg name="control_method" value="$(arg control_method)"/>
   </include>
@@ -16,6 +18,7 @@
   <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
     <arg name="paused" value="false"/>
     <arg name="world" value="$(arg world)" />
+    <arg name="gui" value="$(arg gui)" />
   </include>
 
 </launch>
