@@ -3,9 +3,11 @@
 <launch>
   
   <arg name="world" default="mars"/>
+  <arg name="gui" default="true" />
 
   <include file="$(find ezrassor_launcher)/launch/ai_demo.launch">
       <arg name="world" value="$(arg world)"/>
+      <arg name="gui" value="$(arg gui)"/>
   </include>
 
   <node pkg="ez_gui" type="ez_gui" name="ez_gui"/>

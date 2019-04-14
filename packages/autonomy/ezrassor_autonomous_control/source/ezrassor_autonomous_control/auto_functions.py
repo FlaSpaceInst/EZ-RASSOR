@@ -28,7 +28,6 @@ def auto_drive_location(world_state, ros_util):
 
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
-        ros_util.status_pub.publish("Current Heading {}".format(new_heading))
         
         angle_difference = nf.adjust_angle(world_state.state_flags['heading'], new_heading)
 
@@ -45,10 +44,13 @@ def auto_drive_location(world_state, ros_util):
         # Avoid obstacles by turning left or right if warning flag is raised
         if world_state.state_flags['warning_flag'] == 1:
             uf.dodge_right(world_state, ros_util)
+            ros_util.status_pub.publish("Obstacle Detected: Avoiding")
         if world_state.state_flags['warning_flag'] == 2:
             uf.dodge_left(world_state, ros_util)
+            ros_util.status_pub.publish("Obstacle Detected: Avoiding")
         if world_state.state_flags['warning_flag'] == 3:
             uf.reverse_turn(world_state, ros_util)
+            ros_util.status_pub.publish("Obstacle Detected: Avoiding")
 
         # Otherwise go forward
         ros_util.command_pub.publish(ros_util.commands['forward'])
