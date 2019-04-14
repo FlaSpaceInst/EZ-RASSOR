@@ -19,6 +19,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                 max_linear_velocity=1, max_angular_velocity=1, 
                 real_odometry=False):
     """ Initialization Function  """
+    print("On Start Up")
 
     # ROS Node Init Parameters 
     rospy.init_node('autonomous_control', anonymous=True)
@@ -34,11 +35,16 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                               max_angular_velocity)
 
     target_location = Point()
+    temp = Point()
 
     target_location.x = target_x
     target_location.y = target_y
 
+    temp.x = target_x
+    temp.y = target_y
+
     world_state.target_location = target_location
+    world_state.dig_site = temp
 
     ros_util.status_pub.publish('Spinning Up AI Control')
 
@@ -77,14 +83,18 @@ def full_autonomy(world_state, ros_util):
     ros_util.status_pub.publish('Full Autonomy Activated.')
 
     while(True):
+        print(world_state.dig_site)
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 7)
         af.auto_dock(world_state, ros_util)
         af.auto_dump(world_state, ros_util, 4)
+        world_state.target_location.x = world_state.dig_site.x
+        world_state.target_location.y = world_state.dig_site.y
     
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
+    
     print("Entered Control Loop")
     print(ros_util.auto_function_command)
 

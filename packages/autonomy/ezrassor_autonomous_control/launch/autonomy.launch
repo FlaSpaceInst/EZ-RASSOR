@@ -50,7 +50,7 @@
       <param name="front_arm_topic" value="$(arg front_arm_instruction_topic)"/>
       <param name="back_arm_topic" value="$(arg back_arm_instruction_topic)"/>
       <param name="front_drum_topic" value="$(arg front_drum_instruction_topic)"/>
-      <param name="back_drum_topic" value="$(arg back_drum_instruction_topic"/>
+      <param name="back_drum_topic" value="$(arg back_drum_instruction_topic)"/>
       <param name="max_linear_velocity" value="1"/>
       <param name="max_angular_velocity" value="1"/>
       <param name="real_odometry" value="False"/>

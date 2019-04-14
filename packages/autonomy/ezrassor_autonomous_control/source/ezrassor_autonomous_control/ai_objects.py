@@ -49,6 +49,7 @@ class WorldState():
         """ More accurate position data to use for 
             testing and experimentation. 
         """
+        index = 0
 
         namespace = rospy.get_namespace()
         namespace = namespace[1:-1]+"::base_link"
