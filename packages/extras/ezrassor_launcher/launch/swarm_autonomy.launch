@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch"/>
+    <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+      <arg name="world" value="mars"/>
+    </include>
 
     <group ns="ezrassor1">
         
         <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
-            <arg name="x" value="-4"/>
+            <arg name="x" value="15"/>
+            <arg name="y" value="15"/>
+            <arg name="z" value="15"/>
             <arg name="id" value="1"/>
         </include>
         
         <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
 
         <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
-          <arg name="target_x" value="15"/>
-          <arg name="target_y" value="15"/>
+          <arg name="target_x" value="12"/>
+          <arg name="target_y" value="17"/>
         </include>
 
     </group>
@@ -22,7 +26,9 @@
     <group ns="ezrassor2">
         
         <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
-            <arg name="x" value="0"/>
+            <arg name="x" value="12"/>
+            <arg name="y" value="12"/>
+            <arg name="z" value="15"/>
             <arg name="id" value="2"/>
         </include>
         
@@ -38,17 +44,36 @@
     <group ns="ezrassor3">
         
         <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
-            <arg name="x" value="4"/>
+            <arg name="x" value="18"/>
+            <arg name="y" value="18"/>
+            <arg name="z" value="15"/>
             <arg name="id" value="3"/>
         </include>
         
         <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
   
         <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
-          <arg name="target_x" value="-15"/>
-          <arg name="target_y" value="-15"/>
+          <arg name="target_x" value="16"/>
+          <arg name="target_y" value="-11"/>
         </include>
 
     </group>
+    <!--
+    <group ns="ezrassor4">
+        
+        <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
+            <arg name="x" value="-4"/>
+            <arg name="y" value="-4"/>
+            <arg name="id" value="4"/>
+        </include>
+        
+        <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+  
+        <include file="$(find ezrassor_autonomous_control)/launch/autonomy.launch">
+          <arg name="target_x" value="-12"/>
+          <arg name="target_y" value="-13"/>
+        </include>
 
+    </group>
+    -->
 </launch>
