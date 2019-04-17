@@ -64,8 +64,8 @@ def auto_dig(world_state, ros_util, duration):
     ros_util.status_pub.publish("Auto Digging for {} Seconds"
                                 .format(duration))
 
-    uf.set_front_arm_angle(world_state, ros_util, -.1)
-    uf.set_back_arm_angle(world_state, ros_util, -.1)
+    uf.set_front_arm_angle(world_state, ros_util, .15)
+    uf.set_back_arm_angle(world_state, ros_util, .15)
 
     # Perform Auto Dig for the desired Duration
     t = 0
@@ -109,7 +109,6 @@ def auto_dump(world_state, ros_util, duration):
         ros_util.publish_actions('stop', 0, 0, -1, -1)
         t+=1
         ros_util.rate.sleep()
-        t = 0
 
     new_heading = world_state.heading = (world_state.heading + 180) % 360
 
