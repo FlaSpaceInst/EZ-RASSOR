@@ -48,7 +48,7 @@ public:
         {
             rvizManager->createDisplay("rviz/Grid","Grid",true);
             viewManager->getCurrent()->subProp("Distance")->setValue(10);
-            enablePointCloud2("/ez_rassor/front_camera/points2", "FlatColor", "1");
+            enablePointCloud2("/ezrassor/front_camera/points2", "FlatColor", "1");
         }
         else if (type == 2)
         {

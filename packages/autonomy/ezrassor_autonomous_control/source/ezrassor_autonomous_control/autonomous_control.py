@@ -49,7 +49,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     ros_util.status_pub.publish('Spinning Up AI Control')
 
     # Setup Subscriber Callbacks
-    
     if real_odometry:
         rospy.Subscriber('stereo_odometer/odometry', 
                          Odometry, 
@@ -76,6 +75,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     uf.set_front_arm_angle(world_state, ros_util, 1.5)
     
     autonomous_control_loop(world_state, ros_util)
+
 
 def full_autonomy(world_state, ros_util):
     """ Full Autonomy Loop Function """ 

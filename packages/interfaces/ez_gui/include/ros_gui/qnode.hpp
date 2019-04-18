@@ -9,12 +9,15 @@
 //#include <rqt_image_view/image_view.h>
 #endif
 
+#include <unistd.h>
+
 //#include <QtGui/QMainWindow>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
 #include <std_msgs/Float64.h>
+#include <std_msgs/String.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/image_encodings.h>
 #include <stereo_msgs/DisparityImage.h>
@@ -32,7 +35,7 @@ class QNode : public QThread
         bool init();
         bool init(const std::string &master_url, const std::string &host_url);
         void run();
-        void logCallback(const std_msgs::Float64 &message_holder);
+        void logCallback(const std_msgs::String &message_holder);
         void imageFrontCallback(const sensor_msgs::ImageConstPtr &message_holder);
         void imageBackCallback(const sensor_msgs::ImageConstPtr& msg);
         void disparityCallback(const stereo_msgs::DisparityImage & msg);
@@ -55,7 +58,6 @@ class QNode : public QThread
              Fatal
         };
 
-        QStringListModel* loggingModel() { return &logging_model; }
         QPixmap *frontCameraPixmap() { return &front_Camera_Pixmap; }
         QPixmap *backCameraPixmap() { return &back_Camera_Pixmap; }
         QPixmap *disparityPixmap() { return &disparity_Pixmap; }
@@ -64,11 +66,10 @@ class QNode : public QThread
         int *smBarUpdate() { return &sm_Progress_Bar; }
         int *diskBarUpdate() { return &disk_Progress_Bar; }
         int *batteryBarUpdate() { return &battery_Progress_Bar; }
-        void add_launchfile_package(QString launchfile, QString package);
-        QString get_launchfile_package(QString launchfile);
-        void addProcess(QProcess* process);
-        void log( const LogLevel &level, const std_msgs::Float64 &msg);
-        float **imuLabels() { return &imu_labels; }
+        void add_executable_package(QString executable, QString package);
+        QString get_executable_package(QString executable);
+        void addProcess(pid_t pid);
+        void log( const LogLevel &level, std::string msg);
 
         int cpu_Progress_Bar;
         int vm_Progress_Bar;
@@ -78,8 +79,11 @@ class QNode : public QThread
         QPixmap front_Camera_Pixmap;
         QPixmap back_Camera_Pixmap;
         QPixmap disparity_Pixmap;
-        std::map<QString, QString> launchfile_package_map;
-        float *imu_labels;
+        std::map<QString, QString> executable_package_map;
+        float imu_labels[9];
+        std::map<std::string, int> label_port_map; // maps EZ-RASSOR label to port
+        QString logging_model;
+
 
     Q_SIGNALS:
         void loggingUpdated();
@@ -113,8 +117,7 @@ class QNode : public QThread
         ros::Subscriber disk_subscriber;
         ros::Subscriber battery_subscriber;
         ros::Subscriber imu_subscriber;
-        QStringListModel logging_model;
-        std::vector<QProcess*> process_list;
+        std::vector<pid_t> process_list;
 
 };
 

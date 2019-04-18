@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Arguments -->
+  <arg name="open_rviz" default="true"/>
+
+  <!-- Disparity  -->
+  <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"></include>
+
+  <!-- AMCL -->
+  <include file="$(find ezrassor_autonomous_control)/launch/amcl.launch"/>
+
+  <!-- SLAM: Gmapping -->
+  <include file="$(find ezrassor_autonomous_control)/launch/ezrassor_gmapping.launch"></include>
+
+  <include file="$(find ezrassor_autonomous_control)/launch/ezrassor_kalman_filter.launch"></include>
+
+
+  <!-- Open RViz with saved settings -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find ezrassor_autonomous_control)/rviz/ezrassor_gmapping.rviz"/>
+  </group>
+</launch>

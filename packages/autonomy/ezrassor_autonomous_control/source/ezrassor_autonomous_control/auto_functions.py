@@ -2,6 +2,7 @@ import rospy
 import math
 import utility_functions as uf
 import nav_functions as nf
+import arm_force as armf
 
 def at_target(world_state, ros_util):
     """ Determine if the current position is within 
@@ -20,17 +21,17 @@ def at_target(world_state, ros_util):
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-    
     ros_util.status_pub.publish("Auto Driving to {}"
                                 .format(world_state.target_location))
     
     # Main loop until location is reached
     while at_target(world_state, ros_util):
+        uf.self_check(world_state, ros_util)
+
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
 
         angle_difference = nf.adjust_angle(world_state.heading, new_heading)
-
         if angle_difference < 0:
             direction = 'right'
         else:
@@ -48,6 +49,7 @@ def auto_drive_location(world_state, ros_util):
             uf.dodge_left(world_state, ros_util)
         if world_state.warning_flag == 3:
             uf.reverse_turn(world_state, ros_util)
+            ros_util.status_pub.publish("Obstacle Detected: Avoiding")
 
         # Otherwise go forward
         ros_util.publish_actions('forward', 0, 0, 0, 0)
@@ -60,7 +62,6 @@ def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
-    
     ros_util.status_pub.publish("Auto Digging for {} Seconds"
                                 .format(duration))
 
@@ -85,7 +86,6 @@ def auto_dig(world_state, ros_util, duration):
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
-
     print("Auto Returning to {}".format([0,0]))
     
     ros_util.status_pub.publish("Auto Returning to {}"
@@ -100,7 +100,6 @@ def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
-    
     print("Auto Dumping")
     ros_util.status_pub.publish("Auto Dumping")
     
