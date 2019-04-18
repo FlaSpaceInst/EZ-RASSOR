@@ -8,7 +8,7 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError 
 from stereo_msgs.msg import DisparityImage
 import std_msgs
-from std_msgs.msg import Int8
+from std_msgs.msg import Int16
 from sensor_msgs.msg import LaserScan
 import time
 
@@ -16,24 +16,31 @@ LEFT = 0
 RIGHT = 1
 
 # Written by Tyler Duncan
-# The following code assumes Gazebo to be running and the EZ-RASSOR executing the following scripts:
-#
-#**************************************************************************************************
-#
-#   ROS_NAMESPACE=ezrassor/front_camera rosrun stereo_image_proc stereo_image_proc
-#
-#   rosrun image_view stereo_view stereo:=ezrassor/front_camera image:=image_rect
-#
-#**************************************************************************************************
-#    These scripts utilize the Disparity map generation provided by ROS out of the box using the 
-#    stereo_image_proc package.  So far this has returned the fastest disparity map generation.  
-#==================================================================================================
+
+# Offset Laserscan data
+def laser_scan_offset(data, increment):
+    ranges = []
+    number_of_scans = len(data)
+    theta = 1.39626
+    theta_prime = 2 * np.arctan(theta / 2)
+    for i in range(number_of_scans):
+        arc_length = data[i] * theta_prime
+        new_distance = np.sqrt(((0.5 * arc_length) ** 2) + (data[i] ** 2))
+        ranges.append(new_distance)
+        if i < number_of_scans / 2:
+            theta_prime -= increment * 2
+        elif i > number_of_scans / 2:
+            theta_prime += increment * 2
+        else:
+            theta_prime = 0
+
+    return ranges
 
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('obstacle_detect', Int8, queue_size=10)
-    laser_scan = rospy.Publisher('scan', LaserScan, queue_size=10)
+    pub = rospy.Publisher('ezrassor/obstacle_detect', Int16, queue_size=10)
+    laser_scan = rospy.Publisher('/scan', LaserScan, queue_size=10)
 
     scan = LaserScan()
 
@@ -46,27 +53,25 @@ def obst_detect(data):
     scan.scan_time = 1 / 60
     scan.range_min = 0
     scan.range_max = 500.0
-    # data[LEFT][scan.range_min < data[LEFT] < scan.range_max] = inf
-    # data[RIGHT][scan.range_min < data[RIGHT] < scan.range_max] = inf
-    scan.ranges = (np.append(data[LEFT],data[RIGHT]))[::-1]
+    scan.ranges = laser_scan_offset((np.append(data[LEFT],data[RIGHT]))[::-1], scan.angle_increment)
     scan.intensities = []
 
     laser_scan.publish(scan)
 
 
     """Set thresholds.""" 
-    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 2:
+    if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1.5:
         print("MOVE RIGHT!")
         pub.publish(1)
-    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 2:
+    elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1.5:
         print("MOVE LEFT!")
         pub.publish(2)
-    elif data[LEFT].min() < 1 and data[RIGHT].min() < 2:
+    elif data[LEFT].min() < 1 and data[RIGHT].min() < 1.5:
         print("MOVE BACKWARD!")
         pub.publish(3)
     else:
-         print("MOVE FORWARD!")
-         pub.publish(0)
+        print("MOVE FORWARD!")
+        pub.publish(0)
 
 
 def callback(data):
@@ -108,7 +113,7 @@ def callback(data):
     mean_pool = depth_mat[:MK*K, :NL*L].reshape(MK, K, NL, L).mean(axis=(1,3))
     
     """Divide distance matrix into two vertical columns."""
-    div_mat = np.split(mean_pool[30], 2, axis=0)
+    div_mat = np.split(mean_pool[20], 2, axis=0)
     # print(div_mat)
 
     """Perform obstacle detection."""

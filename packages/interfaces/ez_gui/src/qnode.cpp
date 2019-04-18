@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
+#include <signal.h>
 #include "../include/ros_gui/qnode.hpp"
 
 QNode::QNode(int argc, char** argv ) : init_argc(argc), init_argv(argv) {}
@@ -16,12 +18,12 @@ QNode::~QNode()
       ros::waitForShutdown();
     }
 
-    for (auto process : process_list) {
-        if (process->state() == QProcess::Running) {
-            process->kill();
-        }
+    for (int process : process_list) {
+        if (process) kill(process, SIGKILL);
     }
-    
+
+    system("killall rosmaster & killall gzserver & killall gzclient");
+
     wait();
 }
 
@@ -39,15 +41,15 @@ bool QNode::init()
      Q_EMIT startingRviz();
 
     // ROS Communications
-    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
-    front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
-    disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
-    cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
-    vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
-    sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
-    disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
-    battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    log_subscriber = n.subscribe("/ezrassor/status", 1, &QNode::logCallback, this);
+    front_image_subscriber = n.subscribe("/ezrassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+    back_image_subscriber = n.subscribe("/ezrassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
+    disparity_subscriber = n.subscribe("/ezrassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
+    cpu_subscriber = n.subscribe("/ezrassor/cpuUsage", 100, &QNode::cpuCallback, this);
+    vm_subscriber = n.subscribe("/ezrassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
+    sm_subscriber = n.subscribe("/ezrassor/swapMemoryUsage", 100, &QNode::smCallback, this);
+    disk_subscriber = n.subscribe("/ezrassor/diskUsage", 100, &QNode::diskCallback, this);
+    battery_subscriber = n.subscribe("/ezrassor/batteryLeft", 100, &QNode::batteryCallback, this);
     imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
@@ -70,15 +72,15 @@ bool QNode::init(const std::string &master_url, const std::string &host_url)
     Q_EMIT startingRviz();
 
     // Add your ros communications here.
-    log_subscriber = n.subscribe("/ez_rassor/cpuUsage", 1, &QNode::logCallback, this);
-    front_image_subscriber = n.subscribe("/ez_rassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
-    back_image_subscriber = n.subscribe("/ez_rassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
-    disparity_subscriber = n.subscribe("/ez_rassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
-    cpu_subscriber = n.subscribe("/ez_rassor/cpuUsage", 100, &QNode::cpuCallback, this);
-    vm_subscriber = n.subscribe("/ez_rassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
-    sm_subscriber = n.subscribe("/ez_rassor/swapMemoryUsage", 100, &QNode::smCallback, this);
-    disk_subscriber = n.subscribe("/ez_rassor/diskUsage", 100, &QNode::diskCallback, this);
-    battery_subscriber = n.subscribe("/ez_rassor/batteryLeft", 100, &QNode::batteryCallback, this);
+    log_subscriber = n.subscribe("/ezrassor/status", 1, &QNode::logCallback, this);
+    front_image_subscriber = n.subscribe("/ezrassor/front_camera/left/image_raw", 1, &QNode::imageFrontCallback, this);
+    back_image_subscriber = n.subscribe("/ezrassor/front_camera/right/image_raw", 1, &QNode::imageBackCallback, this);
+    disparity_subscriber = n.subscribe("/ezrassor/front_camera/disparity", 1, &QNode::disparityCallback, this);
+    cpu_subscriber = n.subscribe("/ezrassor/cpuUsage", 100, &QNode::cpuCallback, this);
+    vm_subscriber = n.subscribe("/ezrassor/virtualMemoryUsage", 100, &QNode::vmCallback, this);
+    sm_subscriber = n.subscribe("/ezrassor/swapMemoryUsage", 100, &QNode::smCallback, this);
+    disk_subscriber = n.subscribe("/ezrassor/diskUsage", 100, &QNode::diskCallback, this);
+    battery_subscriber = n.subscribe("/ezrassor/batteryLeft", 100, &QNode::batteryCallback, this);
     imu_subscriber = n.subscribe("/imu", 1, &QNode::imuLabelsCallback, this);
     start();
     return true;
@@ -123,9 +125,9 @@ void QNode::batteryCallback(const std_msgs::Float64& message_holder)
     Q_EMIT batteryUpdated();
 }
 
-void QNode::logCallback(const std_msgs::Float64& message_holder)
+void QNode::logCallback(const std_msgs::String& message_holder)
 {
-    log(Info, message_holder);
+    log(Info, message_holder.data);
 }
 
 void QNode::imageFrontCallback(const sensor_msgs::ImageConstPtr& msg)
@@ -252,27 +254,23 @@ void QNode::disparityCallback(const stereo_msgs::DisparityImage& msg)
 
 void QNode::imuLabelsCallback(const sensor_msgs::Imu::ConstPtr &msg)
 {
-    float imuArray[9] = { };
+    imu_labels[0] = msg->orientation.x;
+    imu_labels[1] = msg->orientation.y;
+    imu_labels[2] = msg->orientation.z;
 
-    imuArray[0] = msg->orientation.x;
-    imuArray[1] = msg->orientation.y;
-    imuArray[2] = msg->orientation.z;
+    imu_labels[3] = msg->angular_velocity.x;
+    imu_labels[4] = msg->angular_velocity.y;
+    imu_labels[5] = msg->angular_velocity.z;
 
-    imuArray[3] = msg->angular_velocity.x;
-    imuArray[4] = msg->angular_velocity.y;
-    imuArray[5] = msg->angular_velocity.z;
+    imu_labels[6] = msg->linear_acceleration.x;
+    imu_labels[7] = msg->linear_acceleration.y;
+    imu_labels[8] = msg->linear_acceleration.z;
 
-    imuArray[6] = msg->linear_acceleration.x;
-    imuArray[6] = msg->linear_acceleration.y;
-    imuArray[6] = msg->linear_acceleration.z;
-
-    imu_labels = imuArray;
     Q_EMIT imuLabelsUpdated();
 }
 
-void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
+void QNode::log( const LogLevel &level, std::string msg)
 {
-    logging_model.insertRows(logging_model.rowCount(),1);
     std::stringstream logging_model_msg;
 
     switch ( level )
@@ -280,50 +278,52 @@ void QNode::log( const LogLevel &level, const std_msgs::Float64 &msg)
         case(Debug) :
         {
             //ROS_DEBUG_STREAM(msg);
-            logging_model_msg << "[DEBUG] [" << ros::Time::now() << "]: " << msg;
+            logging_model_msg << "[DEBUG] [";
             break;
         }
         case(Info) :
         {
             //ROS_INFO_STREAM(msg);
-            logging_model_msg << "[INFO] [" << ros::Time::now() << "]: \n" << msg;
+            logging_model_msg << "[INFO] [";
             break;
         }
         case(Warn) :
         {
             //ROS_WARN_STREAM(msg);
-            logging_model_msg << "[INFO] [" << ros::Time::now() << "]: " << msg;
+            logging_model_msg << "[INFO] [";
             break;
         }
         case(Error) :
         {
             //ROS_ERROR_STREAM(msg);
-            logging_model_msg << "[ERROR] [" << ros::Time::now() << "]: " << msg;
+            logging_model_msg << "[ERROR] [";
             break;
         }
         case(Fatal) :
         {
             //ROS_FATAL_STREAM(msg);
-            logging_model_msg << "[FATAL] [" << ros::Time::now() << "]: " << msg;
+            logging_model_msg << "[FATAL] [";
             break;
         }
     }
 
-    QVariant new_row(QString(logging_model_msg.str().c_str()));
-    logging_model.setData(logging_model.index(logging_model.rowCount()-1),new_row);
-    Q_EMIT loggingUpdated(); // used to readjust the scrollbar
+    logging_model_msg << std::setprecision(3) << ros::Time::now().toSec() << "]: " << msg;
+
+
+    logging_model = QString::fromStdString(logging_model_msg.str());
+    Q_EMIT loggingUpdated();
 }
 
-void QNode::add_launchfile_package(QString launchfile, QString package)
+void QNode::add_executable_package(QString executable, QString package)
 {
-    launchfile_package_map[launchfile] = package;
+    executable_package_map[executable] = package;
 }
 
-QString QNode::get_launchfile_package(QString launchfile)
+QString QNode::get_executable_package(QString executable)
 {
-    return launchfile_package_map[launchfile];
+    return executable_package_map[executable];
 }
 
-void QNode::addProcess(QProcess *process) {
+void QNode::addProcess(pid_t process) {
     process_list.push_back(process);
 }

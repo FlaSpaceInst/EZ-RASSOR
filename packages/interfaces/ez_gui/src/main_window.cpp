@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstddef>
 #include <string>
+#include <unistd.h>
 #include "../include/ros_gui/main_window.hpp"
 
 using namespace Qt;
@@ -29,7 +30,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     /*********************
     ** Logging
     **********************/
-    ui.view_logging->setModel(qnode.loggingModel());
     QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
 
     /*********************
@@ -73,12 +73,6 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) : QMainWindow(par
     if ( ui.checkbox_remember_settings->isChecked() ) {
         on_button_connect_clicked(true);
     }
-
-    /*********************
-    ** Launch Files
-    **********************/
-    // TODO
-    // Connect Launch button to spawning a QProcess associated with selected launch file
 }
 
 MainWindow::~MainWindow() {}
@@ -88,7 +82,6 @@ void MainWindow::showNoMasterMessage()
     QMessageBox msgBox;
     msgBox.setText("Couldn't find the ros master.");
     msgBox.exec();
-    close();
 }
 
 void MainWindow::on_button_connect_clicked(bool check )
@@ -133,11 +126,6 @@ void MainWindow::on_checkbox_use_environment_stateChanged(int state)
     }
     ui.line_edit_master->setEnabled(enabled);
     ui.line_edit_host->setEnabled(enabled);
-}
-
-void MainWindow::updateLoggingView()
-{
-    ui.view_logging->scrollToBottom();
 }
 
 void MainWindow::updateCPU()
@@ -190,26 +178,17 @@ void MainWindow::updateBackCamera()
 
 void MainWindow::updateImuLabels()
 {
-    // TODO get object of values, break and set to labels
+    ui.orient_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[0]));
+    ui.orient_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[1]));
+    ui.orient_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[2]));
 
-    float *labels = *qnode.imuLabels();
-    // *qnode.imuLabels(); Array or map of values
+    ui.ang_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[3]));
+    ui.ang_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[4]));
+    ui.ang_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[5]));
 
-
-    ui.orient_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.orient_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.orient_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-    ui.ang_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.ang_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.ang_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-    ui.lin_x->setText("<b>x:</b> " + QString::number(labels[0]));
-    ui.lin_y->setText("<b>y:</b> " + QString::number(labels[0]));
-    ui.lin_z->setText("<b>z:</b> " + QString::number(labels[0]));
-
-   //QString testString = QString::number(test);
-   //ui.orient_x->setText(testString);
+    ui.lin_x->setText("<b>x:</b> " + QString::number(qnode.imu_labels[6]));
+    ui.lin_y->setText("<b>y:</b> " + QString::number(qnode.imu_labels[7]));
+    ui.lin_z->setText("<b>z:</b> " + QString::number(qnode.imu_labels[8]));
 }
 
 void MainWindow::updateDisparityCamera()
@@ -225,6 +204,11 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this,
                        tr("About EZ-Rassor"),
                        tr("<p>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASAs RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center."));
+}
+
+void MainWindow::updateLoggingView()
+{
+    ui.view_logging->append(qnode.logging_model);
 }
 
 void MainWindow::ReadSettings()
@@ -267,44 +251,44 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
+/* Launches a node selected in the drop-down menu
+ */
 void MainWindow::nodeLaunch()
 {
-    // TODO make QProcess for launching
-    // roslaunch package thing.launch
-    //
-    // get launchfile from combobox,
-    // get package for it from qnode lf_pkg map,
-    // make process doing it
-    //
-    // test:
-    // std::cout << qnode.get_launchfile_package(QString::fromAscii("ai_demo.launch")) << std::endl;
+    QString executable = ui.comboBox->currentText();
 
-    QString launchfile = ui.comboBox->currentText();
-    QProcess *parent;
-    QStringList arguments;
-    arguments << qnode.get_launchfile_package(launchfile) << launchfile;
-    QProcess *launchProcess = new QProcess();
+    char buffer[128];
+
+    pid_t pid = fork();
+
+    // parent process does this and ends here
+    if (pid != 0) {
+        qnode.addProcess(pid);
+        return;
+    }
+
+    // child process ----
+    FILE * fprocess = popen(("roslaunch " + qnode.get_executable_package(executable).toStdString() + " " + executable.toStdString()).c_str(), "r");
     
-    launchProcess->setProcessChannelMode(QProcess::MergedChannels); 
-    launchProcess->start("roslaunch", arguments);
-
-    qnode.addProcess(launchProcess);
-
-    return;
+    try {
+        while (fgets(buffer, sizeof buffer, fprocess))
+            std::cout << buffer << std::endl;
+    } catch (...) {
+        pclose(fprocess);
+    }
 }
 
-
-std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
+/* Extract node and package from full path */
+std::pair<QString, QString> executable_and_package_from_path(const char *path)
 {
     std::stringstream entirePath(path);
     std::string grab;
-    std::string package, launchfile;
+    std::string package, executable;
     std::size_t lastSlash;
     int dir_index = 0;
 
-    std::getline(entirePath, grab, '/');
-    std::getline(entirePath, grab, '/');
-    std::getline(entirePath, grab, '/');
+    for (int i = 0; i < 3; i++)
+        std::getline(entirePath, grab, '/');
     std::getline(entirePath, package, '/');
     
     std::string patharoni = entirePath.str();
@@ -313,34 +297,27 @@ std::pair<QString, QString> launchfile_and_package_from_path(const char *path)
     return std::make_pair(QString::fromStdString(patharoni.substr(lastSlash + 1)), QString::fromStdString(package));
 }
 
+/* Populates the drop-down with everything that can be launched
+ * for launching from the GUI
+ */
 void MainWindow::populateLaunchers()
 {
-    char pipe_output_buffer[128];
-    QStringList launchfile_paths;
-    std::size_t lastSlash;
-    std::string launchFile;
-    std::string entirePath = "";
-    std::pair<QString, QString> launchfile_package_pair;
+    char fprocess_output_buffer[128];
+    QStringList executable_paths;
+    std::pair<QString, QString> executable_package_pair;
 
-    FILE* pipe = popen("find . -name \"*.launch\"", "r");
-    if (!pipe)
-        throw std::runtime_error("couldn't open pipe");
+    FILE* fprocess = popen("find . -name \"*.launch\"", "r");
+    if (!fprocess)
+        std::cout << "Couldn't open find fprocess" << std::endl;
 
-    try
+    while (fgets(fprocess_output_buffer, sizeof fprocess_output_buffer, fprocess))
     {
-        while (fgets(pipe_output_buffer, sizeof pipe_output_buffer, pipe))
-        {
-            launchfile_package_pair = launchfile_and_package_from_path(pipe_output_buffer);
-            qnode.add_launchfile_package(launchfile_package_pair.first, launchfile_package_pair.second);
-            launchfile_paths << launchfile_package_pair.first;
-        }
-    } catch (...)
-    {
-        pclose(pipe);
-        throw;
+        executable_package_pair = executable_and_package_from_path(fprocess_output_buffer);
+        qnode.add_executable_package(executable_package_pair.first, executable_package_pair.second);
+        executable_paths << executable_package_pair.first.left(executable_package_pair.first.length()-1);
     }
 
-    pclose(pipe);
-
-    ui.comboBox->addItems(launchfile_paths);
+    pclose(fprocess);
+   
+    ui.comboBox->addItems(executable_paths);
 }

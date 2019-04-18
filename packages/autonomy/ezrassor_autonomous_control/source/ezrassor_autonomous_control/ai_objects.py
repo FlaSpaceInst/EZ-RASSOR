@@ -7,6 +7,8 @@ from geometry_msgs.msg import Point, Twist
 import nav_functions as nf
 import math
 
+from random import uniform
+
 class WorldState():
     """ World State Object Representing 
         All Sensor Data 
@@ -83,6 +85,11 @@ class WorldState():
 
         self.warning_flag = data.data
 
+    def get_arm_force(self):
+        front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
+        back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
+        return front_arm_force, back_arm_force
+
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
@@ -151,6 +158,3 @@ class ROSUtility():
     def autoCommandCallBack(self, data):
         """ Set auto_function_command to the current choice. """
         self.auto_function_command = data.data
-
-
-

@@ -43,6 +43,12 @@ catkin_package(
 #  CATKIN_DEPENDS roscpp rospy rviz
 #  DEPENDS system_lib
 )
+catkin_install_python(
+    PROGRAMS
+        scripts/monitor
+    DESTINATION
+        ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ###########
 ## Build ##

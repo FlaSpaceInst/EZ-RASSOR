@@ -28,8 +28,6 @@ def calculate_heading(world_state, ros_util):
     if new_heading < 0:
         new_heading = 360 + new_heading
         
-    ros_util.status_pub.publish("New Heading: {}".format(new_heading))
-
     return new_heading
  
 def adjust_angle(heading, new_heading):
