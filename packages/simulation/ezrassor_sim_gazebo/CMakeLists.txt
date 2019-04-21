@@ -14,3 +14,21 @@ install(
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/worlds
 )
+install(
+    DIRECTORY
+        materials/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/materials
+)
+install(
+    DIRECTORY
+        dem/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/dem
+) 
+install(
+    DIRECTORY
+        gazebo_models/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/gazebo_models
+)
