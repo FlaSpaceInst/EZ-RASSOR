@@ -3,7 +3,7 @@
 settings.json
 *.pyc
 *.swp
-
+*.blend1
 
 # Ignore React Native Module files
 node_modules/

@@ -32,3 +32,6 @@ To do this (from object mode) type "b" and drag the cursor down over the object.
 
 ## Adding new models
 Adding new models to the robot is fairly straightforward. As before, the only thing to note is that objects should be exported while they are in (0, 0, 0) position. This will help significantly when configuring the robot in the .XACRO file. 
+
+## Important Notes
+- When configuring the colors for the model, DO NOT enable transparency on the materials. Gazbeo-7 could still render the objects but Gazebo-9 would not show the meshes at all when transparency was enabled. Therefore, just do not enable transparency.
