@@ -6,6 +6,7 @@ Written by Tiger Sachse.
 import time
 import json
 import rospy
+import random
 import rostest
 import httplib
 import unittest
@@ -15,17 +16,21 @@ import geometry_msgs.msg
 
 
 #
+ITERATION_RANGE = 10
+COORDINATE_MAX = 1337
+COORDINATE_MIN = -1337
+AUTONOMOUS_TOGGLES_INTEGERS = (1, 2, 4, 8)
 PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
-POST_HEADER = {
-    "content-type" : "application/json",
-}
+POST_HEADER = {"content-type" : "application/json"}
+WHEEL_INSTRUCTION_STRINGS = ("forward", "backward", "left", "right")
 
 
 class Instruction():
     """"""
-    def __init__(self):
+    def __init__(self, name):
         """"""
+        self.name = name
         self.__content = None
         self.__content_is_new = False
         self.__content_lock = threading.Lock()
@@ -82,50 +87,48 @@ class TestControllerServer(unittest.TestCase):
             rospy.get_param(rospy.get_name() + "/communication_delay"),
         )
 
-        self.__instructions = {
-            "wheel_instruction" : Instruction(),
-            "front_arm_instruction" : Instruction(),
-            "back_arm_instruction" : Instruction(),
-            "front_drum_instruction" : Instruction(),
-            "back_drum_instruction" : Instruction(),
-            "autonomous_toggles" : Instruction(),
-            "target_coordinates" : Instruction(),
-        }
+        self.__wheel_instruction = Instruction("wheel_instruction")
+        self.__front_arm_instruction = Instruction("front_arm_instruction")
+        self.__back_arm_instruction = Instruction("back_arm_instruction")
+        self.__front_drum_instruction = Instruction("front_drum_instruction")
+        self.__back_drum_instruction = Instruction("back_drum_instruction")
+        self.__autonomous_toggles_instruction = Instruction("autonomous_toggles")
+        self.__target_coordinate_instruction = Instruction("target_coordinate")
 
         rospy.Subscriber(
             wheel_instructions_topic,
             geometry_msgs.msg.Twist,
-            callback=self.__instructions["wheel_instruction"].update,
+            callback=self.__wheel_instruction.update,
         )
         rospy.Subscriber(
             front_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__instructions["front_arm_instruction"].update,
+            callback=self.__front_arm_instruction.update,
         )
         rospy.Subscriber(
             back_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__instructions["back_arm_instruction"].update,
+            callback=self.__back_arm_instruction.update,
         )
         rospy.Subscriber(
             front_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__instructions["front_drum_instruction"].update,
+            callback=self.__front_drum_instruction.update,
         )
         rospy.Subscriber(
             back_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__instructions["back_drum_instruction"].update,
+            callback=self.__back_drum_instruction.update,
         )
         rospy.Subscriber(
             autonomous_toggles_topic,
             std_msgs.msg.Int8,
-            callback=self.__instructions["autonomous_toggles"].update,
+            callback=self.__autonomous_toggles_instruction.update,
         )
         rospy.Subscriber(
             target_coordinates_topic,
             geometry_msgs.msg.Point,
-            callback=self.__instructions["target_coordinates"].update,
+            callback=self.__target_coordinate_instruction.update,
         )
 
         # Sleep for a bit to give ROS and all other nodes time to start up.
@@ -138,22 +141,65 @@ class TestControllerServer(unittest.TestCase):
         time.sleep(self.__communication_delay)
         #connection.close()
 
-    def test_simple_instruction(self):
+    def __get_random_speed(self):
         """"""
-        self.assertEqual(self.__instructions["front_arm_instruction"].get(), None)
-        self.__post_and_sleep({"front_arm_instruction" : 1.0})
-        instruction = self.__instructions["front_arm_instruction"].get()
-        self.assertNotEqual(instruction, None)
-        self.assertEqual(instruction.data, 1.0)
+        speed = random.random()
+        if random.random() > .5:
+            speed = -speed
 
-    def test_complex_instruction(self):
+        return speed
+
+    def test_simple_instructions(self):
         """"""
-        self.assertEqual(self.__instructions["back_arm_instruction"].get(), None)
-        self.assertEqual(self.__instructions["front_drum_instruction"].get(), None)
-        self.assertEqual(self.__instructions["back_drum_instruction"].get(), None)
-        self.assertEqual(self.__instructions["wheel_instruction"].get(), None)
-        self.assertEqual(self.__instructions["autonomous_toggles"].get(), None)
-        self.assertEqual(self.__instructions["target_coordinates"].get(), None)
+        FLOAT_INSTRUCTIONS = (
+            self.__front_arm_instruction,
+            self.__back_arm_instruction,
+            self.__front_drum_instruction,
+            self.__back_drum_instruction,
+        )
+
+        for instruction in FLOAT_INSTRUCTIONS:
+            for iteration in range(ITERATION_RANGE):
+                speed = self.__get_random_speed()
+                self.assertEqual(instruction.get(), None)
+                self.__post_and_sleep({instruction.name : speed})
+                received_instruction = instruction.get()
+                self.assertNotEqual(received_instruction, None)
+                self.assertAlmostEqual(received_instruction.data, speed, places=4)
+
+    def _test_complex_instructions(self):
+        """"""
+        def build_complex_instruction():
+            """"""
+            instruction = {}
+            instruction["wheel_instruction"] = random.choice(
+                WHEEL_INSTRUCTION_STRINGS,
+            )
+            instruction["front_arm_instruction"] = self.__get_random_speed()
+            instruction["back_arm_instruction"] = self.__get_random_speed()
+            instruction["front_drum_instruction"] = self.__get_random_speed()
+            instruction["back_drum_instruction"] = self.__get_random_speed()
+            instruction["autonomous_toggles"] = random.choice(
+                AUTONOMOUS_TOGGLES_INTEGERS,
+            )
+            instruction["target_coordinate"] = {
+                "x" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
+                "y" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
+            }
+            instruction.pop(random.choice(instruction.keys()))
+
+            return instruction
+
+        for iteration in range(ITERATION_RANGE):
+            self.assertEqual(self.__back_arm_instruction.get(), None)
+            self.assertEqual(self.__front_drum_instruction.get(), None)
+            self.assertEqual(self.__back_drum_instruction.get(), None)
+            self.assertEqual(self.__wheel_instruction.get(), None)
+            self.assertEqual(self.__autonomous_toggles_instruction.get(), None)
+            self.assertEqual(self.__target_coordinate_instruction.get(), None)
+            instruction = build_complex_instruction()
+            self.__post_and_sleep(instruction)
+            
 
 
 # Start this node with some default values.
