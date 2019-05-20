@@ -26,6 +26,8 @@ The modes supported by the script are listed below:
   Install all built packages into the install target in your workspace (via ``catkin_make install``).
 ``kill``
   Kill all running ROS nodes and ``roscore``.
+``test``
+  Run integration tests for all linked packages.
 
 EXAMPLES
 ----
