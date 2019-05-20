@@ -32,26 +32,30 @@ class Instruction():
         """"""
         self.name = name
         self.__content = None
-        self.__content_is_new = False
         self.__content_lock = threading.Lock()
 
     def update(self, content):
         """"""
         self.__content_lock.acquire()
-        self.__content_is_new = True
         self.__content = content
         self.__content_lock.release()
 
     def get(self):
         """"""
         self.__content_lock.acquire()
-        content = None
-        if self.__content_is_new:
-            self.__content_is_new = False
-            content = self.__content
+        content = self.__content
+        self.__content = None
         self.__content_lock.release()
 
         return content
+
+    def is_none(self):
+        """"""
+        self.__content_lock.acquire()
+        is_none = self.__content == None
+        self.__content_lock.release()
+
+        return is_none
 
 
 class TestControllerServer(unittest.TestCase):
@@ -92,8 +96,8 @@ class TestControllerServer(unittest.TestCase):
         self.__back_arm_instruction = Instruction("back_arm_instruction")
         self.__front_drum_instruction = Instruction("front_drum_instruction")
         self.__back_drum_instruction = Instruction("back_drum_instruction")
-        self.__autonomous_toggles_instruction = Instruction("autonomous_toggles")
-        self.__target_coordinate_instruction = Instruction("target_coordinate")
+        self.__autonomous_toggles = Instruction("autonomous_toggles")
+        self.__target_coordinate = Instruction("target_coordinate")
 
         rospy.Subscriber(
             wheel_instructions_topic,
@@ -123,12 +127,12 @@ class TestControllerServer(unittest.TestCase):
         rospy.Subscriber(
             autonomous_toggles_topic,
             std_msgs.msg.Int8,
-            callback=self.__autonomous_toggles_instruction.update,
+            callback=self.__autonomous_toggles.update,
         )
         rospy.Subscriber(
             target_coordinates_topic,
             geometry_msgs.msg.Point,
-            callback=self.__target_coordinate_instruction.update,
+            callback=self.__target_coordinate.update,
         )
 
         # Sleep for a bit to give ROS and all other nodes time to start up.
@@ -149,6 +153,16 @@ class TestControllerServer(unittest.TestCase):
 
         return speed
 
+    def setUp(self):
+        """"""
+        self.__wheel_instruction.update(None)
+        self.__front_arm_instruction.update(None)
+        self.__back_arm_instruction.update(None)
+        self.__front_drum_instruction.update(None)
+        self.__back_drum_instruction.update(None)
+        self.__autonomous_toggles.update(None)
+        self.__target_coordinate.update(None)
+
     def test_simple_instructions(self):
         """"""
         FLOAT_INSTRUCTIONS = (
@@ -161,13 +175,11 @@ class TestControllerServer(unittest.TestCase):
         for instruction in FLOAT_INSTRUCTIONS:
             for iteration in range(ITERATION_RANGE):
                 speed = self.__get_random_speed()
-                self.assertEqual(instruction.get(), None)
                 self.__post_and_sleep({instruction.name : speed})
-                received_instruction = instruction.get()
-                self.assertNotEqual(received_instruction, None)
-                self.assertAlmostEqual(received_instruction.data, speed, places=4)
+                self.assertFalse(instruction.is_none())
+                self.assertAlmostEqual(instruction.get().data, speed, places=4)
 
-    def _test_complex_instructions(self):
+    def test_complex_instructions(self):
         """"""
         def build_complex_instruction():
             """"""
@@ -191,14 +203,80 @@ class TestControllerServer(unittest.TestCase):
             return instruction
 
         for iteration in range(ITERATION_RANGE):
-            self.assertEqual(self.__back_arm_instruction.get(), None)
-            self.assertEqual(self.__front_drum_instruction.get(), None)
-            self.assertEqual(self.__back_drum_instruction.get(), None)
-            self.assertEqual(self.__wheel_instruction.get(), None)
-            self.assertEqual(self.__autonomous_toggles_instruction.get(), None)
-            self.assertEqual(self.__target_coordinate_instruction.get(), None)
             instruction = build_complex_instruction()
             self.__post_and_sleep(instruction)
+            if not self.__wheel_instruction.is_none():
+                self.assertTrue("wheel_instruction" in instruction)
+                wheel_instruction = instruction.pop("wheel_instruction")
+                if wheel_instruction == "forward":
+                    self.assertAlmostEqual(
+                        self.__wheel_instruction.get().linear.x,
+                        1.0,
+                        places=4,
+                    )
+                elif wheel_instruction == "backward":
+                    self.assertAlmostEqual(
+                        self.__wheel_instruction.get().linear.x,
+                        -1.0,
+                        places=4,
+                    )
+                elif wheel_instruction == "left":
+                    self.assertAlmostEqual(
+                        self.__wheel_instruction.get().angular.z,
+                        1.0,
+                        places=4,
+                    )
+                elif wheel_instruction == "right":
+                    self.assertAlmostEqual(
+                        self.__wheel_instruction.get().angular.z,
+                        -1.0,
+                        places=4,
+                    )
+            if not self.__front_arm_instruction.is_none():
+                self.assertTrue("front_arm_instruction" in instruction)
+                self.assertAlmostEqual(
+                    self.__front_arm_instruction.get().data,
+                    instruction.pop("front_arm_instruction"),
+                    places=4,
+                )
+            if not self.__back_arm_instruction.is_none():
+                self.assertTrue("back_arm_instruction" in instruction)
+                self.assertAlmostEqual(
+                    self.__back_arm_instruction.get().data,
+                    instruction.pop("back_arm_instruction"),
+                    places=4,
+                )
+            if not self.__front_drum_instruction.is_none():
+                self.assertTrue("front_drum_instruction" in instruction)
+                self.assertAlmostEqual(
+                    self.__front_drum_instruction.get().data,
+                    instruction.pop("front_drum_instruction"),
+                    places=4,
+                )
+            if not self.__back_drum_instruction.is_none():
+                self.assertTrue("back_drum_instruction" in instruction)
+                self.assertAlmostEqual(
+                    self.__back_drum_instruction.get().data,
+                    instruction.pop("back_drum_instruction"),
+                    places=4,
+                )
+            if not self.__autonomous_toggles.is_none():
+                self.assertTrue("autonomous_toggles" in instruction)
+                self.assertEqual(
+                    self.__autonomous_toggles.get().data,
+                    instruction.pop("autonomous_toggles"),
+                )
+            if not self.__target_coordinate.is_none():
+                self.assertTrue("target_coordinate" in instruction)
+                given_point = instruction.pop("target_coordinate")
+                received_point = self.__target_coordinate.get()
+                self.assertEqual(given_point["x"], received_point.x)
+                self.assertEqual(given_point["y"], received_point.y)
+
+            self.assertEqual(len(instruction), 0)
+
+
+
             
 
 
