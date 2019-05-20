@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""
+"""Test that the controller server works as expected.
 
 Written by Tiger Sachse.
 """
@@ -15,33 +15,35 @@ import std_msgs.msg
 import geometry_msgs.msg
 
 
-#
+# Some top-level constants for this test suite.
 ITERATION_RANGE = 10
 COORDINATE_MAX = 1337
 COORDINATE_MIN = -1337
 AUTONOMOUS_TOGGLES_INTEGERS = (1, 2, 4, 8)
 PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
+AUTONOMOUS_TOGGLES_TOPIC = "/autonomous_toggles"
+TARGET_COORDINATES_TOPIC = "/target_coordinates"
 POST_HEADER = {"content-type" : "application/json"}
 WHEEL_INSTRUCTION_STRINGS = ("forward", "backward", "left", "right")
 
 
 class Instruction():
-    """"""
+    """Hold an instruction from the controller server."""
     def __init__(self, name):
-        """"""
+        """Initialize this instruction with no content."""
         self.name = name
         self.__content = None
         self.__content_lock = threading.Lock()
 
     def update(self, content):
-        """"""
+        """Update this instruction with new content."""
         self.__content_lock.acquire()
         self.__content = content
         self.__content_lock.release()
 
     def get(self):
-        """"""
+        """Get the content from this instruction."""
         self.__content_lock.acquire()
         content = self.__content
         self.__content = None
@@ -50,7 +52,7 @@ class Instruction():
         return content
 
     def is_none(self):
-        """"""
+        """Check to see if this instruction's content is None."""
         self.__content_lock.acquire()
         is_none = self.__content == None
         self.__content_lock.release()
@@ -59,12 +61,13 @@ class Instruction():
 
 
 class TestControllerServer(unittest.TestCase):
-    """"""
+    """A suite of tests that confirm the functionality of the controller server."""
     def __init__(self, *arguments, **keyword_arguments):
-        """"""
+        """Initialize this test suite to subscribe to the server's topics."""
         super(TestControllerServer, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
         
+        # Read in all necessary ROS parameters.
         self.__server_url = rospy.get_param(rospy.get_name() + "/server_url")
         self.__port = int(rospy.get_param(rospy.get_name() + "/port"))
         wheel_instructions_topic = rospy.get_param(
@@ -82,8 +85,6 @@ class TestControllerServer(unittest.TestCase):
         back_drum_instructions_topic = rospy.get_param(
             rospy.get_name() + "/back_drum_instructions_topic",
         )
-        autonomous_toggles_topic = "/autonomous_toggles"
-        target_coordinates_topic = "/target_coordinates"
         startup_delay = float(
             rospy.get_param(rospy.get_name() + "/startup_delay"),
         )
@@ -99,6 +100,8 @@ class TestControllerServer(unittest.TestCase):
         self.__autonomous_toggles = Instruction("autonomous_toggles")
         self.__target_coordinate = Instruction("target_coordinate")
 
+        # Subscribe to all of the controller server's output topics. Each
+        # subscriber dumps data into a designated Instruction.
         rospy.Subscriber(
             wheel_instructions_topic,
             geometry_msgs.msg.Twist,
@@ -125,12 +128,12 @@ class TestControllerServer(unittest.TestCase):
             callback=self.__back_drum_instruction.update,
         )
         rospy.Subscriber(
-            autonomous_toggles_topic,
+            AUTONOMOUS_TOGGLES_TOPIC,
             std_msgs.msg.Int8,
             callback=self.__autonomous_toggles.update,
         )
         rospy.Subscriber(
-            target_coordinates_topic,
+            TARGET_COORDINATES_TOPIC,
             geometry_msgs.msg.Point,
             callback=self.__target_coordinate.update,
         )
@@ -139,14 +142,13 @@ class TestControllerServer(unittest.TestCase):
         time.sleep(startup_delay)
 
     def __post_and_sleep(self, payload):
-        """"""
-        connection = httplib.HTTPConnection(self.__server_url, self.__port)
+        """Send a POST request to the server and sleep for a bit."""
+        connection = httplib.HTTPConnection(self.__server_url, self.__port)#
         connection.request("POST", "", json.dumps(payload), POST_HEADER)
         time.sleep(self.__communication_delay)
-        #connection.close()
 
     def __get_random_speed(self):
-        """"""
+        """Get a random speed from -1.0 to 1.0."""
         speed = random.random()
         if random.random() > .5:
             speed = -speed
@@ -154,7 +156,7 @@ class TestControllerServer(unittest.TestCase):
         return speed
 
     def setUp(self):
-        """"""
+        """Empty all instructions before each test."""
         self.__wheel_instruction.update(None)
         self.__front_arm_instruction.update(None)
         self.__back_arm_instruction.update(None)
@@ -164,7 +166,7 @@ class TestControllerServer(unittest.TestCase):
         self.__target_coordinate.update(None)
 
     def test_simple_instructions(self):
-        """"""
+        """Send a few simple instructions through the controller server."""
         FLOAT_INSTRUCTIONS = (
             self.__front_arm_instruction,
             self.__back_arm_instruction,
@@ -180,9 +182,9 @@ class TestControllerServer(unittest.TestCase):
                 self.assertAlmostEqual(instruction.get().data, speed, places=4)
 
     def test_complex_instructions(self):
-        """"""
+        """Send some complex instructions through the controller server."""
         def build_complex_instruction():
-            """"""
+            """Construct a complex instruction with random values."""
             instruction = {}
             instruction["wheel_instruction"] = random.choice(
                 WHEEL_INSTRUCTION_STRINGS,
@@ -198,16 +200,22 @@ class TestControllerServer(unittest.TestCase):
                 "x" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
                 "y" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
             }
+
+            # Randomly remove one key so that the complex instruction is not
+            # complete, (complex instructions do not need all fields filled).
             instruction.pop(random.choice(instruction.keys()))
 
             return instruction
 
         for iteration in range(ITERATION_RANGE):
-            instruction = build_complex_instruction()
-            self.__post_and_sleep(instruction)
+            complex_instruction = build_complex_instruction()
+            self.__post_and_sleep(complex_instruction)
+
+            # For all of the instructions that are not None, assess their
+            # validity and pop them from the complex instruction dictionary.
             if not self.__wheel_instruction.is_none():
-                self.assertTrue("wheel_instruction" in instruction)
-                wheel_instruction = instruction.pop("wheel_instruction")
+                self.assertTrue("wheel_instruction" in complex_instruction)
+                wheel_instruction = complex_instruction.pop("wheel_instruction")
                 if wheel_instruction == "forward":
                     self.assertAlmostEqual(
                         self.__wheel_instruction.get().linear.x,
@@ -233,51 +241,50 @@ class TestControllerServer(unittest.TestCase):
                         places=4,
                     )
             if not self.__front_arm_instruction.is_none():
-                self.assertTrue("front_arm_instruction" in instruction)
+                self.assertTrue("front_arm_instruction" in complex_instruction)
                 self.assertAlmostEqual(
                     self.__front_arm_instruction.get().data,
-                    instruction.pop("front_arm_instruction"),
+                    complex_instruction.pop("front_arm_instruction"),
                     places=4,
                 )
             if not self.__back_arm_instruction.is_none():
-                self.assertTrue("back_arm_instruction" in instruction)
+                self.assertTrue("back_arm_instruction" in complex_instruction)
                 self.assertAlmostEqual(
                     self.__back_arm_instruction.get().data,
-                    instruction.pop("back_arm_instruction"),
+                    complex_instruction.pop("back_arm_instruction"),
                     places=4,
                 )
             if not self.__front_drum_instruction.is_none():
-                self.assertTrue("front_drum_instruction" in instruction)
+                self.assertTrue("front_drum_instruction" in complex_instruction)
                 self.assertAlmostEqual(
                     self.__front_drum_instruction.get().data,
-                    instruction.pop("front_drum_instruction"),
+                    complex_instruction.pop("front_drum_instruction"),
                     places=4,
                 )
             if not self.__back_drum_instruction.is_none():
-                self.assertTrue("back_drum_instruction" in instruction)
+                self.assertTrue("back_drum_instruction" in complex_instruction)
                 self.assertAlmostEqual(
                     self.__back_drum_instruction.get().data,
-                    instruction.pop("back_drum_instruction"),
+                    complex_instruction.pop("back_drum_instruction"),
                     places=4,
                 )
             if not self.__autonomous_toggles.is_none():
-                self.assertTrue("autonomous_toggles" in instruction)
+                self.assertTrue("autonomous_toggles" in complex_instruction)
                 self.assertEqual(
                     self.__autonomous_toggles.get().data,
-                    instruction.pop("autonomous_toggles"),
+                    complex_instruction.pop("autonomous_toggles"),
                 )
             if not self.__target_coordinate.is_none():
-                self.assertTrue("target_coordinate" in instruction)
-                given_point = instruction.pop("target_coordinate")
+                self.assertTrue("target_coordinate" in complex_instruction)
+                given_point = complex_instruction.pop("target_coordinate")
                 received_point = self.__target_coordinate.get()
                 self.assertEqual(given_point["x"], received_point.x)
                 self.assertEqual(given_point["y"], received_point.y)
 
-            self.assertEqual(len(instruction), 0)
-
-
-
-            
+            # Since each discovered instruction component should have been
+            # popped from the complex instruction during testing by this point,
+            # ensure that the complex instruction is now empty.
+            self.assertEqual(len(complex_instruction), 0)
 
 
 # Start this node with some default values.
