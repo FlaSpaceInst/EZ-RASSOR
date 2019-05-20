@@ -73,6 +73,8 @@ class TestControllerServer(unittest.TestCase):
         back_drum_instructions_topic = rospy.get_param(
             rospy.get_name() + "/back_drum_instructions_topic",
         )
+        autonomous_toggles_topic = "/autonomous_toggles"
+        target_coordinates_topic = "/target_coordinates"
         startup_delay = float(
             rospy.get_param(rospy.get_name() + "/startup_delay"),
         )
@@ -80,93 +82,78 @@ class TestControllerServer(unittest.TestCase):
             rospy.get_param(rospy.get_name() + "/communication_delay"),
         )
 
+        self.__instructions = {
+            "wheel_instruction" : Instruction(),
+            "front_arm_instruction" : Instruction(),
+            "back_arm_instruction" : Instruction(),
+            "front_drum_instruction" : Instruction(),
+            "back_drum_instruction" : Instruction(),
+            "autonomous_toggles" : Instruction(),
+            "target_coordinates" : Instruction(),
+        }
+
         rospy.Subscriber(
             wheel_instructions_topic,
             geometry_msgs.msg.Twist,
-            callback=self.__collect_wheel_instruction,
+            callback=self.__instructions["wheel_instruction"].update,
         )
         rospy.Subscriber(
             front_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_front_arm_instruction,
+            callback=self.__instructions["front_arm_instruction"].update,
         )
         rospy.Subscriber(
             back_arm_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_back_arm_instruction,
+            callback=self.__instructions["back_arm_instruction"].update,
         )
         rospy.Subscriber(
             front_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_front_drum_instruction,
+            callback=self.__instructions["front_drum_instruction"].update,
         )
         rospy.Subscriber(
             back_drum_instructions_topic,
             std_msgs.msg.Float32,
-            callback=self.__collect_back_drum_instruction,
+            callback=self.__instructions["back_drum_instruction"].update,
         )
-
-        self.__instructions = {
-            "wheel" : Instruction(),
-            "front_arm" : Instruction(),
-            "back_arm" : Instruction(),
-            "front_drum" : Instruction(),
-            "back_drum" : Instruction(),
-        }
+        rospy.Subscriber(
+            autonomous_toggles_topic,
+            std_msgs.msg.Int8,
+            callback=self.__instructions["autonomous_toggles"].update,
+        )
+        rospy.Subscriber(
+            target_coordinates_topic,
+            geometry_msgs.msg.Point,
+            callback=self.__instructions["target_coordinates"].update,
+        )
 
         # Sleep for a bit to give ROS and all other nodes time to start up.
         time.sleep(startup_delay)
 
-    def __post(self, payload):
+    def __post_and_sleep(self, payload):
         """"""
         connection = httplib.HTTPConnection(self.__server_url, self.__port)
-        #connection.close()
         connection.request("POST", "", json.dumps(payload), POST_HEADER)
+        time.sleep(self.__communication_delay)
+        #connection.close()
 
-    def __collect_wheel_instruction(self, content):
+    def test_simple_instruction(self):
         """"""
-        self.__instructions["wheel"].collect(content)
+        self.assertEqual(self.__instructions["front_arm_instruction"].get(), None)
+        self.__post_and_sleep({"front_arm_instruction" : 1.0})
+        instruction = self.__instructions["front_arm_instruction"].get()
+        self.assertNotEqual(instruction, None)
+        self.assertEqual(instruction.data, 1.0)
 
-    def __collect_front_arm_instruction(self, content):
+    def test_complex_instruction(self):
         """"""
-        self.__instructions["front_arm"].collect(content)
-
-    def __collect_back_arm_instruction(self, content):
-        """"""
-        self.__instructions["back_arm"].collect(content)
-
-    def __collect_front_drum_instruction(self, content):
-        """"""
-        self.__instructions["front_drum"].collect(content)
-
-    def __collect_back_drum_instruction(self, content):
-        """"""
-        self.__instructions["back_drum"].collect(content)
-
-    def __observe_wheel_instruction(self):
-        """"""
-        return self.__instructions["wheel"].get()
-
-    def __observe_front_arm_instruction(self):
-        """"""
-        return self.__instructions["front_arm"].get()
-
-    def __observe_back_arm_instruction(self):
-        """"""
-        return self.__instructions["back_arm"].get()
-
-    def __observe_front_drum_instruction(self):
-        """"""
-        return self.__instructions["front_drum"].get()
-
-    def __observe_back_drum_instruction(self):
-        """"""
-        return self.__instructions["back_drum"].get()
-
-    def test_test_me_daddy(self):
-        """"""
-        self.__post({"autonomous_toggles" : 1})
-        self.assertEqual(1,1)
+        self.assertEqual(self.__instructions["back_arm_instruction"].get(), None)
+        self.assertEqual(self.__instructions["front_drum_instruction"].get(), None)
+        self.assertEqual(self.__instructions["back_drum_instruction"].get(), None)
+        self.assertEqual(self.__instructions["wheel_instruction"].get(), None)
+        self.assertEqual(self.__instructions["autonomous_toggles"].get(), None)
+        self.assertEqual(self.__instructions["target_coordinates"].get(), None)
 
 
 # Start this node with some default values.
