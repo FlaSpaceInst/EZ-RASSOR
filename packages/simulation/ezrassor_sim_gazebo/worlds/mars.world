@@ -198,7 +198,7 @@
         <collision name='ISS_Surface'>
           <geometry>
             <mesh>
-              <uri>model://iss/meshes/US_Lab_ISS4.dae</uri>
+              <uri>model://ezrassor_sim_gazebo/gazebo_models/iss/meshes/US_Lab_ISS4.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -219,7 +219,7 @@
         <visual name='ISS_Visual'>
           <geometry>
             <mesh>
-              <uri>model://iss/meshes//US_Lab_ISS4.dae</uri>
+              <uri>model://ezrassor_sim_gazebo/gazebo_models/iss/meshes/US_Lab_ISS4.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

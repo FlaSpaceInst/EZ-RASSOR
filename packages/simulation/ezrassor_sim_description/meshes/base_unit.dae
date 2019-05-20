@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
   <asset>
     <contributor>
       <author>Blender User</author>
-      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+      <authoring_tool>Blender 2.79.0</authoring_tool>
     </contributor>
-    <created>2019-02-28T17:40:47</created>
-    <modified>2019-02-28T17:40:47</modified>
+    <created>2019-04-26T16:52:04</created>
+    <modified>2019-04-26T16:52:04</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images/>
   <library_effects>
-    <effect id="Material_059-effect">
+    <effect id="Screw_Grey-effect">
       <profile_COMMON>
         <technique sid="common">
           <phong>
@@ -38,189 +38,7 @@
         </technique>
       </profile_COMMON>
     </effect>
-    <effect id="Material_058-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_061-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_060-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_063-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_062-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_065-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_064-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="EZ_RASSOR_Black_003-effect">
+    <effect id="EZ_RASSOR_Black-effect">
       <profile_COMMON>
         <technique sid="common">
           <phong>
@@ -239,483 +57,6 @@
             <shininess>
               <float sid="shininess">54</float>
             </shininess>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_051-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_050-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_053-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_052-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_055-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_054-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_057-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_056-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="EZ_RASSOR_Black_002-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.2265712 0.2265712 0.2265712 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.3806289 0.3725171 0.3487871 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">54</float>
-            </shininess>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_002-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_001-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_004-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_003-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_047-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_046-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_049-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_048-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="EZ_RASSOR_Black_001-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.2265712 0.2265712 0.2265712 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.3806289 0.3725171 0.3487871 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">54</float>
-            </shininess>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
             <index_of_refraction>
               <float sid="index_of_refraction">1</float>
             </index_of_refraction>
@@ -749,355 +90,16 @@
         </technique>
       </profile_COMMON>
     </effect>
-    <effect id="Material_005-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_000-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_041-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_040-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_043-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_042-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_045-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.8829086 0.8829086 0.8829086 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="Material_044-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.1615149 0.1615149 0.1615149 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.5 0.5 0.5 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">50</float>
-            </shininess>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
-    <effect id="EZ_RASSOR_Black-effect">
-      <profile_COMMON>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color sid="emission">0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color sid="ambient">0 0 0 1</color>
-            </ambient>
-            <diffuse>
-              <color sid="diffuse">0.2265712 0.2265712 0.2265712 1</color>
-            </diffuse>
-            <specular>
-              <color sid="specular">0.3806289 0.3725171 0.3487871 1</color>
-            </specular>
-            <shininess>
-              <float sid="shininess">54</float>
-            </shininess>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <index_of_refraction>
-              <float sid="index_of_refraction">1</float>
-            </index_of_refraction>
-          </phong>
-        </technique>
-      </profile_COMMON>
-    </effect>
   </library_effects>
   <library_materials>
-    <material id="Material_059-material" name="Material_059">
-      <instance_effect url="#Material_059-effect"/>
-    </material>
-    <material id="Material_058-material" name="Material_058">
-      <instance_effect url="#Material_058-effect"/>
-    </material>
-    <material id="Material_061-material" name="Material_061">
-      <instance_effect url="#Material_061-effect"/>
-    </material>
-    <material id="Material_060-material" name="Material_060">
-      <instance_effect url="#Material_060-effect"/>
-    </material>
-    <material id="Material_063-material" name="Material_063">
-      <instance_effect url="#Material_063-effect"/>
-    </material>
-    <material id="Material_062-material" name="Material_062">
-      <instance_effect url="#Material_062-effect"/>
-    </material>
-    <material id="Material_065-material" name="Material_065">
-      <instance_effect url="#Material_065-effect"/>
-    </material>
-    <material id="Material_064-material" name="Material_064">
-      <instance_effect url="#Material_064-effect"/>
-    </material>
-    <material id="EZ_RASSOR_Black_003-material" name="EZ_RASSOR_Black_003">
-      <instance_effect url="#EZ_RASSOR_Black_003-effect"/>
-    </material>
-    <material id="Material_051-material" name="Material_051">
-      <instance_effect url="#Material_051-effect"/>
-    </material>
-    <material id="Material_050-material" name="Material_050">
-      <instance_effect url="#Material_050-effect"/>
-    </material>
-    <material id="Material_053-material" name="Material_053">
-      <instance_effect url="#Material_053-effect"/>
-    </material>
-    <material id="Material_052-material" name="Material_052">
-      <instance_effect url="#Material_052-effect"/>
-    </material>
-    <material id="Material_055-material" name="Material_055">
-      <instance_effect url="#Material_055-effect"/>
-    </material>
-    <material id="Material_054-material" name="Material_054">
-      <instance_effect url="#Material_054-effect"/>
-    </material>
-    <material id="Material_057-material" name="Material_057">
-      <instance_effect url="#Material_057-effect"/>
-    </material>
-    <material id="Material_056-material" name="Material_056">
-      <instance_effect url="#Material_056-effect"/>
-    </material>
-    <material id="EZ_RASSOR_Black_002-material" name="EZ_RASSOR_Black_002">
-      <instance_effect url="#EZ_RASSOR_Black_002-effect"/>
-    </material>
-    <material id="Material_002-material" name="Material_002">
-      <instance_effect url="#Material_002-effect"/>
-    </material>
-    <material id="Material_001-material" name="Material_001">
-      <instance_effect url="#Material_001-effect"/>
-    </material>
-    <material id="Material_004-material" name="Material_004">
-      <instance_effect url="#Material_004-effect"/>
-    </material>
-    <material id="Material_003-material" name="Material_003">
-      <instance_effect url="#Material_003-effect"/>
-    </material>
-    <material id="Material_047-material" name="Material_047">
-      <instance_effect url="#Material_047-effect"/>
-    </material>
-    <material id="Material_046-material" name="Material_046">
-      <instance_effect url="#Material_046-effect"/>
-    </material>
-    <material id="Material_049-material" name="Material_049">
-      <instance_effect url="#Material_049-effect"/>
-    </material>
-    <material id="Material_048-material" name="Material_048">
-      <instance_effect url="#Material_048-effect"/>
-    </material>
-    <material id="EZ_RASSOR_Black_001-material" name="EZ_RASSOR_Black_001">
-      <instance_effect url="#EZ_RASSOR_Black_001-effect"/>
-    </material>
-    <material id="UCF_Gold-material" name="UCF_Gold">
-      <instance_effect url="#UCF_Gold-effect"/>
-    </material>
-    <material id="Material_005-material" name="Material_005">
-      <instance_effect url="#Material_005-effect"/>
-    </material>
-    <material id="Material_000-material" name="Material_000">
-      <instance_effect url="#Material_000-effect"/>
-    </material>
-    <material id="Material_041-material" name="Material_041">
-      <instance_effect url="#Material_041-effect"/>
-    </material>
-    <material id="Material_040-material" name="Material_040">
-      <instance_effect url="#Material_040-effect"/>
-    </material>
-    <material id="Material_043-material" name="Material_043">
-      <instance_effect url="#Material_043-effect"/>
-    </material>
-    <material id="Material_042-material" name="Material_042">
-      <instance_effect url="#Material_042-effect"/>
-    </material>
-    <material id="Material_045-material" name="Material_045">
-      <instance_effect url="#Material_045-effect"/>
-    </material>
-    <material id="Material_044-material" name="Material_044">
-      <instance_effect url="#Material_044-effect"/>
+    <material id="Screw_Grey-material" name="Screw_Grey">
+      <instance_effect url="#Screw_Grey-effect"/>
     </material>
     <material id="EZ_RASSOR_Black-material" name="EZ_RASSOR_Black">
       <instance_effect url="#EZ_RASSOR_Black-effect"/>
+    </material>
+    <material id="UCF_Gold-material" name="UCF_Gold">
+      <instance_effect url="#UCF_Gold-effect"/>
     </material>
   </library_materials>
   <library_geometries>
@@ -1135,13 +137,13 @@
         <vertices id="Cylinder_043-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_043-mesh-positions"/>
         </vertices>
-        <triangles material="Material_059-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_043-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_043-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_043-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_058-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_043-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_043-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_043-mesh-map-0" offset="2" set="0"/>
@@ -1183,13 +185,13 @@
         <vertices id="Cylinder_044-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_044-mesh-positions"/>
         </vertices>
-        <triangles material="Material_061-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_044-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_044-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_044-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_060-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_044-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_044-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_044-mesh-map-0" offset="2" set="0"/>
@@ -1231,13 +233,13 @@
         <vertices id="Cylinder_045-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_045-mesh-positions"/>
         </vertices>
-        <triangles material="Material_063-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_045-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_045-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_045-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_062-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_045-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_045-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_045-mesh-map-0" offset="2" set="0"/>
@@ -1279,13 +281,13 @@
         <vertices id="Cylinder_046-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_046-mesh-positions"/>
         </vertices>
-        <triangles material="Material_065-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_046-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_046-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_046-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_064-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_046-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_046-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_046-mesh-map-0" offset="2" set="0"/>
@@ -1318,7 +320,7 @@
         <vertices id="Cylinder_042-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_042-mesh-positions"/>
         </vertices>
-        <triangles material="EZ_RASSOR_Black_003-material" count="124">
+        <triangles material="EZ_RASSOR_Black-material" count="124">
           <input semantic="VERTEX" source="#Cylinder_042-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_042-mesh-normals" offset="1"/>
           <p>1 0 2 0 0 0 3 1 4 1 2 1 5 2 6 2 4 2 7 3 8 3 6 3 9 4 10 4 8 4 11 5 12 5 10 5 13 6 14 6 12 6 15 7 16 7 14 7 17 8 18 8 16 8 19 9 20 9 18 9 21 10 22 10 20 10 23 11 24 11 22 11 25 12 26 12 24 12 27 13 28 13 26 13 29 14 30 14 28 14 31 15 32 15 30 15 33 16 34 16 32 16 35 17 36 17 34 17 37 18 38 18 36 18 39 19 40 19 38 19 41 20 42 20 40 20 43 21 44 21 42 21 45 22 46 22 44 22 47 23 48 23 46 23 49 24 50 24 48 24 51 25 52 25 50 25 53 26 54 26 52 26 55 27 56 27 54 27 57 28 58 28 56 28 59 29 60 29 58 29 53 30 37 30 21 30 61 31 62 31 60 31 63 32 0 32 62 32 14 33 30 33 46 33 1 0 3 0 2 0 3 34 5 34 4 34 5 2 7 2 6 2 7 35 9 35 8 35 9 36 11 36 10 36 11 5 13 5 12 5 13 6 15 6 14 6 15 7 17 7 16 7 17 37 19 37 18 37 19 9 21 9 20 9 21 38 23 38 22 38 23 39 25 39 24 39 25 12 27 12 26 12 27 13 29 13 28 13 29 40 31 40 30 40 31 15 33 15 32 15 33 16 35 16 34 16 35 41 37 41 36 41 37 18 39 18 38 18 39 42 41 42 40 42 41 43 43 43 42 43 43 21 45 21 44 21 45 44 47 44 46 44 47 45 49 45 48 45 49 46 51 46 50 46 51 25 53 25 52 25 53 47 55 47 54 47 55 27 57 27 56 27 57 48 59 48 58 48 59 29 61 29 60 29 5 49 3 49 1 49 1 49 63 49 5 49 63 49 61 49 5 49 61 49 59 49 57 49 57 49 55 49 53 49 53 50 51 50 49 50 49 49 47 49 53 49 47 49 45 49 53 49 45 49 43 49 37 49 43 49 41 49 37 49 41 49 39 49 37 49 37 49 35 49 33 49 33 49 31 49 29 49 29 49 27 49 25 49 25 49 23 49 21 49 21 51 19 51 17 51 17 49 15 49 21 49 15 49 13 49 21 49 13 49 11 49 9 49 9 49 7 49 5 49 61 49 57 49 5 49 57 49 53 49 5 49 37 49 33 49 21 49 33 49 29 49 21 49 29 49 25 49 21 49 13 52 9 52 21 52 9 53 5 53 21 53 53 54 45 54 37 54 5 49 53 49 21 49 61 55 63 55 62 55 63 32 1 32 0 32 62 33 0 33 2 33 2 33 4 33 6 33 6 33 8 33 10 33 10 33 12 33 6 33 12 33 14 33 6 33 14 33 16 33 18 33 18 33 20 33 14 33 20 33 22 33 14 33 22 33 24 33 30 33 24 33 26 33 30 33 26 33 28 33 30 33 30 33 32 33 34 33 34 33 36 33 38 33 38 33 40 33 42 33 42 33 44 33 46 33 46 56 48 56 50 56 50 57 52 57 54 57 54 33 56 33 62 33 56 33 58 33 62 33 58 33 60 33 62 33 62 33 2 33 6 33 30 33 34 33 46 33 34 33 38 33 46 33 38 33 42 33 46 33 46 58 50 58 62 58 50 33 54 33 62 33 62 33 6 33 14 33 14 33 22 33 30 33 62 59 14 59 46 59</p>
@@ -1359,13 +361,13 @@
         <vertices id="Cylinder_038-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_038-mesh-positions"/>
         </vertices>
-        <triangles material="Material_051-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_038-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_038-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_038-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_050-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_038-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_038-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_038-mesh-map-0" offset="2" set="0"/>
@@ -1407,13 +409,13 @@
         <vertices id="Cylinder_039-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_039-mesh-positions"/>
         </vertices>
-        <triangles material="Material_053-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_039-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_039-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_039-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_052-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_039-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_039-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_039-mesh-map-0" offset="2" set="0"/>
@@ -1455,13 +457,13 @@
         <vertices id="Cylinder_040-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_040-mesh-positions"/>
         </vertices>
-        <triangles material="Material_055-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_040-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_040-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_040-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_054-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_040-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_040-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_040-mesh-map-0" offset="2" set="0"/>
@@ -1503,13 +505,13 @@
         <vertices id="Cylinder_041-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_041-mesh-positions"/>
         </vertices>
-        <triangles material="Material_057-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_041-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_041-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_041-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_056-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_041-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_041-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_041-mesh-map-0" offset="2" set="0"/>
@@ -1542,7 +544,7 @@
         <vertices id="Cylinder_037-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_037-mesh-positions"/>
         </vertices>
-        <triangles material="EZ_RASSOR_Black_002-material" count="124">
+        <triangles material="EZ_RASSOR_Black-material" count="124">
           <input semantic="VERTEX" source="#Cylinder_037-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_037-mesh-normals" offset="1"/>
           <p>1 0 2 0 0 0 3 1 4 1 2 1 5 2 6 2 4 2 7 3 8 3 6 3 9 4 10 4 8 4 11 5 12 5 10 5 13 6 14 6 12 6 15 7 16 7 14 7 17 8 18 8 16 8 19 9 20 9 18 9 21 10 22 10 20 10 23 11 24 11 22 11 25 12 26 12 24 12 27 13 28 13 26 13 29 14 30 14 28 14 31 15 32 15 30 15 33 16 34 16 32 16 35 17 36 17 34 17 37 18 38 18 36 18 39 19 40 19 38 19 41 20 42 20 40 20 43 21 44 21 42 21 45 22 46 22 44 22 47 23 48 23 46 23 49 24 50 24 48 24 51 25 52 25 50 25 53 26 54 26 52 26 55 27 56 27 54 27 57 28 58 28 56 28 59 29 60 29 58 29 53 30 37 30 21 30 61 31 62 31 60 31 63 32 0 32 62 32 14 33 30 33 46 33 1 0 3 0 2 0 3 34 5 34 4 34 5 2 7 2 6 2 7 35 9 35 8 35 9 36 11 36 10 36 11 5 13 5 12 5 13 6 15 6 14 6 15 7 17 7 16 7 17 37 19 37 18 37 19 9 21 9 20 9 21 38 23 38 22 38 23 39 25 39 24 39 25 12 27 12 26 12 27 13 29 13 28 13 29 40 31 40 30 40 31 15 33 15 32 15 33 16 35 16 34 16 35 41 37 41 36 41 37 18 39 18 38 18 39 42 41 42 40 42 41 43 43 43 42 43 43 21 45 21 44 21 45 44 47 44 46 44 47 45 49 45 48 45 49 46 51 46 50 46 51 25 53 25 52 25 53 47 55 47 54 47 55 27 57 27 56 27 57 48 59 48 58 48 59 29 61 29 60 29 5 49 3 49 1 49 1 49 63 49 5 49 63 49 61 49 5 49 61 49 59 49 57 49 57 49 55 49 53 49 53 50 51 50 49 50 49 49 47 49 53 49 47 49 45 49 53 49 45 49 43 49 37 49 43 49 41 49 37 49 41 49 39 49 37 49 37 49 35 49 33 49 33 49 31 49 29 49 29 49 27 49 25 49 25 49 23 49 21 49 21 51 19 51 17 51 17 49 15 49 21 49 15 49 13 49 21 49 13 49 11 49 9 49 9 49 7 49 5 49 61 49 57 49 5 49 57 49 53 49 5 49 37 49 33 49 21 49 33 49 29 49 21 49 29 49 25 49 21 49 13 52 9 52 21 52 9 53 5 53 21 53 53 54 45 54 37 54 5 49 53 49 21 49 61 55 63 55 62 55 63 32 1 32 0 32 62 33 0 33 2 33 2 33 4 33 6 33 6 33 8 33 10 33 10 33 12 33 6 33 12 33 14 33 6 33 14 33 16 33 18 33 18 33 20 33 14 33 20 33 22 33 14 33 22 33 24 33 30 33 24 33 26 33 30 33 26 33 28 33 30 33 30 33 32 33 34 33 34 33 36 33 38 33 38 33 40 33 42 33 42 33 44 33 46 33 46 56 48 56 50 56 50 57 52 57 54 57 54 33 56 33 62 33 56 33 58 33 62 33 58 33 60 33 62 33 62 33 2 33 6 33 30 33 34 33 46 33 34 33 38 33 46 33 38 33 42 33 46 33 46 58 50 58 62 58 50 33 54 33 62 33 62 33 6 33 14 33 14 33 22 33 30 33 62 59 14 59 46 59</p>
@@ -1583,13 +585,13 @@
         <vertices id="Cylinder_033-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_033-mesh-positions"/>
         </vertices>
-        <triangles material="Material_002-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_033-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_033-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_033-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_001-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_033-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_033-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_033-mesh-map-0" offset="2" set="0"/>
@@ -1631,13 +633,13 @@
         <vertices id="Cylinder_034-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_034-mesh-positions"/>
         </vertices>
-        <triangles material="Material_004-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_034-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_034-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_034-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_003-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_034-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_034-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_034-mesh-map-0" offset="2" set="0"/>
@@ -1679,13 +681,13 @@
         <vertices id="Cylinder_035-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_035-mesh-positions"/>
         </vertices>
-        <triangles material="Material_047-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_035-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_035-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_035-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_046-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_035-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_035-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_035-mesh-map-0" offset="2" set="0"/>
@@ -1727,13 +729,13 @@
         <vertices id="Cylinder_036-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_036-mesh-positions"/>
         </vertices>
-        <triangles material="Material_049-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_036-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_036-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_036-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_048-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_036-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_036-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_036-mesh-map-0" offset="2" set="0"/>
@@ -1766,7 +768,7 @@
         <vertices id="Cylinder_032-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_032-mesh-positions"/>
         </vertices>
-        <triangles material="EZ_RASSOR_Black_001-material" count="124">
+        <triangles material="EZ_RASSOR_Black-material" count="124">
           <input semantic="VERTEX" source="#Cylinder_032-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_032-mesh-normals" offset="1"/>
           <p>1 0 2 0 0 0 3 1 4 1 2 1 5 2 6 2 4 2 7 3 8 3 6 3 9 4 10 4 8 4 11 5 12 5 10 5 13 6 14 6 12 6 15 7 16 7 14 7 17 8 18 8 16 8 19 9 20 9 18 9 21 10 22 10 20 10 23 11 24 11 22 11 25 12 26 12 24 12 27 13 28 13 26 13 29 14 30 14 28 14 31 15 32 15 30 15 33 16 34 16 32 16 35 17 36 17 34 17 37 18 38 18 36 18 39 19 40 19 38 19 41 20 42 20 40 20 43 21 44 21 42 21 45 22 46 22 44 22 47 23 48 23 46 23 49 24 50 24 48 24 51 25 52 25 50 25 53 26 54 26 52 26 55 27 56 27 54 27 57 28 58 28 56 28 59 29 60 29 58 29 53 30 37 30 21 30 61 31 62 31 60 31 63 32 0 32 62 32 14 33 30 33 46 33 1 0 3 0 2 0 3 34 5 34 4 34 5 2 7 2 6 2 7 35 9 35 8 35 9 36 11 36 10 36 11 5 13 5 12 5 13 6 15 6 14 6 15 7 17 7 16 7 17 37 19 37 18 37 19 9 21 9 20 9 21 38 23 38 22 38 23 39 25 39 24 39 25 12 27 12 26 12 27 13 29 13 28 13 29 40 31 40 30 40 31 15 33 15 32 15 33 16 35 16 34 16 35 41 37 41 36 41 37 18 39 18 38 18 39 42 41 42 40 42 41 43 43 43 42 43 43 21 45 21 44 21 45 44 47 44 46 44 47 45 49 45 48 45 49 46 51 46 50 46 51 25 53 25 52 25 53 47 55 47 54 47 55 27 57 27 56 27 57 48 59 48 58 48 59 29 61 29 60 29 5 49 3 49 1 49 1 49 63 49 5 49 63 49 61 49 5 49 61 49 59 49 57 49 57 49 55 49 53 49 53 50 51 50 49 50 49 49 47 49 53 49 47 49 45 49 53 49 45 49 43 49 37 49 43 49 41 49 37 49 41 49 39 49 37 49 37 49 35 49 33 49 33 49 31 49 29 49 29 49 27 49 25 49 25 49 23 49 21 49 21 51 19 51 17 51 17 49 15 49 21 49 15 49 13 49 21 49 13 49 11 49 9 49 9 49 7 49 5 49 61 49 57 49 5 49 57 49 53 49 5 49 37 49 33 49 21 49 33 49 29 49 21 49 29 49 25 49 21 49 13 52 9 52 21 52 9 53 5 53 21 53 53 54 45 54 37 54 5 49 53 49 21 49 61 55 63 55 62 55 63 32 1 32 0 32 62 33 0 33 2 33 2 33 4 33 6 33 6 33 8 33 10 33 10 33 12 33 6 33 12 33 14 33 6 33 14 33 16 33 18 33 18 33 20 33 14 33 20 33 22 33 14 33 22 33 24 33 30 33 24 33 26 33 30 33 26 33 28 33 30 33 30 33 32 33 34 33 34 33 36 33 38 33 38 33 40 33 42 33 42 33 44 33 46 33 46 56 48 56 50 56 50 57 52 57 54 57 54 33 56 33 62 33 56 33 58 33 62 33 58 33 60 33 62 33 62 33 2 33 6 33 30 33 34 33 46 33 34 33 38 33 46 33 38 33 42 33 46 33 46 58 50 58 62 58 50 33 54 33 62 33 62 33 6 33 14 33 14 33 22 33 30 33 62 59 14 59 46 59</p>
@@ -1872,7 +874,7 @@
         <vertices id="Cylinder_024-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_024-mesh-positions"/>
         </vertices>
-        <triangles count="124">
+        <triangles material="EZ_RASSOR_Black-material" count="124">
           <input semantic="VERTEX" source="#Cylinder_024-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_024-mesh-normals" offset="1"/>
           <input semantic="COLOR" source="#Cylinder_024-mesh-colors-Col" offset="2" set="0"/>
@@ -1905,7 +907,7 @@
         <vertices id="Cylinder_025-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_025-mesh-positions"/>
         </vertices>
-        <triangles count="124">
+        <triangles material="EZ_RASSOR_Black-material" count="124">
           <input semantic="VERTEX" source="#Cylinder_025-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_025-mesh-normals" offset="1"/>
           <p>1 0 2 0 0 0 3 1 4 1 2 1 5 2 6 2 4 2 7 3 8 3 6 3 9 4 10 4 8 4 11 5 12 5 10 5 13 6 14 6 12 6 15 7 16 7 14 7 17 8 18 8 16 8 19 9 20 9 18 9 21 10 22 10 20 10 23 11 24 11 22 11 25 12 26 12 24 12 27 13 28 13 26 13 29 14 30 14 28 14 31 15 32 15 30 15 33 16 34 16 32 16 35 17 36 17 34 17 37 18 38 18 36 18 39 19 40 19 38 19 41 20 42 20 40 20 43 21 44 21 42 21 45 22 46 22 44 22 47 23 48 23 46 23 49 24 50 24 48 24 51 25 52 25 50 25 53 26 54 26 52 26 55 27 56 27 54 27 57 28 58 28 56 28 59 29 60 29 58 29 53 30 37 30 21 30 61 31 62 31 60 31 63 32 0 32 62 32 14 33 30 33 46 33 1 0 3 0 2 0 3 34 5 34 4 34 5 2 7 2 6 2 7 35 9 35 8 35 9 36 11 36 10 36 11 5 13 5 12 5 13 6 15 6 14 6 15 7 17 7 16 7 17 37 19 37 18 37 19 9 21 9 20 9 21 38 23 38 22 38 23 39 25 39 24 39 25 12 27 12 26 12 27 13 29 13 28 13 29 40 31 40 30 40 31 15 33 15 32 15 33 16 35 16 34 16 35 41 37 41 36 41 37 18 39 18 38 18 39 42 41 42 40 42 41 43 43 43 42 43 43 21 45 21 44 21 45 44 47 44 46 44 47 45 49 45 48 45 49 46 51 46 50 46 51 25 53 25 52 25 53 47 55 47 54 47 55 27 57 27 56 27 57 48 59 48 58 48 59 29 61 29 60 29 5 49 3 49 1 49 1 49 63 49 5 49 63 49 61 49 5 49 61 49 59 49 57 49 57 49 55 49 53 49 53 50 51 50 49 50 49 49 47 49 53 49 47 49 45 49 53 49 45 49 43 49 37 49 43 49 41 49 37 49 41 49 39 49 37 49 37 49 35 49 33 49 33 49 31 49 29 49 29 49 27 49 25 49 25 49 23 49 21 49 21 51 19 51 17 51 17 49 15 49 21 49 15 49 13 49 21 49 13 49 11 49 9 49 9 49 7 49 5 49 61 49 57 49 5 49 57 49 53 49 5 49 37 49 33 49 21 49 33 49 29 49 21 49 29 49 25 49 21 49 13 52 9 52 21 52 9 53 5 53 21 53 53 54 45 54 37 54 5 49 53 49 21 49 61 55 63 55 62 55 63 32 1 32 0 32 62 33 0 33 2 33 2 33 4 33 6 33 6 33 8 33 10 33 10 33 12 33 6 33 12 33 14 33 6 33 14 33 16 33 18 33 18 33 20 33 14 33 20 33 22 33 14 33 22 33 24 33 30 33 24 33 26 33 30 33 26 33 28 33 30 33 30 33 32 33 34 33 34 33 36 33 38 33 38 33 40 33 42 33 42 33 44 33 46 33 46 56 48 56 50 56 50 57 52 57 54 57 54 33 56 33 62 33 56 33 58 33 62 33 58 33 60 33 62 33 62 33 2 33 6 33 30 33 34 33 46 33 34 33 38 33 46 33 38 33 42 33 46 33 46 58 50 58 62 58 50 33 54 33 62 33 62 33 6 33 14 33 14 33 22 33 30 33 62 59 14 59 46 59</p>
@@ -2010,13 +1012,13 @@
         <vertices id="Cylinder_027-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_027-mesh-positions"/>
         </vertices>
-        <triangles material="Material_005-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_027-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_027-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_027-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_000-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_027-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_027-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_027-mesh-map-0" offset="2" set="0"/>
@@ -2058,13 +1060,13 @@
         <vertices id="Cylinder_028-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_028-mesh-positions"/>
         </vertices>
-        <triangles material="Material_041-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_028-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_028-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_028-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_040-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_028-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_028-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_028-mesh-map-0" offset="2" set="0"/>
@@ -2106,13 +1108,13 @@
         <vertices id="Cylinder_029-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_029-mesh-positions"/>
         </vertices>
-        <triangles material="Material_043-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_029-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_029-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_029-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_042-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_029-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_029-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_029-mesh-map-0" offset="2" set="0"/>
@@ -2154,13 +1156,13 @@
         <vertices id="Cylinder_030-mesh-vertices">
           <input semantic="POSITION" source="#Cylinder_030-mesh-positions"/>
         </vertices>
-        <triangles material="Material_045-material" count="214">
+        <triangles material="Screw_Grey-material" count="214">
           <input semantic="VERTEX" source="#Cylinder_030-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_030-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_030-mesh-map-0" offset="2" set="0"/>
           <p>1 0 0 3 0 1 0 0 2 3 1 3 5 1 4 0 1 5 6 2 6 1 2 7 0 2 8 2 3 9 8 3 10 9 3 11 2 4 12 11 4 13 3 4 14 0 5 15 12 5 16 6 5 17 11 6 18 4 6 19 3 6 20 5 7 21 14 7 22 15 7 23 16 8 24 7 8 25 6 8 26 7 9 27 8 9 28 1 9 29 10 10 30 9 10 31 19 10 32 29 11 33 30 11 34 31 11 35 25 11 36 38 11 37 37 11 38 11 12 39 43 12 40 44 12 41 6 13 42 45 13 43 16 13 44 12 14 45 15 14 46 46 14 47 44 15 48 13 15 49 11 15 50 13 16 51 14 16 52 4 16 53 14 17 54 50 17 55 15 17 56 52 18 57 16 18 58 51 18 59 7 19 60 20 19 61 18 19 62 43 20 63 19 20 64 42 20 65 52 21 66 20 21 67 17 21 68 53 22 69 21 22 70 52 22 71 54 23 72 22 23 73 53 23 74 55 24 75 23 24 76 54 24 77 56 25 78 24 25 79 55 25 80 56 26 81 38 26 82 25 26 83 58 27 84 38 27 85 57 27 86 59 28 87 39 28 88 58 28 89 59 29 90 41 29 91 40 29 92 43 30 93 41 30 94 60 30 95 43 31 96 61 31 97 44 31 98 16 32 99 62 32 100 51 32 101 45 33 102 46 33 103 63 33 104 15 34 105 64 34 106 46 34 107 61 35 108 47 35 109 44 35 110 47 36 111 48 36 112 13 36 113 48 37 114 49 37 115 14 37 116 72 11 117 73 11 118 64 11 119 53 38 120 51 38 121 79 38 122 80 39 123 53 39 124 79 39 125 81 40 126 54 40 127 80 40 128 82 41 129 55 41 130 81 41 131 83 42 132 56 42 133 82 42 134 58 43 135 83 43 136 84 43 137 59 44 138 84 44 139 85 44 140 60 45 141 85 45 142 61 45 143 51 46 144 86 46 145 79 46 146 62 47 147 63 47 148 87 47 149 63 11 150 64 11 151 78 11 152 85 48 153 65 48 154 61 48 155 65 49 156 66 49 157 47 49 158 66 50 159 67 50 160 48 50 161 66 11 162 69 11 163 68 11 164 90 51 165 69 51 166 89 51 167 91 52 168 70 52 169 90 52 170 92 53 171 71 53 172 91 53 173 93 54 174 72 54 175 92 54 176 93 11 177 74 11 178 73 11 179 94 11 180 75 11 181 74 11 182 95 11 183 76 11 184 75 11 185 96 11 186 77 11 187 76 11 188 87 11 189 78 11 190 77 11 191 79 55 192 97 55 193 80 55 194 80 56 195 98 56 196 81 56 197 81 57 198 99 57 199 82 57 200 82 58 201 100 58 202 83 58 203 83 59 204 101 59 205 84 59 206 84 60 207 88 60 208 85 60 209 86 61 210 87 61 211 96 61 212 88 62 213 89 62 214 65 62 215 101 63 216 90 63 217 88 63 218 101 64 219 92 64 220 91 64 221 100 65 222 93 65 223 92 65 224 99 66 225 94 66 226 93 66 227 98 67 228 95 67 229 94 67 230 97 68 231 96 68 232 95 68 233 28 69 234 103 69 235 29 69 236 29 58 237 104 58 238 30 58 239 27 70 243 102 70 244 28 70 245 30 71 246 106 71 247 31 71 248 26 71 252 105 71 253 27 71 254 31 58 255 110 58 256 32 58 257 37 70 267 109 70 268 26 70 269 32 72 270 108 72 271 33 72 272 33 58 273 112 58 274 34 58 275 34 73 276 111 73 277 35 73 278 35 70 279 107 70 280 36 70 281 36 72 282 113 72 283 37 72 284 1 74 285 2 74 286 3 74 287 3 75 288 4 75 289 5 75 290 6 76 291 7 76 292 1 76 293 2 77 294 1 77 295 8 77 296 2 78 297 10 78 298 11 78 299 0 79 300 5 79 301 12 79 302 11 6 303 13 6 304 4 6 305 5 80 306 4 80 307 14 80 308 16 81 309 17 81 310 7 81 311 7 82 312 18 82 313 8 82 314 10 83 315 2 83 316 9 83 317 9 11 318 8 11 319 32 11 320 8 84 321 18 84 322 31 84 323 32 11 324 8 11 325 31 11 326 18 85 327 20 85 328 31 85 329 20 86 330 21 86 331 29 86 332 31 11 333 20 11 334 29 11 335 21 87 336 22 87 337 29 87 338 22 88 339 23 88 340 28 88 341 23 89 342 24 89 343 26 89 344 24 11 345 25 11 346 26 11 347 26 11 348 27 11 349 28 11 350 26 11 351 28 11 352 23 11 353 22 90 354 28 90 355 29 90 356 19 91 357 9 91 358 32 91 359 42 11 360 19 11 361 34 11 362 19 11 363 32 11 364 34 11 365 32 11 366 33 11 367 34 11 368 35 11 369 36 11 370 37 11 371 42 92 372 34 92 373 41 92 374 34 93 375 35 93 376 41 93 377 40 94 378 41 94 379 35 94 380 38 95 381 39 95 382 37 95 383 39 11 384 40 11 385 35 11 386 37 11 387 39 11 388 35 11 389 26 11 390 25 11 391 37 11 392 11 96 393 10 96 394 43 96 395 6 97 396 12 97 397 45 97 398 12 98 399 5 98 400 15 98 401 44 99 402 47 99 403 13 99 404 13 100 405 48 100 406 14 100 407 14 11 408 49 11 409 50 11 410 52 101 411 17 101 412 16 101 413 7 102 414 17 102 415 20 102 416 43 103 417 10 103 418 19 103 419 52 104 420 21 104 421 20 104 422 53 105 423 22 105 424 21 105 425 54 106 426 23 106 427 22 106 428 55 107 429 24 107 430 23 107 431 56 108 432 25 108 433 24 108 434 56 109 435 57 109 436 38 109 437 58 110 438 39 110 439 38 110 440 59 111 441 40 111 442 39 111 443 59 112 444 60 112 445 41 112 446 43 113 447 42 113 448 41 113 449 43 114 450 60 114 451 61 114 452 16 115 453 45 115 454 62 115 455 45 116 456 12 116 457 46 116 458 15 11 459 50 11 460 64 11 461 61 117 462 65 117 463 47 117 464 47 118 465 66 118 466 48 118 467 48 11 468 67 11 469 49 11 470 64 11 471 50 11 472 49 11 473 64 11 474 49 11 475 67 11 476 77 11 477 78 11 478 64 11 479 64 11 480 67 11 481 68 11 482 76 11 483 77 11 484 64 11 485 64 11 486 68 11 487 69 11 488 75 11 489 76 11 490 64 11 491 64 11 492 69 11 493 70 11 494 74 11 495 75 11 496 64 11 497 64 11 498 70 11 499 71 11 500 73 11 501 74 11 502 64 11 503 64 11 504 71 11 505 72 11 506 53 119 507 52 119 508 51 119 509 80 120 510 54 120 511 53 120 512 81 121 513 55 121 514 54 121 515 82 122 516 56 122 517 55 122 518 83 123 519 57 123 520 56 123 521 58 124 522 57 124 523 83 124 524 59 125 525 58 125 526 84 125 527 60 126 528 59 126 529 85 126 530 51 127 531 62 127 532 86 127 533 62 128 534 45 128 535 63 128 536 63 129 537 46 129 538 64 129 539 85 130 540 88 130 541 65 130 542 65 131 543 89 131 544 66 131 545 66 11 546 68 11 547 67 11 548 66 132 549 89 132 550 69 132 551 90 11 552 70 11 553 69 11 554 91 11 555 71 11 556 70 11 557 92 11 558 72 11 559 71 11 560 93 11 561 73 11 562 72 11 563 93 133 564 94 133 565 74 133 566 94 134 567 95 134 568 75 134 569 95 135 570 96 135 571 76 135 572 96 136 573 87 136 574 77 136 575 87 137 576 63 137 577 78 137 578 79 138 579 86 138 580 97 138 581 80 139 582 97 139 583 98 139 584 81 140 585 98 140 586 99 140 587 82 58 588 99 58 589 100 58 590 83 141 591 100 141 592 101 141 593 84 142 594 101 142 595 88 142 596 86 143 597 62 143 598 87 143 599 88 144 600 90 144 601 89 144 602 101 145 603 91 145 604 90 145 605 101 146 606 100 146 607 92 146 608 100 147 609 99 147 610 93 147 611 99 148 612 98 148 613 94 148 614 98 149 615 97 149 616 95 149 617 97 150 618 86 150 619 96 150 620 28 151 621 102 151 622 103 151 623 29 58 624 103 58 625 104 58 626 27 70 630 105 70 631 102 70 632 30 71 633 104 71 634 106 71 635 26 71 639 109 71 640 105 71 641 31 58 642 106 58 643 110 58 644 37 70 654 113 70 655 109 70 656 32 72 657 110 72 658 108 72 659 33 58 660 108 58 661 112 58 662 34 152 663 112 152 664 111 152 665 35 70 666 111 70 667 107 70 668 36 72 669 107 72 670 113 72 671</p>
         </triangles>
-        <triangles material="Material_044-material" count="10">
+        <triangles material="EZ_RASSOR_Black-material" count="10">
           <input semantic="VERTEX" source="#Cylinder_030-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Cylinder_030-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Cylinder_030-mesh-map-0" offset="2" set="0"/>
@@ -2246,162 +1248,162 @@
           </bind_material>
         </instance_geometry>
         <node id="Wheel_Mount_Front_Right" name="Wheel_Mount_Front_Right" type="NODE">
-          <matrix sid="transform">0.3182397 -5.43071e-8 -3.10518e-15 0.517114 6.26827e-8 0.4151289 2.33337e-8 1.845963 0 -1.35079e-7 0.02677886 0.916854 0 0 0 1</matrix>
+          <matrix sid="transform">0.3182397 -5.43071e-8 -3.10518e-15 0.4146182 6.26827e-8 0.4151289 2.33337e-8 1.873877 0 -1.35079e-7 0.02677886 0.916854 0 0 0 1</matrix>
           <instance_geometry url="#Cylinder_042-mesh" name="Wheel_Mount_Front_Right">
             <bind_material>
               <technique_common>
-                <instance_material symbol="EZ_RASSOR_Black_003-material" target="#EZ_RASSOR_Black_003-material"/>
+                <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
               </technique_common>
             </bind_material>
           </instance_geometry>
           <node id="Screw_030" name="Screw_030" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46811e-10 1.57803e-9 -0.805401 0 -0.08094525 1.44987e-8 0.01488066 -2.43743e-8 4.7303e-8 0.7668121 1.138451 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.03482e-11 9.65263e-10 -0.805401 -8.88178e-16 -0.08094525 1.44987e-8 0.01488113 -2.43743e-8 8.9263e-8 0.7668121 1.138451 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_043-mesh" name="Screw_030">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_059-material" target="#Material_059-material"/>
-                  <instance_material symbol="Material_058-material" target="#Material_058-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_031" name="Screw_031" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46811e-10 1.57803e-9 -0.05331314 0 -0.08094525 1.44987e-8 -0.7669897 -2.43743e-8 4.7303e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.03482e-11 9.65263e-10 -0.05331311 -8.88178e-16 -0.08094525 1.44987e-8 -0.7669897 -2.43743e-8 8.9263e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_044-mesh" name="Screw_031">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_061-material" target="#Material_061-material"/>
-                  <instance_material symbol="Material_060-material" target="#Material_060-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_032" name="Screw_032" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46811e-10 1.57803e-9 0.7285607 0 -0.08094525 1.44987e-8 0.01488113 -2.43743e-8 4.7303e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.03482e-11 9.65263e-10 0.7285607 -8.88178e-16 -0.08094525 1.44987e-8 0.01488161 -2.43743e-8 8.9263e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_045-mesh" name="Screw_032">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_063-material" target="#Material_063-material"/>
-                  <instance_material symbol="Material_062-material" target="#Material_062-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_033" name="Screw_033" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46811e-10 1.57803e-9 -0.05331299 0 -0.08094525 1.44987e-8 0.7595258 -2.43743e-8 4.7303e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.03482e-11 9.65263e-10 -0.05331296 -8.88178e-16 -0.08094525 1.44987e-8 0.7595258 -2.43743e-8 8.9263e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_046-mesh" name="Screw_033">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_065-material" target="#Material_065-material"/>
-                  <instance_material symbol="Material_064-material" target="#Material_064-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
         </node>
         <node id="Wheel_Mount_Front_Left" name="Wheel_Mount_Front_Left" type="NODE">
-          <matrix sid="transform">0.3182397 6.25421e-9 3.46496e-16 0.517114 0 -0.4151289 -1.95027e-8 1.845963 0 1.12901e-7 -0.02677886 -0.9168538 0 0 0 1</matrix>
+          <matrix sid="transform">0.3182397 6.25421e-9 3.46496e-16 0.4146182 0 -0.4151289 -1.95027e-8 1.873878 0 1.12901e-7 -0.02677886 -0.9168538 0 0 0 1</matrix>
           <instance_geometry url="#Cylinder_037-mesh" name="Wheel_Mount_Front_Left">
             <bind_material>
               <technique_common>
-                <instance_material symbol="EZ_RASSOR_Black_002-material" target="#EZ_RASSOR_Black_002-material"/>
+                <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
               </technique_common>
             </bind_material>
           </instance_geometry>
           <node id="Screw_026" name="Screw_026" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46865e-10 9.65262e-10 -0.05331299 8.88178e-16 -0.08094525 -2.38205e-9 0.7595258 -2.43743e-8 6.41866e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 3.72324e-12 9.65262e-10 -0.05331299 0 -0.08094525 7.42225e-9 0.7595255 -2.43743e-8 6.41867e-8 0.7668121 1.138474 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_038-mesh" name="Screw_026">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_051-material" target="#Material_051-material"/>
-                  <instance_material symbol="Material_050-material" target="#Material_050-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_027" name="Screw_027" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46865e-10 9.65262e-10 0.7285607 8.88178e-16 -0.08094525 -2.38205e-9 0.01488113 -2.43743e-8 6.41866e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 3.72324e-12 9.65262e-10 0.7285607 0 -0.08094525 7.42225e-9 0.01488113 -2.43743e-8 6.41867e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_039-mesh" name="Screw_027">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_053-material" target="#Material_053-material"/>
-                  <instance_material symbol="Material_052-material" target="#Material_052-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_028" name="Screw_028" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46865e-10 9.65262e-10 -0.05331308 8.88178e-16 -0.08094525 -2.38205e-9 -0.7669897 -2.43743e-8 6.41866e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 3.72324e-12 9.65262e-10 -0.05331308 0 -0.08094525 7.42225e-9 -0.7669897 -2.43743e-8 6.41867e-8 0.7668121 1.138474 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_040-mesh" name="Screw_028">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_055-material" target="#Material_055-material"/>
-                  <instance_material symbol="Material_054-material" target="#Material_054-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_029" name="Screw_029" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46865e-10 9.65262e-10 -0.805401 8.88178e-16 -0.08094525 -2.38205e-9 0.01488113 -2.43743e-8 6.41866e-8 0.7668121 1.138451 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 3.72324e-12 9.65262e-10 -0.8054009 0 -0.08094525 7.42225e-9 0.01488113 -2.43743e-8 6.41867e-8 0.7668121 1.138451 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_041-mesh" name="Screw_029">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_057-material" target="#Material_057-material"/>
-                  <instance_material symbol="Material_056-material" target="#Material_056-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
         </node>
         <node id="Wheel_Mount_Back_Right" name="Wheel_Mount_Back_Right" type="NODE">
-          <matrix sid="transform">0.3182397 -5.43071e-8 -3.10518e-15 0.5171142 6.26827e-8 0.4151289 2.33337e-8 -1.852884 0 -1.35079e-7 0.02677886 0.9168538 0 0 0 1</matrix>
+          <matrix sid="transform">0.3182397 -5.43071e-8 -3.10518e-15 0.4146185 6.26827e-8 0.4151289 2.33337e-8 -1.860728 0 -1.35079e-7 0.02677886 0.9168538 0 0 0 1</matrix>
           <instance_geometry url="#Cylinder_032-mesh" name="Wheel_Mount_Back_Right">
             <bind_material>
               <technique_common>
-                <instance_material symbol="EZ_RASSOR_Black_001-material" target="#EZ_RASSOR_Black_001-material"/>
+                <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
               </technique_common>
             </bind_material>
           </instance_geometry>
           <node id="Screw_022" name="Screw_022" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46797e-10 3.52494e-10 -0.05331296 -8.88178e-16 -0.08094525 1.44987e-8 0.7595258 -2.43743e-8 4.73038e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 -9.20686e-12 9.84412e-10 -0.05331296 -4.44089e-16 -0.08094525 4.69441e-9 0.759526 -2.43743e-8 1.31223e-7 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_033-mesh" name="Screw_022">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_002-material" target="#Material_002-material"/>
-                  <instance_material symbol="Material_001-material" target="#Material_001-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_023" name="Screw_023" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46797e-10 3.52494e-10 0.7285607 -8.88178e-16 -0.08094525 1.44987e-8 0.01488113 -2.43743e-8 4.73038e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 -9.20686e-12 9.84412e-10 0.7285607 -4.44089e-16 -0.08094525 4.69441e-9 0.01488113 -2.43743e-8 1.31223e-7 0.7668121 1.138474 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_034-mesh" name="Screw_023">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_004-material" target="#Material_004-material"/>
-                  <instance_material symbol="Material_003-material" target="#Material_003-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_024" name="Screw_024" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46797e-10 3.52494e-10 -0.05331311 -8.88178e-16 -0.08094525 1.44987e-8 -0.7669897 -2.43743e-8 4.73038e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 -9.20686e-12 9.84412e-10 -0.05331311 -4.44089e-16 -0.08094525 4.69441e-9 -0.7669897 -2.43743e-8 1.31223e-7 0.7668121 1.138474 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_035-mesh" name="Screw_024">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_047-material" target="#Material_047-material"/>
-                  <instance_material symbol="Material_046-material" target="#Material_046-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_025" name="Screw_025" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46797e-10 3.52494e-10 -0.8054009 -8.88178e-16 -0.08094525 1.44987e-8 0.01488066 -2.43743e-8 4.73038e-8 0.7668121 1.138451 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 -9.20686e-12 9.84412e-10 -0.8054009 -4.44089e-16 -0.08094525 4.69441e-9 0.01488066 -2.43743e-8 1.31223e-7 0.7668121 1.138454 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_036-mesh" name="Screw_025">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_049-material" target="#Material_049-material"/>
-                  <instance_material symbol="Material_048-material" target="#Material_048-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
@@ -2429,11 +1431,23 @@
         </node>
         <node id="Base_-_Arm_Support_Beam_Front" name="Base_-_Arm_Support_Beam_Front" type="NODE">
           <matrix sid="transform">0.09000766 4.44089e-16 0 0.4172518 8.88178e-16 0.1174108 7.10543e-15 -1.932298 0 0 0.7759124 -5.16149e-8 0 0 0 1</matrix>
-          <instance_geometry url="#Cylinder_024-mesh" name="Base_-_Arm_Support_Beam_Front"/>
+          <instance_geometry url="#Cylinder_024-mesh" name="Base_-_Arm_Support_Beam_Front">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
         </node>
         <node id="Base_-_Arm_Support_Beam_Back" name="Base_-_Arm_Support_Beam_Back" type="NODE">
           <matrix sid="transform">0.09000766 4.44089e-16 0 0.4172516 8.88178e-16 0.1174108 7.10543e-15 1.932298 0 0 0.7759124 5.16149e-8 0 0 0 1</matrix>
-          <instance_geometry url="#Cylinder_025-mesh" name="Base_-_Arm_Support_Beam_Back"/>
+          <instance_geometry url="#Cylinder_025-mesh" name="Base_-_Arm_Support_Beam_Back">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
         </node>
         <node id="EZ-RASSOR" name="EZ-RASSOR" type="NODE">
           <matrix sid="transform">-1.71985e-8 -0.3635758 -0.2192975 -0.3844622 0 0.2860635 -0.4742678 -0.6687409 0.3384601 -1.17395e-8 -7.0809e-9 -0.6685287 0 0 0 1</matrix>
@@ -2456,7 +1470,7 @@
           </instance_geometry>
         </node>
         <node id="Wheel_Mount_Back_Left" name="Wheel_Mount_Back_Left" type="NODE">
-          <matrix sid="transform">0.3182397 6.25421e-9 3.46496e-16 0.5171142 0 -0.4151289 -1.95027e-8 -1.852883 0 1.12901e-7 -0.02677886 -0.916854 0 0 0 1</matrix>
+          <matrix sid="transform">0.3182397 6.25421e-9 3.46496e-16 0.4146185 0 -0.4151289 -1.95027e-8 -1.860728 0 1.12901e-7 -0.02677886 -0.916854 0 0 0 1</matrix>
           <instance_geometry url="#Cylinder_026-mesh" name="Wheel_Mount_Back_Left">
             <bind_material>
               <technique_common>
@@ -2465,45 +1479,45 @@
             </bind_material>
           </instance_geometry>
           <node id="Screw_018" name="Screw_018" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46871e-10 9.65262e-10 -0.8054009 -4.44089e-16 -0.08094525 7.42225e-9 0.01488113 -2.43743e-8 6.41862e-8 0.7668121 1.138451 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.38591e-11 9.65262e-10 -0.805401 4.44089e-16 -0.08094525 1.72266e-8 0.01488113 -2.43743e-8 2.22262e-8 0.7668121 1.138451 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_027-mesh" name="Screw_018">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_005-material" target="#Material_005-material"/>
-                  <instance_material symbol="Material_000-material" target="#Material_000-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_019" name="Screw_019" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46871e-10 9.65262e-10 -0.05331308 -4.44089e-16 -0.08094525 7.42225e-9 -0.7669897 -2.43743e-8 6.41862e-8 0.7668121 1.138474 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.38591e-11 9.65262e-10 -0.05331308 4.44089e-16 -0.08094525 1.72266e-8 -0.7669899 -2.43743e-8 2.22262e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_028-mesh" name="Screw_019">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_041-material" target="#Material_041-material"/>
-                  <instance_material symbol="Material_040-material" target="#Material_040-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_020" name="Screw_020" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46871e-10 9.65262e-10 0.7285607 -4.44089e-16 -0.08094525 7.42225e-9 0.01488113 -2.43743e-8 6.41862e-8 0.7668121 1.13847 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.38591e-11 9.65262e-10 0.7285607 4.44089e-16 -0.08094525 1.72266e-8 0.01488113 -2.43743e-8 2.22262e-8 0.7668121 1.13847 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_029-mesh" name="Screw_020">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_043-material" target="#Material_043-material"/>
-                  <instance_material symbol="Material_042-material" target="#Material_042-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
           </node>
           <node id="Screw_021" name="Screw_021" type="NODE">
-            <matrix sid="transform">-0.08094523 -1.46871e-10 9.65262e-10 -0.05331299 -4.44089e-16 -0.08094525 7.42225e-9 0.7595258 -2.43743e-8 6.41862e-8 0.7668121 1.138474 0 0 0 1</matrix>
+            <matrix sid="transform">-0.08094523 1.38591e-11 9.65262e-10 -0.05331299 4.44089e-16 -0.08094525 1.72266e-8 0.7595253 -2.43743e-8 2.22262e-8 0.7668121 1.138474 0 0 0 1</matrix>
             <instance_geometry url="#Cylinder_030-mesh" name="Screw_021">
               <bind_material>
                 <technique_common>
-                  <instance_material symbol="Material_045-material" target="#Material_045-material"/>
-                  <instance_material symbol="Material_044-material" target="#Material_044-material"/>
+                  <instance_material symbol="Screw_Grey-material" target="#Screw_Grey-material"/>
+                  <instance_material symbol="EZ_RASSOR_Black-material" target="#EZ_RASSOR_Black-material"/>
                 </technique_common>
               </bind_material>
             </instance_geometry>
