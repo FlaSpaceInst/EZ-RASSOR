@@ -7,7 +7,6 @@ from std_msgs.msg import Float32, Int8
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 
-
 def callback(data, additional_arguments):
     """Parse Joy data, publish Twist data."""
 
@@ -17,9 +16,7 @@ def callback(data, additional_arguments):
     pub_front_drum = additional_arguments[3]
     pub_back_drum = additional_arguments[4]
     pub_auto_toggles = additional_arguments[5]
-    max_wheel_speed = additional_arguments[6]
-    max_arm_speed = additional_arguments[7]
-    max_drum_speed = additional_arguments[8]
+    
     # Raw controller input data indexes
     # data.buttons[index]
     # 0 A : Back Drum Dump
@@ -50,40 +47,40 @@ def callback(data, additional_arguments):
         return
     
     twist = Twist()
-    twist.linear.x = ((data.axes[4] + data.axes[1]) / 2) * float(max_wheel_speed)
-    twist.angular.z = ((data.axes[4] - data.axes[1]) / 2) * float(max_wheel_speed)
+    twist.linear.x = ((data.axes[4] + data.axes[1]) / 2)
+    twist.angular.z = ((data.axes[4] - data.axes[1]) / 2)
     trigger_threshold = 0.0
 
     # Use "-(1-data.axes[5])/2" not -1 for variable speed
     # Front Arm
     if data.buttons[5] > (1 - data.axes[5]) / 2:
-    	command_front_arm = 1 * max_arm_speed
+    	command_front_arm = 1
     elif data.buttons[5] < (1 - data.axes[5]) / 2 and trigger_threshold > data.axes[5]:
-    	command_front_arm = -1 * max_arm_speed
+    	command_front_arm = -1
     else:
     	command_front_arm = 0
 
     # Back Arm
     if data.buttons[4] > (1 - data.axes[2]) / 2:
-    	command_back_arm = 1 * max_arm_speed
+    	command_back_arm = 1
     elif data.buttons[4] < (1 - data.axes[2]) / 2 and trigger_threshold > data.axes[2]:
-    	command_back_arm = -1 * max_arm_speed
+    	command_back_arm = -1
     else:
     	command_back_arm = 0
 
     # Front Drum
     if data.buttons[3] > data.buttons[1]:
-        command_front_drum = 1 * max_drum_speed
+        command_front_drum = 1
     elif data.buttons[3] < data.buttons[1]:
-    	command_front_drum = -1 * max_drum_speed
+    	command_front_drum = -1
     else:
     	command_front_drum = 0
 
     # Back Drum
     if data.buttons[2] > data.buttons[0]:
-        command_back_drum = 1 * max_drum_speed
+        command_back_drum = 1
     elif data.buttons[2] < data.buttons[0]:
-    	command_back_drum = -1 * max_drum_speed
+    	command_back_drum = -1
     else:
     	command_back_drum = 0
 
@@ -110,9 +107,6 @@ def start_node():
         publish_topic_back_drum = rospy.get_param(rospy.get_name()
                                                   + "/back_drum_instructions_topic")
         publish_topic_auto_toggles = "autonomous_toggles"
-        max_wheel_speed = rospy.get_param(rospy.get_name() + "/max_wheel_speed")
-        max_arm_speed = rospy.get_param(rospy.get_name() + "/max_arm_speed")
-        max_drum_speed = rospy.get_param(rospy.get_name() + "/max_drum_speed")
 
         # Publishers
         # Wheel twist
@@ -149,10 +143,7 @@ def start_node():
                                         pub_back_arm,
                                         pub_front_drum,
                                         pub_back_drum,
-                                        pub_auto_toggles,
-                                        max_wheel_speed,
-                                        max_arm_speed,
-                                        max_drum_speed))
+                                        pub_auto_toggles))
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
