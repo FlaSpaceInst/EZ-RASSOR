@@ -2,6 +2,7 @@
 # A collection of functions to make development of this repository easier.
 # Written by Tiger Sachse.
 
+CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
 PACKAGES_DIR="packages"
@@ -127,6 +128,21 @@ test_packages() {
     cd - > /dev/null 2>&1
 }
 
+
+# Show a help menu. This menu is parsed from pre-existing documentation.
+show_help_menu() {
+    echo "Usage: sh develop.sh <mode> [arguments]"
+    cat "$CONTRIBUTING_FILE" \
+        | grep '^``' -A 1 \
+        | sed 's/  //g' \
+        | sed 's/^``/#/g' \
+        | fold -s -w 75 \
+        | sed '/^#/! s/^/   /g' \
+        | sed '/``/ s/``/"/g' \
+        | sed '/^#/ s/"//g' \
+        | tr \# '\n'
+}
+
 # Main entry point of the script.
 case $1 in
     setup)
@@ -159,5 +175,8 @@ case $1 in
         ;;
     test)
         test_packages
+        ;;
+    help)
+        show_help_menu
         ;;
 esac

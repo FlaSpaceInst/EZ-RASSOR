@@ -28,6 +28,8 @@ The modes supported by the script are listed below:
   Kill all running ROS nodes and ``roscore``.
 ``test``
   Run integration tests for all linked packages.
+``help``
+  Display a help menu.
 
 EXAMPLES
 ----
