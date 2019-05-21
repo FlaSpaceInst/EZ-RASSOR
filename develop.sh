@@ -2,6 +2,7 @@
 # A collection of functions to make development of this repository easier.
 # Written by Tiger Sachse.
 
+USAGE_STRING="Usage: sh develop.sh <mode> [arguments]"
 CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 WORKSPACE_DIR="$HOME/.workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
@@ -42,6 +43,10 @@ link_packages() {
         -e|--except)
             LINK_EXCEPT_IN_LIST=true
             shift
+            ;;
+        *)
+            echo "$USAGE_STRING"
+            exit 1
             ;;
     esac
 
@@ -131,7 +136,7 @@ test_packages() {
 
 # Show a help menu. This menu is parsed from pre-existing documentation.
 show_help_menu() {
-    echo "Usage: sh develop.sh <mode> [arguments]"
+    echo "$USAGE_STRING"
     cat "$CONTRIBUTING_FILE" \
         | grep '^``' -A 1 \
         | sed 's/  //g' \
@@ -178,5 +183,8 @@ case $1 in
         ;;
     help)
         show_help_menu
+        ;;
+    *)
+        echo "$USAGE_STRING"
         ;;
 esac
