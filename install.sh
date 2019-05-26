@@ -1,10 +1,6 @@
-# This script will automatically install and configure
-# ROS Kinetic on Ubuntu Xenial (16.04).
-# Written by Tiger Sachse.
-
 WORKSPACE_DIR="/tmp/ezrassor_temporary_catkin_workspace"
 SOURCE_DIR="$WORKSPACE_DIR/src"
-INSTALL_DIR="/opt/ros/kinetic"
+INSTALL_DIR="/opt/ros/melodic"
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
 EXTERNAL_DIR="external"
@@ -75,7 +71,7 @@ link_and_install() {
                 ;;
             communication)
                 link_package "packages/communication" "ezrassor_joy_translator"
-                link_package "packages/communication" "ezrassor_request_switch"
+                link_package "packages/communication" "ezrassor_topic_switch"
                 link_package "packages/communication" "ezrassor_controller_server"
                 ;;
             hardware)
@@ -85,12 +81,12 @@ link_and_install() {
         esac
     done
     link_package "packages/extras" "ezrassor_launcher"
-    sudo apt install -y ros-kinetic-ros-base \
-                        python-rosdep \
-                        python-rosinstall-generator \
-                        python-wstool \
-                        python-rosinstall \
-                        build-essential
+    #sudo apt install -y ros-kinetic-ros-base \
+    #                    python-rosdep \
+    #                    python-rosinstall-generator \
+    #                    python-wstool \
+    #                    python-rosinstall \
+    #                    build-essential
 
     source "$INSTALL_DIR/$SETUP_FILE"
     sudo rosdep init
@@ -98,25 +94,25 @@ link_and_install() {
 
     # Install packages in the workspace from source.
     cd "$WORKSPACE_DIR"
-    rosdep install -y --from-paths src --ignore-src --rosdistro kinetic
+    rosdep install -y --from-paths src --ignore-src --rosdistro melodic
     catkin_make
     catkin_make install
     sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
     cd - &> /dev/null
 
-    source_setup bash zsh
+    #source_setup bash zsh
 }
 
 # Main entry point of the script.
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
-           /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv \
-             --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-             --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-sudo apt update
+#sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
+#           /etc/apt/sources.list.d/ros-latest.list'
+#sudo apt-key adv \
+#             --keyserver hkp://ha.pool.sks-keyservers.net:80 \
+#             --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+#sudo apt update
 
-if [ "$#" = "0" ]; then
-    link_and_install "communication" "hardware" "autonomy"
-else
-    link_and_install "$@"
-fi
+#if [ "$#" = "0" ]; then
+#    link_and_install "communication" "hardware" "autonomy"
+#else
+#    link_and_install "$@"
+#fi
