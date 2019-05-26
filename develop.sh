@@ -145,7 +145,7 @@ show_help_menu() {
         | sed '/^#/! s/^/   /g' \
         | sed '/``/ s/``/"/g' \
         | sed '/^#/ s/"//g' \
-        | tr \# '\n'
+        | tr '#' '\n'
 }
 
 # Main entry point of the script.
