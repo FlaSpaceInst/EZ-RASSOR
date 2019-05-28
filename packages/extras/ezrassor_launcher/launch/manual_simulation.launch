@@ -7,8 +7,12 @@
   <arg name="world"
        default="base" /> 
 
+  <arg name="gui"
+       default="true" />
+
   <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
     <arg name="world" value="$(arg world)" />
+    <arg name="gui" value="$(arg gui)" />
   </include>
 
   <arg name="paused"
