@@ -35,20 +35,22 @@ new_package() {
 link_packages() {
     LINK_ONLY_IN_LIST=false
     LINK_EXCEPT_IN_LIST=false
-    case "$1" in
-        -o|--only)
-            LINK_ONLY_IN_LIST=true
-            shift
-            ;;
-        -e|--except)
-            LINK_EXCEPT_IN_LIST=true
-            shift
-            ;;
-        *)
-            echo "$USAGE_STRING"
-            exit 1
-            ;;
-    esac
+    if [ $# -ne 0 ]; then
+        case "$1" in
+            -o|--only)
+                LINK_ONLY_IN_LIST=true
+                shift
+                ;;
+            -e|--except)
+                LINK_EXCEPT_IN_LIST=true
+                shift
+                ;;
+            *)
+                echo "$USAGE_STRING"
+                exit 1
+                ;;
+        esac
+    fi
 
     for TARGET_DIR in "$PACKAGES_DIR" "$EXTERNAL_DIR"; do
         for SUPERPACKAGE_DIR in "$PWD/$TARGET_DIR"/*; do
