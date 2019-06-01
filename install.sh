@@ -104,6 +104,51 @@ link_and_install() {
     #source_setup bash zsh
 }
 
+OS_VERSION="$(lsb_release -sc)"
+ROS_VERSION=false
+if [ "$OS_VERSION" = "xenial" ]; then
+    ROS_VERSION="kinetic"
+elif [ "$OS_VERSION" = "bionic" ]; then
+    ROS_VERSION="melodic"
+else
+    printf "\n"
+           "This script is only tested on Ubuntu Xenial and Ubuntu Bionic with ROS"
+           "Kinetic and ROS Melodic. Your operating system is not supported. :("
+           "You may still attempt to install the packages that you want manually"
+           "using Catkin. Refer to the ROS wiki for instructions."
+    exit 1
+fi
+
+SET_INSTALLATION_METHOD=false
+INSTALLATION_METHOD=""
+for ARGUMENT in "$@"; do
+    if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
+        if [ "$ARGUMENT" = "automatic" ]; then
+            INSTALLATION_METHOD="automatic"
+        elif [ "$ARGUMENT" = "manual" ]; then
+            INSTALLATION_METHOD="manual"
+        elif [ "$ARGUMENT" = "packages-only" ]; then
+            INSTALLATION_METHOD="packages-only"
+        else
+            printf "Invalid installation method: %s.\n" "$ARGUMENT"
+            exit 1
+        fi
+        SET_INSTALLATION_METHOD=false
+    else
+        case "$ARGUMENT" in
+            --method)
+                SET_INSTALLATION_METHOD=true
+                ;;
+        esac
+    fi
+done
+
+if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
+    printf "Missing installation method.\n"
+    exit 1
+fi
+
+
 # Main entry point of the script.
 #sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
 #           /etc/apt/sources.list.d/ros-latest.list'
