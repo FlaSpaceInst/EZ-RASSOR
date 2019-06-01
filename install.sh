@@ -75,8 +75,6 @@ link_and_install() {
                 link_package "packages/communication" "ezrassor_topic_switch"
                 link_package "packages/communication" "ezrassor_controller_server"
                 ;;
-            hardware)
-                ;;
             dashboard)
                 ;;
         esac
@@ -119,8 +117,17 @@ else
     exit 1
 fi
 
+SET_COMPONENTS=false
+MISSING_COMPONENTS_LIST=false
+
+INSTALL_AUTONOMY=true
+INSTALL_EXTERNALS=true
+INSTALL_DASHBOARD=true
+INSTALL_SIMULATION=true
+INSTALL_COMMUNICATION=true
+
 SET_INSTALLATION_METHOD=false
-INSTALLATION_METHOD=""
+INSTALLATION_METHOD="automatic"
 for ARGUMENT in "$@"; do
     if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
         if [ "$ARGUMENT" = "automatic" ]; then
@@ -134,20 +141,65 @@ for ARGUMENT in "$@"; do
             exit 1
         fi
         SET_INSTALLATION_METHOD=false
-    else
-        case "$ARGUMENT" in
-            --method)
-                SET_INSTALLATION_METHOD=true
-                ;;
-        esac
+        continue
+    elif [ "$SET_COMPONENTS" = "true" ]; then
+        if [ "$ARGUMENT" = "autonomy" ]; then
+            MISSING_COMPONENTS_LIST=false
+            INSTALL_AUTONOMY=true
+            continue
+        elif [ "$ARGUMENT" = "externals" ]; then
+            MISSING_COMPONENTS_LIST=false
+            INSTALL_EXTERNALS=true
+            continue
+        elif [ "$ARGUMENT" = "dashboard" ]; then
+            MISSING_COMPONENTS_LIST=false
+            INSTALL_DASHBOARD=true
+            continue
+        elif [ "$ARGUMENT" = "simulation" ]; then
+            MISSING_COMPONENTS_LIST=false
+            INSTALL_SIMULATION=true
+            continue
+        elif [ "$ARGUMENT" = "communication" ]; then
+            MISSING_COMPONENTS_LIST=false
+            INSTALL_COMMUNICATION=true
+            continue
+        else
+            SET_COMPONENTS=false
+        fi
     fi
+
+    case "$ARGUMENT" in
+        --method)
+            SET_INSTALLATION_METHOD=true
+            ;;
+        --components)
+            SET_COMPONENTS=true
+            INSTALL_AUTONOMY=false
+            INSTALL_EXTERNALS=false
+            INSTALL_DASHBOARD=false
+            INSTALL_SIMULATION=false
+            INSTALL_COMMUNICATION=false
+            MISSING_COMPONENTS_LIST=true
+            ;;
+    esac
 done
 
 if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
     printf "Missing installation method.\n"
     exit 1
+# elif no components selected
+elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
+    printf "Missing components list.\n"
+    exit 1
 fi
 
+echo "$INSTALL_AUTONOMY"
+echo "$INSTALL_EXTERNALS"
+echo "$INSTALL_DASHBOARD"
+echo "$INSTALL_SIMULATION"
+echo "$INSTALL_COMMUNICATION"
+echo "$INSTALLATION_METHOD"
+echo "$ROS_VERSION"
 
 # Main entry point of the script.
 #sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
