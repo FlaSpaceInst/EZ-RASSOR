@@ -1,10 +1,13 @@
+#!/bin/sh
 WORKSPACE_DIR="/tmp/ezrassor_temporary_catkin_workspace"
+DISTRIBUTION_CODENAME="$(lsb_release -sc)"
 SOURCE_DIR="$WORKSPACE_DIR/src"
-INSTALL_DIR="/opt/ros/melodic"
+INSTALL_DIR="/opt/ros/melodic" #
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
 EXTERNAL_DIR="external"
-SETUP_FILE="setup.bash"
+SETUP_FILE="setup.bash" #
+USER_SHELLS="bash zsh"
 
 # Link a package into the workspace.
 link_package() {
@@ -17,15 +20,13 @@ link_package() {
     ln -s "$PWD/$1/$2" "$SOURCE_DIR/$2"
 }
 
-# Source the setup script for each user shell passed to this function if it is
-# not already sourced in the appropriate RC file and if that user shell's RC
-# file exists. Print a message if the user must restart her terminal.
+#
 source_setup() {
     MUST_RESTART=false
-    for USER_SHELL in "$@"; do
-        SHELLRC="$HOME/.${USER_SHELL}rc" 
+    for USER_SHELL in "$USER_SHELLS"; do
+        SHELLRC="$HOME/.${USER_SHELL}rc"
         if [ -f "$SHELLRC" ]; then
-            SOURCE_TARGET="/opt/ros/kinetic/setup.$USER_SHELL"
+            SOURCE_TARGET="$INSTALL_DIR/setup.$USER_SHELL"
             SOURCE_LINE="source $SOURCE_TARGET"
 
             printf "Attempting to source setup script for %s: " "$USER_SHELL"
