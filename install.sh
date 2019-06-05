@@ -1,24 +1,17 @@
 #!/bin/sh
-WORKSPACE_DIR="/tmp/ezrassor_temporary_catkin_workspace"
+WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
+WORKSPACE_RELATIVE_SOURCE_DIR="src"
+ROS_INSTALL_DIR="/opt/ezrassor"
+
+#
 DISTRIBUTION_CODENAME="$(lsb_release -sc)"
-SOURCE_DIR="$WORKSPACE_DIR/src"
 INSTALL_DIR="/opt/ros/melodic" #
 SUPERPACKAGE_DIR="packages"
 MOCK_INSTALL_DIR="install"
 EXTERNAL_DIR="external"
 SETUP_FILE="setup.bash" #
 USER_SHELLS="bash zsh"
-
-# Link a package into the workspace.
-link_package() {
-    if [ -L "$SOURCE_DIR/$2" ]; then
-        rm -f "$SOURCE_DIR/$2"
-        printf "Relinking '%s'...\n" "$2"
-    else
-        printf "Linking '%s'...\n" "$2"
-    fi
-    ln -s "$PWD/$1/$2" "$SOURCE_DIR/$2"
-}
+#
 
 #
 source_setup() {
@@ -51,57 +44,6 @@ source_setup() {
     fi
 }
 
-# Link and install a collection of packages from this repository.
-link_and_install() {
-    rm -rf "$WORKSPACE_DIR"
-    mkdir -p "$SOURCE_DIR"
-
-    # For each specified superpackage, link all necessary packages.
-    for SUPERPACKAGE in "$@"; do
-        case "$SUPERPACKAGE" in
-            autonomy)
-                link_package "external/viso2" "viso2"
-                link_package "external/viso2" "libviso2"
-                link_package "external/viso2" "viso2_ros"
-                link_package "packages/autonomy" "ezrassor_autonomous_control"
-                ;;
-            simulation)
-                link_package "packages/simulation" "ezrassor_sim_gazebo"
-                link_package "packages/simulation" "ezrassor_sim_control"
-                link_package "packages/simulation" "ezrassor_sim_description"
-                ;;
-            communication)
-                link_package "packages/communication" "ezrassor_joy_translator"
-                link_package "packages/communication" "ezrassor_topic_switch"
-                link_package "packages/communication" "ezrassor_controller_server"
-                ;;
-            dashboard)
-                ;;
-        esac
-    done
-    link_package "packages/extras" "ezrassor_launcher"
-    #sudo apt install -y ros-kinetic-ros-base \
-    #                    python-rosdep \
-    #                    python-rosinstall-generator \
-    #                    python-wstool \
-    #                    python-rosinstall \
-    #                    build-essential
-
-    source "$INSTALL_DIR/$SETUP_FILE"
-    sudo rosdep init
-    rosdep update
-
-    # Install packages in the workspace from source.
-    cd "$WORKSPACE_DIR"
-    rosdep install -y --from-paths src --ignore-src --rosdistro melodic
-    catkin_make
-    catkin_make install
-    sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
-    cd - &> /dev/null
-
-    #source_setup bash zsh
-}
-
 # Main entry point of the script.
 #sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
 #           /etc/apt/sources.list.d/ros-latest.list'
@@ -116,6 +58,16 @@ link_and_install() {
 #    link_and_install "$@"
 #fi
 
+    #sudo apt install -y ros-kinetic-ros-base \
+    #                    python-rosdep \
+    #                    python-rosinstall-generator \
+    #                    python-wstool \
+    #                    python-rosinstall \
+    #                    build-essential
+
+    #source "$INSTALL_DIR/$SETUP_FILE"
+    #sudo rosdep init
+    #rosdep update
 
 
 
@@ -125,6 +77,49 @@ throw_error() {
     printf "%s\n" "$@"
     exit 1
 }
+
+install_ezrassor_packages() {
+    WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
+    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_RELATIVE_SOURCE_DIR"
+    mkdir -p "$WORKSPACE_SOURCE_DIR"
+
+    if [ "$INSTALL_AUTONOMY" = "true" ]; then
+        ln -s "$PWD/external/viso2/viso2" "$WORKSPACE_SOURCE_DIR" 
+        ln -s "$PWD/external/viso2/libviso2" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/external/viso2/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/packages/autonomy/ezrassor_autonomous_control" "$WORKSPACE_SOURCE_DIR"
+    fi
+    if [ "$INSTALL_EXTERNALS" = "true" ]; then
+        ln -s "$PWD/external/viso2/viso2" "$WORKSPACE_SOURCE_DIR" 
+        ln -s "$PWD/external/viso2/libviso2" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/external/viso2/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+    fi
+    if [ "$INSTALL_DASHBOARD" = "true" ]; then
+        :
+    fi
+    if [ "$INSTALL_SIMULATION" = "true" ]; then
+        ln -s "$PWD/packages/simulation/ezrassor_sim_gazebo" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/packages/simulation/ezrassor_sim_control" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/packages/simulation/ezrassor_sim_description" "$WORKSPACE_SOURCE_DIR"
+    fi
+    if [ "$INSTALL_COMMUNICATION" = "true" ]; then
+        ln -s "$PWD/packages/communication/ezrassor_joy_translator" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/packages/communication/ezrassor_topic_switch" "$WORKSPACE_SOURCE_DIR"
+        ln -s "$PWD/packages/communication/ezrassor_controller_server" "$WORKSPACE_SOURCE_DIR"
+    fi
+    ln -s "$PWD/packages/extras/ezrassor_launcher" "$WORKSPACE_SOURCE_DIR"
+
+    cd "$WORKSPACE_DIR"
+    rosdep install -y \
+                   --from-paths "$WORKSPACE_RELATIVE_SOURCE_DIR" \
+                   --ignore-src \
+                   --rosdistro "$ROS_VERSION"
+    catkin_make
+    catkin_make install
+    #sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
+    cd - &> /dev/null
+}
+
 
 # The main entry point to the installation script.
 # Determine the user's OS version and an appropriate ROS version.
@@ -221,11 +216,4 @@ elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
     throw_error "Missing components list."
 fi
 
-echo "$INSTALL_AUTONOMY"
-echo "$INSTALL_EXTERNALS"
-echo "$INSTALL_DASHBOARD"
-echo "$INSTALL_SIMULATION"
-echo "$INSTALL_COMMUNICATION"
-echo "$INSTALLATION_METHOD"
-echo "$OS_VERSION"
-echo "$ROS_VERSION"
+install_ezrassor_packages
