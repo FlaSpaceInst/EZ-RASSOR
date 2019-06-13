@@ -1,23 +1,44 @@
 #!/bin/sh
+OS_VERSION="$(lsb_release -sc)"
+USER_SHELLS="bash zsh"
 EXTERNALS_DIR="external"
-INSTALL_DIR="/opt/ezrassor"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
+EZRASSOR_INSTALL_DIR="/opt/ezrassor"
+AUTOMATIC_INSTALL_DIR="/opt/ros/$OS_VERSION"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 
-#
-SETUP_FILE="setup.bash" #
-USER_SHELLS="bash zsh"
-#
+# Print an error message and exit this script.
+throw_error() {
+    printf "%s\n" "$@"
+    exit 1
+}
 
-#
-source_setup() {
+add_ros_repository() {
+    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $OS_VERSION main" > \
+               /etc/apt/sources.list.d/ros-latest.list'
+    sudo apt-key adv \
+                 --keyserver hkp://ha.pool.sks-keyservers.net:80 \
+                 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+    sudo apt update
+}
+
+install_ros_buildtools() {
+    sudo apt install -y python-rosdep \
+                        python-rosinstall-generator \
+                        python-wstool \
+                        python-rosinstall \
+                        build-essential
+}
+
+source_setups_in_directory() {
     MUST_RESTART=false
+    PARTIAL_SOURCE_TARGET="$1/setup"
     for USER_SHELL in "$USER_SHELLS"; do
         SHELLRC="$HOME/.${USER_SHELL}rc"
         if [ -f "$SHELLRC" ]; then
-            SOURCE_TARGET="$INSTALL_DIR/setup.$USER_SHELL"
+            SOURCE_TARGET="$PARTIAL_SOURCE_TARGET.$USER_SHELL"
             SOURCE_LINE="source $SOURCE_TARGET"
 
             printf "Attempting to source setup script for %s: " "$USER_SHELL"
@@ -26,7 +47,7 @@ source_setup() {
             else
                 printf "%s\n" \
                        "" \
-                       "# Source the ROS installation setup file, if it exists." \
+                       "# Source a ROS setup file, if it exists." \
                        "if [ -f \"$SOURCE_TARGET\" ]; then" \
                        "    $SOURCE_LINE" \
                        "fi" >> "$SHELLRC"
@@ -38,46 +59,16 @@ source_setup() {
 
     if [ "$MUST_RESTART" = true ]; then
         printf "\n\n******** %s ********\n" \
-               "RESTART YOUR TERMINAL FOR CHANGES TO TAKE EFFECT "
+               "RESTART YOUR TERMINAL FOR CHANGES TO TAKE EFFECT"
     fi
 }
 
-# Main entry point of the script.
-#sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > \
-#           /etc/apt/sources.list.d/ros-latest.list'
-#sudo apt-key adv \
-#             --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-#             --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-#sudo apt update
-
-#if [ "$#" = "0" ]; then
-#    link_and_install "communication" "hardware" "autonomy"
-#else
-#    link_and_install "$@"
-#fi
-
-    #sudo apt install -y ros-kinetic-ros-base \
-    #                    python-rosdep \
-    #                    python-rosinstall-generator \
-    #                    python-wstool \
-    #                    python-rosinstall \
-    #                    build-essential
-
-    #source "$INSTALL_DIR/$SETUP_FILE"
-    #sudo rosdep init
-    #rosdep update
-
-
-
-
-# Print an error message and exit this script.
-throw_error() {
-    printf "%s\n" "$@"
-    exit 1
-}
-
 install_ros_automatically() {
-    echo "AUTOMATIC"
+    add_ros_repository
+    sudo apt install -y "ros-${ROS_VERSION}-ros-base"
+    sudo rosdep init
+    rosdep update
+    source_setups_in_directory "$AUTOMATIC_INSTALL_DIR" 
 }
 
 install_ros_manually() {
@@ -85,7 +76,7 @@ install_ros_manually() {
 }
 
 # Install only EZ-RASSOR packages.
-install_ezrassor_packages() {
+install_ezrassor_packages() { # check if rosdep installed
 
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
@@ -134,18 +125,17 @@ install_ezrassor_packages() {
                    --ignore-src \
                    --rosdistro "$ROS_VERSION"
 
-    # Build and install the linked packages into the INSTALL_DIR.
+    # Build and install the linked packages into the EZRASSOR_INSTALL_DIR.
     catkin_make
     catkin_make install
-    sudo mkdir -p "$INSTALL_DIR"
-    sudo cp -R "$MOCK_INSTALL_RELATIVE_DIR"/* "$INSTALL_DIR"
+    sudo mkdir -p "$EZRASSOR_INSTALL_DIR"
+    sudo cp -R "$MOCK_INSTALL_RELATIVE_DIR"/* "$EZRASSOR_INSTALL_DIR"
 
     cd - > /dev/null 2>&1
 }
 
 # The main entry point to the installation script.
 # Determine the user's OS version and an appropriate ROS version.
-OS_VERSION="$(lsb_release -sc)"
 if [ "$OS_VERSION" = "xenial" ]; then
     ROS_VERSION="kinetic"
 elif [ "$OS_VERSION" = "bionic" ]; then
