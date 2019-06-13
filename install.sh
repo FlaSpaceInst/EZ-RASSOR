@@ -1,14 +1,12 @@
 #!/bin/sh
+EXTERNALS_DIR="external"
+INSTALL_DIR="/opt/ezrassor"
+SUPERPACKAGES_DIR="packages"
+MOCK_INSTALL_RELATIVE_DIR="install"
+WORKSPACE_SOURCE_RELATIVE_DIR="src"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
-WORKSPACE_RELATIVE_SOURCE_DIR="src"
-ROS_INSTALL_DIR="/opt/ezrassor"
 
 #
-DISTRIBUTION_CODENAME="$(lsb_release -sc)"
-INSTALL_DIR="/opt/ros/melodic" #
-SUPERPACKAGE_DIR="packages"
-MOCK_INSTALL_DIR="install"
-EXTERNAL_DIR="external"
 SETUP_FILE="setup.bash" #
 USER_SHELLS="bash zsh"
 #
@@ -80,46 +78,53 @@ throw_error() {
 
 install_ezrassor_packages() {
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
-    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_RELATIVE_SOURCE_DIR"
+    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
     mkdir -p "$WORKSPACE_SOURCE_DIR"
 
     if [ "$INSTALL_AUTONOMY" = "true" ]; then
-        ln -s "$PWD/external/viso2/viso2" "$WORKSPACE_SOURCE_DIR" 
-        ln -s "$PWD/external/viso2/libviso2" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/external/viso2/viso2_ros" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/packages/autonomy/ezrassor_autonomous_control" "$WORKSPACE_SOURCE_DIR"
+        SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
+        ln -s -f "$SUPERPACKAGE/viso2" "$WORKSPACE_SOURCE_DIR" 
+        ln -s -f "$SUPERPACKAGE/libviso2" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/autonomy"
+        ln -s -f "$SUPERPACKAGE/ezrassor_autonomous_control" "$WORKSPACE_SOURCE_DIR"
     fi
     if [ "$INSTALL_EXTERNALS" = "true" ]; then
-        ln -s "$PWD/external/viso2/viso2" "$WORKSPACE_SOURCE_DIR" 
-        ln -s "$PWD/external/viso2/libviso2" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/external/viso2/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+        SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
+        ln -s -f "$SUPERPACKAGE/viso2" "$WORKSPACE_SOURCE_DIR" 
+        ln -s -f "$SUPERPACKAGE/libviso2" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/viso2_ros" "$WORKSPACE_SOURCE_DIR"
     fi
     if [ "$INSTALL_DASHBOARD" = "true" ]; then
         :
     fi
     if [ "$INSTALL_SIMULATION" = "true" ]; then
-        ln -s "$PWD/packages/simulation/ezrassor_sim_gazebo" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/packages/simulation/ezrassor_sim_control" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/packages/simulation/ezrassor_sim_description" "$WORKSPACE_SOURCE_DIR"
+        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/simulation"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_gazebo" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_control" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_description" "$WORKSPACE_SOURCE_DIR"
     fi
     if [ "$INSTALL_COMMUNICATION" = "true" ]; then
-        ln -s "$PWD/packages/communication/ezrassor_joy_translator" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/packages/communication/ezrassor_topic_switch" "$WORKSPACE_SOURCE_DIR"
-        ln -s "$PWD/packages/communication/ezrassor_controller_server" "$WORKSPACE_SOURCE_DIR"
+        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/communication"
+        ln -s -f "$SUPERPACKAGE/ezrassor_joy_translator" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_topic_switch" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_controller_server" "$WORKSPACE_SOURCE_DIR"
     fi
-    ln -s "$PWD/packages/extras/ezrassor_launcher" "$WORKSPACE_SOURCE_DIR"
+    SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/extras"
+    ln -s -f "$SUPERPACKAGE/ezrassor_launcher" "$WORKSPACE_SOURCE_DIR"
 
     cd "$WORKSPACE_DIR"
     rosdep install -y \
-                   --from-paths "$WORKSPACE_RELATIVE_SOURCE_DIR" \
+                   --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
                    --rosdistro "$ROS_VERSION"
     catkin_make
     catkin_make install
-    #sudo cp -R "$MOCK_INSTALL_DIR"/* "$INSTALL_DIR"
-    cd - &> /dev/null
-}
+    sudo mkdir -p "$INSTALL_DIR"
+    sudo cp -R "$MOCK_INSTALL_RELATIVE_DIR"/* "$INSTALL_DIR"
 
+    cd - > /dev/null 2>&1
+}
 
 # The main entry point to the installation script.
 # Determine the user's OS version and an appropriate ROS version.
