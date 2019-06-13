@@ -76,11 +76,24 @@ throw_error() {
     exit 1
 }
 
+install_ros_automatically() {
+    echo "AUTOMATIC"
+}
+
+install_ros_manually() {
+    echo "MANUAL"
+}
+
+# Install only EZ-RASSOR packages.
 install_ezrassor_packages() {
+
+    # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
     WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
     mkdir -p "$WORKSPACE_SOURCE_DIR"
 
+    # Link packages into the temporary workspace based on the INSTALL flags. These
+    # flags are set at the beginning of the script.
     if [ "$INSTALL_AUTONOMY" = "true" ]; then
         SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
         ln -s -f "$SUPERPACKAGE/viso2" "$WORKSPACE_SOURCE_DIR" 
@@ -113,11 +126,15 @@ install_ezrassor_packages() {
     SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/extras"
     ln -s -f "$SUPERPACKAGE/ezrassor_launcher" "$WORKSPACE_SOURCE_DIR"
 
+    # Install all of the dependencies of the linked packages in the temporary
+    # workspace.
     cd "$WORKSPACE_DIR"
     rosdep install -y \
                    --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
                    --rosdistro "$ROS_VERSION"
+
+    # Build and install the linked packages into the INSTALL_DIR.
     catkin_make
     catkin_make install
     sudo mkdir -p "$INSTALL_DIR"
@@ -221,4 +238,15 @@ elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
     throw_error "Missing components list."
 fi
 
-install_ezrassor_packages
+# Install ROS and/or EZ-RASSOR packages based on the specified installation method.
+if [ "$INSTALLATION_METHOD" = "automatic" ]; then
+    install_ros_automatically
+    install_ezrassor_packages
+elif [ "$INSTALLATION_METHOD" = "manual" ]; then
+    install_ros_manually
+    install_ezrassor_packages
+elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
+    install_ezrassor_packages
+else
+    throw_error "Invalid installation method."
+fi
