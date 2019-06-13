@@ -8,6 +8,8 @@ WORKSPACE_SOURCE_RELATIVE_DIR="src"
 EZRASSOR_INSTALL_DIR="/opt/ezrassor"
 AUTOMATIC_INSTALL_DIR="/opt/ros/$OS_VERSION"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
+KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
+RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 
 # Print an error message and exit this script.
 throw_error() {
@@ -16,11 +18,10 @@ throw_error() {
 }
 
 add_ros_repository() {
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $OS_VERSION main" > \
-               /etc/apt/sources.list.d/ros-latest.list'
-    sudo apt-key adv \
-                 --keyserver hkp://ha.pool.sks-keyservers.net:80 \
-                 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+    ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
+    ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
+    sudo sh -c "$ECHO_COMMAND > $ROS_LATEST_DIR"
+    sudo apt-key adv --keyserver "$KEY_SERVER" --recv-key "$RECV_KEY"
     sudo apt update
 }
 
