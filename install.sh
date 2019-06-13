@@ -36,7 +36,7 @@ install_ros_buildtools() {
 source_setups_in_directory() {
     MUST_RESTART=false
     PARTIAL_SOURCE_TARGET="$1/setup"
-    for USER_SHELL in "$USER_SHELLS"; do
+    for USER_SHELL in $USER_SHELLS; do
         SHELLRC="$HOME/.${USER_SHELL}rc"
         if [ -f "$SHELLRC" ]; then
             SOURCE_TARGET="$PARTIAL_SOURCE_TARGET.$USER_SHELL"
