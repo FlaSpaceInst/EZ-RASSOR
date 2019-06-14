@@ -126,6 +126,17 @@ install_ros_manually() {
 
 # Install only EZ-RASSOR packages.
 install_ezrassor_packages() {
+
+    # Attempt to source an existing ROS installation (just in case it hasn't
+    # been done yet). If this fails, hopefully ROS is installed somewhere else
+    # because otherwise the require() call will throw an error on "rosdep" and
+    # "catkin_make".
+    if [ -f "$AUTOMATIC_ROS_INSTALL_DIR/$SH_SETUP_FILE" ]; then
+        . "$AUTOMATIC_ROS_INSTALL_DIR/$SH_SETUP_FILE"
+    elif [ -f "$MANUAL_ROS_INSTALL_DIR/$SH_SETUP_FILE" ]; then
+        . "$MANUAL_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
+    fi
+
     require "pip" "rosdep" "catkin_make"
 
     # Create a temporary workspace.
@@ -308,11 +319,9 @@ fi
 # Install ROS and/or EZ-RASSOR packages based on the specified installation method.
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
     install_ros_automatically
-    . "$AUTOMATIC_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
     install_ezrassor_packages
 elif [ "$INSTALLATION_METHOD" = "manual" ]; then
     install_ros_manually
-    . "$MANUAL_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
     install_ezrassor_packages
 elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
     install_ezrassor_packages
