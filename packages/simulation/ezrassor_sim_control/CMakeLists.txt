@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_sim_control)
-find_package(catkin REQUIRED COMPONENTS
-    velocity_controllers
-)
+find_package(catkin REQUIRED)
 catkin_package()
 catkin_python_setup()
 catkin_install_python(
