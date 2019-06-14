@@ -9,18 +9,26 @@ throw_error() {
     exit 1
 }
 
-# If a given command doesn't exist, throw an error.
+# If required commands don't exist, throw an error.
 require() {
-    command -v "$1" > /dev/null 2>&1 || {
-        throw_error "$1 is not installed on your system, but is required by this script." \
-                    "Please install this program before proceeding. Aborting..."
-    }
+    set +e
+    MISSING_REQUIREMENT=false
+    for REQUIREMENT in "$@"; do
+        command -v "$REQUIREMENT" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            printf "Required but not installed: $REQUIREMENT\n"
+            MISSING_REQUIREMENT=true
+        fi
+    done
+    if [ "$MISSING_REQUIREMENT" = "true" ]; then
+        throw_error "Please install all missing components before proceeding. Aborting..."
+    fi
+    set -e
 }
 
 # Add the ROS repositories to APT.
 add_ros_repository() {
-    require "apt"
-    require "apt-key"
+    require "apt" "apt-key"
     ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
     ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
     sudo sh -c "$ECHO_COMMAND > $ROS_LATEST_DIR"
@@ -85,8 +93,9 @@ install_ros_automatically() {
     source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
 
+# Install ROS manually.
 install_ros_manually() {
-    install_ros_buildtools
+    require "wstool" "rosdep" "rosinstall" "rosinstall_generator"
 
     sudo rosdep init || true
     rosdep update
@@ -114,9 +123,7 @@ install_ros_manually() {
 
 # Install only EZ-RASSOR packages.
 install_ezrassor_packages() {
-    require "pip"
-    require "rosdep"
-    require "catkin_make"
+    require "pip" "rosdep" "catkin_make"
 
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
@@ -290,6 +297,7 @@ fi
 
 # NOTE this process will have to change bc ros cant be installed and then use
 # catkin in the same script on same run, need to restart terminal in between
+# need way to install build tools
 
 # Install ROS and/or EZ-RASSOR packages based on the specified installation method.
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
