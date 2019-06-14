@@ -87,6 +87,29 @@ install_ros_automatically() {
 
 install_ros_manually() {
     install_ros_buildtools
+
+    sudo rosdep init || true
+    rosdep update
+    
+    # Create a temporary workspace.
+    WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
+    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
+    mkdir -p "$WORKSPACE_SOURCE_DIR"
+    cd "$WORKSPACE_DIR"
+
+
+    ROSINSTALL_GENERATOR_FLAGS="--rosdistro $ROS_VERSION --deps --tar"
+    if [ "$ROS_VERSION" = "kinetic" ]; then
+        ROSINSTALL_GENERATOR_FLAGS="$ROSINSTALL_GENERATOR_FLAGS --wet-only"
+    fi
+
+    rosinstall_generator ros_comm $ROSINSTALL_GENERATOR_FLAGS > ros_comm.rosinstall
+    wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" ros_comm.rosinstall
+    rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
+                   --ignore-src -y \
+                   --rosdistro "$ROS_VERSION"
+    ./$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space="$MANUAL_ROS_INSTALL_DIR"
+    source_setups_in_directory "$MANUAL_ROS_INSTALL_DIR"
 }
 
 # Install only EZ-RASSOR packages.
@@ -164,6 +187,7 @@ EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
+MANUAL_ROS_INSTALL_DIR="$HOME/.ross"
 MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
