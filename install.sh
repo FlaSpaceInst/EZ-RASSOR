@@ -84,7 +84,9 @@ install_ros_automatically() {
     require "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
-    sudo rosdep init || true
+    set +e
+    sudo rosdep init
+    set -e
     rosdep update
     source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
@@ -92,7 +94,9 @@ install_ros_automatically() {
 # Install ROS manually.
 install_ros_manually() {
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
-    sudo rosdep init || true
+    set +e
+    sudo rosdep init
+    set -e
     rosdep update
     
     # Create a temporary workspace.
@@ -112,8 +116,8 @@ install_ros_manually() {
     rosinstall_generator ros_comm $ROSINSTALL_GENERATOR_FLAGS > "$ROSINSTALL_FILE"
     wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
-                   --ignore-src -y \
-                   --rosdistro "$ROS_VERSION"
+                   --ignore-src \
+                   --yes
     ./"$CATKIN_MAKE_ISOLATED_BIN" --install \
                                    -DCMAKE_BUILD_TYPE=Release
                                    --install-space="$MANUAL_ROS_INSTALL_DIR"
@@ -122,17 +126,6 @@ install_ros_manually() {
 
 # Install only EZ-RASSOR packages.
 install_ezrassor_packages() {
-
-    # Attempt to source an existing ROS installation (just in case it hasn't
-    # been done yet). If this fails, hopefully ROS is installed somewhere else
-    # because otherwise the require() call will throw an error on "rosdep" and
-    # "catkin_make".
-    if [ -f "$AUTOMATIC_ROS_INSTALL_DIR/$SH_SETUP_FILE" ]; then
-        . "$AUTOMATIC_ROS_INSTALL_DIR/$SH_SETUP_FILE"
-    elif [ -f "$MANUAL_ROS_INSTALL_DIR/$SH_SETUP_FILE" ]; then
-        . "$MANUAL_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
-    fi
-
     require "pip" "rosdep" "catkin_make"
 
     # Create a temporary workspace.
@@ -177,10 +170,9 @@ install_ezrassor_packages() {
     # Install all of the dependencies of the linked packages in the temporary
     # workspace.
     cd "$WORKSPACE_DIR"
-    rosdep install -y \
-                   --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
+    rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
-                   --rosdistro "$ROS_VERSION"
+                   --yes
 
     # Build and install the linked packages into the MANUAL_EZRASSOR_INSTALL_DIR.
     catkin_make
