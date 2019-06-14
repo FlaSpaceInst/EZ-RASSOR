@@ -5,6 +5,7 @@
 # Print an error message and exit this script.
 throw_error() {
     printf "%s\n" "$@"
+    trap ":" 0
     exit 1
 }
 
@@ -62,13 +63,13 @@ source_setups_in_directory() {
 install_ros_automatically() {
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
-    sudo rosdep init
+    sudo rosdep init || true
     rosdep update
     source_setups_in_directory "$AUTOMATIC_INSTALL_DIR" 
 }
 
 install_ros_manually() {
-    echo "MANUAL"
+    install_ros_buildtools
 }
 
 # Install only EZ-RASSOR packages.
@@ -148,6 +149,10 @@ EZRASSOR_INSTALL_DIR="/opt/ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+
+# Throw a message if something breaks.
+trap 'throw_error "Something went horribly wrong!"' 0
+set -e
 
 # Determine the user's OS version and an appropriate ROS version.
 OS_VERSION="$(lsb_release -sc)"
@@ -251,3 +256,4 @@ elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
 else
     throw_error "Invalid installation method."
 fi
+trap ":" 0
