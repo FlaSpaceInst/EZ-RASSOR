@@ -55,7 +55,7 @@ source_setups_in_directory() {
         SHELLRC="$HOME/.${USER_SHELL}rc"
         if [ -f "$SHELLRC" ]; then
             SOURCE_TARGET="$PARTIAL_SOURCE_TARGET.$USER_SHELL"
-            SOURCE_LINE="source $SOURCE_TARGET"
+            SOURCE_LINE=". $SOURCE_TARGET"
 
             printf "Attempting to source setup script for %s: " "$USER_SHELL"
             if cat "$SHELLRC" | grep -Fq "$SOURCE_LINE"; then
@@ -84,7 +84,9 @@ install_ros_automatically() {
     require "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
-    sudo rosdep init || true
+    set +e
+    sudo rosdep init
+    set -e
     rosdep update
     source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
@@ -92,7 +94,9 @@ install_ros_automatically() {
 # Install ROS manually.
 install_ros_manually() {
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
-    sudo rosdep init || true
+    set +e
+    sudo rosdep init
+    set -e
     rosdep update
     
     # Create a temporary workspace.
@@ -193,13 +197,14 @@ EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
-MANUAL_ROS_INSTALL_DIR="$HOME/.ross"
-ROSINSTALL_FILE="ros-comm.rosinstall"
-MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
+MANUAL_ROS_INSTALL_DIR="$HOME/.ezrassor/ros"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
+MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor/core"
+SH_SETUP_FILE="setup.sh"
+ROSINSTALL_FILE="ros-comm.rosinstall"
+CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
-CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a message if the script quits early, and tell the script to quit after
 # any non-zero error message.
@@ -303,9 +308,11 @@ fi
 # Install ROS and/or EZ-RASSOR packages based on the specified installation method.
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
     install_ros_automatically
+    . "$AUTOMATIC_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
     install_ezrassor_packages
 elif [ "$INSTALLATION_METHOD" = "manual" ]; then
     install_ros_manually
+    . "$MANUAL_ROS_INSTALL_DIR"/"$SH_SETUP_FILE"
     install_ezrassor_packages
 elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
     install_ezrassor_packages
