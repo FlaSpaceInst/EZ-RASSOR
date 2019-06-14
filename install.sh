@@ -1,15 +1,6 @@
 #!/bin/sh
-OS_VERSION="$(lsb_release -sc)"
-USER_SHELLS="bash zsh"
-EXTERNALS_DIR="external"
-SUPERPACKAGES_DIR="packages"
-MOCK_INSTALL_RELATIVE_DIR="install"
-WORKSPACE_SOURCE_RELATIVE_DIR="src"
-EZRASSOR_INSTALL_DIR="/opt/ezrassor"
-AUTOMATIC_INSTALL_DIR="/opt/ros/$OS_VERSION"
-WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
-KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
-RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+#
+#
 
 # Print an error message and exit this script.
 throw_error() {
@@ -136,7 +127,24 @@ install_ezrassor_packages() { # check if rosdep installed
 }
 
 # The main entry point to the installation script.
+USER_SHELLS="bash zsh"
+INSTALL_AUTONOMY=true
+INSTALL_EXTERNALS=true
+INSTALL_DASHBOARD=true
+INSTALL_SIMULATION=true
+INSTALL_COMMUNICATION=true
+INSTALLATION_METHOD="automatic"
+EXTERNALS_DIR="external"
+SUPERPACKAGES_DIR="packages"
+MOCK_INSTALL_RELATIVE_DIR="install"
+WORKSPACE_SOURCE_RELATIVE_DIR="src"
+EZRASSOR_INSTALL_DIR="/opt/ezrassor"
+WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
+KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
+RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+
 # Determine the user's OS version and an appropriate ROS version.
+OS_VERSION="$(lsb_release -sc)"
 if [ "$OS_VERSION" = "xenial" ]; then
     ROS_VERSION="kinetic"
 elif [ "$OS_VERSION" = "bionic" ]; then
@@ -147,14 +155,7 @@ else
                 "You may still attempt to install the packages that you want manually" \
                 "using Catkin. Refer to the ROS wiki for instructions."
 fi
-
-# Set a few installation flags with defaults.
-INSTALL_AUTONOMY=true
-INSTALL_EXTERNALS=true
-INSTALL_DASHBOARD=true
-INSTALL_SIMULATION=true
-INSTALL_COMMUNICATION=true
-INSTALLATION_METHOD="automatic"
+AUTOMATIC_INSTALL_DIR="/opt/ros/$ROS_VERSION"
 
 # Determine the user's command line arguments.
 SET_COMPONENTS=false
