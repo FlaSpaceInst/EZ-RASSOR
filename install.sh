@@ -84,19 +84,14 @@ install_ros_automatically() {
     require "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
-
-    # Initialize rosdep, but if it fails (because it's already been initialized)
-    # then just ignore the error.
     sudo rosdep init || true
     rosdep update
-
     source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
 
 # Install ROS manually.
 install_ros_manually() {
-    require "wstool" "rosdep" "rosinstall" "rosinstall_generator"
-
+    require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
     sudo rosdep init || true
     rosdep update
     
@@ -106,18 +101,22 @@ install_ros_manually() {
     mkdir -p "$WORKSPACE_SOURCE_DIR"
     cd "$WORKSPACE_DIR"
 
-
+    # Define the rosinstall_generator flags. Kinetic needs the --wet-only flag
+    # for some reason (per the wiki).
     ROSINSTALL_GENERATOR_FLAGS="--rosdistro $ROS_VERSION --deps --tar"
     if [ "$ROS_VERSION" = "kinetic" ]; then
         ROSINSTALL_GENERATOR_FLAGS="$ROSINSTALL_GENERATOR_FLAGS --wet-only"
     fi
 
-    rosinstall_generator ros_comm $ROSINSTALL_GENERATOR_FLAGS > ros_comm.rosinstall
-    wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" ros_comm.rosinstall
+    # Download, build, and install all of the ROS communication core packages.
+    rosinstall_generator ros_comm $ROSINSTALL_GENERATOR_FLAGS > "$ROSINSTALL_FILE"
+    wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src -y \
                    --rosdistro "$ROS_VERSION"
-    ./$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space="$MANUAL_ROS_INSTALL_DIR"
+    ./"$CATKIN_MAKE_ISOLATED_BIN" --install \
+                                   -DCMAKE_BUILD_TYPE=Release
+                                   --install-space="$MANUAL_ROS_INSTALL_DIR"
     source_setups_in_directory "$MANUAL_ROS_INSTALL_DIR"
 }
 
@@ -195,10 +194,12 @@ SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
 MANUAL_ROS_INSTALL_DIR="$HOME/.ross"
+ROSINSTALL_FILE="ros-comm.rosinstall"
 MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a message if the script quits early, and tell the script to quit after
 # any non-zero error message.
