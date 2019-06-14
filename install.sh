@@ -45,6 +45,10 @@ install_ros_buildtools() {
                         python-wstool \
                         python-rosinstall \
                         build-essential
+    set +e
+    sudo rosdep init
+    set -e
+    rosdep update
 }
 
 # Source setup files within a given directory in the user's RC files.
@@ -94,10 +98,6 @@ install_ros_automatically() {
 # Install ROS manually.
 install_ros_manually() {
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
-    set +e
-    sudo rosdep init
-    set -e
-    rosdep update
     
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
