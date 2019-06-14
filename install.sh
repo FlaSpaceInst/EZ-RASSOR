@@ -8,6 +8,7 @@ throw_error() {
     exit 1
 }
 
+# Add the ROS repositories to APT.
 add_ros_repository() {
     ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
     ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
@@ -16,6 +17,7 @@ add_ros_repository() {
     sudo apt update
 }
 
+# Install buildtools for ROS.
 install_ros_buildtools() {
     sudo apt install -y python-rosdep \
                         python-rosinstall-generator \
@@ -24,6 +26,7 @@ install_ros_buildtools() {
                         build-essential
 }
 
+# Source setup files within a given directory in the user's RC files.
 source_setups_in_directory() {
     MUST_RESTART=false
     PARTIAL_SOURCE_TARGET="$1/setup"
@@ -55,6 +58,7 @@ source_setups_in_directory() {
     fi
 }
 
+# Install ROS automatically with APT.
 install_ros_automatically() {
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
@@ -69,6 +73,8 @@ install_ros_manually() {
 
 # Install only EZ-RASSOR packages.
 install_ezrassor_packages() { # check if rosdep installed
+                              # source seperate install dir after
+                              # check if ros is installed
 
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
@@ -231,6 +237,9 @@ elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
 fi
 
 # Install ROS and/or EZ-RASSOR packages based on the specified installation method.
+
+# NOTE this process will have to change bc ros cant be installed and then use
+# catkin in the same script on same run, need to restart terminal in between
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
     install_ros_automatically
     install_ezrassor_packages
