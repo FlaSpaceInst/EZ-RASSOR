@@ -9,8 +9,18 @@ throw_error() {
     exit 1
 }
 
+# If a given command doesn't exist, throw an error.
+require() {
+    command -v "$1" > /dev/null 2>&1 || {
+        throw_error "$1 is not installed on your system, but is required by this script." \
+                    "Please install this program before proceeding. Aborting..."
+    }
+}
+
 # Add the ROS repositories to APT.
 add_ros_repository() {
+    require "apt"
+    require "apt-key"
     ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
     ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
     sudo sh -c "$ECHO_COMMAND > $ROS_LATEST_DIR"
@@ -20,7 +30,9 @@ add_ros_repository() {
 
 # Install buildtools for ROS.
 install_ros_buildtools() {
-    sudo apt install -y python-rosdep \
+    require "apt"
+    sudo apt install -y python-pip \
+                        python-rosdep \
                         python-rosinstall-generator \
                         python-wstool \
                         python-rosinstall \
@@ -61,11 +73,16 @@ source_setups_in_directory() {
 
 # Install ROS automatically with APT.
 install_ros_automatically() {
+    require "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
+
+    # Initialize rosdep, but if it fails (because it's already been initialized)
+    # then just ignore the error.
     sudo rosdep init || true
     rosdep update
-    source_setups_in_directory "$AUTOMATIC_INSTALL_DIR" 
+
+    source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
 
 install_ros_manually() {
@@ -73,9 +90,10 @@ install_ros_manually() {
 }
 
 # Install only EZ-RASSOR packages.
-install_ezrassor_packages() { # check if rosdep installed
-                              # source seperate install dir after
-                              # check if ros is installed
+install_ezrassor_packages() {
+    require "pip"
+    require "rosdep"
+    require "catkin_make"
 
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
@@ -124,13 +142,14 @@ install_ezrassor_packages() { # check if rosdep installed
                    --ignore-src \
                    --rosdistro "$ROS_VERSION"
 
-    # Build and install the linked packages into the EZRASSOR_INSTALL_DIR.
+    # Build and install the linked packages into the MANUAL_EZRASSOR_INSTALL_DIR.
     catkin_make
-    catkin_make install
-    sudo mkdir -p "$EZRASSOR_INSTALL_DIR"
-    sudo cp -R "$MOCK_INSTALL_RELATIVE_DIR"/* "$EZRASSOR_INSTALL_DIR"
+    mkdir -p "$MANUAL_EZRASSOR_INSTALL_DIR"
+    catkin_make -DCMAKE_INSTALL_PREFIX="$MANUAL_EZRASSOR_INSTALL_DIR" install
 
     cd - > /dev/null 2>&1
+
+    source_setups_in_directory "$MANUAL_EZRASSOR_INSTALL_DIR" 
 }
 
 # The main entry point to the installation script.
@@ -145,16 +164,18 @@ EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
-EZRASSOR_INSTALL_DIR="/opt/ezrassor"
+MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 
-# Throw a message if something breaks.
+# Throw a message if the script quits early, and tell the script to quit after
+# any non-zero error message.
 trap 'throw_error "Something went horribly wrong!"' 0
 set -e
 
 # Determine the user's OS version and an appropriate ROS version.
+require "lsb_release"
 OS_VERSION="$(lsb_release -sc)"
 if [ "$OS_VERSION" = "xenial" ]; then
     ROS_VERSION="kinetic"
@@ -166,7 +187,7 @@ else
                 "You may still attempt to install the packages that you want manually" \
                 "using Catkin. Refer to the ROS wiki for instructions."
 fi
-AUTOMATIC_INSTALL_DIR="/opt/ros/$ROS_VERSION"
+AUTOMATIC_ROS_INSTALL_DIR="/opt/ros/$ROS_VERSION"
 
 # Determine the user's command line arguments.
 SET_COMPONENTS=false
@@ -234,17 +255,19 @@ for ARGUMENT in "$@"; do
     esac
 done
 
-# Throw an error if the user used a flag incorrectly.
+# Throw an error if the user used a flag incorrectly. Both of these flags are
+# reset to false once their respective arguments are consumed, so if either is
+# still true here something went wrong.
 if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
     throw_error "Missing installation method."
 elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
     throw_error "Missing components list."
 fi
 
-# Install ROS and/or EZ-RASSOR packages based on the specified installation method.
-
 # NOTE this process will have to change bc ros cant be installed and then use
 # catkin in the same script on same run, need to restart terminal in between
+
+# Install ROS and/or EZ-RASSOR packages based on the specified installation method.
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
     install_ros_automatically
     install_ezrassor_packages
@@ -256,4 +279,6 @@ elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
 else
     throw_error "Invalid installation method."
 fi
+
+# Allow the script to exit normally, without an error messsage.
 trap ":" 0
