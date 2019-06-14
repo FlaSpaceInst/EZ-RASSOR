@@ -84,9 +84,7 @@ install_ros_automatically() {
     require "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
-    set +e
-    sudo rosdep init
-    set -e
+    sudo rosdep init || true
     rosdep update
     source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
 }
@@ -94,9 +92,7 @@ install_ros_automatically() {
 # Install ROS manually.
 install_ros_manually() {
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
-    set +e
-    sudo rosdep init
-    set -e
+    sudo rosdep init || true
     rosdep update
     
     # Create a temporary workspace.
