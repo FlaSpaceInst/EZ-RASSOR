@@ -8,7 +8,6 @@ SH_SETUP_FILE="setup.sh"
 ROSINSTALL_FILE="ros-comm.rosinstall"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
-CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
@@ -17,10 +16,11 @@ MANUAL_ROS_INSTALL_DIR="$HOME/.ezrassor/ros"
 AUTOMATIC_ROS_PARTIAL_INSTALL_DIR="/opt/ros"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor/core"
+CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a help message at the user.
 throw_help() {
-    printf "Usage: sh install.sh <mode> [--flags]"
+    printf "Usage: sh install.sh <mode> [--flags]\n"
 }
 
 # Print an error message and exit this script.
@@ -66,7 +66,7 @@ source_setups_in_directory() {
         shellrc_file="$HOME/.${user_shell}rc"
         if [ -f "$shellrc_file" ]; then
             source_file="$partial_source_file.$user_shell"
-            source_line=". $source_file"
+            source_line=". \"$source_file\""
 
             printf "Attempting to source setup script for %s: " "$user_shell"
             if cat "$shellrc_file" | grep -Fq "$source_line"; then
@@ -125,7 +125,8 @@ install_ros_manually() {
     wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
-                   --yes
+                   -y
+    mkdir -p "$MANUAL_ROS_INSTALL_DIR"
     ./"$CATKIN_MAKE_ISOLATED_BIN" --install \
                                   -DCMAKE_BUILD_TYPE=Release
                                   --install-space="$MANUAL_ROS_INSTALL_DIR"
@@ -173,7 +174,7 @@ install_ezrassor_packages() {
     link_only_in_list=false
     link_except_in_list=false
     if [ $# -gt 1 ]; then
-        case "$2" in
+        case "$1" in
             "-o"|"--only")
                 link_only_in_list=true
                 shift
@@ -184,7 +185,7 @@ install_ezrassor_packages() {
                 ;;
         esac
     fi
-    for collection_dir in "$PWD/$EXTERNALS_DIR" "$PWD/$SUPERPACKAGE_DIR"; do
+    for collection_dir in "$PWD/$EXTERNALS_DIR" "$PWD/$SUPERPACKAGES_DIR"; do
         for superpackage_dir in "$collection_dir"/*; do
             for package_dir in "$superpackage_dir"/*; do
                 if [ ! -d "$package_dir" ]; then
@@ -209,7 +210,7 @@ install_ezrassor_packages() {
     cd "$workspace_dir"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
-                   --yes
+                   -y
 
     # Build and install the linked packages into the MANUAL_EZRASSOR_INSTALL_DIR.
     catkin_make
