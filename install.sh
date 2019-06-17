@@ -84,10 +84,22 @@ source_setups_in_directory() {
         fi
     done
 
-    if [ "$must_restart" = true ]; then
+    if [ "$must_restart" = "true" ]; then
         printf "\n\n******** %s ********\n" \
                "Restart your terminal for changes to take effect."
     fi
+}
+
+argument_in_list() {
+    argument="$1"
+    shift
+    for item in "$@"; do
+        if [ "$argument" = "$item" ]; then
+            return 0
+        fi
+    done
+
+    return 1
 }
 
 # Install ROS manually.
@@ -115,8 +127,8 @@ install_ros_manually() {
                    --ignore-src \
                    --yes
     ./"$CATKIN_MAKE_ISOLATED_BIN" --install \
-                                   -DCMAKE_BUILD_TYPE=Release
-                                   --install-space="$MANUAL_ROS_INSTALL_DIR"
+                                  -DCMAKE_BUILD_TYPE=Release
+                                  --install-space="$MANUAL_ROS_INSTALL_DIR"
     source_setups_in_directory "$MANUAL_ROS_INSTALL_DIR"
 }
 
@@ -152,64 +164,45 @@ install_buildtools() {
 # Install only EZ-RASSOR packages.
 install_ezrassor_packages() {
     require "pip" "rosdep" "catkin_make"
-
-        link_only_in_list=false
-        link_except_in_list=false
-        if [ $# -gt 1 ]; then
-            case "$2" in
-                -o|--only)
-                    link_only_in_list=true
-                    shift
-                    ;;
-                -e|--except)
-                    link_except_in_list=true
-                    shift
-                    ;;
-            esac
-        fi
-        for ARGUMENT in "$@"; do
-
-
-        done
-        
+    
     # Create a temporary workspace.
     workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
     workspace_source_dir="$workspace_dir/$WORKSPACE_SOURCE_RELATIVE_DIR"
     mkdir -p "$workspace_source_dir"
 
-    # Link packages into the temporary workspace based on the INSTALL flags. These
-    # flags are set at the beginning of the script.
-    if [ "$INSTALL_AUTONOMY" = "true" ]; then
-        SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
-        ln -s -f "$SUPERPACKAGE/viso2" "$workspace_source_dir" 
-        ln -s -f "$SUPERPACKAGE/libviso2" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/viso2_ros" "$workspace_source_dir"
-        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/autonomy"
-        ln -s -f "$SUPERPACKAGE/ezrassor_autonomous_control" "$workspace_source_dir"
+    link_only_in_list=false
+    link_except_in_list=false
+    if [ $# -gt 1 ]; then
+        case "$2" in
+            "-o"|"--only")
+                link_only_in_list=true
+                shift
+                ;;
+            "-e"|"--except")
+                link_except_in_list=true
+                shift
+                ;;
+        esac
     fi
-    if [ "$INSTALL_EXTERNALS" = "true" ]; then
-        SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
-        ln -s -f "$SUPERPACKAGE/viso2" "$workspace_source_dir" 
-        ln -s -f "$SUPERPACKAGE/libviso2" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/viso2_ros" "$workspace_source_dir"
-    fi
-    if [ "$INSTALL_DASHBOARD" = "true" ]; then
-        :
-    fi
-    if [ "$INSTALL_SIMULATION" = "true" ]; then
-        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/simulation"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_gazebo" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_control" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_description" "$workspace_source_dir"
-    fi
-    if [ "$INSTALL_COMMUNICATION" = "true" ]; then
-        SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/communication"
-        ln -s -f "$SUPERPACKAGE/ezrassor_joy_translator" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/ezrassor_topic_switch" "$workspace_source_dir"
-        ln -s -f "$SUPERPACKAGE/ezrassor_controller_server" "$workspace_source_dir"
-    fi
-    SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/extras"
-    ln -s -f "$SUPERPACKAGE/ezrassor_launcher" "$workspace_source_dir"
+    for collection_dir in "$PWD/$EXTERNALS_DIR" "$PWD/$SUPERPACKAGE_DIR"; do
+        for superpackage_dir in "$collection_dir"/*; do
+            for package_dir in "$superpackage_dir"/*; do
+                if [ ! -d "$package_dir" ]; then
+                    :
+                elif [ "$link_only_in_list" = "true" ]; then
+                    if argument_in_list "$(basename "$package_dir")" "$@"; then
+                        ln -s -f "$package_dir" "$workspace_source_dir"
+                    fi
+                elif [ "$link_except_in_list" = "true" ]; then
+                    if ! argument_in_list "$(basename "$package_dir")" "$@"; then
+                        ln -s -f "$package_dir" "$workspace_source_dir"
+                    fi
+                else
+                    ln -s -f "$package_dir" "$workspace_source_dir"
+                fi
+            done
+        done
+    done
 
     # Install all of the dependencies of the linked packages in the temporary
     # workspace.
