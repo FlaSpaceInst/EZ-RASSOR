@@ -2,6 +2,10 @@
 #
 #
 
+throw_help() {
+    printf "Usage: sh install.sh <mode> [--flags]"
+}
+
 # Print an error message and exit this script.
 throw_error() {
     printf "%s\n" "$@"
@@ -11,10 +15,11 @@ throw_error() {
 
 # If required commands don't exist, throw an error.
 require() {
-    set +e
     MISSING_REQUIREMENT=false
     for REQUIREMENT in "$@"; do
+        set +e
         command -v "$REQUIREMENT" > /dev/null 2>&1
+        set -e
         if [ $? -ne 0 ]; then
             printf "Required but not installed: $REQUIREMENT\n"
             MISSING_REQUIREMENT=true
@@ -23,12 +28,11 @@ require() {
     if [ "$MISSING_REQUIREMENT" = "true" ]; then
         throw_error "Please install all missing components before proceeding. Aborting..."
     fi
-    set -e
 }
 
 # Add the ROS repositories to APT.
 add_ros_repository() {
-    require "apt" "apt-key"
+    require "sudo" "apt" "apt-key"
     ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
     ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
     sudo sh -c "$ECHO_COMMAND > $ROS_LATEST_DIR"
@@ -37,8 +41,8 @@ add_ros_repository() {
 }
 
 # Install buildtools for ROS.
-install_ros_buildtools() {
-    require "apt"
+install_buildtools() {
+    require "sudo" "apt"
     sudo apt install -y python-pip \
                         python-rosdep \
                         python-rosinstall-generator \
@@ -79,13 +83,13 @@ source_setups_in_directory() {
 
     if [ "$MUST_RESTART" = true ]; then
         printf "\n\n******** %s ********\n" \
-               "RESTART YOUR TERMINAL FOR CHANGES TO TAKE EFFECT"
+               "Restart your terminal for changes to take effect."
     fi
 }
 
 # Install ROS automatically with APT.
 install_ros_automatically() {
-    require "apt"
+    require "sudo" "apt"
     add_ros_repository
     sudo apt install -y "ros-${ROS_VERSION}-ros-base"
     set +e
@@ -125,9 +129,26 @@ install_ros_manually() {
 }
 
 # Install only EZ-RASSOR packages.
-install_ezrassor_packages() {
+install_ezrassor_components() {
     require "pip" "rosdep" "catkin_make"
 
+        LINK_ONLY_IN_LIST=false
+        LINK_EXCEPT_IN_LIST=false
+        if [ $# -gt 1 ]; then
+            case "$2" in
+                -o|--only)
+                    LINK_ONLY_IN_LIST=true
+                    shift
+                    ;;
+                -e|--except)
+                    LINK_EXCEPT_IN_LIST=true
+                    shift
+                    ;;
+            esac
+        for ARGUMENT in "$@"; do
+
+
+        done
     # Create a temporary workspace.
     WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
     WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
@@ -186,12 +207,12 @@ install_ezrassor_packages() {
 
 # The main entry point to the installation script.
 USER_SHELLS="bash zsh"
-INSTALL_AUTONOMY=true
-INSTALL_EXTERNALS=true
-INSTALL_DASHBOARD=true
-INSTALL_SIMULATION=true
-INSTALL_COMMUNICATION=true
-INSTALLATION_METHOD="automatic"
+#INSTALL_AUTONOMY=true
+#INSTALL_EXTERNALS=true
+#INSTALL_DASHBOARD=true
+#INSTALL_SIMULATION=true
+#INSTALL_COMMUNICATION=true
+#INSTALLATION_METHOD="automatic"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
@@ -209,6 +230,33 @@ RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 # any non-zero error message.
 trap 'throw_error "Something went horribly wrong!"' 0
 set -e
+
+case "$1" in
+    ros)
+        if [ "$2" = "--from-source" ]; then
+            install_ros_manually
+        else
+            install_ros_automatically
+        fi
+        ;;
+    buildtools)
+        install_buildtools
+        ;;
+    components)
+        shift
+        install_ezrassor_components "$@"
+        ;;
+    *)
+        throw_help
+        ;;
+esac
+
+
+
+
+
+
+
 
 # Determine the user's OS version and an appropriate ROS version.
 require "lsb_release"
@@ -307,12 +355,12 @@ fi
 # Install ROS and/or EZ-RASSOR packages based on the specified installation method.
 if [ "$INSTALLATION_METHOD" = "automatic" ]; then
     install_ros_automatically
-    install_ezrassor_packages
+    install_ezrassor_components
 elif [ "$INSTALLATION_METHOD" = "manual" ]; then
     install_ros_manually
-    install_ezrassor_packages
+    install_ezrassor_components
 elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
-    install_ezrassor_packages
+    install_ezrassor_components
 else
     throw_error "Invalid installation method."
 fi
