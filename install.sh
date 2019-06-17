@@ -15,27 +15,28 @@ throw_error() {
 
 # If required commands don't exist, throw an error.
 require() {
-    MISSING_REQUIREMENT=false
-    for REQUIREMENT in "$@"; do
+    missing_requirement=false
+    for requirement in "$@"; do
         set +e
-        command -v "$REQUIREMENT" > /dev/null 2>&1
+        command -v "$requirement" > /dev/null 2>&1
         set -e
         if [ $? -ne 0 ]; then
-            printf "Required but not installed: $REQUIREMENT\n"
-            MISSING_REQUIREMENT=true
+            printf "Required but not installed: $requirement\n"
+            missing_requirement=true
         fi
     done
-    if [ "$MISSING_REQUIREMENT" = "true" ]; then
+    if [ "$missing_requirement" = "true" ]; then
         throw_error "Please install all missing components before proceeding. Aborting..."
     fi
 }
 
 # Add the ROS repositories to APT.
 add_ros_repository() {
+    os_version="$1"
     require "sudo" "apt" "apt-key"
-    ECHO_COMMAND="echo \"deb http://packages.ros.org/ros/ubuntu $OS_VERSION main\""
-    ROS_LATEST_DIR="/etc/apt/sources.list.d/ros-latest.list"
-    sudo sh -c "$ECHO_COMMAND > $ROS_LATEST_DIR"
+    echo_command="echo \"deb http://packages.ros.org/ros/ubuntu $os_version main\""
+    ros_latest_dir="/etc/apt/sources.list.d/ros-latest.list"
+    sudo sh -c "$echo_command > $ros_latest_dir"
     sudo apt-key adv --keyserver "$KEY_SERVER" --recv-key "$RECV_KEY"
     sudo apt update
 }
@@ -57,31 +58,31 @@ install_buildtools() {
 
 # Source setup files within a given directory in the user's RC files.
 source_setups_in_directory() {
-    MUST_RESTART=false
-    PARTIAL_SOURCE_TARGET="$1/setup"
-    for USER_SHELL in $USER_SHELLS; do
-        SHELLRC="$HOME/.${USER_SHELL}rc"
-        if [ -f "$SHELLRC" ]; then
-            SOURCE_TARGET="$PARTIAL_SOURCE_TARGET.$USER_SHELL"
-            SOURCE_LINE=". $SOURCE_TARGET"
+    must_restart=false
+    partial_source_file="$1/setup"
+    for user_shell in $USER_SHELLS; do
+        shellrc_file="$HOME/.${user_shell}rc"
+        if [ -f "$shellrc_file" ]; then
+            source_file="$partial_source_file.$user_shell"
+            source_line=". $source_file"
 
-            printf "Attempting to source setup script for %s: " "$USER_SHELL"
-            if cat "$SHELLRC" | grep -Fq "$SOURCE_LINE"; then
+            printf "Attempting to source setup script for %s: " "$user_shell"
+            if cat "$shellrc_file" | grep -Fq "$source_line"; then
                 printf "Previously sourced!\n"
             else
                 printf "%s\n" \
                        "" \
                        "# Source a ROS setup file, if it exists." \
-                       "if [ -f \"$SOURCE_TARGET\" ]; then" \
-                       "    $SOURCE_LINE" \
-                       "fi" >> "$SHELLRC"
+                       "if [ -f \"$source_file\" ]; then" \
+                       "    $source_line" \
+                       "fi" >> "$shellrc_file"
                 printf "Successfully sourced!\n"
-                MUST_RESTART=true
+                must_restart=true
             fi
         fi
     done
 
-    if [ "$MUST_RESTART" = true ]; then
+    if [ "$must_restart" = true ]; then
         printf "\n\n******** %s ********\n" \
                "Restart your terminal for changes to take effect."
     fi
@@ -89,35 +90,38 @@ source_setups_in_directory() {
 
 # Install ROS automatically with APT.
 install_ros_automatically() {
+    ros_version="$1"
+    automatic_ros_install_dir="$2"
     require "sudo" "apt"
     add_ros_repository
-    sudo apt install -y "ros-${ROS_VERSION}-ros-base"
+    sudo apt install -y "ros-${ros_version}-ros-base"
     set +e
     sudo rosdep init
     set -e
     rosdep update
-    source_setups_in_directory "$AUTOMATIC_ROS_INSTALL_DIR" 
+    source_setups_in_directory "$automatic_ros_install_dir" 
 }
 
 # Install ROS manually.
 install_ros_manually() {
+    ros_version="$1"
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
     
     # Create a temporary workspace.
-    WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
-    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
-    mkdir -p "$WORKSPACE_SOURCE_DIR"
-    cd "$WORKSPACE_DIR"
+    workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
+    workspace_source_dir="$workspace_dir/$WORKSPACE_SOURCE_RELATIVE_DIR"
+    mkdir -p "$workspace_source_dir"
+    cd "$workspace_dir"
 
     # Define the rosinstall_generator flags. Kinetic needs the --wet-only flag
     # for some reason (per the wiki).
-    ROSINSTALL_GENERATOR_FLAGS="--rosdistro $ROS_VERSION --deps --tar"
-    if [ "$ROS_VERSION" = "kinetic" ]; then
-        ROSINSTALL_GENERATOR_FLAGS="$ROSINSTALL_GENERATOR_FLAGS --wet-only"
+    rosinstall_generator_flags="--rosdistro $ros_version --deps --tar"
+    if [ "$ros_version" = "kinetic" ]; then
+        rosinstall_generator_flags="$rosinstall_generator_flags --wet-only"
     fi
 
     # Download, build, and install all of the ROS communication core packages.
-    rosinstall_generator ros_comm $ROSINSTALL_GENERATOR_FLAGS > "$ROSINSTALL_FILE"
+    rosinstall_generator ros_comm $rosinstall_generator_flags > "$ROSINSTALL_FILE"
     wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
@@ -129,19 +133,19 @@ install_ros_manually() {
 }
 
 # Install only EZ-RASSOR packages.
-install_ezrassor_components() {
+install_ezrassor_packages() {
     require "pip" "rosdep" "catkin_make"
 
-        LINK_ONLY_IN_LIST=false
-        LINK_EXCEPT_IN_LIST=false
+        link_only_in_list=false
+        link_except_in_list=false
         if [ $# -gt 1 ]; then
             case "$2" in
                 -o|--only)
-                    LINK_ONLY_IN_LIST=true
+                    link_only_in_list=true
                     shift
                     ;;
                 -e|--except)
-                    LINK_EXCEPT_IN_LIST=true
+                    link_except_in_list=true
                     shift
                     ;;
             esac
@@ -150,47 +154,47 @@ install_ezrassor_components() {
 
         done
     # Create a temporary workspace.
-    WORKSPACE_DIR="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
-    WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/$WORKSPACE_SOURCE_RELATIVE_DIR"
-    mkdir -p "$WORKSPACE_SOURCE_DIR"
+    workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
+    workspace_source_dir="$workspace_dir/$WORKSPACE_SOURCE_RELATIVE_DIR"
+    mkdir -p "$workspace_source_dir"
 
     # Link packages into the temporary workspace based on the INSTALL flags. These
     # flags are set at the beginning of the script.
     if [ "$INSTALL_AUTONOMY" = "true" ]; then
         SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
-        ln -s -f "$SUPERPACKAGE/viso2" "$WORKSPACE_SOURCE_DIR" 
-        ln -s -f "$SUPERPACKAGE/libviso2" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/viso2" "$workspace_source_dir" 
+        ln -s -f "$SUPERPACKAGE/libviso2" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/viso2_ros" "$workspace_source_dir"
         SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/autonomy"
-        ln -s -f "$SUPERPACKAGE/ezrassor_autonomous_control" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_autonomous_control" "$workspace_source_dir"
     fi
     if [ "$INSTALL_EXTERNALS" = "true" ]; then
         SUPERPACKAGE="$PWD/$EXTERNALS_DIR/viso2"
-        ln -s -f "$SUPERPACKAGE/viso2" "$WORKSPACE_SOURCE_DIR" 
-        ln -s -f "$SUPERPACKAGE/libviso2" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/viso2_ros" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/viso2" "$workspace_source_dir" 
+        ln -s -f "$SUPERPACKAGE/libviso2" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/viso2_ros" "$workspace_source_dir"
     fi
     if [ "$INSTALL_DASHBOARD" = "true" ]; then
         :
     fi
     if [ "$INSTALL_SIMULATION" = "true" ]; then
         SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/simulation"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_gazebo" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_control" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/ezrassor_sim_description" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_gazebo" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_control" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/ezrassor_sim_description" "$workspace_source_dir"
     fi
     if [ "$INSTALL_COMMUNICATION" = "true" ]; then
         SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/communication"
-        ln -s -f "$SUPERPACKAGE/ezrassor_joy_translator" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/ezrassor_topic_switch" "$WORKSPACE_SOURCE_DIR"
-        ln -s -f "$SUPERPACKAGE/ezrassor_controller_server" "$WORKSPACE_SOURCE_DIR"
+        ln -s -f "$SUPERPACKAGE/ezrassor_joy_translator" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/ezrassor_topic_switch" "$workspace_source_dir"
+        ln -s -f "$SUPERPACKAGE/ezrassor_controller_server" "$workspace_source_dir"
     fi
     SUPERPACKAGE="$PWD/$SUPERPACKAGES_DIR/extras"
-    ln -s -f "$SUPERPACKAGE/ezrassor_launcher" "$WORKSPACE_SOURCE_DIR"
+    ln -s -f "$SUPERPACKAGE/ezrassor_launcher" "$workspace_source_dir"
 
     # Install all of the dependencies of the linked packages in the temporary
     # workspace.
-    cd "$WORKSPACE_DIR"
+    cd "$workspace_dir"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
                    --ignore-src \
                    --yes
@@ -207,12 +211,11 @@ install_ezrassor_components() {
 
 # The main entry point to the installation script.
 USER_SHELLS="bash zsh"
-#INSTALL_AUTONOMY=true
-#INSTALL_EXTERNALS=true
-#INSTALL_DASHBOARD=true
-#INSTALL_SIMULATION=true
-#INSTALL_COMMUNICATION=true
-#INSTALLATION_METHOD="automatic"
+SH_SETUP_FILE="setup.sh"
+ROSINSTALL_FILE="ros-comm.rosinstall"
+KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
+RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 MOCK_INSTALL_RELATIVE_DIR="install"
@@ -220,11 +223,6 @@ WORKSPACE_SOURCE_RELATIVE_DIR="src"
 MANUAL_ROS_INSTALL_DIR="$HOME/.ezrassor/ros"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor/core"
-SH_SETUP_FILE="setup.sh"
-ROSINSTALL_FILE="ros-comm.rosinstall"
-CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
-KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
-RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 
 # Throw a message if the script quits early, and tell the script to quit after
 # any non-zero error message.
@@ -232,138 +230,39 @@ trap 'throw_error "Something went horribly wrong!"' 0
 set -e
 
 case "$1" in
-    ros)
-        if [ "$2" = "--from-source" ]; then
-            install_ros_manually
+    "ros")
+        if [ "$2" = "--from-source=kinetic" ]; then
+            install_ros_manually "kinetic"
+        elif [ "$2" = "--from-source=melodic" ]; then
+            install_ros_manually "melodic"
         else
-            install_ros_automatically
+            require "lsb_release"
+            os_version="$(lsb_release -sc)"
+            if [ "$os_version" = "xenial" ]; then
+                ros_version="kinetic"
+            elif [ "$os_version" = "bionic" ]; then
+                ros_version="melodic"
+            else
+                throw_error "This script can only automatically install ROS for"
+                            "Ubuntu Xenial and Ubuntu Bionic. Your operating system" \
+                            "is not supported. :( You can still try to install ROS" \
+                            "manually using the \"--from-source=\" parameter."
+            fi
+            automatic_ros_install_dir="/opt/ros/$ros_version"
+            install_ros_automatically "$ros_version" "$automatic_ros_install_dir"
         fi
         ;;
-    buildtools)
+    "buildtools")
         install_buildtools
         ;;
-    components)
+    "packages")
         shift
-        install_ezrassor_components "$@"
+        install_ezrassor_packages "$@"
         ;;
     *)
         throw_help
         ;;
 esac
-
-
-
-
-
-
-
-
-# Determine the user's OS version and an appropriate ROS version.
-require "lsb_release"
-OS_VERSION="$(lsb_release -sc)"
-if [ "$OS_VERSION" = "xenial" ]; then
-    ROS_VERSION="kinetic"
-elif [ "$OS_VERSION" = "bionic" ]; then
-    ROS_VERSION="melodic"
-else
-    throw_error "This script is only tested on Ubuntu Xenial and Ubuntu Bionic with ROS" \
-                "Kinetic and ROS Melodic. Your operating system is not supported. :(" \
-                "You may still attempt to install the packages that you want manually" \
-                "using Catkin. Refer to the ROS wiki for instructions."
-fi
-AUTOMATIC_ROS_INSTALL_DIR="/opt/ros/$ROS_VERSION"
-
-# Determine the user's command line arguments.
-SET_COMPONENTS=false
-SET_INSTALLATION_METHOD=false
-MISSING_COMPONENTS_LIST=false
-for ARGUMENT in "$@"; do
-
-    # If the user has included the "--method" flag, set the INSTALLATION_METHOD
-    # appropriately.
-    if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
-        if [ "$ARGUMENT" = "automatic" ]; then
-            INSTALLATION_METHOD="automatic"
-        elif [ "$ARGUMENT" = "manual" ]; then
-            INSTALLATION_METHOD="manual"
-        elif [ "$ARGUMENT" = "packages-only" ]; then
-            INSTALLATION_METHOD="packages-only"
-        else
-            throw_error "Invalid installation method: $ARGUMENT"
-        fi
-        SET_INSTALLATION_METHOD=false
-        continue
-
-    # If the user has included the "--components" flag, set the
-    # INSTALL_COMPONENT flags appropriately.
-    elif [ "$SET_COMPONENTS" = "true" ]; then
-        if [ "$ARGUMENT" = "autonomy" ]; then
-            MISSING_COMPONENTS_LIST=false
-            INSTALL_AUTONOMY=true
-            continue
-        elif [ "$ARGUMENT" = "externals" ]; then
-            MISSING_COMPONENTS_LIST=false
-            INSTALL_EXTERNALS=true
-            continue
-        elif [ "$ARGUMENT" = "dashboard" ]; then
-            MISSING_COMPONENTS_LIST=false
-            INSTALL_DASHBOARD=true
-            continue
-        elif [ "$ARGUMENT" = "simulation" ]; then
-            MISSING_COMPONENTS_LIST=false
-            INSTALL_SIMULATION=true
-            continue
-        elif [ "$ARGUMENT" = "communication" ]; then
-            MISSING_COMPONENTS_LIST=false
-            INSTALL_COMMUNICATION=true
-            continue
-        else
-            SET_COMPONENTS=false
-        fi
-    fi
-
-    # Check the user's arguments for supported flags.
-    case "$ARGUMENT" in
-        --method)
-            SET_INSTALLATION_METHOD=true
-            ;;
-        --components)
-            SET_COMPONENTS=true
-            INSTALL_AUTONOMY=false
-            INSTALL_EXTERNALS=false
-            INSTALL_DASHBOARD=false
-            INSTALL_SIMULATION=false
-            INSTALL_COMMUNICATION=false
-            MISSING_COMPONENTS_LIST=true
-            ;;
-    esac
-done
-
-# Throw an error if the user used a flag incorrectly. Both of these flags are
-# reset to false once their respective arguments are consumed, so if either is
-# still true here something went wrong.
-if [ "$SET_INSTALLATION_METHOD" = "true" ]; then
-    throw_error "Missing installation method."
-elif [ "$MISSING_COMPONENTS_LIST" = "true" ]; then
-    throw_error "Missing components list."
-fi
-
-# NOTE this process will have to change bc ros cant be installed and then use
-# catkin in the same script on same run, need to restart terminal in between
-# need way to install build tools
-
-# Install ROS and/or EZ-RASSOR packages based on the specified installation method.
-if [ "$INSTALLATION_METHOD" = "automatic" ]; then
-    install_ros_automatically
-    install_ezrassor_components
-elif [ "$INSTALLATION_METHOD" = "manual" ]; then
-    install_ros_manually
-    install_ezrassor_components
-elif [ "$INSTALLATION_METHOD" = "packages-only" ]; then
-    install_ezrassor_components
-else
-    throw_error "Invalid installation method."
-fi
 
 # Allow the script to exit normally, without an error messsage.
 trap ":" 0
