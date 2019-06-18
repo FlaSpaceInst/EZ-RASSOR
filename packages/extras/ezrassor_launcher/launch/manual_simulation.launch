@@ -10,9 +10,13 @@
   <arg name="gui"
        default="true" />
 
+  <arg name="verbose"
+       default="false" />
+
   <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
     <arg name="world" value="$(arg world)" />
     <arg name="gui" value="$(arg gui)" />
+    <arg name="verbose" value="$(arg verbose)" />
   </include>
 
   <arg name="paused"
