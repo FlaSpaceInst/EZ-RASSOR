@@ -84,7 +84,7 @@ AUTHORS
 - `Cameron Taylor`_
 - `Lucas Gonzalez`_
 
-.. _`wiki_pages`: http://wiki.ros.org/ROS/Installation
+.. _`wiki pages`: http://wiki.ros.org/ROS/Installation
 .. _`wiki section`: http://wiki.ros.org/kinetic/Installation/Source#Prerequisites
 .. _`wiki`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/wiki
 .. _`blue paper`: BLUE_PAPER.pdf
