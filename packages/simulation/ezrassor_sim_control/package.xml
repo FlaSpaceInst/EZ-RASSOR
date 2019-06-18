@@ -10,8 +10,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>gazebo_ros_control</depend>
-  <depend>ros_control</depend>
-  <depend>ros_controllers</depend>
   <depend>controller_manager</depend>
   <depend>velocity_controllers</depend>
   <depend>joint_state_controller</depend>
