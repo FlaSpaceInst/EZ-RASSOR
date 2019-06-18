@@ -5,17 +5,15 @@
 # A collection of necessary constants for this script.
 USER_SHELLS="bash zsh"
 SH_SETUP_FILE="setup.sh"
-ROSINSTALL_FILE="ros-comm.rosinstall"
 KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
+ROS_PARTIAL_INSTALL_DIR="/opt/ros"
 MOCK_INSTALL_RELATIVE_DIR="install"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
-MANUAL_ROS_INSTALL_DIR="$HOME/.ezrassor/ros"
-AUTOMATIC_ROS_PARTIAL_INSTALL_DIR="/opt/ros"
+EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
-MANUAL_EZRASSOR_INSTALL_DIR="$HOME/.ezrassor/core"
 CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a help message at the user.
@@ -45,17 +43,6 @@ require() {
     if [ "$missing_requirement" = "true" ]; then
         throw_error "Please install all missing components before proceeding. Aborting..."
     fi
-}
-
-# Add the ROS repositories to APT.
-add_ros_repository() {
-    os_version="$1"
-    require "sudo" "apt" "apt-key"
-    echo_command="echo \"deb http://packages.ros.org/ros/ubuntu $os_version main\""
-    ros_latest_dir="/etc/apt/sources.list.d/ros-latest.list"
-    sudo sh -c "$echo_command > $ros_latest_dir"
-    sudo apt-key adv --keyserver "$KEY_SERVER" --recv-key "$RECV_KEY"
-    sudo apt update
 }
 
 # Source setup files within a given directory in the user's RC files.
@@ -102,80 +89,50 @@ argument_in_list() {
     return 1
 }
 
-# Install ROS manually.
-install_ros_manually() {
-    ros_version="$1"
-    require "wstool" "rosdep" "rosinstall" "rosinstall_generator"
-    set +e
-    sudo rosdep init
-    set -e
-    rosdep update
-    
-    # Create a temporary workspace.
-    workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
-    workspace_source_dir="$workspace_dir/$WORKSPACE_SOURCE_RELATIVE_DIR"
-    mkdir -p "$workspace_source_dir"
-    cd "$workspace_dir"
-
-    # Define the rosinstall_generator flags. Kinetic needs the --wet-only flag
-    # for some reason (per the wiki).
-    rosinstall_generator_flags="--rosdistro $ros_version --deps --tar"
-    if [ "$ros_version" = "kinetic" ]; then
-        rosinstall_generator_flags="$rosinstall_generator_flags --wet-only"
-    fi
-
-    # Download, build, and install all of the ROS communication core packages.
-    rosinstall_generator ros_comm $rosinstall_generator_flags > "$ROSINSTALL_FILE"
-    wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
-    rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
-                   --rosdistro "$ros_version" \
-                   --ignore-src \
-                   -y
-    mkdir -p "$MANUAL_ROS_INSTALL_DIR"
-    ./"$CATKIN_MAKE_ISOLATED_BIN" --install \
-                                  -DCMAKE_BUILD_TYPE=Release
-                                  --install-space="$MANUAL_ROS_INSTALL_DIR"
-    source_setups_in_directory "$MANUAL_ROS_INSTALL_DIR"
-}
-
 # Install ROS automatically with APT.
-install_ros_automatically() {
+install_ros() {
+    require "sudo" "apt" "apt-key"
     os_version="$1"
     ros_version="$2"
-    require "sudo" "apt"
-    add_ros_repository "$os_version"
-    sudo apt install -y "ros-${ros_version}-ros-base"
+
+    # Add the correct repository key to APT for ROS.
+    echo_command="echo \"deb http://packages.ros.org/ros/ubuntu $os_version main\""
+    ros_latest_dir="/etc/apt/sources.list.d/ros-latest.list"
+    sudo sh -c "$echo_command > $ros_latest_dir"
+    sudo apt-key adv --keyserver "$KEY_SERVER" --recv-key "$RECV_KEY"
+    sudo apt update
+
+    # Install ROS and initialize rosdep.
+    sudo apt install -y "ros-${ros_version}-ros-base" python-rosdep
     set +e
     sudo rosdep init
     set -e
     rosdep update
-    source_setups_in_directory "$AUTOMATIC_ROS_PARTIAL_INSTALL_DIR/$ros_version"
+
+    # Source the ROS installation.
+    source_setups_in_directory "$ROS_PARTIAL_INSTALL_DIR/$ros_version"
 }
 
-# Install buildtools for ROS.
-install_buildtools() {
+# Install some build tools required to build the EZ-RASSOR packages.
+install_build_tools() {
     require "sudo" "apt"
-    sudo apt install -y python-pip \
-                        python-rosdep \
-                        python-rosinstall-generator \
-                        python-wstool \
-                        python-rosinstall \
-                        build-essential
+    sudo apt install -y python-rosdep python-pip build-essential
     set +e
     sudo rosdep init
     set -e
     rosdep update
 }
 
-# Install only EZ-RASSOR packages.
+# Install EZ-RASSOR packages from source.
 install_ezrassor_packages() {
-    require "pip" "rosdep" "catkin_make"
-    
+    require "catkin_make" "rosdep" "pip"
+
     # Create a temporary workspace.
     workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
     workspace_source_dir="$workspace_dir/$WORKSPACE_SOURCE_RELATIVE_DIR"
     mkdir -p "$workspace_source_dir"
 
+    # Determine if the user wants to exclude or include only certain packages.
     link_only_in_list=false
     link_except_in_list=false
     if [ $# -gt 1 ]; then
@@ -190,6 +147,8 @@ install_ezrassor_packages() {
                 ;;
         esac
     fi
+
+    # Link all of the packages that the user desires.
     for collection_dir in "$PWD/$EXTERNALS_DIR" "$PWD/$SUPERPACKAGES_DIR"; do
         for superpackage_dir in "$collection_dir"/*; do
             for package_dir in "$superpackage_dir"/*; do
@@ -217,14 +176,15 @@ install_ezrassor_packages() {
                    --ignore-src \
                    -y
 
-    # Build and install the linked packages into the MANUAL_EZRASSOR_INSTALL_DIR.
+    # Build and install the linked packages into the EZRASSOR_INSTALL_DIR.
     catkin_make
-    mkdir -p "$MANUAL_EZRASSOR_INSTALL_DIR"
-    catkin_make -DCMAKE_INSTALL_PREFIX="$MANUAL_EZRASSOR_INSTALL_DIR" install
+    mkdir -p "$EZRASSOR_INSTALL_DIR"
+    catkin_make -DCMAKE_INSTALL_PREFIX="$EZRASSOR_INSTALL_DIR" install
 
     cd - > /dev/null 2>&1
 
-    source_setups_in_directory "$MANUAL_EZRASSOR_INSTALL_DIR" 
+    # Source the installed EZ-RASSOR packages.
+    source_setups_in_directory "$EZRASSOR_INSTALL_DIR" 
 }
 
 # The main entry point of this script.
@@ -233,43 +193,25 @@ install_ezrassor_packages() {
 trap 'throw_error "Something went horribly wrong!"' 0
 set -e
 
+require "lsb_release"
+os_version="$(lsb_release -sc)"
+if [ "$os_version" = "xenial" ]; then
+    ros_version="kinetic"
+elif [ "$os_version" = "bionic" ]; then
+    ros_version="melodic"
+else
+    throw_error "This script can only automatically install ROS for" \
+                "Ubuntu Xenial and Ubuntu Bionic. Your operating system" \
+                "is not supported. :( The ROS wiki may have instructions" \
+                "that will help you install ROS on your system."
+fi
+
 case "$1" in
     "ros")
-        case "$2" in
-            "--from-source="*)
-                case $2 in
-                    *"kinetic")
-                        install_ros_manually "kinetic"
-                        exit 0
-                        ;;
-                    *"melodic")
-                        install_ros_manually "melodic"
-                        exit 0
-                        ;;
-                    *)
-                        throw_error "That distribution of ROS is not supported by" \
-                                    "this script. Try either \"--from-source=kinetic\"" \
-                                    "or \"--from-source=melodic\"."
-                        ;;
-                esac
-                ;;
-        esac
-        require "lsb_release"
-        os_version="$(lsb_release -sc)"
-        if [ "$os_version" = "xenial" ]; then
-            ros_version="kinetic"
-        elif [ "$os_version" = "bionic" ]; then
-            ros_version="melodic"
-        else
-            throw_error "This script can only automatically install ROS for"
-                        "Ubuntu Xenial and Ubuntu Bionic. Your operating system" \
-                        "is not supported. :( You can still try to install ROS" \
-                        "manually using the \"--from-source=\" parameter."
-        fi
-        install_ros_automatically "$os_version" "$ros_version"
+        install_ros "$os_version" "$ros_version"
         ;;
-    "buildtools")
-        install_buildtools
+    "build-tools")
+        install_build_tools
         ;;
     "packages")
         shift
