@@ -10,7 +10,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
-  <depend>gmapping</depend>
   <depend>robot_state_publisher</depend>
 
   <!-- These dependencies are required by Viso2, but they didn't include them in
