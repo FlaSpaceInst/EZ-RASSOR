@@ -106,6 +106,10 @@ argument_in_list() {
 install_ros_manually() {
     ros_version="$1"
     require "wstool" "rosdep" "rosinstall" "rosinstall_generator"
+    set +e
+    sudo rosdep init
+    set -e
+    rosdep update
     
     # Create a temporary workspace.
     workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
