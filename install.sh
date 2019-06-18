@@ -1,24 +1,23 @@
 #!/bin/sh
-#
-#
+# This script can install ROS, ROS build tools, and EZ-RASSOR components on systems
+# running Ubuntu Xenial and Ubuntu Bionic.
+# Written by Tiger Sachse.
 
 # A collection of necessary constants for this script.
 USER_SHELLS="bash zsh"
 SH_SETUP_FILE="setup.sh"
-KEY_SERVER="hkp://ha.pool.sks-keyservers.net:80"
-RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
-ROS_PARTIAL_INSTALL_DIR="/opt/ros"
-MOCK_INSTALL_RELATIVE_DIR="install"
+ROS_INSTALL_PARTIAL_DIR="/opt/ros"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
 EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
+RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a help message at the user.
 throw_help() {
-    printf "Usage: sh install.sh <mode> [--flags]\n"
+    printf "Usage: sh install.sh <software> [--flag [arguments...]]\n"
 }
 
 # Print an error message and exit this script.
@@ -57,7 +56,7 @@ source_setups_in_directory() {
 
             printf "Attempting to source setup script for %s: " "$user_shell"
             if cat "$shellrc_file" | grep -Fq "$source_line"; then
-                printf "Previously sourced!\n"
+                printf "Previously sourced.\n"
             else
                 printf "%s\n" \
                        "" \
@@ -65,7 +64,7 @@ source_setups_in_directory() {
                        "if [ -f \"$source_file\" ]; then" \
                        "    $source_line" \
                        "fi" >> "$shellrc_file"
-                printf "Successfully sourced!\n"
+                printf "Successfully sourced.\n"
                 must_restart=true
             fi
         fi
@@ -77,6 +76,7 @@ source_setups_in_directory() {
     fi
 }
 
+# Check if the first argument exists in the remaining list of arguments.
 argument_in_list() {
     argument="$1"
     shift
@@ -94,12 +94,13 @@ install_ros() {
     require "sudo" "apt" "apt-key"
     os_version="$1"
     ros_version="$2"
+    key_server="$3"
 
     # Add the correct repository key to APT for ROS.
     echo_command="echo \"deb http://packages.ros.org/ros/ubuntu $os_version main\""
     ros_latest_dir="/etc/apt/sources.list.d/ros-latest.list"
     sudo sh -c "$echo_command > $ros_latest_dir"
-    sudo apt-key adv --keyserver "$KEY_SERVER" --recv-key "$RECV_KEY"
+    sudo apt-key adv --keyserver "$key_server" --recv-key "$RECV_KEY"
     sudo apt update
 
     # Install ROS and initialize rosdep.
@@ -110,11 +111,11 @@ install_ros() {
     rosdep update
 
     # Source the ROS installation.
-    source_setups_in_directory "$ROS_PARTIAL_INSTALL_DIR/$ros_version"
+    source_setups_in_directory "$ROS_INSTALL_PARTIAL_DIR/$ros_version"
 }
 
-# Install some build tools required to build the EZ-RASSOR packages.
-install_build_tools() {
+# Install some build tools required to build EZ-RASSOR packages.
+install_tools() {
     require "sudo" "apt"
     sudo apt install -y python-rosdep python-pip build-essential
     set +e
@@ -124,7 +125,7 @@ install_build_tools() {
 }
 
 # Install EZ-RASSOR packages from source.
-install_ezrassor_packages() {
+install_packages() {
     require "catkin_make" "rosdep" "pip"
 
     # Create a temporary workspace.
@@ -187,40 +188,45 @@ install_ezrassor_packages() {
     source_setups_in_directory "$EZRASSOR_INSTALL_DIR" 
 }
 
-# The main entry point of this script.
+# THE SCRIPT BEGINS HERE.
 # Throw a message if the script quits early, and tell the script to quit after
 # any non-zero error message.
-trap 'throw_error "Something went horribly wrong!"' 0
+trap 'throw_error "Something went horribly wrong."' 0
 set -e
 
+# Set the OS version, ROS version, and necessary key server (assuming the user
+# is running a supported operating system).
 require "lsb_release"
 os_version="$(lsb_release -sc)"
 if [ "$os_version" = "xenial" ]; then
     ros_version="kinetic"
+    key_server="hkp://ha.pool.sks-keyservers.net:80"
 elif [ "$os_version" = "bionic" ]; then
     ros_version="melodic"
+    key_server="hkp://keyserver.ubuntu.com:80"
 else
-    throw_error "This script can only automatically install ROS for" \
-                "Ubuntu Xenial and Ubuntu Bionic. Your operating system" \
-                "is not supported. :( The ROS wiki may have instructions" \
-                "that will help you install ROS on your system."
+    throw_error "This script can only automatically install ROS for Ubuntu Xenial" \
+                "and Ubuntu Bionic. Your operating system is not supported. :(" \
+                "You may be able to find ROS installation instructions for your" \
+                "operating system on the ROS wiki."
 fi
 
+# Install the appropriate software based on the user's first argument to this script.
 case "$1" in
     "ros")
-        install_ros "$os_version" "$ros_version"
+        install_ros "$os_version" "$ros_version" "$key_server"
         ;;
-    "build-tools")
-        install_build_tools
+    "tools")
+        install_tools
         ;;
     "packages")
         shift
-        install_ezrassor_packages "$@"
+        install_packages "$@"
         ;;
     *)
         throw_help
         ;;
 esac
 
-# Allow the script to exit normally, without an error messsage.
+# If the script makes it this far, exit normally without an error messsage.
 trap ":" 0
