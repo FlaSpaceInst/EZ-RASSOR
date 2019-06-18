@@ -73,7 +73,7 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>file://media/dem/mars_129.dem</uri>
+              <uri>model://ezrassor_sim_gazebo/dem/mars_129.dem</uri>
               <size>150 150 50</size>
               <pos>0 0 10</pos>
             </heightmap>
