@@ -105,7 +105,7 @@ argument_in_list() {
 # Install ROS manually.
 install_ros_manually() {
     ros_version="$1"
-    require "wstool" "rosdep" "rosinstall" "rosinstall_generator" "cmake"
+    require "wstool" "rosdep" "rosinstall" "rosinstall_generator"
     
     # Create a temporary workspace.
     workspace_dir="${WORKSPACE_PARTIAL_DIR}_$(date +%s)"
@@ -124,6 +124,7 @@ install_ros_manually() {
     rosinstall_generator ros_comm $rosinstall_generator_flags > "$ROSINSTALL_FILE"
     wstool init -j8 "$WORKSPACE_SOURCE_RELATIVE_DIR" "$ROSINSTALL_FILE"
     rosdep install --from-paths "$WORKSPACE_SOURCE_RELATIVE_DIR" \
+                   --rosdistro "$ros_version" \
                    --ignore-src \
                    -y
     mkdir -p "$MANUAL_ROS_INSTALL_DIR"
