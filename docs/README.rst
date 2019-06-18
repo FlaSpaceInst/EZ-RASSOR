@@ -1,5 +1,5 @@
 EZ-RASSOR
-----
+---------
 The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a demonstration robot for visitors at the Kennedy Space Center. The EZ-RASSOR can:
 
 - Rove across light-to-moderate terrain
@@ -9,16 +9,24 @@ The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inex
 - Autonomously navigate around possible obstructions
 - Cooperate in a swarm of other EZ-RASSORs
 
-This repository contains all of the code for the EZ-RASSOR, its simulations, control applications, and its RC demonstration car called the EZRC.
+This repository contains all of the code for the EZ-RASSOR as well as supporting documentation.
+
+WIKI
+----
+Our `wiki`_ contains lots of information about our project! Check it out, or read our `blue paper`_.
+
+INSTALLATION
+------------
+To install, do a thing.
 
 CONTRIBUTIONS
-----
+-------------
 Take a look at the `contributing guidelines`_ if you'd like to help develop this project!
 
 Also be sure to review the `license`_.
 
 AUTHORS
-----
+-------
 - `Sean Rapp`_
 - `Ron Marrero`_
 - `Tiger Sachse`_
@@ -30,6 +38,8 @@ AUTHORS
 - `Cameron Taylor`_
 - `Lucas Gonzalez`_
 
+.. _`wiki`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/wiki
+.. _`blue paper`: BLUE_PAPER.pdf
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
 .. _`Sean Rapp`: https://github.com/shintoo
