@@ -36,11 +36,11 @@ require() {
     for requirement in "$@"; do
         set +e
         command -v "$requirement" > /dev/null 2>&1
-        set -e
         if [ $? -ne 0 ]; then
             printf "Required but not installed: $requirement\n"
             missing_requirement=true
         fi
+        set -e
     done
     if [ "$missing_requirement" = "true" ]; then
         throw_error "Please install all missing components before proceeding. Aborting..."
