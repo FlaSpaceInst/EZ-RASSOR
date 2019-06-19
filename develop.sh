@@ -108,6 +108,11 @@ purge_packages() {
     cd - > /dev/null 2>&1
 }
 
+# Install dependencies for all linked packages.
+resolve_packages() {
+    rosdep install --from-paths "$WORKSPACE_SOURCE_DIR" --ignore-src -y
+}
+
 # Build all packages.
 build_packages() {
     cd "$WORKSPACE_DIR"
@@ -170,6 +175,9 @@ case "$1" in
         shift
         purge_packages
         link_packages "$@"
+        ;;
+    "resolve")
+        resolve_packages
         ;;
     "build")
         build_packages
