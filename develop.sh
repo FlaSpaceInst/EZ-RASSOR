@@ -2,12 +2,46 @@
 # A collection of functions that aid development of this repository.
 # Written by Tiger Sachse.
 
+USER_SHELLS="bash zsh"
 PACKAGES_DIR="packages"
 EXTERNAL_DIR="external"
 WORKSPACE_DIR="$HOME/.workspace"
 WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
+WORKSPACE_BUILD_DIR="$WORKSPACE_DIR/build"
 CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
+
+# Source setup files within a given directory in the user's RC files.
+source_setups_in_directory() {
+    must_restart=false
+    partial_source_file="$1/setup"
+    for user_shell in $USER_SHELLS; do
+        shellrc_file="$HOME/.${user_shell}rc"
+        if [ -f "$shellrc_file" ]; then
+            source_file="$partial_source_file.$user_shell"
+            source_line=". \"$source_file\""
+
+            printf "Attempting to source setup script for %s: " "$user_shell"
+            if cat "$shellrc_file" | grep -Fq "$source_line"; then
+                printf "Previously sourced.\n"
+            else
+                printf "%s\n" \
+                       "" \
+                       "# Source a ROS setup file, if it exists." \
+                       "if [ -f \"$source_file\" ]; then" \
+                       "    $source_line" \
+                       "fi" >> "$shellrc_file"
+                printf "Successfully sourced.\n"
+                must_restart=true
+            fi
+        fi
+    done
+
+    if [ "$must_restart" = "true" ]; then
+        printf "\n\n******** %s ********\n" \
+               "Restart your terminal for changes to take effect."
+    fi
+}
 
 # Set up the development environment.
 setup_environment() {
@@ -16,13 +50,14 @@ setup_environment() {
     cd "$WORKSPACE_SOURCE_DIR"
     catkin_init_workspace
     cd - > /dev/null 2>&1
+    source_setups_in_directory "$WORKSPACE_BUILD_DIR"
 }
 
 # Create a new ROS package in source control.
 new_package() {
-    package="$1"
-    mkdir -p "$PACKAGES_DIR/$package"
-    cd "$PACKAGES_DIR/$package"
+    superpackage="$1"
+    mkdir -p "$PACKAGES_DIR/$superpackage"
+    cd "$PACKAGES_DIR/$superpackage"
 
     # Create a new catkin package with all the arguments
     # passed to this function (after the first argument).
