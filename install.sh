@@ -3,9 +3,9 @@
 # running Ubuntu Xenial and Ubuntu Bionic.
 # Written by Tiger Sachse.
 
-# A collection of necessary constants for this script.
 USER_SHELLS="bash zsh"
 SH_SETUP_FILE="setup.sh"
+README_FILE="docs/README.rst"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 ROS_INSTALL_PARTIAL_DIR="/opt/ros"
@@ -13,11 +13,22 @@ WORKSPACE_SOURCE_RELATIVE_DIR="src"
 EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
+USAGE_STRING="Usage: sh install.sh <software> [arguments...]\n"
 CATKIN_MAKE_ISOLATED_BIN="$WORKSPACE_SOURCE_RELATIVE_DIR/catkin/bin/catkin_make_isolated"
 
 # Throw a help message at the user.
 throw_help() {
-    printf "Usage: sh install.sh <software> [--flag [arguments...]]\n"
+    printf "$USAGE_STRING"
+    cat "$README_FILE" \
+        | grep '^``' -A 1 \
+        | sed 's/  //g' \
+        | sed 's/^``/#/g' \
+        | fold -s -w 75 \
+        | sed '/^#/! s/^/   /g' \
+        | sed '/``/ s/``/"/g' \
+        | sed '/^#/ s/"//g' \
+        | sed 's/**//g' \
+        | tr '#' '\n'
 }
 
 # Print an error message and exit this script.
@@ -223,8 +234,11 @@ case "$1" in
         shift
         install_packages "$@"
         ;;
-    *)
+    "help")
         throw_help
+        ;;
+    *)
+        printf "$USAGE_STRING"
         ;;
 esac
 
