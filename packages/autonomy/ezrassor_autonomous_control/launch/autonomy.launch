@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="id"
+       default=""
+       doc="Robot ID Number."
+  />
+
+  <arg name="target_x"
+       default="15"
+       doc="Target X Coordinate to dig."
+  />
+
+  <arg name="target_y"
+       default="15"
+       doc="Target y Coordinate to dig."
+  />
+
+  <arg name="wheel_instruction_topic"
+       default="wheel_instructions"
+       doc="Target y Coordinate to dig."
+  />  
+
+  <arg name="front_arm_instruction_topic"
+       default="front_arm_instructions"
+       doc="Target y Coordinate to dig."
+  />
+  
+  <arg name="back_arm_instruction_topic"
+       default="back_arm_instructions"
+       doc="Target y Coordinate to dig."
+  />
+
+  <arg name="front_drum_instruction_topic"
+       default="front_drum_instructions"
+       doc="Target y Coordinate to dig."
+  />
+
+  <arg name="back_drum_instruction_topic"
+       default="back_drum_instructions"
+       doc="Target y Coordinate to dig."
+  />
+    <!--  
+    <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>
+    -->
+    <node pkg="ezrassor_autonomous_control" name="autonomous_control" type="autonomous_control" output="screen">
+      <param name="target_x" value="$(arg target_x)"/>
+      <param name="target_y" value="$(arg target_y)"/>
+      <param name="movement_topic" value="$(arg wheel_instruction_topic)"/>
+      <param name="front_arm_topic" value="$(arg front_arm_instruction_topic)"/>
+      <param name="back_arm_topic" value="$(arg back_arm_instruction_topic)"/>
+      <param name="front_drum_topic" value="$(arg front_drum_instruction_topic)"/>
+      <param name="back_drum_topic" value="$(arg back_drum_instruction_topic)"/>
+      <param name="max_linear_velocity" value="1"/>
+      <param name="max_angular_velocity" value="1"/>
+      <param name="real_odometry" value="False"/>
+    </node>
+  
+
+</launch>

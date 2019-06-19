@@ -1,30 +1,23 @@
-#!/usr/bin/env python
 """Translate data from joy_node into something the EZ-RASSOR can understand.
 
 Written by Harrison Black.
 """
 import rospy
-from std_msgs.msg import Int8, Int32
+from std_msgs.msg import Float32, Int8
 from sensor_msgs.msg import Joy
-import time
+from geometry_msgs.msg import Twist
 
-NODE = "joy_translator"
-TOPIC = "joy"
+def callback(data, additional_arguments):
+    """Parse Joy data, publish Twist data."""
 
-# Global so topic initiated at start of node
-publisher = rospy.Publisher('/ezrassor/requests', Int32, queue_size = 10)
-tank_turn = False
-toggle_time = 0
-
-def callback(data):
-
-    global publisher
-    global tank_turn
-    global toggle_time
-    time_now = time.time()
-
+    pub_wheels = additional_arguments[0]
+    pub_front_arm = additional_arguments[1]
+    pub_back_arm = additional_arguments[2]
+    pub_front_drum = additional_arguments[3]
+    pub_back_drum = additional_arguments[4]
+    pub_auto_toggles = additional_arguments[5]
+    
     # Raw controller input data indexes
-
     # data.buttons[index]
     # 0 A : Back Drum Dump
     # 1 B : Front Drum Dump
@@ -32,7 +25,7 @@ def callback(data):
     # 3 Y : Front Drum Dig
     # 4 LB : Back Arm Up
     # 5 RB : Front Arm Up
-    # 6 back : NA
+    # 6 back : Tank Turn
     # 7 start : Supervisor Mode
     # 8 power : NA
     # 9 Button stick left : NA
@@ -48,103 +41,109 @@ def callback(data):
     # 6 cross key left/right : Function 2/3
     # 7 cross key up/down : Function 1/4
 
-    data_out = 0b000000000000
-    # The toggle can only be set once every 0.3 seconds. With out this the toggle will get spammed by Joy. 
-    if data.buttons[6] and (time_now - toggle_time) > 0.3:
-        tank_turn = not tank_turn
-        print "Tank turn: %r" % tank_turn
-        toggle_time = time.time()
-
-    data_out <<= 4
-
-    # Wheels (Tank Turn)
-
-    # LWF LWB RWF RWB
-    #  0   0   0   0
-    if tank_turn:
-        if data.axes[1] > 0.5:
-            data_out |= 0b1000
-        
-        elif data.axes[1] < -0.5:
-            data_out |= 0b0100
-
-        if data.axes[4] > 0.5:
-            data_out |= 0b0010
-        
-        elif data.axes[4] < -0.5:
-            data_out |= 0b0001
-
-    # Wheels (Car Turn)
-
-    # F B L R
-    # 0 0 0 0
-    else:
-
-        if data.axes[1] > 0.5:
-            data_out |= 0b1010
-            
-        elif data.axes[1] < -0.5:
-            data_out |= 0b0101
-
-        elif data.axes[0] > 0.5:
-            data_out |= 0b0110
-            
-        elif data.axes[0] < -0.5:
-            data_out |= 0b1001
-
-    # Arms
-
-    # FAU FAD BAU BAD
-    #  0   0   0   0
-
-    data_out <<= 4
-
-    if data.buttons[5] > 0.5:
-        data_out |= 0b1000
-
-    if data.axes[5] < -0.5:
-        data_out |= 0b0100
-
-    if data.buttons[4] > 0.5:
-        data_out |= 0b0010
-
-    if data.axes[2] < -0.5:
-        data_out |= 0b0001
-
-
-    # Drums
-
-    # FDG FDP BDG BDP
-    #  0   0   0   0
-
-    data_out <<= 4
-
-    if data.buttons[3] > 0.5:
-        data_out |= 0b1000
-
-    if data.buttons[1] > 0.5:
-        data_out |= 0b0100
-
-    if data.buttons[2] > 0.5:
-        data_out |= 0b0010
-
-    if data.buttons[0] > 0.5:
-        data_out |= 0b0001
-
-    publisher.publish(data_out)
-    # rospy.loginfo("Controller: {0:012b}".format(data_out))
-
+    # AI Kill Bit
+    if data.buttons[10] > 0:
+        pub_auto_toggles.publish(100000)
+        return
     
+    twist = Twist()
+    twist.linear.x = ((data.axes[4] + data.axes[1]) / 2)
+    twist.angular.z = ((data.axes[4] - data.axes[1]) / 2)
+    trigger_threshold = 0.0
+
+    # Use "-(1-data.axes[5])/2" not -1 for variable speed
+    # Front Arm
+    if data.buttons[5] > (1 - data.axes[5]) / 2:
+    	command_front_arm = 1
+    elif data.buttons[5] < (1 - data.axes[5]) / 2 and trigger_threshold > data.axes[5]:
+    	command_front_arm = -1
+    else:
+    	command_front_arm = 0
+
+    # Back Arm
+    if data.buttons[4] > (1 - data.axes[2]) / 2:
+    	command_back_arm = 1
+    elif data.buttons[4] < (1 - data.axes[2]) / 2 and trigger_threshold > data.axes[2]:
+    	command_back_arm = -1
+    else:
+    	command_back_arm = 0
+
+    # Front Drum
+    if data.buttons[3] > data.buttons[1]:
+        command_front_drum = 1
+    elif data.buttons[3] < data.buttons[1]:
+    	command_front_drum = -1
+    else:
+    	command_front_drum = 0
+
+    # Back Drum
+    if data.buttons[2] > data.buttons[0]:
+        command_back_drum = 1
+    elif data.buttons[2] < data.buttons[0]:
+    	command_back_drum = -1
+    else:
+    	command_back_drum = 0
+
+    pub_wheels.publish(twist)
+    pub_front_arm.publish(command_front_arm)
+    pub_back_arm.publish(command_back_arm)
+    pub_front_drum.publish(command_front_drum)
+    pub_back_drum.publish(command_back_drum)
+    
+
 def start_node():
     try:
-        print "Controller node started"
-        global publisher
-        rospy.init_node(NODE, anonymous = True)
-        rate = rospy.Rate(600) # number of hz
-        
-        # Topic subscriber for reading raw controller input 
-        rospy.Subscriber(TOPIC, Joy, callback)
+        TOPIC = "joy"
+        NODE = "joy_translator"
+        rospy.init_node(NODE)
+        publish_topic_wheels = rospy.get_param(rospy.get_name()
+                                               + "/wheel_instructions_topic")
+        publish_topic_front_arm = rospy.get_param(rospy.get_name()
+                                                  + "/front_arm_instructions_topic")
+        publish_topic_back_arm = rospy.get_param(rospy.get_name()
+                                                 + "/back_arm_instructions_topic")
+        publish_topic_front_drum = rospy.get_param(rospy.get_name()
+                                                   + "/front_drum_instructions_topic")
+        publish_topic_back_drum = rospy.get_param(rospy.get_name()
+                                                  + "/back_drum_instructions_topic")
+        publish_topic_auto_toggles = "autonomous_toggles"
 
+        # Publishers
+        # Wheel twist
+        pub_wheels = rospy.Publisher(publish_topic_wheels,
+                                     Twist, 
+                                     queue_size=10)
+        # Arm Front
+        pub_front_arm = rospy.Publisher(publish_topic_front_arm, 
+                                        Float32, 
+                                        queue_size=10)
+        # Arm Back
+        pub_back_arm = rospy.Publisher(publish_topic_back_arm, 
+                                       Float32, 
+                                       queue_size=10)
+        # Drum Front
+        pub_front_drum = rospy.Publisher(publish_topic_front_drum, 
+                                         Float32, 
+                                         queue_size=10)
+        # Drum Back
+        pub_back_drum = rospy.Publisher(publish_topic_back_drum,
+                                        Float32, 
+                                        queue_size=10)
+        # Autonomous Toggles
+        pub_auto_toggles = rospy.Publisher(publish_topic_auto_toggles,
+                                           Int8,
+                                           queue_size=10)
+        print "Controller node started"
+        rate = rospy.Rate(60)
+        rospy.Subscriber(TOPIC,
+                         Joy,
+                         callback,
+                         callback_args=(pub_wheels,
+                                        pub_front_arm,
+                                        pub_back_arm,
+                                        pub_front_drum,
+                                        pub_back_drum,
+                                        pub_auto_toggles))
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

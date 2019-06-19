@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+"""Call the topic_switch node in the ezrassor_topic_switch module.
+
+Written by Tiger Sachse.
+"""
+import rospy
+import ezrassor_topic_switch
+
+
+# Node constants.
+QUEUE_SIZE = 10
+DEFAULT_NODE_NAME = "topic_switch"
+OVERRIDE_TOPIC = "secondary_override_toggle"
+
+
+# Main entry point to this node.
+ezrassor_topic_switch.topic_switch.start_node(
+    DEFAULT_NODE_NAME,
+    OVERRIDE_TOPIC,
+    QUEUE_SIZE,
+)
