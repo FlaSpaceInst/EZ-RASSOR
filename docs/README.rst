@@ -22,7 +22,7 @@ Next, let the ``install.sh`` script do the heavy lifting. This script's general 
 ::
   sh install.sh <software> [arguments...]
   
-It is able to install all of the following:
+All of the following are valid ``<software>`` options:
 
 ``ros``
   Install the ROS suite of software. This software is required to operate the EZ-RASSOR (and must be installed first). This script will automatically install ROS for Ubuntu Xenial and Ubuntu Bionic. For all other systems, check out these `wiki pages`_ to install ROS manually. After installing ROS with this script, **you must restart your terminal before proceeding**.
@@ -30,6 +30,8 @@ It is able to install all of the following:
   Install some ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, check out this `wiki section`_ to install the build tools manually.
 ``packages [-e, --except <packages...> | -o, --only <packages...>]``
   Install core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
+``help``
+  Display a small help menu.
 
 Here are some example installations:
 ::

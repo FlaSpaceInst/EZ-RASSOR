@@ -2,12 +2,12 @@
 # A collection of functions to make development of this repository easier.
 # Written by Tiger Sachse.
 
-USAGE_STRING="Usage: sh develop.sh <mode> [arguments]"
-CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
-WORKSPACE_DIR="$HOME/.workspace"
-SOURCE_DIR="$WORKSPACE_DIR/src"
 PACKAGES_DIR="packages"
 EXTERNAL_DIR="external"
+SOURCE_DIR="$WORKSPACE_DIR/src"
+WORKSPACE_DIR="$HOME/.workspace"
+CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
+USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
 
 # Set up the development environment.
 setup_environment() {
@@ -102,7 +102,7 @@ argument_in_list() {
 # Purge packages in the ROS workspace.
 purge_packages() {
     cd "$SOURCE_DIR"
-    echo "Purging all packages in /src..."
+    printf "Purging all packages in /src...\n"
     find . ! -name "CMakeLists.txt" -type l -exec rm -f {} +
     cd - > /dev/null 2>&1
 }
@@ -138,7 +138,7 @@ test_packages() {
 
 # Show a help menu. This menu is parsed from pre-existing documentation.
 show_help_menu() {
-    echo "$USAGE_STRING"
+    printf "$USAGE_STRING"
     cat "$CONTRIBUTING_FILE" \
         | grep '^``' -A 1 \
         | sed 's/  //g' \
@@ -187,6 +187,6 @@ case $1 in
         show_help_menu
         ;;
     *)
-        echo "$USAGE_STRING"
+        printf "$USAGE_STRING"
         ;;
 esac
