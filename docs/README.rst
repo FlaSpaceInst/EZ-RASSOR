@@ -31,7 +31,7 @@ All of the following are valid ``<software>`` options:
 ``packages [-e, --except <packages...> | -o, --only <packages...>]``
   Install core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
 ``help``
-  Display a small help menu.
+  Display a help menu.
 
 Here are some example installations:
 ::
