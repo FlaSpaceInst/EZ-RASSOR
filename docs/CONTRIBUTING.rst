@@ -51,8 +51,9 @@ Here are some example commands to get started.
   # Create a new package in the superpackage 'autonomy' called 'ezrassor_swarm'.
   sh develop.sh new autonomy ezrassor_swarm
   
-  # Link only your new package and 'ezrassor_launcher'.
+  # Link only your new package and 'ezrassor_launcher', plus install dependencies.
   sh develop.sh link --only ezrassor_swarm ezrassor_launcher
+  sh develop.sh resolve
 
   # Build your linked packages.
   sh develop.sh build
@@ -60,16 +61,9 @@ Here are some example commands to get started.
   # Something went wrong... relink all packages except 'ezrassor_swarm'.
   sh develop.sh relink --except ezrassor_swarm
 
-  # Looks like you figured it out. Relink everything.
-  sh develop.sh relink
-
   # Build and install your linked packages.
   sh develop.sh build
   sh develop.sh install
-  
-  # Link your 'ezrassor_swarm' package and automatically install its dependencies.
-  sh develop.sh link --only ezrassor_swarm
-  sh develop.sh resolve
 
 .. _`MIT license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
