@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Launches the autonomous control and joy nodes with configurable topic switches allowing for switching between control modes -->
+
 <launch>
 
   <arg name="id"
@@ -8,45 +10,61 @@
 
   <group ns="ezrassor$(arg id)">
 
-    <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <include file="$(find ezrassor_launcher)/launch/joy_launcher.launch"/>
+
+    <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+      <arg name="node_name" value="wheel_topic"/>	    
       <arg name="primary_topic" value="manual_wheel_instructions"/>
       <arg name="secondary_topic" value="autonomous_wheel_instructions"/>
       <arg name="output_topic" value="wheel_instructions"/>
-      <arg name="topic_type" value="Twist"/>
+      <arg name="topic_type_module" value="geometry_msgs.msg"/>
+      <arg name="topic_type_class" value="Twist"/>
     </include>
 
-    <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+      <arg name="node_name" value="front_arm_topic"/>    
       <arg name="primary_topic" value="front_manual_arm_instructions"/>
       <arg name="secondary_topic" value="front_autonomous_arm_instructions"/>
       <arg name="output_topic" value="front_arm_instructions"/>
-      <arg name="topic_type" value="Float32"/>
+      <arg name="topic_type_module" value="std_msgs.msg"/>
+      <arg name="topic_type_class" value="Float32"/>
     </include>
 
-    <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+      <arg name="node_name" value="back_arm_topic"/>
       <arg name="primary_topic" value="back_manual_arm_instructions"/>
       <arg name="secondary_topic" value="back_autonomous_arm_instructions"/>
       <arg name="output_topic" value="back_arm_instructions"/>
-      <arg name="topic_type" value="Float32"/>
+      <arg name="topic_type_module" value="std_msgs.msg"/>
+      <arg name="topic_type_class" value="Float32"/>
     </include>
 
-    <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+      <arg name="node_name" value="front_drum_topic"/>
       <arg name="primary_topic" value="front_manual_drum_instructions"/>
       <arg name="secondary_topic" value="front_autonomous_drum_instructions"/>
       <arg name="output_topic" value="front_drum_instructions"/>
-      <arg name="topic_type" value="Float32"/>
+      <arg name="topic_type_module" value="std_msgs.msg"/>
+      <arg name="topic_type_class" value="Float32"/>
     </include>
 
-    <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+    <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+      <arg name="node_name" value="back_drum_topic"/>
       <arg name="primary_topic" value="back_manual_drum_instructions"/>
       <arg name="secondary_topic" value="back_autonomous_drum_instructions"/>
       <arg name="output_topic" value="back_drum_instructions"/>
-      <arg name="topic_type" value="Float32"/>
+      <arg name="topic_type_module" value="std_msgs.msg"/>
+      <arg name="topic_type_class" value="Float32"/>
     </include>
 
     <node pkg="ezrassor_autonomous_control" name="autonomous_control" type="autonomous_control">
+      <param name="target_x" value="10"/>
+      <param name="target_y" value="10"/>
       <param name="movement_topic" value="autonomous_wheel_instructions"/>
-      <param name="arms_topic" value="autonomous_arm_instructions"/>
-      <param name="drums_topic" value="autonomous_drum_instructions"/>
+      <param name="front_arm_topic" value="autonomous_front_arm_instructions"/>
+      <param name="back_arm_topic" value="autonomous_back_arm_instructions"/>
+      <param name="front_drum_topic" value="autonomous_front_drum_instructions"/>
+      <param name="back_drum_topic" value="autonomous_back_drum_instructions"/>
       <param name="max_linear_velocity" value="1"/>
       <param name="max_angular_velocity" value="1"/>
       <param name="real_odometry" value="True"/>

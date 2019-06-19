@@ -5,42 +5,42 @@
 # Written by Tiger Sachse.
 
 # Ensure the user is root!
-if [ ! "$(id -u)" -eq "0" ]; then
+if [ ! $(id -u) -eq 0 ]; then
     printf "This script must be run as root!\n"
     exit 1
 fi
 
 # Default network settings for this script.
-SSID="EZRC"
-INTERFACE="wlan1"
-PASSWORD="ezrassor"
+ssid="EZRC"
+interface="wlan1"
+password="ezrassor"
 
 # If the user has passed in arguments to this script, change the default network
 # settings appropriately. This loop is a little wonky because I'm trying to avoid
 # using Bash/KSH and remain completely POSIX compliant.
-SET_SSID=false
-SET_PASSWORD=false
-SET_INTERFACE=false
-for ARGUMENT in "$@"; do
-    if [ "$SET_SSID" = "true" ]; then
-        SSID="$ARGUMENT"
-        SET_SSID=false
-    elif [ "$SET_PASSWORD" = "true" ]; then
-        PASSWORD="$ARGUMENT"
-        SET_PASSWORD=false
-    elif [ "$SET_INTERFACE" = "true" ]; then
-        INTERFACE="$ARGUMENT"
-        SET_INTERFACE=false
+set_ssid=false
+set_password=false
+set_interface=false
+for argument in "$@"; do
+    if [ "$set_ssid" = "true" ]; then
+        ssid="$argument"
+        set_ssid=false
+    elif [ "$set_password" = "true" ]; then
+        password="$argument"
+        set_password=false
+    elif [ "$set_interface" = "true" ]; then
+        interface="$argument"
+        set_interface=false
     else
-        case $ARGUMENT in
-            --interface)
-                SET_INTERFACE=true
+        case $argument in
+            "--interface")
+                set_interface=true
                 ;;
-            --ssid)
-                SET_SSID=true
+            "--ssid")
+                set_ssid=true
                 ;;
-            --password)
-                SET_PASSWORD=true
+            "--password")
+                set_password=true
                 ;;
         esac
     fi
@@ -52,7 +52,7 @@ IPTABLES_FILE="/etc/iptables.ipv4.nat"
 # DHCPCD configuration.
 DHCPCD_FILE="/etc/dhcpcd.conf"
 DHCPCD_CONTENTS="\
-interface $INTERFACE
+interface $interface
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
 "
@@ -60,7 +60,7 @@ interface $INTERFACE
 # DNSMASQ configuration.
 DNSMASQ_FILE="/etc/dnsmasq.conf"
 DNSMASQ_CONTENTS="\
-interface=$INTERFACE
+interface=$interface
     dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 "
 
@@ -69,7 +69,7 @@ DEFAULT_HOSTAPD_FILE="/etc/default/hostapd"
 DEFAULT_HOSTAPD_CONTENTS='DAEMON_CONF="/etc/hostapd/hostapd.conf"'
 HOSTAPD_FILE="/etc/hostapd/hostapd.conf"
 HOSTAPD_CONTENTS="\
-ssid=$SSID
+ssid=$ssid
 hw_mode=g
 channel=7
 wmm_enabled=0
@@ -77,7 +77,7 @@ macaddr_acl=0
 auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
-wpa_passphrase=$PASSWORD
+wpa_passphrase=$password
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
