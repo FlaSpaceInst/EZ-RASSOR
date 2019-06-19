@@ -3,7 +3,6 @@
 # running Ubuntu Xenial and Ubuntu Bionic.
 # Written by Tiger Sachse.
 
-# A collection of necessary constants for this script.
 USER_SHELLS="bash zsh"
 SH_SETUP_FILE="setup.sh"
 README_FILE="docs/README.rst"
