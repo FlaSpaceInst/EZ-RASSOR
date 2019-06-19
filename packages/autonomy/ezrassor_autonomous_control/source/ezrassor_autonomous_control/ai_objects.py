@@ -58,7 +58,10 @@ class WorldState():
         try:
             index = data.name.index(namespace)
         except Exception:
-            pass
+            print("Failed setting index to 1")
+            index = 1
+            
+
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
         
