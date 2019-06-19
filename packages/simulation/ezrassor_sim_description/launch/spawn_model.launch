@@ -16,7 +16,7 @@
 
     <!--group ns="ezrassor$(arg id)"-->
     <!-- Spawn Robot -->
-    <param name="robot_description" command="$(find xacro)/xacro.py '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
+    <param name="robot_description" command="xacro '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
     <node name="ezrassor_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
         args="-urdf -param robot_description -model ezrassor$(arg id)
         -x $(arg x) -y $(arg y) -z $(arg z)

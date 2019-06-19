@@ -31,7 +31,7 @@ class TestTopicSwitch(unittest.TestCase):
         super(TestTopicSwitch, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
         
-        # Read in all necessary ros parameters.
+        # Read in all necessary ROS parameters.
         primary_topic = rospy.get_param(
             rospy.get_name() + "/primary_topic",
         )

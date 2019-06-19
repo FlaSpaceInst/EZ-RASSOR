@@ -26,11 +26,11 @@ def auto_drive_location(world_state, ros_util):
     
     # Main loop until location is reached
     while at_target(world_state, ros_util):
+        
         uf.self_check(world_state, ros_util)
 
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
-
         angle_difference = nf.adjust_angle(world_state.heading, new_heading)
         if angle_difference < 0:
             direction = 'right'

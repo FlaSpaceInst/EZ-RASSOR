@@ -4,14 +4,24 @@ This project is free and open-source under the `MIT license`_. Anyone can fork t
 
 DEVELOPMENT INSTRUCTIONS
 ----
-This repository contains a script, ``develop.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
+Before you begin developing, you must install ROS and the ROS build tools. If you are developing on Ubuntu Xenial or Ubuntu Bionic, you can install these software packages easily with the ``install.sh`` script. You also probably want to install this project's submodules (currently only Viso2) permanently. Execute these commands to get started:
 ::
-  sh develop.sh <mode> [arguments]
+  sh install.sh ros
+  sh install.sh tools
+  ** RESTART TERMINAL **
+  sh install.sh packages --only viso2_ros libviso2
+  ** RESTART TERMINAL **
+  
+If you need more installation information or are using a different operating system, please see the `README`_.
+
+The next tool you'll want to get familiar with is the ``develop.sh`` script, which helps developers improve this software with ease. It's general syntax looks like this:
+::
+  sh develop.sh <mode> [arguments...]
   
 The modes supported by the script are listed below:
  
 ``setup``
-  Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default.
+  Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default. This mode also sources the new workspace's ``build`` directory in your shell's configuration files.
 ``new <superpackage> <package> [dependencies...]``
   Create a new ROS package in the ``packages`` folder, under the appropriate superpackage. If the superpackage doesn't exist it is created. All arguments after ``package`` are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run ``setup`` ensure that you do that before trying to make a new package, otherwise you won't have a workspace to develop in!
 ``link [-e, --except <packages...> | -o, --only <packages...>]``
@@ -20,15 +30,19 @@ The modes supported by the script are listed below:
   Remove all symlinked packages from ``src``.
 ``relink [-e, --except <packages...> | -o, --only <packages...>]``
   Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-e`` or ``--except`` flag. Relink specific packages with the ``-o`` or ``--only`` flag.
+``resolve``
+  Install all required dependencies for currently linked packages.
 ``build``
   Call ``catkin_make`` in your workspace.
 ``install``
   Install all built packages into the install target in your workspace (via ``catkin_make install``).
 ``kill``
   Kill all running ROS nodes and ``roscore``.
+``test``
+  Run integration tests for all linked packages.
+``help``
+  Display a help menu.
 
-EXAMPLES
-----
 Here are some example commands to get started.
 ::
   # Set up a new Catkin workspace.
@@ -37,8 +51,9 @@ Here are some example commands to get started.
   # Create a new package in the superpackage 'autonomy' called 'ezrassor_swarm'.
   sh develop.sh new autonomy ezrassor_swarm
   
-  # Link only your new package and 'ezrassor_launcher'.
+  # Link only your new package and 'ezrassor_launcher', plus install dependencies.
   sh develop.sh link --only ezrassor_swarm ezrassor_launcher
+  sh develop.sh resolve
 
   # Build your linked packages.
   sh develop.sh build
@@ -46,13 +61,10 @@ Here are some example commands to get started.
   # Something went wrong... relink all packages except 'ezrassor_swarm'.
   sh develop.sh relink --except ezrassor_swarm
 
-  # Looks like you figured it out. Relink everything.
-  sh develop.sh relink
-
   # Build and install your linked packages.
   sh develop.sh build
   sh develop.sh install
 
-  
 .. _`MIT license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
+.. _`README`: README.rst#INSTALLATION
