@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  
+  <!-- Launch the simulation with manual controls. 
+       Written by Ron Marrero and Tiger Sachse. -->
+
+  <arg name="world"
+       default="base" /> 
+
+  <arg name="gui"
+       default="true" />
+
+  <arg name="verbose"
+       default="false" />
+
+  <include file="$(find ezrassor_sim_gazebo)/launch/sim_gazebo.launch">
+    <arg name="world" value="$(arg world)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="verbose" value="$(arg verbose)" />
+  </include>
+
+  <arg name="paused"
+       default="false"
+       doc="Start the simulation paused."/>
+
+  <include file="$(find ezrassor_controller_server)/launch/configurable_controller_server.launch">
+    <arg name="port" value="8080"/>
+    <arg name="wheel_instructions_topic" value="wheel_instructions"/>
+    <arg name="front_arm_instructions_topic" value="front_arm_instructions"/>
+    <arg name="back_arm_instructions_topic" value="back_arm_instructions"/>
+    <arg name="front_drum_instructions_topic" value="front_drum_instructions"/>
+    <arg name="back_drum_instructions_topic" value="back_drum_instructions"/>
+  </include>
+
+  <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
+    <arg name="x" value="4"/>
+    <arg name="y" value="4"/>
+    <arg name="id" value="1"/>
+  </include>
+
+  <include file="$(find ezrassor_sim_control)/launch/sim_control.launch"/>
+
+</launch>
