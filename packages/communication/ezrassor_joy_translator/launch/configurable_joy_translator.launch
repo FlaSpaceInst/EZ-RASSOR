@@ -7,9 +7,6 @@
   <arg name="back_arm_instructions_topic" doc="The topic for back arm instructions."/>
   <arg name="front_drum_instructions_topic" doc="The topic for front drum instructions."/>
   <arg name="back_drum_instructions_topic" doc="The topic for back drum instructions."/>
-  <arg name="max_wheel_speed" doc="The robot's wheels' max speed."/>
-  <arg name="max_arm_speed" doc="The robot's arms' max speed."/>
-  <arg name="max_drum_speed" doc="The robot's drums' max speed."/>
   <arg name="joystick_device"
        default="default"
        doc="The joystick device that Joy should listen to."/>
@@ -33,8 +30,5 @@
     <param name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
     <param name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
     <param name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
-    <param name="max_wheel_speed" value="$(arg max_wheel_speed)"/>
-    <param name="max_arm_speed" value="$(arg max_arm_speed)"/>
-    <param name="max_drum_speed" value="$(arg max_drum_speed)"/>
   </node>
 </launch>
