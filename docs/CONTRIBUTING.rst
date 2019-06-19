@@ -31,7 +31,7 @@ The modes supported by the script are listed below:
 ``relink [-e, --except <packages...> | -o, --only <packages...>]``
   Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-e`` or ``--except`` flag. Relink specific packages with the ``-o`` or ``--only`` flag.
 ``resolve``
-  Install all required dependencies of currently linked packages.
+  Install all required dependencies for currently linked packages.
 ``build``
   Call ``catkin_make`` in your workspace.
 ``install``
