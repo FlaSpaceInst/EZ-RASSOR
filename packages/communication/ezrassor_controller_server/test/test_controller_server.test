@@ -6,7 +6,7 @@
        default="1"
        doc="Delay in seconds after initialization of test class."/>
   <arg name="communication_delay"
-       default="0.1"
+       default=".1"
        doc="Delay in seconds before checking a topic."/>
 
   <!-- Launch the integration test node. -->
