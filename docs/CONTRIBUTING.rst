@@ -21,7 +21,7 @@ The next tool you'll want to get familiar with is the ``develop.sh`` script, whi
 The modes supported by the script are listed below:
  
 ``setup``
-  Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default.
+  Set up a Catkin workspace in your home directory to develop and compile ROS nodes. This workspace is named ``.workspace`` by default. This mode also sources the new workspace's ``build`` directory in your shell's configuration files.
 ``new <superpackage> <package> [dependencies...]``
   Create a new ROS package in the ``packages`` folder, under the appropriate superpackage. If the superpackage doesn't exist it is created. All arguments after ``package`` are passed to ``catkin_create_pkg`` (these arguments are usually dependencies of the package). The newly created package is then symlinked into your workspace's ``src`` folder. If you've never run ``setup`` ensure that you do that before trying to make a new package, otherwise you won't have a workspace to develop in!
 ``link [-e, --except <packages...> | -o, --only <packages...>]``
