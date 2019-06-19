@@ -23,7 +23,14 @@
        default="false"
        doc="Start the simulation paused."/>
 
-  <include file="$(find ezrassor_launcher)/launch/joy_launcher.launch"/>
+  <include file="$(find ezrassor_controller_server)/launch/configurable_controller_server.launch">
+    <arg name="port" value="8080"/>
+    <arg name="wheel_instructions_topic" value="wheel_instructions"/>
+    <arg name="front_arm_instructions_topic" value="front_arm_instructions"/>
+    <arg name="back_arm_instructions_topic" value="back_arm_instructions"/>
+    <arg name="front_drum_instructions_topic" value="front_drum_instructions"/>
+    <arg name="back_drum_instructions_topic" value="back_drum_instructions"/>
+  </include>
 
   <include file="$(find ezrassor_sim_description)/launch/spawn_model.launch">
     <arg name="x" value="4"/>
