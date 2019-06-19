@@ -4,9 +4,19 @@ This project is free and open-source under the `MIT license`_. Anyone can fork t
 
 DEVELOPMENT INSTRUCTIONS
 ----
-This repository contains a script, ``develop.sh``, that helps developers improve this software with ease. It's general syntax looks like this:
+Before you begin developing, you must install ROS and the ROS build tools. If you are developing on Ubuntu Xenial or Ubuntu Bionic, you can install these software packages easily with the ``install.sh`` script. You also probably want to install this project's submodules (currently only Viso2) permanently. Execute these commands to get started:
 ::
-  sh develop.sh <mode> [arguments]
+  sh install.sh ros
+  sh install.sh tools
+  ** RESTART TERMINAL **
+  sh install.sh packages --only viso2_ros libviso2
+  ** RESTART TERMINAL **
+  
+If you need more installation information or are using a different operating system, please see the `README`_.
+
+The next tool you'll want to get familiar with is the ``develop.sh`` script, which helps developers improve this software with ease. It's general syntax looks like this:
+::
+  sh develop.sh <mode> [arguments...]
   
 The modes supported by the script are listed below:
  
@@ -20,6 +30,8 @@ The modes supported by the script are listed below:
   Remove all symlinked packages from ``src``.
 ``relink [-e, --except <packages...> | -o, --only <packages...>]``
   Purge all symlinked packages from ``src``, and then link all packages in ``packages``. Ignore specific packages with the ``-e`` or ``--except`` flag. Relink specific packages with the ``-o`` or ``--only`` flag.
+``resolve``
+  Install all required dependencies of currently linked packages.
 ``build``
   Call ``catkin_make`` in your workspace.
 ``install``
@@ -31,8 +43,6 @@ The modes supported by the script are listed below:
 ``help``
   Display a help menu.
 
-EXAMPLES
-----
 Here are some example commands to get started.
 ::
   # Set up a new Catkin workspace.
@@ -56,7 +66,11 @@ Here are some example commands to get started.
   # Build and install your linked packages.
   sh develop.sh build
   sh develop.sh install
-
   
+  # Link your 'ezrassor_swarm' package and automatically install its dependencies.
+  sh develop.sh link --only ezrassor_swarm
+  sh develop.sh resolve
+
 .. _`MIT license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
+.. _`README`: README.rst#INSTALLATION
