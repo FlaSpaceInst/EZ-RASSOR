@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+"""Test that a single topic switch works as expected.
+
+Written by Tiger Sachse.
+"""
+import time
+import rospy
+import random
+import rostest
+import unittest
+import threading
+import std_msgs.msg
+
+
+# Some top-level constants for this test suite.
+QUEUE_SIZE = 10
+SMALL_RANGE_TARGET = 5
+LARGE_RANGE_TARGET = 10
+STATE_SWITCH_ODDS = 0.5
+MINIMUM_RANDOM_INTEGER = 0
+MAXIMUM_RANDOM_INTEGER = 1337
+PACKAGE_NAME = "ezrassor_topic_switch"
+DEFAULT_TEST_NAME = "test_topic_switch"
+OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
+
+
+class TestTopicSwitch(unittest.TestCase):
+    """A suite of tests that confirm the functionality of a single topic switch."""
+    def __init__(self, *arguments, **keyword_arguments):
+        """Initialize this test suite with several publishers and other variables."""
+        super(TestTopicSwitch, self).__init__(*arguments, **keyword_arguments)
+        rospy.init_node(DEFAULT_TEST_NAME)
+        
+        # Read in all necessary ROS parameters.
+        primary_topic = rospy.get_param(
+            rospy.get_name() + "/primary_topic",
+        )
+        secondary_topic = rospy.get_param(
+            rospy.get_name() + "/secondary_topic",
+        )
+        output_topic = rospy.get_param(
+            rospy.get_name() + "/output_topic",
+        )
+        startup_delay = float(
+            rospy.get_param(rospy.get_name() + "/startup_delay"),
+        )
+        self.__communication_delay = float(
+            rospy.get_param(rospy.get_name() + "/communication_delay"),
+        )
+
+        # Create publishers and a subscriber that hook into a topic switch.
+        self.__primary_publisher = rospy.Publisher(
+            primary_topic,
+            std_msgs.msg.Int32,
+            queue_size=QUEUE_SIZE,
+        )
+        self.__secondary_publisher = rospy.Publisher(
+            secondary_topic,
+            std_msgs.msg.Int32,
+            queue_size=QUEUE_SIZE,
+        )
+        self.__toggle_publisher = rospy.Publisher(
+            OVERRIDE_TOGGLE_TOPIC,
+            std_msgs.msg.Bool,
+            queue_size=QUEUE_SIZE,
+        )
+        rospy.Subscriber(
+            output_topic,
+            std_msgs.msg.Int32,
+            callback=self.__collect_output_data,
+        )
+
+        # Create a lock that protects subscribed data from multithreading messes.
+        self.__output_data_lock = threading.Lock()
+        self.__has_new_output_data = False
+        self.__output_data = None
+
+        # Sleep for a bit to give ROS and all other nodes time to start up.
+        time.sleep(startup_delay)
+
+    def __collect_output_data(self, data):
+        """Collect data from a topic and save it within this class."""
+        self.__output_data_lock.acquire()
+        self.__has_new_output_data = True
+        self.__output_data = data.data
+        self.__output_data_lock.release()
+
+    def __observe_output_data(self):
+        """Get new data saved within this class."""
+        self.__output_data_lock.acquire()
+        output_data = None
+        if self.__has_new_output_data:
+            self.__has_new_output_data = False
+            output_data = self.__output_data
+        self.__output_data_lock.release()
+
+        return output_data
+
+    def __publish_and_sleep(self, publisher, data):
+        """Publish some data and sleep for a moment."""
+        publisher.publish(data)
+        time.sleep(self.__communication_delay)
+
+    def __test_pipeline(self, publisher, run_range, expect_success=True):
+        """Confirm that data properly makes it through a ROS pipeline."""
+        for run in run_range:
+            random_integer = random.randint(
+                MINIMUM_RANDOM_INTEGER,
+                MAXIMUM_RANDOM_INTEGER,
+            )
+            self.__publish_and_sleep(publisher, random_integer)
+            if expect_success:
+                self.assertEqual(self.__observe_output_data(), random_integer)
+            else:
+                self.assertEqual(self.__observe_output_data(), None)
+
+    def test_primary_to_output(self):
+        """Confirm that data passes through the primary topic to the output topic."""
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+        self.__test_pipeline(
+            self.__primary_publisher,
+            range(1, LARGE_RANGE_TARGET),
+        )
+
+    def test_secondary_to_output(self):
+        """Confirm that data passes through the secondary topic to the output topic."""
+        self.__publish_and_sleep(self.__toggle_publisher, True)
+        self.__test_pipeline(
+            self.__secondary_publisher,
+            range(1, LARGE_RANGE_TARGET),
+        )
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+
+    def test_single_switch(self):
+        """Confirm that the switching behavior of the switch works properly."""
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+        self.__test_pipeline(
+            self.__primary_publisher,
+            range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
+        )
+        self.__publish_and_sleep(self.__toggle_publisher, True)
+        self.__test_pipeline(
+            self.__secondary_publisher,
+            range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
+        )
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+
+    def test_blocked_channel(self):
+        """Confirm that a switched channel is properly blocked."""
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+        self.__test_pipeline(
+            self.__primary_publisher,
+            range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
+        )
+        self.__publish_and_sleep(self.__toggle_publisher, True)
+        self.__test_pipeline(
+            self.__secondary_publisher,
+            range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
+        )
+        self.__test_pipeline(
+            self.__primary_publisher,
+            range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
+            expect_success=False
+        )
+        self.__publish_and_sleep(self.__toggle_publisher, False)
+
+
+# Start this node with some default values.
+rostest.rosrun(PACKAGE_NAME, DEFAULT_TEST_NAME, TestTopicSwitch)

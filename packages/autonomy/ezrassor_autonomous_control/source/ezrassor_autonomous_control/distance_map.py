@@ -121,8 +121,8 @@ def callback(data):
 
 
 def depth_estimator():
-    rospy.init_node('depth_estimator')
-    rospy.Subscriber("/ezrassor/front_camera/disparity", DisparityImage, callback)
+    rospy.init_node('depth_estimator', anonymous=True)
+    rospy.Subscriber("front_camera/disparity", DisparityImage, callback)
     rospy.spin()
 
 if __name__ == "__main__":

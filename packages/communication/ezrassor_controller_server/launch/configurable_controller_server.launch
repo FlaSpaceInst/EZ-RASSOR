@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch a configurable controller server. Written by Tiger Sachse. -->
+<launch>
+  <arg name="port" doc="The port the server listens on."/>
+  <arg name="wheel_instructions_topic"
+       doc="The topic where wheel instructions are published."/>
+  <arg name="front_arm_instructions_topic"
+       doc="The topic where front arm instructions are published."/>
+  <arg name="back_arm_instructions_topic"
+       doc="The topic where back arm instructions are published."/>
+  <arg name="front_drum_instructions_topic"
+       doc="The topic where front drum instructions are published."/>
+  <arg name="back_drum_instructions_topic"
+       doc="The topic where back drum instructions are published."/>
+
+  <node name="controller_server"
+        pkg="ezrassor_controller_server"
+        type="controller_server"
+        output="screen">
+    <param name="port" value="$(arg port)"/>
+    <param name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+    <param name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+    <param name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+    <param name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+    <param name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+  </node>
+</launch>

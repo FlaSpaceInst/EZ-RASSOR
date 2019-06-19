@@ -1,25 +1,63 @@
 #!/bin/sh
-# A collection of functions to make development of this repository easier.
+# A collection of functions that aid development of this repository.
 # Written by Tiger Sachse.
 
-WORKSPACE_DIR="$HOME/.workspace"
-SOURCE_DIR="$WORKSPACE_DIR/src"
+USER_SHELLS="bash zsh"
 PACKAGES_DIR="packages"
 EXTERNAL_DIR="external"
+WORKSPACE_DIR="$HOME/.workspace"
+WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
+WORKSPACE_BUILD_DIR="$WORKSPACE_DIR/build"
+CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
+USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
+
+# Source setup files within a given directory in the user's RC files.
+source_setups_in_directory() {
+    must_restart=false
+    partial_source_file="$1/setup"
+    for user_shell in $USER_SHELLS; do
+        shellrc_file="$HOME/.${user_shell}rc"
+        if [ -f "$shellrc_file" ]; then
+            source_file="$partial_source_file.$user_shell"
+            source_line=". \"$source_file\""
+
+            printf "Attempting to source setup script for %s: " "$user_shell"
+            if cat "$shellrc_file" | grep -Fq "$source_line"; then
+                printf "Previously sourced.\n"
+            else
+                printf "%s\n" \
+                       "" \
+                       "# Source a ROS setup file, if it exists." \
+                       "if [ -f \"$source_file\" ]; then" \
+                       "    $source_line" \
+                       "fi" >> "$shellrc_file"
+                printf "Successfully sourced.\n"
+                must_restart=true
+            fi
+        fi
+    done
+
+    if [ "$must_restart" = "true" ]; then
+        printf "\n\n******** %s ********\n" \
+               "Restart your terminal for changes to take effect."
+    fi
+}
 
 # Set up the development environment.
 setup_environment() {
-    rm -rf "$WORKSPACE_DIR"
-    mkdir -p "$SOURCE_DIR"
-    cd "$SOURCE_DIR"
+    rm -r -f "$WORKSPACE_DIR"
+    mkdir -p "$WORKSPACE_SOURCE_DIR"
+    cd "$WORKSPACE_SOURCE_DIR"
     catkin_init_workspace
     cd - > /dev/null 2>&1
+    source_setups_in_directory "$WORKSPACE_BUILD_DIR"
 }
 
 # Create a new ROS package in source control.
 new_package() {
-    mkdir -p "$PACKAGES_DIR/$1"
-    cd "$PACKAGES_DIR/$1"
+    superpackage="$1"
+    mkdir -p "$PACKAGES_DIR/$superpackage"
+    cd "$PACKAGES_DIR/$superpackage"
 
     # Create a new catkin package with all the arguments
     # passed to this function (after the first argument).
@@ -31,34 +69,40 @@ new_package() {
 
 # Link packages into your workspace.
 link_packages() {
-    LINK_ONLY_IN_LIST=false
-    LINK_EXCEPT_IN_LIST=false
-    case "$1" in
-        -o|--only)
-            LINK_ONLY_IN_LIST=true
-            shift
-            ;;
-        -e|--except)
-            LINK_EXCEPT_IN_LIST=true
-            shift
-            ;;
-    esac
+    link_only_in_list=false
+    link_except_in_list=false
+    if [ $# -ne 0 ]; then
+        case "$1" in
+            "-o"|"--only")
+                link_only_in_list=true
+                shift
+                ;;
+            "-e"|"--except")
+                link_except_in_list=true
+                shift
+                ;;
+            *)
+                echo "$USAGE_STRING"
+                exit 1
+                ;;
+        esac
+    fi
 
-    for TARGET_DIR in "$PACKAGES_DIR" "$EXTERNAL_DIR"; do
-        for SUPERPACKAGE_DIR in "$PWD/$TARGET_DIR"/*; do
-            for PACKAGE_DIR in "$SUPERPACKAGE_DIR"/*; do
-                if [ ! -d "$PACKAGE_DIR" ]; then
+    for collection_dir in "$PWD/$PACKAGES_DIR" "$PWD/$EXTERNAL_DIR"; do
+        for superpackage_dir in "$collection_dir"/*; do
+            for package_dir in "$superpackage_dir"/*; do
+                if [ ! -d "$package_dir" ]; then
                     :
-                elif [ "$LINK_ONLY_IN_LIST" = "true" ]; then
-                    if argument_in_list "$(basename "$PACKAGE_DIR")" "$@"; then
-                        link_package "$PACKAGE_DIR"
+                elif [ "$link_only_in_list" = "true" ]; then
+                    if argument_in_list "$(basename "$package_dir")" "$@"; then
+                        link_package "$package_dir"
                     fi
-                elif [ "$LINK_EXCEPT_IN_LIST" = "true" ]; then
-                    if ! argument_in_list "$(basename "$PACKAGE_DIR")" "$@"; then
-                        link_package "$PACKAGE_DIR"
+                elif [ "$link_except_in_list" = "true" ]; then
+                    if ! argument_in_list "$(basename "$package_dir")" "$@"; then
+                        link_package "$package_dir"
                     fi
                 else
-                    link_package "$PACKAGE_DIR"
+                    link_package "$package_dir"
                 fi
             done
         done
@@ -67,23 +111,23 @@ link_packages() {
 
 # Helper function that links a single package.
 link_package() {
-    PACKAGE_PATH="$1"
-    PACKAGE_NAME="$(basename "$PACKAGE_PATH")"
-    if [ -L "$SOURCE_DIR/$PACKAGE_NAME" ]; then
-        rm -f "$SOURCE_DIR/$PACKAGE_NAME"
-        printf "Relinking %s...\n" "$PACKAGE_PATH"
+    package_path="$1"
+    package_name="$(basename "$package_path")"
+    if [ -L "$WORKSPACE_SOURCE_DIR/$package_name" ]; then
+        rm -f "$WORKSPACE_SOURCE_DIR/$package_name"
+        printf "Relinking %s...\n" "$package_path"
     else
-        printf "Linking %s...\n" "$PACKAGE_PATH"
+        printf "Linking %s...\n" "$package_path"
     fi
-    ln -s "$PACKAGE_PATH" "$SOURCE_DIR/$PACKAGE_NAME"
+    ln -s "$package_path" "$WORKSPACE_SOURCE_DIR/$package_name"
 }
 
-# Helper function that determines if an argument is in a list.
+# Check if the first argument exists in the remaining list of arguments.
 argument_in_list() {
-    TARGET="$1"
+    argument="$1"
     shift
-    for ARGUMENT in "$@"; do
-        if [ "$TARGET" = "$ARGUMENT" ]; then
+    for item in "$@"; do
+        if [ "$argument" = "$item" ]; then
             return 0
         fi
     done
@@ -93,10 +137,15 @@ argument_in_list() {
 
 # Purge packages in the ROS workspace.
 purge_packages() {
-    cd "$SOURCE_DIR"
-    echo "Purging all packages in /src..."
+    cd "$WORKSPACE_SOURCE_DIR"
+    printf "Purging all packages in /src...\n"
     find . ! -name "CMakeLists.txt" -type l -exec rm -f {} +
     cd - > /dev/null 2>&1
+}
+
+# Install dependencies for all linked packages.
+resolve_packages() {
+    rosdep install --from-paths "$WORKSPACE_SOURCE_DIR" --ignore-src -y
 }
 
 # Build all packages.
@@ -120,34 +169,67 @@ kill_ros() {
     printf "\nROS has been shut down.\n"
 }
 
+# Test all packages in the workspace.
+test_packages() {
+    cd "$WORKSPACE_DIR"
+    catkin_make run_tests
+    cd - > /dev/null 2>&1
+}
+
+# Show a help menu. This menu is parsed from pre-existing documentation.
+throw_help() {
+    printf "$USAGE_STRING"
+    cat "$CONTRIBUTING_FILE" \
+        | grep '^``' -A 1 \
+        | sed 's/  //g' \
+        | sed 's/^``/#/g' \
+        | fold -s -w 75 \
+        | sed '/^#/! s/^/   /g' \
+        | sed '/``/ s/``/"/g' \
+        | sed '/^#/ s/"//g' \
+        | tr '#' '\n'
+}
+
 # Main entry point of the script.
-case $1 in
-    setup)
+case "$1" in
+    "setup")
         setup_environment
         ;;
-    new)
+    "new")
         shift
         new_package "$@"
         ;;
-    link)
+    "link")
         shift
         link_packages "$@"
         ;;
-    purge)
+    "purge")
         purge_packages
         ;;
-    relink)
+    "relink")
         shift
         purge_packages
         link_packages "$@"
         ;;
-    build)
+    "resolve")
+        resolve_packages
+        ;;
+    "build")
         build_packages
         ;;
-    install)
+    "install")
         install_packages
         ;;
-    kill)
+    "kill")
         kill_ros
+        ;;
+    "test")
+        test_packages
+        ;;
+    "help")
+        throw_help
+        ;;
+    *)
+        printf "$USAGE_STRING"
         ;;
 esac

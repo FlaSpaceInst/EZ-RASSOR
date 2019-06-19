@@ -1,87 +1,92 @@
 import rospy
-
-from std_msgs.msg import Int8, Int16, String
+from std_msgs.msg import String, Float32, Bool
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-
+from geometry_msgs.msg import Point, Twist
 import nav_functions as nf
 import math
 
 from random import uniform
 
 class WorldState():
-    """ World State Object Representing All Sensor Data """
+    """ World State Object Representing 
+        All Sensor Data 
+    """
 
     def __init__(self):
-        self.state_flags = {'positionX': 0, 'positionY': 0, 'positionZ': 0, 
-                            'front_arm_angle': 0, 'back_arm_angle': 0, 
-                            'front_arm_angle': 0, 'heading': 0, 'warning_flag': 0,
-                            'front_arm_force': 0, 'back_arm_force': 0, 'target_location': [10,10], 
-                            'on_side': False, 'battery': 100, 'on_back': False,
-                            'hardware_status': True}
-
-        self. auto_function_command = 0
+        self.positionX = 0
+        self.positionY = 0
+        self.positionZ = 0
+        self.front_arm_angle = 0
+        self.back_arm_angle = 0
+        self.front_arm_angle = 0
+        self.heading = 0
+        self.warning_flag = 0
+        self.target_location = Point()
+        self.on_side = False
+        self.on_back = False
+        self.front_up = False
+        self.back_up = False
+        self.battery = 100
+        self.hardware_status = True
 
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
+        #print(data.position[0], data.position[1])
 
-        self.state_flags['front_arm_angle'] = -(data.position[1])
-        self.state_flags['back_arm_angle'] = data.position[0]
-
-        self.state_flags['force_front_arm'], self.state_flags['force_back_arm'] = self.get_arm_force()
+        self.front_arm_angle = data.position[1]
+        self.back_arm_angle = data.position[0]
     
 
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
-        self.state_flags['positionX'] = data.pose.pose.position.z
-        self.state_flags['positionY'] = data.pose.pose.position.y
-        
-        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
-
-        if heading > 0:
-            self.state_flags['heading'] = heading
-        else:
-            self.state_flags['heading'] = 360 + heading
+        self.positionX = data.pose.pose.position.z
+        self.positionY = data.pose.pose.position.y
+        self.heading = nf.quaternion_to_yaw(data.pose.pose.orientation)
 
     def simStateCallBack(self, data):
-        """ More accurate position data to use for testing and experimentation. """
+        """ More accurate position data to use for 
+            testing and experimentation. 
+        """
+        index = 0
+
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+        try:
+            index = data.name.index(namespace)
+        except Exception:
+            print("Failed setting index to 1")
+            index = 1
+            
+
+        self.positionX = data.pose[index].position.x
+        self.positionY = data.pose[index].position.y
         
-        self.state_flags['positionX'] = data.pose[7].position.x
-        self.state_flags['positionY'] = data.pose[7].position.y
+        self.positionX = data.pose[index].position.x
+        self.positionY = data.pose[index].position.y
         
-        heading = nf.quaternion_to_yaw(data.pose[7]) * 180/math.pi
+        heading = nf.quaternion_to_yaw(data.pose[index]) * 180/math.pi
 
         if heading > 0:
-            self.state_flags['heading'] = heading
+            self.heading = heading
         else:
-            self.state_flags['heading'] = 360 + heading
+            self.heading = 360 + heading
 
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
 
-        # Check to see if its on its side. Uses the accleration of gravity to determine the directions
-        if 9.7 < abs(data.linear_acceleration.y) < 9.9:
-            print("ON SIDE {} ".format(data.linear_acceleration.y))
-            self.state_flags['on_side'] = True
-        else :
-            self.state_flags['on_side'] = False
-
-        # Check to see if its on its back. Uses the acceleration of gravity to determine the directions.
-        if (data.linear_acceleration.z) <= -9:
-            print("ON BACK {}".format(data.linear_acceleration.z))
-            self.state_flags['on_back'] = True
+        if abs(data.linear_acceleration.y) > 9:
+            self.on_side = True
         else:
-            self.state_flags['on_back'] = False
-
-        #self.state_flags['heading'] = nf.quaternion_to_euler(data.pose.orientation)
+            self.on_side = False
 
     def visionCallBack(self, data):
         """ Set state_flags vision data. """
-        print(data.data)
-        self.state_flags['warning_flag'] = data.data
+
+        self.warning_flag = data.data
 
     def get_arm_force(self):
         front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
@@ -90,25 +95,69 @@ class WorldState():
 
 
 class ROSUtility():
+    """ ROS Utility class that provides publishers,
+        subscribers, and convinient ROS utilies.
+    """
 
-    def __init__(self):
-        self.kill_bit = 0b1000000000000
-        self.command_pub = rospy.Publisher('ezrassor/routine_responses', Int16, queue_size=100)
-        self.status_pub = rospy.Publisher('ezrassor/status', String, queue_size=100)
-        self.rate = rospy.Rate(45) # 45hz
+    def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
+                 front_drum_topic, back_drum_topic, 
+                 max_linear_velocity, max_angular_velocity):
+        """ Initialize the ROS Utility Object. """
+        
+        self.movement_pub = rospy.Publisher(movement_topic, 
+                                            Twist, 
+                                            queue_size=10)
+        self.front_arm_pub = rospy.Publisher(front_arm_topic, 
+                                             Float32, 
+                                             queue_size=10)
+        self.back_arm_pub = rospy.Publisher(back_arm_topic, 
+                                            Float32, 
+                                            queue_size=10)
+        self.front_drum_pub = rospy.Publisher(front_drum_topic, 
+                                              Float32, 
+                                              queue_size=10)
+        self.back_drum_pub = rospy.Publisher(back_drum_topic, 
+                                             Float32, 
+                                             queue_size=10)
+
+        self.status_pub = rospy.Publisher('status', 
+                                          String, 
+                                          queue_size=10)
+        self.control_pub = rospy.Publisher('autonomous_override_toggle', 
+                                           Bool, 
+                                           queue_size=10)
+        self.rate = rospy.Rate(45) # 10hz
+
+        self.max_linear_velocity = max_linear_velocity
+        self.max_angular_velocity = max_angular_velocity
+
+        self.auto_function_command = 16
 
         self.threshold = .5
 
-        self. auto_function_command = 0
+    def publish_actions(self, movement, front_arm, back_arm, 
+                        front_drum, back_drum):
+        """ Publishes actions for all joints and motors """
 
-        self.commands = {'forward' : 0b101000000000, 'reverse' : 0b010100000000, 'left' : 0b011000000000, 'right' : 0b100100000000, 
-                'front_arm_up' : 0b000010000000, 'front_arm_down' : 0b000001000000, 'back_arm_up' : 0b000000100000, 'back_arm_down' : 0b000000010000,
-                'front_dig' : 0b000000001000, 'front_dump' : 0b000000000100, 'back_dig' : 0b000000000010, 'back_dump' : 0b000000000001,
-                'arms_up' : 0b000010100000, 'arms_down' : 0b000001010000, 'null': 0b000000000000}
+        twist_message = Twist()
+
+        if movement == 'forward':
+            twist_message.linear.x = self.max_linear_velocity
+        elif movement == 'reverse':
+            twist_message.linear.x = -self.max_linear_velocity
+        elif movement == 'left':
+            twist_message.angular.z = self.max_angular_velocity
+        elif movement == 'right':
+            twist_message.angular.z = -self.max_angular_velocity
+        else:
+            pass
+
+        self.movement_pub.publish(twist_message)
+        self.front_arm_pub.publish(front_arm)
+        self.back_arm_pub.publish(back_arm)
+        self.front_drum_pub.publish(front_drum)
+        self.back_drum_pub.publish(back_drum)
 
     def autoCommandCallBack(self, data):
         """ Set auto_function_command to the current choice. """
         self.auto_function_command = data.data
-
-
-

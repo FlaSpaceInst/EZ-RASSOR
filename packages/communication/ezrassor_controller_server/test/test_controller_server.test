@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch the integration tests for the controller server.
+     Written by Tiger Sachse. -->
+<launch>
+  <arg name="startup_delay"
+       default="1"
+       doc="Delay in seconds after initialization of test class."/>
+  <arg name="communication_delay"
+       default=".1"
+       doc="Delay in seconds before checking a topic."/>
+
+  <!-- Launch the integration test node. -->
+  <test test-name="test_controller_server"
+        pkg="ezrassor_controller_server"
+        type="test_controller_server">
+    <param name="port" value="8080"/>
+    <param name="server_url" value="localhost"/>
+    <param name="wheel_instructions_topic" value="/wheel_instructions"/>
+    <param name="front_arm_instructions_topic" value="/front_arm_instructions"/>
+    <param name="back_arm_instructions_topic" value="/back_arm_instructions"/>
+    <param name="front_drum_instructions_topic" value="/front_drum_instructions"/>
+    <param name="back_drum_instructions_topic" value="/back_drum_instructions"/>
+    <param name="startup_delay" value="$(arg startup_delay)"/>
+    <param name="communication_delay" value="$(arg communication_delay)"/>
+  </test>
+
+  <!-- Launch the controller server. -->
+  <include file="$(find ezrassor_controller_server)/launch/configurable_controller_server.launch">
+    <arg name="port" value="8080"/>
+    <arg name="wheel_instructions_topic" value="/wheel_instructions"/>
+    <arg name="front_arm_instructions_topic" value="/front_arm_instructions"/>
+    <arg name="back_arm_instructions_topic" value="/back_arm_instructions"/>
+    <arg name="front_drum_instructions_topic" value="/front_drum_instructions"/>
+    <arg name="back_drum_instructions_topic" value="/back_drum_instructions"/>
+  </include>
+</launch>

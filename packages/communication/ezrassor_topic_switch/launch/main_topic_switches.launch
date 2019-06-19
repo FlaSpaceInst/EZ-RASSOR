@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all topic switches required by the EZ-RASSOR.
+     Written by Tiger Sachse. -->
+<launch>
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="wheel_switch"/>
+    <arg name="primary_topic" value="manual_wheel_instructions"/>
+    <arg name="secondary_topic" value="autonomous_wheel_instructions"/>
+    <arg name="output_topic" value="wheel_instructions"/>
+    <arg name="topic_type_module" value="geometry_msgs.msg"/>
+    <arg name="topic_type_class" value="Twist"/>
+  </include>
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="front_arm_switch"/>
+    <arg name="primary_topic" value="manual_front_arm_instructions"/>
+    <arg name="secondary_topic" value="autonomous_front_arm_instructions"/>
+    <arg name="output_topic" value="front_arm_instructions"/>
+    <arg name="topic_type_module" value="std_msgs.msg"/>
+    <arg name="topic_type_class" value="Float32"/>
+  </include>
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="back_arm_switch"/>
+    <arg name="primary_topic" value="manual_back_arm_instructions"/>
+    <arg name="secondary_topic" value="autonomous_back_arm_instructions"/>
+    <arg name="output_topic" value="back_arm_instructions"/>
+    <arg name="topic_type_module" value="std_msgs.msg"/>
+    <arg name="topic_type_class" value="Float32"/>
+  </include>
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="front_drum_switch"/>
+    <arg name="primary_topic" value="manual_front_drum_instructions"/>
+    <arg name="secondary_topic" value="autonomous_front_drum_instructions"/>
+    <arg name="output_topic" value="front_drum_instructions"/>
+    <arg name="topic_type_module" value="std_msgs.msg"/>
+    <arg name="topic_type_class" value="Float32"/>
+  </include>
+  <include file="$(find ezrassor_topic_switch)/launch/configurable_topic_switch.launch">
+    <arg name="node_name" value="back_drum_switch"/>
+    <arg name="primary_topic" value="manual_back_drum_instructions"/>
+    <arg name="secondary_topic" value="autonomous_back_drum_instructions"/>
+    <arg name="output_topic" value="back_drum_instructions"/>
+    <arg name="topic_type_module" value="std_msgs.msg"/>
+    <arg name="topic_type_class" value="Float32"/>
+  </include>
+</launch>

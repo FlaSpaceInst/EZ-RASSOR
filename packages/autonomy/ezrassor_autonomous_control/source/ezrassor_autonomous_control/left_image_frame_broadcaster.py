@@ -3,7 +3,7 @@ import tf
 
 
 def run():
-	rospy.init_node('left_image_frame_broadcaster')
+	rospy.init_node('left_image_frame_broadcaster', anonymous=True)
 	camera_left = tf.TransformBroadcaster()
 	camera_depth = tf.TransformBroadcaster()
 	rate = rospy.Rate(100000.0)
