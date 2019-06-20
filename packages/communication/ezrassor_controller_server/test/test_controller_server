@@ -22,8 +22,8 @@ COORDINATE_MIN = -1337
 AUTONOMOUS_TOGGLES_INTEGERS = (1, 2, 4, 8)
 PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
-AUTONOMOUS_TOGGLES_TOPIC = "/autonomous_toggles"
-TARGET_COORDINATES_TOPIC = "/target_coordinates"
+AUTONOMOUS_TOGGLES_TOPIC = "autonomous_toggles"
+TARGET_COORDINATES_TOPIC = "target_coordinates"
 POST_HEADER = {"content-type" : "application/json"}
 WHEEL_INSTRUCTION_STRINGS = ("forward", "backward", "left", "right")
 
@@ -143,7 +143,7 @@ class TestControllerServer(unittest.TestCase):
 
     def __post_and_sleep(self, payload):
         """Send a POST request to the server and sleep for a bit."""
-        connection = httplib.HTTPConnection(self.__server_url, self.__port)#
+        connection = httplib.HTTPConnection(self.__server_url, self.__port)
         connection.request("POST", "", json.dumps(payload), POST_HEADER)
         time.sleep(self.__communication_delay)
 

@@ -7,20 +7,25 @@
   <arg name="back_arm_instructions_topic" doc="The topic for back arm instructions."/>
   <arg name="front_drum_instructions_topic" doc="The topic for front drum instructions."/>
   <arg name="back_drum_instructions_topic" doc="The topic for back drum instructions."/>
-  <arg name="joystick_device"
+  <arg name="joystick"
        default="default"
        doc="The joystick device that Joy should listen to."/>
 
-  <group if="$(eval joystick_device == 'default')">
-    <rosparam command="load" file="$(find ezrassor_joy_translator)/config/joy_translator.yaml"/>
+  <!-- If the joystick argument is set to default, load joy with the default
+       joystick from the YAML file. Otherwise, use the joystick provided by the
+       joystick argument. -->
+  <group if="$(eval joystick == 'default')">
+    <rosparam command="load"
+              file="$(find ezrassor_joy_translator)/config/default_joystick.yaml"/>
     <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
   </group>
-  <group if="$(eval joystick_device != 'default')">
+  <group unless="$(eval joystick == 'default')">
     <node name="joy_node" pkg="joy" type="joy_node" output="screen">
-      <param name="dev" value="$(arg joystick_device)"/>
+      <param name="dev" value="$(arg joystick)"/>
     </node>
   </group>
 
+  <!-- Launch the joy translator. -->
   <node name="joy_translator"
         pkg="ezrassor_joy_translator"
         type="joy_translator"

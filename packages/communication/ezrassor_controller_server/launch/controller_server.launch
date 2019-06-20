@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a configurable controller server. Written by Tiger Sachse. -->
+<!-- Launch a controller server. Written by Tiger Sachse. -->
 <launch>
   <arg name="port" doc="The port the server listens on."/>
   <arg name="wheel_instructions_topic"
