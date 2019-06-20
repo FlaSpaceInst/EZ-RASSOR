@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch the joy node and its translator.
-     Written by Tiger Sachse and Harrison Black. -->
+<!-- Launch Joy and its translator. Written by Tiger Sachse and Harrison Black. -->
 <launch>
   <arg name="wheel_instructions_topic" doc="The topic for wheel instructions."/>
   <arg name="front_arm_instructions_topic" doc="The topic for front arm instructions."/>
@@ -9,9 +8,9 @@
   <arg name="back_drum_instructions_topic" doc="The topic for back drum instructions."/>
   <arg name="joystick"
        default="default"
-       doc="The joystick device that Joy should listen to."/>
+       doc="The joystick device that Joy listens to."/>
 
-  <!-- If the joystick argument is set to default, load joy with the default
+  <!-- If the joystick argument is set to default, load Joy with the default
        joystick from the YAML file. Otherwise, use the joystick provided by the
        joystick argument. -->
   <group if="$(eval joystick == 'default')">
