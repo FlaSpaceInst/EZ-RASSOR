@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Launch autonomous control for the EZ-RASSOR.
+       Written by Tiger Sachse and Cameron Taylor. -->
+  <arg name="digsite_x" default="42" doc="The digsite's x coordinate."/>
+  <arg name="digsite_y" default="42" doc="The digsite's y coordinate."/>
+  <arg name="max_linear_velocity"
+       default="1"
+       doc="The EZ-RASSOR's maximum linear velocity."/>
+  <arg name="max_angular_velocity"
+       default="1"
+       doc="The EZ-RASSOR's maximum angular velocity."/>
+  <arg name="enable_real_odometry"
+       default="False"
+       doc="Toggles the use of real odometry versus simulated odometry."/>
+  <arg name="wheel_instructions_topic"
+       doc="The topic where wheel instructions are published."/>
+  <arg name="front_arm_instructions_topic"
+       doc="The topic where front arm instructions are published."/>
+  <arg name="back_arm_instructions_topic"
+       doc="The topic where back arm instructions are published."/>
+  <arg name="front_drum_instructions_topic"
+       doc="The topic where front drum instructions are published."/>
+  <arg name="back_drum_instructions_topic"
+       doc="The topic where back drum instructions are published."/>
+  
+  <node pkg="ezrassor_autonomous_control"
+        name="autonomous_control"
+        type="autonomous_control"
+        output="screen">
+    <param name="digsite_x" value="$(arg digsite_x)"/>
+    <param name="digsite_y" value="$(arg digsite_y)"/>
+    <param name="max_linear_velocity" value="$(arg max_linear_velocity)"/>
+    <param name="max_angular_velocity" value="$(arg max_angular_velocity)"/>
+    <param name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+    <param name="wheel_instructions_topic"
+           value="$(arg wheel_instructions_topic)"/>
+    <param name="front_arm_instructions_topic"
+           value="$(arg front_arm_instructions_topic)"/>
+    <param name="back_arm_instructions_topic"
+           value="$(arg back_arm_instructions_topic)"/>
+    <param name="front_drum_instructions_topic"
+           value="$(arg front_drum_instructions_topic)"/>
+    <param name="back_drum_instructions_topic"
+           value="$(arg back_drum_instructions_topic)"/>
+  </node>
+</launch>

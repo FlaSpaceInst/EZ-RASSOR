@@ -42,7 +42,7 @@
   <arg name="front_drum_switch_name" value="front_drum_switch"/>
   <arg name="back_drum_switch_name" value="back_drum_switch"/>
 
-  <group if="$(eval 'autonomous' in control_methods)">
+  <group if="$(eval 'autonomy' in control_methods)">
 
     <!-- This group sets up dual mode. It launches the controller server and/or
          the Joy translator with separate "manual" topics, and it also launches
@@ -153,7 +153,7 @@
   <!-- This group sets up manual mode. It launches the controller server and/or
        the Joy translator and directs these nodes to publish directly to the main
        instruction topics (no topic switches required). -->
-  <group unless="$(eval 'autonomous' in control_methods)">
+  <group unless="$(eval 'autonomy' in control_methods)">
     <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
              if="$(eval 'gamepad' in control_methods)">
       <arg name="joystick" value="$(arg joystick)"/>
