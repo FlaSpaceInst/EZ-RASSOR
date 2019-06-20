@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure and launch the entire communication system of the EZ-RASSOR.
+     Written by Tiger Sachse. -->
 <launch>
   <arg name="control_methods"
        doc="A space-separated list of control methods."/>
@@ -9,6 +11,7 @@
        default="default"
        doc="The joystick device that Joy listens to."/>
 
+  <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>
   <arg name="front_arm_instructions_topic" value="front_arm_instructions"/>
   <arg name="back_arm_instructions_topic" value="back_arm_instructions"/>
@@ -40,6 +43,11 @@
   <arg name="back_drum_switch_name" value="back_drum_switch"/>
 
   <group if="$(eval 'autonomous' in control_methods)">
+
+    <!-- This group sets up dual mode. It launches the controller server and/or
+         the Joy translator with separate "manual" topics, and it also launches
+         autonomous control with separate "autonomous" topics. Finally, it launches
+         all necessary topic switches which handle flipping between the two modes. --> 
     <group if="$(eval 'gamepad' in control_methods or 'app' in control_methods)">
       <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
                if="$(eval 'gamepad' in control_methods)">
@@ -81,7 +89,6 @@
         <arg name="back_drum_instructions_topic"
              value="$(arg autonomous_back_drum_instructions_topic)"/>
       </include>
-
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
         <arg name="primary_topic" value="$(arg manual_wheel_instructions_topic)"/>
@@ -122,6 +129,10 @@
         <arg name="topic_type_module" value="$(arg float_module)"/>
         <arg name="topic_type_class" value="$(arg float_class)"/>
       </include>
+
+    <!-- This group sets up autonomous mode. It launches autonomous control and
+         directs it to publish directly to the main instruction topics (no topic
+         switches required). -->
     </group>
     <group unless="$(eval 'gamepad' in control_methods or 'app' in control_methods)">
       <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
@@ -139,6 +150,9 @@
     </group>
   </group>
 
+  <!-- This group sets up manual mode. It launches the controller server and/or
+       the Joy translator and directs these nodes to publish directly to the main
+       instruction topics (no topic switches required). -->
   <group unless="$(eval 'autonomous' in control_methods)">
     <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
              if="$(eval 'gamepad' in control_methods)">
