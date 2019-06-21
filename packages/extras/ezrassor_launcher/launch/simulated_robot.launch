@@ -27,7 +27,7 @@
   <arg name="digsite_y" default="default" doc="The digsite's y coordinate."/>
   <arg name="enable_real_odometry"
        default="default"
-       doc="Toggles the use of real odometry versus simulated odometry."/>
+       doc="Toggle the use of real odometry versus simulated odometry."/>
 
   <!-- Launch the communication system for this robot. -->
   <include file="$(find ezrassor_launcher)/launch/communication.launch">
