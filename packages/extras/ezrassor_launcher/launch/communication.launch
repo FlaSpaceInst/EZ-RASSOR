@@ -14,7 +14,7 @@
   <arg name="digsite_y" default="default" doc="The digsite's y coordinate."/>
   <arg name="enable_real_odometry"
        default="default"
-       doc="Toggles the use of real odometry versus simulated odometry."/>
+       doc="Toggle the use of real odometry versus simulated odometry."/>
 
   <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>

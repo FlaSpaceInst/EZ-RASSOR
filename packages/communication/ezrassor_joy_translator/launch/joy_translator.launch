@@ -20,7 +20,7 @@
   </group>
   <group unless="$(eval joystick == 'default')">
     <node name="joy_node" pkg="joy" type="joy_node" output="screen">
-      <param name="dev" value="$(arg joystick)"/>
+      <param name="dev" value="/dev/js$(arg joystick)"/>
     </node>
   </group>
 
