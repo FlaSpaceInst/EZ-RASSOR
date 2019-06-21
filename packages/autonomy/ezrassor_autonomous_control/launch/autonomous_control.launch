@@ -11,7 +11,7 @@
        default="1"
        doc="The EZ-RASSOR's maximum angular velocity."/>
   <arg name="enable_real_odometry"
-       default="False"
+       default="false"
        doc="Toggles the use of real odometry versus simulated odometry."/>
   <arg name="wheel_instructions_topic"
        doc="The topic where wheel instructions are published."/>
