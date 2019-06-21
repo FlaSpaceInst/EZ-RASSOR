@@ -11,6 +11,9 @@
   <arg name="joystick"
        default="default"
        doc="The joystick device that Joy listens to."/>
+  <arg name="model_id"
+       default="default"
+       doc="The model ID for this simulated robot."/>
   <arg name="starting_x"
        default="default"
        doc="The starting x position of the robot."/>
@@ -38,6 +41,9 @@
 
   <!-- Spawn the model. -->
   <include file="$(find ezrassor_sim_description)/launch/model.launch">
+    <arg name="model_id"
+         value="$(arg model_id)"
+         unless="$(eval model_id == 'default')"/>
     <arg name="starting_x"
          value="$(arg starting_x)"
          unless="$(eval starting_x == 'default')"/>
