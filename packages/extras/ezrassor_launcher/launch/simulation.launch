@@ -55,64 +55,62 @@
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
        marked as 'default' are ignored and the defaults within the gazebo.launch
        file are used. -->
+  <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch"
+           if="$(eval robot_count == 1)">
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/> 
+    <arg name="debug"
+         value="$(arg debug)"
+         unless="$(eval debug == 'default')"/>
+    <arg name="paused" 
+         value="$(arg paused)"
+         unless="$(eval paused == 'default')"/>
+    <arg name="verbose"
+         value="$(arg verbose)"
+         unless="$(eval verbose == 'default')"/>
+    <arg name="show_gui"
+         value="$(arg show_gui)"
+         unless="$(eval show_gui == 'default')"/>
+    <arg name="recording"
+         value="$(arg recording)"
+         unless="$(eval recording == 'default')"/>
+    <arg name="use_sim_time"
+         value="$(arg use_sim_time)"
+         unless="$(eval use_sim_time == 'default')"/>
+  </include>
 
-    <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch"
-             if="$(eval robot_count == 1)">
-      <arg name="world"
-           value="$(arg world)"
-           unless="$(eval world == 'default')"/> 
-      <arg name="debug"
-           value="$(arg debug)"
-           unless="$(eval debug == 'default')"/>
-      <arg name="paused" 
-           value="$(arg paused)"
-           unless="$(eval paused == 'default')"/>
-      <arg name="verbose"
-           value="$(arg verbose)"
-           unless="$(eval verbose == 'default')"/>
-      <arg name="show_gui"
-           value="$(arg show_gui)"
-           unless="$(eval show_gui == 'default')"/>
-      <arg name="recording"
-           value="$(arg recording)"
-           unless="$(eval recording == 'default')"/>
-      <arg name="use_sim_time"
-           value="$(arg use_sim_time)"
-           unless="$(eval use_sim_time == 'default')"/>
-    </include>
-
-
-    <include file="$(find ezrassor_launcher)/launch/simulation.launch"
-             unless="$(eval robot_count == 1)">
-      <arg name="world" value="$(arg world)"/> 
-      <arg name="debug" value="$(arg debug)"/>
-      <arg name="paused" value="$(arg paused)"/>
-      <arg name="verbose" value="$(arg verbose)"/>
-      <arg name="show_gui" value="$(arg show_gui)"/>
-      <arg name="recording" value="$(arg recording)"/>
-      <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-      <arg name="robot_count" value="$(eval robot_count - 1)"/>
-      <arg name="control_methods" value="$(arg control_methods)"/>
-      <arg name="port"
-           value="$(eval port + 1)"
-           unless="$(eval port == 'default')"/>
-      <arg name="joystick"
-           value="$(eval joystick + 1)"
-           unless="$(eval joystick == 'default')"/>
-      <arg name="starting_x"
-           value="$(eval starting_x + coordinate_offset)"
-           unless="$(eval starting_x == 'default')"/>
-      <arg name="starting_y"
-           value="$(eval starting_y + coordinate_offset)"
-           unless="$(eval starting_y == 'default')"/>
-      <arg name="starting_z" value="$(arg starting_z)"/>
-      <arg name="digsite_x"
-           value="$(eval digsite_x + coordinate_offset)"
-           unless="$(eval digsite_x == 'default')"/>
-      <arg name="digsite_y"
-           value="$(eval digsite_y + coordinate_offset)"
-           unless="$(eval digsite_y == 'default')"/>
-      <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
-    </include>
-
+  <!-- If the final robot has not been spawned, recursively call this script again. -->
+  <include file="$(find ezrassor_launcher)/launch/simulation.launch"
+           unless="$(eval robot_count == 1)">
+    <arg name="world" value="$(arg world)"/> 
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="show_gui" value="$(arg show_gui)"/>
+    <arg name="recording" value="$(arg recording)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="robot_count" value="$(eval robot_count - 1)"/>
+    <arg name="control_methods" value="$(arg control_methods)"/>
+    <arg name="port"
+         value="$(eval port + 1)"
+         unless="$(eval port == 'default')"/>
+    <arg name="joystick"
+         value="$(eval joystick + 1)"
+         unless="$(eval joystick == 'default')"/>
+    <arg name="starting_x"
+         value="$(eval starting_x + coordinate_offset)"
+         unless="$(eval starting_x == 'default')"/>
+    <arg name="starting_y"
+         value="$(eval starting_y + coordinate_offset)"
+         unless="$(eval starting_y == 'default')"/>
+    <arg name="starting_z" value="$(arg starting_z)"/>
+    <arg name="digsite_x"
+         value="$(eval digsite_x + coordinate_offset)"
+         unless="$(eval digsite_x == 'default')"/>
+    <arg name="digsite_y"
+         value="$(eval digsite_y + coordinate_offset)"
+         unless="$(eval digsite_y == 'default')"/>
+    <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+  </include>
 </launch>
