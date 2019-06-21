@@ -1,1 +1,4 @@
+# The default port that the controller server listens to. You can specify a different
+# port using the launch files for provided for this node, so it is highly recommended
+# that you don't modify this file.
 port : 8080
