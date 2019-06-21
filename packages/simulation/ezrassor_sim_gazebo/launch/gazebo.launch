@@ -4,7 +4,7 @@
        Written by Ronald Marrero and Cameron Taylor. -->
   <arg name="world" default="base"/> 
   <arg name="use_sim_time" default="true"/>
-  <arg name="gui" default="true"/>
+  <arg name="show_gui" default="true"/>
   <arg name="recording" default="false"/>
   <arg name="verbose" default="false"/>
   <arg name="debug" default="false"/>
@@ -14,7 +14,7 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find ezrassor_sim_gazebo)/worlds/$(arg world).world"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="gui" value="$(arg gui)"/>
+    <arg name="gui" value="$(arg show_gui)"/>
     <arg name="recording" value="$(arg recording)"/>
     <arg name="verbose" value="$(arg verbose)"/>
     <arg name="debug" value="$(arg debug)"/>

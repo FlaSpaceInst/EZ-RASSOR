@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch a simulated EZ-RASSOR and the communication system necessary to
+     control it. This launch file assumes that the simulation is already running.
+     Written by Tiger Sachse. -->
+<launch>
+  <arg name="control_methods"
+       doc="A space-separated list of control methods."/>
+  <arg name="port"
+       default="default"
+       doc="The port the controller server listens on."/>
+  <arg name="joystick"
+       default="default"
+       doc="The joystick device that Joy listens to."/>
+  <arg name="starting_x"
+       default="default"
+       doc="The starting x position of the robot."/>
+  <arg name="starting_y"
+       default="default"
+       doc="The starting y position of the robot."/>
+  <arg name="starting_z"
+       default="default"
+       doc="The starting z position of the robot."/>
+  <arg name="digsite_x" default="default" doc="The digsite's x coordinate."/>
+  <arg name="digsite_y" default="default" doc="The digsite's y coordinate."/>
+  <arg name="enable_real_odometry"
+       default="default"
+       doc="Toggles the use of real odometry versus simulated odometry."/>
+
+  <!-- Launch the communication system for this robot. -->
+  <include file="$(find ezrassor_launcher)/launch/communication.launch">
+    <arg name="control_methods" value="$(arg control_methods)"/>
+    <arg name="port" value="$(arg port)"/>
+    <arg name="joystick" value="$(arg joystick)"/>
+    <arg name="digsite_x" value="$(arg digsite_x)"/>
+    <arg name="digsite_y" value="$(arg digsite_y)"/>
+    <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+  </include>
+
+  <!-- Spawn the model. -->
+  <include file="$(find ezrassor_sim_description)/launch/model.launch">
+    <arg name="starting_x"
+         value="$(arg starting_x)"
+         unless="$(eval starting_x == 'default')"/>
+    <arg name="starting_y"
+         value="$(arg starting_y)"
+         unless="$(eval starting_y == 'default')"/>
+    <arg name="starting_z"
+         value="$(arg starting_z)"
+         unless="$(eval starting_z == 'default')"/>
+  </include>
+
+  <!-- Launch the model controls. -->
+  <include file="$(find ezrassor_sim_control)/launch/model_controls.launch">
+</launch>

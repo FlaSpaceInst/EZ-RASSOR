@@ -10,6 +10,11 @@
   <arg name="joystick"
        default="default"
        doc="The joystick device that Joy listens to."/>
+  <arg name="digsite_x" default="default" doc="The digsite's x coordinate."/>
+  <arg name="digsite_y" default="default" doc="The digsite's y coordinate."/>
+  <arg name="enable_real_odometry"
+       default="default"
+       doc="Toggles the use of real odometry versus simulated odometry."/>
 
   <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>
@@ -88,6 +93,15 @@
              value="$(arg autonomous_front_drum_instructions_topic)"/>
         <arg name="back_drum_instructions_topic"
              value="$(arg autonomous_back_drum_instructions_topic)"/>
+        <arg name="digsite_x"
+             value="$(arg digsite_x)"
+             unless="$(eval digsite_x == 'default')"/>
+        <arg name="digsite_y"
+             value="$(arg digsite_y)"
+             unless="$(eval digsite_y == 'default')"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>

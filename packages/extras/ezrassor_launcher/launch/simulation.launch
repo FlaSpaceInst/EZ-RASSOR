@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Launch a Gazebo simulation and populate the world with EZ-RASSORs!
+       Written by Tiger Sachse. -->
+  <arg name="world" default="default"/> 
+  <arg name="debug" default="default"/>
+  <arg name="paused" default="default"/>
+  <arg name="verbose" default="default"/>
+  <arg name="show_gui" default="default"/>
+  <arg name="recording" default="default"/>
+  <arg name="use_sim_time" default="default"/>
+  <arg name="control_methods"
+       doc="A space-separated list of control methods."/>
+  <arg name="port"
+       default="default"
+       doc="The port the controller server listens on."/>
+  <arg name="joystick"
+       default="default"
+       doc="The joystick device that Joy listens to."/>
+  <arg name="starting_x"
+       default="default"
+       doc="The starting x position of the robot."/>
+  <arg name="starting_y"
+       default="default"
+       doc="The starting y position of the robot."/>
+  <arg name="starting_z"
+       default="default"
+       doc="The starting z position of the robot."/>
+  <arg name="digsite_x" default="default" doc="The digsite's x coordinate."/>
+  <arg name="digsite_y" default="default" doc="The digsite's y coordinate."/>
+  <arg name="enable_real_odometry"
+       default="default"
+       doc="Toggles the use of real odometry versus simulated odometry."/>
+
+  <!-- Load up an empty world. Any arguments marked as 'default' are ignored
+       and the defaults within the gazebo.launch file are used. -->
+  <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch">
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/> 
+    <arg name="debug"
+         value="$(arg debug)"
+         unless="$(eval debug == 'default')"/>
+    <arg name="paused" 
+         value="$(arg paused)"
+         unless="$(eval paused == 'default')"/>
+    <arg name="verbose"
+         value="$(arg verbose)"
+         unless="$(eval verbose == 'default')"/>
+    <arg name="show_gui"
+         value="$(arg show_gui)"
+         unless="$(eval show_gui == 'default')"/>
+    <arg name="recording"
+         value="$(arg recording)"
+         unless="$(eval recording == 'default')"/>
+    <arg name="use_sim_time"
+         value="$(arg use_sim_time)"
+         unless="$(eval use_sim_time == 'default')"/>
+  </include>
+
+  <!-- Spawn a simulated robot. This launch file knows how to handle 'default'
+       values when it recieves them. -->
+  <include file="$(find ezrassor_launcher)/launch/simulated_robot.launch">
+    <arg name="control_methods" value="$(arg control_methods)"/>
+    <arg name="port" value="$(arg port)"/>
+    <arg name="joystick" value="$(arg joystick)"/>
+    <arg name="starting_x" value="$(arg starting_x)"/>
+    <arg name="starting_y" value="$(arg starting_y)"/>
+    <arg name="starting_z" value="$(arg starting_z)"/>
+    <arg name="digsite_x" value="$(arg digsite_x)"/>
+    <arg name="digsite_y" value="$(arg digsite_y)"/>
+    <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+  </include>
+</launch>
