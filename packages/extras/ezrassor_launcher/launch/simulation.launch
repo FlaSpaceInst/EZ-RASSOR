@@ -38,7 +38,9 @@
 
   <!-- Spawn a simulated robot. This launch file knows how to handle 'default'
        values when it recieves them. -->
-  <include file="$(find ezrassor_launcher)/launch/simulated_robot.launch">
+  <include file="$(find ezrassor_launcher)/launch/simulated_robot.launch"
+           ns="ezrassor$(arg robot_count)">
+    <arg name="model_id" value="$(arg robot_count)"/>
     <arg name="control_methods" value="$(arg control_methods)"/>
     <arg name="port" value="$(arg port)"/>
     <arg name="joystick" value="$(arg joystick)"/>
@@ -53,8 +55,9 @@
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
        marked as 'default' are ignored and the defaults within the gazebo.launch
        file are used. -->
-  <group if="$(eval robot_count == 1)">
-    <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch">
+
+    <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch"
+             if="$(eval robot_count == 1)">
       <arg name="world"
            value="$(arg world)"
            unless="$(eval world == 'default')"/> 
@@ -77,10 +80,10 @@
            value="$(arg use_sim_time)"
            unless="$(eval use_sim_time == 'default')"/>
     </include>
-  </group>
 
-  <group unless="$(eval robot_count != 1)">
-    <include file="$(find ezrassor_launcher)/launch/simulation.launch">
+
+    <include file="$(find ezrassor_launcher)/launch/simulation.launch"
+             unless="$(eval robot_count == 1)">
       <arg name="world" value="$(arg world)"/> 
       <arg name="debug" value="$(arg debug)"/>
       <arg name="paused" value="$(arg paused)"/>
@@ -110,5 +113,6 @@
            value="$(eval digsite_y + coordinate_offset)"
            unless="$(eval digsite_y == 'default')"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
-  </group>
+    </include>
+
 </launch>

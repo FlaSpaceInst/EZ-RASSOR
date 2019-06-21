@@ -44,13 +44,13 @@
     <arg name="model_id"
          value="$(arg model_id)"
          unless="$(eval model_id == 'default')"/>
-    <arg name="starting_x"
+    <arg name="x"
          value="$(arg starting_x)"
          unless="$(eval starting_x == 'default')"/>
-    <arg name="starting_y"
+    <arg name="y"
          value="$(arg starting_y)"
          unless="$(eval starting_y == 'default')"/>
-    <arg name="starting_z"
+    <arg name="z"
          value="$(arg starting_z)"
          unless="$(eval starting_z == 'default')"/>
   </include>
