@@ -18,9 +18,15 @@
         output="screen"
         args="-urdf
               -param robot_description
+              -x $(arg x) -y $(arg y) -z $(arg z)
+              -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+        <!--
+        args="-urdf
+              -param robot_description
               -model ezrassor$(arg id)
               -x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+        -->
 
   <!-- Convert joint states to TF transforms for rviz, etc. -->
   <node name="robot_state_publisher"

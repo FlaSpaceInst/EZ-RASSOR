@@ -50,5 +50,5 @@
   </include>
 
   <!-- Launch the model controls. -->
-  <include file="$(find ezrassor_sim_control)/launch/model_controls.launch">
+  <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
 </launch>
