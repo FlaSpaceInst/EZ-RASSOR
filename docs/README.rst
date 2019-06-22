@@ -19,8 +19,12 @@ Clone this repository with ``git`` and include the ``--recursive`` flag. This te
 ::
   git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git --recursive
   cd EZ-RASSOR
+  
+If you've already cloned the repository without the ``--recursive`` flag you can run this command to clone the submodules manually:
+::
+  git submodule update --recursive
 
-Next, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
+Finally, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
 ::
   sh install.sh ros
   ** RESTART TERMINAL **
@@ -41,7 +45,7 @@ All of the following are valid ``<software>`` options:
 ``ros``
   Install the ROS suite of software. This software is required to operate the EZ-RASSOR (and must be installed first). This script will automatically install ROS for Ubuntu Xenial and Ubuntu Bionic. For all other systems, ROS must be installed manually. After installing ROS with this script, **you must restart your terminal before proceeding**.
 ``tools``
-  Install some ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, you must install these tools manually.
+  Install the ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, you must install these tools manually.
 ``packages [-e, --except <packages...> | -o, --only <packages...>]``
   Install the core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
 ``help``
