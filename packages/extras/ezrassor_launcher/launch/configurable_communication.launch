@@ -63,7 +63,7 @@
       </include>
       <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
                if="$(eval 'app' in control_methods)">
-        <arg name="port" value="$(arg port)"/>
+        <arg name="port" value="$(arg port)" unless="$(eval port == 'default')"/>
         <arg name="wheel_instructions_topic"
              value="$(arg manual_wheel_instructions_topic)"/>
         <arg name="front_arm_instructions_topic"
@@ -181,7 +181,7 @@
     </include>
     <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
              if="$(eval 'app' in control_methods)">
-      <arg name="port" value="$(arg port)"/>
+      <arg name="port" value="$(arg port)" unless="$(eval port == 'default')"/>
       <arg name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
       <arg name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
       <arg name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
