@@ -25,16 +25,16 @@
     <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
       <arg name="control_methods" value="$(arg control_methods)"/>
       <arg name="port"
-           value="$(eval ports.split()[robot_count - 1])"
+           value="$(eval str(ports).split()[robot_count - 1])"
            unless="$(eval ports == 'default')"/>
       <arg name="joystick"
-           value="$(eval joysticks.split()[robot_count - 1])"
+           value="$(eval str(joysticks).split()[robot_count - 1])"
            unless="$(eval joysticks == 'default')"/>
       <arg name="digsite_x_coord"
-           value="$(eval digsite_x_coords.split()[robot_count - 1])"
+           value="$(eval str(digsite_x_coords).split()[robot_count - 1])"
            unless="$(eval digsite_x_coords == 'default')"/>
       <arg name="digsite_y_coord"
-           value="$(eval digsite_y_coords.split()[robot_count - 1])"
+           value="$(eval str(digsite_y_coords).split()[robot_count - 1])"
            unless="$(eval digsite_y_coords == 'default')"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
     </include>
@@ -43,13 +43,13 @@
     <include file="$(find ezrassor_sim_description)/launch/model.launch">
       <arg name="model_id" value="$(arg robot_count)"/>
       <arg name="spawn_x_coord"
-           value="$(eval spawn_x_coords.split()[robot_count - 1])"
+           value="$(eval str(spawn_x_coords).split()[robot_count - 1])"
            unless="$(eval spawn_x_coords == 'default')"/>
       <arg name="spawn_y_coord"
-           value="$(eval spawn_y_coords.split()[robot_count - 1])"
+           value="$(eval str(spawn_y_coords).split()[robot_count - 1])"
            unless="$(eval spawn_y_coords == 'default')"/>
       <arg name="spawn_z_coord"
-           value="$(eval spawn_z_coords.split()[robot_count - 1])"
+           value="$(eval str(spawn_z_coords).split()[robot_count - 1])"
            unless="$(eval spawn_z_coords == 'default')"/>
     </include>
 
