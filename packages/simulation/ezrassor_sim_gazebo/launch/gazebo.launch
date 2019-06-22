@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch an empty simulation with Gazebo.
+     Written by Ronald Marrero and Cameron Taylor. -->
 <launch>
-  <!-- Launch an empty simulation with Gazebo.
-       Written by Ronald Marrero and Cameron Taylor. -->
   <arg name="world" default="base"/> 
   <arg name="use_sim_time" default="true"/>
   <arg name="show_gui" default="true"/>
