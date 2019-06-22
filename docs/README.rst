@@ -32,9 +32,7 @@ You're all set! Proceed to the `usage`_ section.
 
 CUSTOMIZED INSTALLATION
 -----------------------
-Before performing a custom installation, you will need to install `ROS manually`_. You'll also want to install the `ROS build tools`_.
-
-The installation script's general syntax looks like this:
+Before performing a custom installation, you'll need to install `ROS manually`_. You'll also want to install the `ROS build tools`_. Finally, you'll need to familiarize yourself with the installation script. The script's general syntax looks like this:
 ::
   sh install.sh <software> [arguments...]
   
@@ -49,7 +47,7 @@ All of the following are valid ``<software>`` options:
 ``packages [-e, --except <packages...> | -o, --only <packages...>]``
   Install the core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
   
-Once you have ROS and the ROS build tools installed, you can install any combination of our packages. Here are some examples:
+Once you have ROS and the ROS build tools installed, you can install any combination of our packages using the installation script. Here are some examples:
 ::
   # Install all packages except 'ezrassor_autonomous_control'
   sh install.sh packages --except ezrassor_autonomous_control
