@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a Gazebo simulation and populate the world with EZ-RASSORs!
+<!-- Launch a Gazebo simulation and populate the simulation with EZ-RASSORs!
      Written by Tiger Sachse. -->
 <launch>
-  <arg name="coordinate_offset" value="50"/>
-
   <arg name="control_methods"/>
   <arg name="robot_count" default="1"/>
-  <arg name="port" default="default"/>
-  <arg name="joystick" default="default"/>
+  <arg name="ports" default="default"/>
+  <arg name="joysticks" default="default"/>
   <arg name="spawn_x_coords" default="default"/>
   <arg name="spawn_y_coords" default="default"/>
   <arg name="spawn_z_coords" default="default"/>
@@ -22,23 +20,43 @@
   <arg name="use_sim_time" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
-  <!-- Spawn a simulated robot. This launch file knows how to handle 'default'
-       values when it recieves them. -->
-  <include file="$(find ezrassor_launcher)/launch/simulated_robot.launch"
-           ns="ezrassor$(arg robot_count)">
-    <arg name="model_id" value="$(arg robot_count)"/>
-    <arg name="control_methods" value="$(arg control_methods)"/>
-    <arg name="port" value="$(arg port)"/>
-    <arg name="joystick" value="$(arg joystick)"/>
-    <arg name="spawn_x_coord"
-         value="$(eval spawn_x_coords.split()[robot_count])"
-         unless="$(spawn_x_coords == 'default')"/>
-       <!--<arg name="spawn_y_coord" value="$(arg spawn_y)"/>
-    <arg name="spawn_z_coord" value="$(arg spawn_z)"/>
-    <arg name="digsite_x_coord" value="$(arg digsite_x)"/>
-    <arg name="digsite_y_coord" value="$(arg digsite_y)"/>-->
-    <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
-  </include>
+  <!-- Launch the communication system for a simulated robot. -->
+  <group ns="ezrassor$(arg robot_count)">
+    <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
+      <arg name="control_methods" value="$(arg control_methods)"/>
+      <arg name="port"
+           value="$(eval ports.split()[robot_count - 1])"
+           unless="$(eval ports == 'default')"/>
+      <arg name="joystick"
+           value="$(eval joysticks.split()[robot_count - 1])"
+           unless="$(eval joysticks == 'default')"/>
+      <arg name="digsite_x_coord"
+           value="$(eval digsite_x_coords.split()[robot_count - 1])"
+           unless="$(eval digsite_x_coords == 'default')"/>
+      <arg name="digsite_y_coord"
+           value="$(eval digsite_y_coords.split()[robot_count - 1])"
+           unless="$(eval digsite_y_coords == 'default')"/>
+      <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+    </include>
+
+    <!-- Spawn the model. -->
+    <include file="$(find ezrassor_sim_description)/launch/model.launch">
+      <arg name="model_id" value="$(arg robot_count)"/>
+      <arg name="spawn_x_coord"
+           value="$(eval spawn_x_coords.split()[robot_count - 1])"
+           unless="$(eval spawn_x_coords == 'default')"/>
+      <arg name="spawn_y_coord"
+           value="$(eval spawn_y_coords.split()[robot_count - 1])"
+           unless="$(eval spawn_y_coords == 'default')"/>
+      <arg name="spawn_z_coord"
+           value="$(eval spawn_z_coords.split()[robot_count - 1])"
+           unless="$(eval spawn_z_coords == 'default')"/>
+    </include>
+
+    <!-- Launch the model controls. -->
+    <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
+    </include>
+  </group>
 
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
        marked as 'default' are ignored and the defaults within the gazebo launch
@@ -69,16 +87,12 @@
   </include>
 
   <!-- If the final robot has not been spawned, recursively call this script again. -->
-  <include file="$(find ezrassor_launcher)/launch/simulation.launch"
+  <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch"
            unless="$(eval robot_count == 1)">
     <arg name="control_methods" value="$(arg control_methods)"/>
     <arg name="robot_count" value="$(eval robot_count - 1)"/>
-    <arg name="port"
-         value="$(eval port + 1)"
-         unless="$(eval port == 'default')"/>
-    <arg name="joystick"
-         value="$(eval joystick + 1)"
-         unless="$(eval joystick == 'default')"/>
+    <arg name="ports" value="$(arg ports)"/>
+    <arg name="joysticks" value="$(arg joysticks)"/>
     <arg name="spawn_x_coords" value="$(arg spawn_x_coords)"/>
     <arg name="spawn_y_coords" value="$(arg spawn_y_coords)"/>
     <arg name="spawn_z_coords" value="$(arg spawn_z_coords)"/>

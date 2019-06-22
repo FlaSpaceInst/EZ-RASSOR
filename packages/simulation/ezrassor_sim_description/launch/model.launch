@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Spawn an EZ-RASSOR.
+     Written by Ronald Marrero. -->
 <launch>
-  <!-- Spawn an EZ-RASSOR.
-       Written by Ronald Marrero. -->
-  <arg name="starting_x" default="0"/>
-  <arg name="starting_y" default="0"/>
-  <arg name="starting_z" default="0.2"/>
+  <arg name="spawn_x_coord" default="0"/>
+  <arg name="spawn_y_coord" default="0"/>
+  <arg name="spawn_z_coord" default="0.2"/>
   <arg name="yaw" default="0"/>
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
@@ -20,7 +20,7 @@
         args="-urdf
               -param robot_description
               -model ezrassor$(arg model_id)
-              -x $(arg starting_x) -y $(arg starting_y) -z $(arg starting_z)
+              -x $(arg spawn_x_coord) -y $(arg spawn_y_coord) -z $(arg spawn_z_coord)
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
   <!-- Convert joint states to TF transforms for rviz, etc. -->

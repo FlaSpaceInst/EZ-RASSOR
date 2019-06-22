@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all machinery necessary to control the EZ-RASSOR in a simulation.
+     Written by Ron Marrero and Tiger Sachse. -->
 <launch>
-  <!-- Launch all machinery necessary to control the EZ-RASSOR in a simulation.
-       Written by Ron Marrero and Tiger Sachse. -->
   <rosparam command="load"
             file="$(find ezrassor_sim_control)/config/default_position_controllers.yaml"/>
 
