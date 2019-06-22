@@ -99,44 +99,6 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='gazebo'>
-      <static>1</static>
-      <link name='link'>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://gazebo/meshes/gazebo.dae</uri>
-            </mesh>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://gazebo/meshes/gazebo.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>-3.03475 4.4135 0 0 -0 0</pose>
-    </model>
     <state world_name='moon'>
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
@@ -147,16 +109,6 @@
         <scale>1 1 1</scale>
         <link name='link'>
           <pose frame=''>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='gazebo'>
-        <pose frame=''>-0.001402 0.006713 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>-0.001402 0.006713 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
