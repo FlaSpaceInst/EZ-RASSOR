@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ;) Written by Tiger Sachse. -->
+<launch>
+  <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+    <arg name="control_methods" value="app"/>
+    <arg name="robot_count" value="4"/>
+    <arg name="ports" value="8080 8081 8082 8083"/>
+    <arg name="spawn_x_coords" value="1.5 1.5 -1.5 -1.5"/>
+    <arg name="spawn_y_coords" value="1.5 -1.5 1.5 -1.5"/>
+    <arg name="world" value="ez_battle_bots"/> 
+  </include>
+</launch>
