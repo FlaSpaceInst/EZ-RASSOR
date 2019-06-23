@@ -9,7 +9,7 @@ The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inex
 - Autonomously navigate around possible obstructions
 - Cooperate in a swarm of other EZ-RASSORs
 
-For more information, our `wiki`_ contains a high-level overview of the EZ-RASSOR and its many components, and our `blue paper`_ goes even further in depth!
+For more information, our `wiki`_ contains a high-level overview of the EZ-RASSOR and its many components.
 
 If you'd like to contribute, check out the `contributing guidelines`_ and the `license`_.
 
@@ -104,7 +104,6 @@ AUTHORS
 - `Lucas Gonzalez`_
 
 .. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
-.. _`blue paper`: BLUE_PAPER.pdf
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
 .. _`usage`: README.rst#Usage
