@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch an empty simulation with Gazebo.
+     Written by Ronald Marrero and Cameron Taylor. -->
+<launch>
+  <arg name="world" default="base"/> 
+  <arg name="use_sim_time" default="true"/>
+  <arg name="show_gui" default="true"/>
+  <arg name="recording" default="false"/>
+  <arg name="verbose" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="paused" default="false"/>
+ 
+  <!-- Fire up Gazebo. -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find ezrassor_sim_gazebo)/worlds/$(arg world).world"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="gui" value="$(arg show_gui)"/>
+    <arg name="recording" value="$(arg recording)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="paused" value="$(arg paused)"/>
+  </include>
+</launch>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch Joy and its translator. Written by Tiger Sachse and Harrison Black. -->
+<launch>
+  <arg name="wheel_instructions_topic"/>
+  <arg name="front_arm_instructions_topic"/>
+  <arg name="back_arm_instructions_topic"/>
+  <arg name="front_drum_instructions_topic"/>
+  <arg name="back_drum_instructions_topic"/>
+  <arg name="joystick" default="default"/>
+
+  <!-- If the joystick argument is set to default, load Joy with the default
+       joystick from the YAML file. Otherwise, use the joystick provided by the
+       joystick argument. -->
+  <group if="$(eval joystick == 'default')">
+    <rosparam command="load"
+              file="$(find ezrassor_joy_translator)/config/default_joystick.yaml"/>
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen"/>
+  </group>
+  <group unless="$(eval joystick == 'default')">
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+      <param name="dev" value="/dev/js$(arg joystick)"/>
+    </node>
+  </group>
+
+  <!-- Launch the joy translator. -->
+  <node name="joy_translator"
+        pkg="ezrassor_joy_translator"
+        type="joy_translator"
+        output="screen">
+    <param name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+    <param name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+    <param name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+    <param name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+    <param name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+  </node>
+</launch>

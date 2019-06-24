@@ -18,23 +18,7 @@
       </friction>
     </include>
     <!--Hopper Model-->
-    <include>
-        <uri>model://sun</uri>
-    </include>
     <!-- Own physics settings to speed up simulation -->
-    <light name='sun' type='directional'>
-      <cast_shadows>1</cast_shadows>
-      <pose frame=''>0 0 10 0 -0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>1000</range>
-        <constant>0.9</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
-      </attenuation>
-      <direction>-0.5 0.5 -1</direction>
-    </light>
     <model name='apollo15_landing_site_1000x1000'>
       <static>1</static>
       <link name='link'>
@@ -100,19 +84,6 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <light name='sun' type='directional'>
-      <cast_shadows>1</cast_shadows>
-      <pose frame=''>0 0 10 0 -0 0</pose>
-      <diffuse>0.8 0.8 0.8 1</diffuse>
-      <specular>0.1 0.1 0.1 1</specular>
-      <attenuation>
-        <range>1000</range>
-        <constant>0.9</constant>
-        <linear>0.01</linear>
-        <quadratic>0.001</quadratic>
-      </attenuation>
-      <direction>-0.5 0.5 -1</direction>
-    </light>
     <physics name='default_physics' default='0' type='ode'>
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>
@@ -128,44 +99,6 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='gazebo'>
-      <static>1</static>
-      <link name='link'>
-        <collision name='collision'>
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://gazebo/meshes/gazebo.dae</uri>
-            </mesh>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://gazebo/meshes/gazebo.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>-3.03475 4.4135 0 0 -0 0</pose>
-    </model>
     <state world_name='moon'>
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
@@ -181,17 +114,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='gazebo'>
-        <pose frame=''>-0.001402 0.006713 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>-0.001402 0.006713 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='number1'>
+      <model name='number1_clone'>
         <pose frame=''>7.59024 2.79297 1.06018 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -201,8 +124,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='number1_clone'>
-        <pose frame=''>17.0592 18.9666 0.897276 0 -0 0</pose>
+      <model name='number1_clone_0'> <pose frame=''>17.0592 18.9666 0.897276 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
           <pose frame=''>17.0592 18.9666 0.897276 0 -0 0</pose>
@@ -211,7 +133,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='number1_clone_0'>
+      <model name='number1_clone_1'>
         <pose frame=''>14.8234 9.40475 1.06018 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -221,7 +143,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='number1_clone_1'>
+      <model name='number1_clone_2'>
         <pose frame=''>15.4361 -1.6518 1.06018 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -231,7 +153,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='number1_clone_2'>
+      <model name='number1_clone_3'>
         <pose frame=''>10.864 -10.16 1.06018 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -241,7 +163,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='number1_clone_3'>
+      <model name='number1_clone_4'>
         <pose frame=''>8.4913 18.4744 0.332375 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -250,10 +172,7 @@
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
-      </model>
-      <light name='sun'>
-        <pose frame=''>0 0 10 0 -0 0</pose>
-      </light>
+      </model> 
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
@@ -261,9 +180,33 @@
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
-    </gui>
+    </gui> 
+    <model name='number1_clone_0'>
+      <pose frame=''>17.0592 18.9666 1.06018 0 -0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://number1/meshes/number.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://number1/materials/scripts</uri>
+              <uri>model://number1/materials/textures</uri>
+              <name>Number/One</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
     <model name='number1_clone_1'>
-      <pose frame=''>15.4361 -1.6518 1.06018 0 -0 0</pose>
+      <pose frame=''>14.8234 9.40475 1.06018 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -287,7 +230,7 @@
       </link>
     </model>
     <model name='number1_clone_2'>
-      <pose frame=''>10.864 -10.16 1.06018 0 -0 0</pose>
+      <pose frame=''>15.4361 -1.6518 1.06018 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -311,7 +254,7 @@
       </link>
     </model>
     <model name='number1_clone_3'>
-      <pose frame=''>8.4913 18.4744 1.06018 0 -0 0</pose>
+      <pose frame=''>10.864 -10.16 1.06018 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -334,8 +277,8 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name='number1_clone'>
-      <pose frame=''>17.0592 18.9666 1.06018 0 -0 0</pose>
+    <model name='number1_clone_4'>
+      <pose frame=''>8.4913 18.4744 0.332375 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>

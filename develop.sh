@@ -7,7 +7,7 @@ PACKAGES_DIR="packages"
 EXTERNAL_DIR="external"
 WORKSPACE_DIR="$HOME/.workspace"
 WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
-WORKSPACE_BUILD_DIR="$WORKSPACE_DIR/build"
+WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
 CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
 
@@ -50,7 +50,7 @@ setup_environment() {
     cd "$WORKSPACE_SOURCE_DIR"
     catkin_init_workspace
     cd - > /dev/null 2>&1
-    source_setups_in_directory "$WORKSPACE_BUILD_DIR"
+    source_setups_in_directory "$WORKSPACE_DEVEL_DIR"
 }
 
 # Create a new ROS package in source control.

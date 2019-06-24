@@ -1,0 +1,7 @@
+v1.0.0: 06/19/2019
+- Initial release of the EZ-RASSOR.
+- Provides a full simulation of the EZ-RASSOR, complete with 3D models and worlds.
+- Simulated robot can drive around and perform subroutines.
+- Simulated robot can be controlled via a gamepad or our custom mobile app.
+- Simulated robot can also be controlled by a custom autonomy stack.
+- Provides a suite of scripts that aid in development and installation.
