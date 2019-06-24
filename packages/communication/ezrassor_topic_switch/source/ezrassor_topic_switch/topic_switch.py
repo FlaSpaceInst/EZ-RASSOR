@@ -70,9 +70,13 @@ def start_node(default_node_name, override_topic, queue_size):
             )
             topic_type_class = vars(topic_type_module)[topic_type_class]
         except ImportError:
-            raise ImportError("No topic type module named \"%s\"" % topic_type_module)
+            raise ImportError(
+                "No topic type module named \"{0}\"".format(str(topic_type_module)),
+            )
         except KeyError:
-            raise ImportError("No topic type class named \"%s\"" % topic_type_class)
+            raise ImportError(
+                "No topic type class named \"{0}\"".format(str(topic_type_class)),
+            )
 
         # Create all publishers and subscribers.
         output_publisher = rospy.Publisher(

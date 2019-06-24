@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch a controller server. Written by Tiger Sachse. -->
+<launch>
+  <arg name="wheel_instructions_topic"/>
+  <arg name="front_arm_instructions_topic"/>
+  <arg name="back_arm_instructions_topic"/>
+  <arg name="front_drum_instructions_topic"/>
+  <arg name="back_drum_instructions_topic"/>
+  <arg name="port" default="8080"/>
+
+  <!-- Launch the controller server with a specified port. -->
+  <node name="controller_server"
+        pkg="ezrassor_controller_server"
+        type="controller_server"
+        output="screen">
+    <param name="port" value="$(arg port)"/>
+    <param name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+    <param name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+    <param name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+    <param name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+    <param name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+  </node>
+</launch>

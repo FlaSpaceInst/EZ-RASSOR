@@ -6,11 +6,14 @@
 USER_SHELLS="bash zsh"
 SH_SETUP_FILE="setup.sh"
 README_FILE="docs/README.rst"
+CHANGES_FILE="docs/CHANGES.txt"
+LICENSE_FILE="docs/LICENSE.txt"
 EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 ROS_INSTALL_PARTIAL_DIR="/opt/ros"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
 EZRASSOR_INSTALL_DIR="$HOME/.ezrassor"
+INSTALLED_DOCS_DIR="$EZRASSOR_INSTALL_DIR/docs"
 WORKSPACE_PARTIAL_DIR="/tmp/ezrassor_workspace"
 RECV_KEY="C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654"
 USAGE_STRING="Usage: sh install.sh <software> [arguments...]\n"
@@ -194,6 +197,12 @@ install_packages() {
     catkin_make -DCMAKE_INSTALL_PREFIX="$EZRASSOR_INSTALL_DIR" install
 
     cd - > /dev/null 2>&1
+
+    # Copy the most important documentation into the EZRASSOR_INSTALL_DIR.
+    mkdir -p "$INSTALLED_DOCS_DIR"
+    cp "$README_FILE" "$INSTALLED_DOCS_DIR"
+    cp "$CHANGES_FILE" "$INSTALLED_DOCS_DIR"
+    cp "$LICENSE_FILE" "$INSTALLED_DOCS_DIR"
 
     # Source the installed EZ-RASSOR packages.
     source_setups_in_directory "$EZRASSOR_INSTALL_DIR" 

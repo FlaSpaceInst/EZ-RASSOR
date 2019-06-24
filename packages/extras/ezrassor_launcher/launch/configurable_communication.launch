@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configure and launch the entire communication system of the EZ-RASSOR.
+     Written by Tiger Sachse. -->
+<launch>
+  <arg name="control_methods"/>
+  <arg name="port" default="default"/>
+  <arg name="joystick" default="default"/>
+  <arg name="digsite_x_coord" default="default"/>
+  <arg name="digsite_y_coord" default="default"/>
+  <arg name="enable_real_odometry" default="default"/>
+
+  <!-- A large collection of constants that this launch file needs. -->
+  <arg name="wheel_instructions_topic" value="wheel_instructions"/>
+  <arg name="front_arm_instructions_topic" value="front_arm_instructions"/>
+  <arg name="back_arm_instructions_topic" value="back_arm_instructions"/>
+  <arg name="front_drum_instructions_topic" value="front_drum_instructions"/>
+  <arg name="back_drum_instructions_topic" value="back_drum_instructions"/>
+  <arg name="manual_wheel_instructions_topic" value="manual_wheel_instructions"/>
+  <arg name="manual_front_arm_instructions_topic" value="manual_front_arm_instructions"/>
+  <arg name="manual_back_arm_instructions_topic" value="manual_back_arm_instructions"/>
+  <arg name="manual_front_drum_instructions_topic" value="manual_front_drum_instructions"/>
+  <arg name="manual_back_drum_instructions_topic" value="manual_back_drum_instructions"/>
+  <arg name="autonomous_wheel_instructions_topic"
+       value="autonomous_wheel_instructions"/>
+  <arg name="autonomous_front_arm_instructions_topic"
+       value="autonomous_front_arm_instructions"/>
+  <arg name="autonomous_back_arm_instructions_topic"
+       value="autonomous_back_arm_instructions"/>
+  <arg name="autonomous_front_drum_instructions_topic"
+       value="autonomous_front_drum_instructions"/>
+  <arg name="autonomous_back_drum_instructions_topic"
+       value="autonomous_back_drum_instructions"/>
+  <arg name="float_module" value="std_msgs.msg"/>
+  <arg name="float_class" value="Float32"/>
+  <arg name="twist_module" value="geometry_msgs.msg"/>
+  <arg name="twist_class" value="Twist"/>
+  <arg name="wheel_switch_name" value="wheel_switch"/>
+  <arg name="front_arm_switch_name" value="front_arm_switch"/>
+  <arg name="back_arm_switch_name" value="back_arm_switch"/>
+  <arg name="front_drum_switch_name" value="front_drum_switch"/>
+  <arg name="back_drum_switch_name" value="back_drum_switch"/>
+
+  <group if="$(eval 'autonomy' in control_methods)">
+
+    <!-- This group sets up dual mode. It launches the controller server and/or
+         the Joy translator with separate "manual" topics, and it also launches
+         autonomous control with separate "autonomous" topics. Finally, it launches
+         all necessary topic switches which handle flipping between the two modes. --> 
+    <group if="$(eval 'gamepad' in control_methods or 'app' in control_methods)">
+      <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
+               if="$(eval 'gamepad' in control_methods)">
+        <arg name="joystick" value="$(arg joystick)"/>
+        <arg name="wheel_instructions_topic"
+             value="$(arg manual_wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg manual_front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg manual_back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg manual_front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg manual_back_drum_instructions_topic)"/>
+      </include>
+      <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
+               if="$(eval 'app' in control_methods)">
+        <arg name="port" value="$(arg port)" unless="$(eval port == 'default')"/>
+        <arg name="wheel_instructions_topic"
+             value="$(arg manual_wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg manual_front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg manual_back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg manual_front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg manual_back_drum_instructions_topic)"/>
+      </include>
+      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
+        <arg name="wheel_instructions_topic"
+             value="$(arg autonomous_wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg autonomous_front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg autonomous_back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg autonomous_front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg autonomous_back_drum_instructions_topic)"/>
+        <arg name="digsite_x_coord"
+             value="$(arg digsite_x_coord)"
+             unless="$(eval digsite_x_coord == 'default')"/>
+        <arg name="digsite_y_coord"
+             value="$(arg digsite_y_coord)"
+             unless="$(eval digsite_y_coord == 'default')"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
+      </include>
+      <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+        <arg name="node_name" value="$(arg wheel_switch_name)"/>
+        <arg name="primary_topic" value="$(arg manual_wheel_instructions_topic)"/>
+        <arg name="secondary_topic" value="$(arg autonomous_wheel_instructions_topic)"/>
+        <arg name="output_topic" value="$(arg wheel_instructions_topic)"/>
+        <arg name="topic_type_module" value="$(arg twist_module)"/>
+        <arg name="topic_type_class" value="$(arg twist_class)"/>
+      </include>
+      <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+        <arg name="node_name" value="$(arg front_arm_switch_name)"/>
+        <arg name="primary_topic" value="$(arg manual_front_arm_instructions_topic)"/>
+        <arg name="secondary_topic" value="$(arg autonomous_front_arm_instructions_topic)"/>
+        <arg name="output_topic" value="$(arg front_arm_instructions_topic)"/>
+        <arg name="topic_type_module" value="$(arg float_module)"/>
+        <arg name="topic_type_class" value="$(arg float_class)"/>
+      </include>
+      <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+        <arg name="node_name" value="$(arg back_arm_switch_name)"/>
+        <arg name="primary_topic" value="$(arg manual_back_arm_instructions_topic)"/>
+        <arg name="secondary_topic" value="$(arg autonomous_back_arm_instructions_topic)"/>
+        <arg name="output_topic" value="$(arg back_arm_instructions_topic)"/>
+        <arg name="topic_type_module" value="$(arg float_module)"/>
+        <arg name="topic_type_class" value="$(arg float_class)"/>
+      </include>
+      <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+        <arg name="node_name" value="$(arg front_drum_switch_name)"/>
+        <arg name="primary_topic" value="$(arg manual_front_drum_instructions_topic)"/>
+        <arg name="secondary_topic" value="$(arg autonomous_front_drum_instructions_topic)"/>
+        <arg name="output_topic" value="$(arg front_drum_instructions_topic)"/>
+        <arg name="topic_type_module" value="$(arg float_module)"/>
+        <arg name="topic_type_class" value="$(arg float_class)"/>
+      </include>
+      <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
+        <arg name="node_name" value="$(arg back_drum_switch_name)"/>
+        <arg name="primary_topic" value="$(arg manual_back_drum_instructions_topic)"/>
+        <arg name="secondary_topic" value="$(arg autonomous_back_drum_instructions_topic)"/>
+        <arg name="output_topic" value="$(arg back_drum_instructions_topic)"/>
+        <arg name="topic_type_module" value="$(arg float_module)"/>
+        <arg name="topic_type_class" value="$(arg float_class)"/>
+      </include>
+
+    <!-- This group sets up autonomous mode. It launches autonomous control and
+         directs it to publish directly to the main instruction topics (no topic
+         switches required). -->
+    </group>
+    <group unless="$(eval 'gamepad' in control_methods or 'app' in control_methods)">
+      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
+        <arg name="wheel_instructions_topic"
+             value="$(arg wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg back_drum_instructions_topic)"/>
+        <arg name="digsite_x_coord"
+             value="$(arg digsite_x_coord)"
+             unless="$(eval digsite_x_coord == 'default')"/>
+        <arg name="digsite_y_coord"
+             value="$(arg digsite_y_coord)"
+             unless="$(eval digsite_y_coord == 'default')"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
+      </include>
+    </group>
+  </group>
+
+  <!-- This group sets up manual mode. It launches the controller server and/or
+       the Joy translator and directs these nodes to publish directly to the main
+       instruction topics (no topic switches required). -->
+  <group unless="$(eval 'autonomy' in control_methods)">
+    <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
+             if="$(eval 'gamepad' in control_methods)">
+      <arg name="joystick" value="$(arg joystick)"/>
+      <arg name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+      <arg name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+      <arg name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+      <arg name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+      <arg name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+    </include>
+    <include file="$(find ezrassor_controller_server)/launch/controller_server.launch"
+             if="$(eval 'app' in control_methods)">
+      <arg name="port" value="$(arg port)" unless="$(eval port == 'default')"/>
+      <arg name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+      <arg name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+      <arg name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+      <arg name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+      <arg name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+    </include>
+  </group>
+</launch>
