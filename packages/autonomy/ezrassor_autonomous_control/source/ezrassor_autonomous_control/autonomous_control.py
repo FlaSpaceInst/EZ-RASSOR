@@ -51,7 +51,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     if real_odometry:
         # This topic will be changed to represent whatever
         # topic the odometry data is being published to
-        print("Real Odometry")
         rospy.Subscriber('stereo_odometer/odometry', 
                          Odometry, 
                          world_state.odometryCallBack)
@@ -72,10 +71,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     rospy.Subscriber('autonomous_toggles', 
                      Int8, 
                      ros_util.autoCommandCallBack)
-
-    uf.set_back_arm_angle(world_state, ros_util, 1.5)
-    uf.set_front_arm_angle(world_state, ros_util, 1.5)
     
+
     autonomous_control_loop(world_state, ros_util)
 
 
@@ -85,7 +82,6 @@ def full_autonomy(world_state, ros_util):
     ros_util.status_pub.publish('Full Autonomy Activated.')
 
     while(True):
-        print(world_state.dig_site)
         af.auto_drive_location(world_state, ros_util)
         af.auto_dig(world_state, ros_util, 7)
         af.auto_dock(world_state, ros_util)
@@ -98,8 +94,9 @@ def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
     
     print("Entered Control Loop")
-    print(ros_util.auto_function_command)
-
+    #uf.set_back_arm_angle(world_state, ros_util, 1.5)
+    #uf.set_front_arm_angle(world_state, ros_util, 1.5)
+ 
     while(True):
 
         while ros_util.auto_function_command == 0:

@@ -100,7 +100,6 @@ def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
-    print("Auto Dumping")
     ros_util.status_pub.publish("Auto Dumping")
     
     t = 0
