@@ -19,7 +19,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                 max_linear_velocity=1, max_angular_velocity=1, 
                 real_odometry=False):
     """ Initialization Function  """
-    print("On Start Up")
 
     # ROS Node Init Parameters 
     rospy.init_node('autonomous_control', anonymous=True)
@@ -50,6 +49,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
 
     # Setup Subscriber Callbacks
     if real_odometry:
+        # This topic will be changed to represent whatever
+        # topic the odometry data is being published to
         rospy.Subscriber('stereo_odometer/odometry', 
                          Odometry, 
                          world_state.odometryCallBack)

@@ -161,3 +161,7 @@ class ROSUtility():
     def autoCommandCallBack(self, data):
         """ Set auto_function_command to the current choice. """
         self.auto_function_command = data.data
+
+
+
+
