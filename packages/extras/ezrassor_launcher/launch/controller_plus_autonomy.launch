@@ -67,7 +67,7 @@
       <param name="back_drum_topic" value="autonomous_back_drum_instructions"/>
       <param name="max_linear_velocity" value="1"/>
       <param name="max_angular_velocity" value="1"/>
-      <param name="real_odometry" value="True"/>
+      <param name="real_odometry" value="False"/>
     </node>
     
     <include file="$(find ezrassor_autonomous_control)/launch/disparity.launch"/>

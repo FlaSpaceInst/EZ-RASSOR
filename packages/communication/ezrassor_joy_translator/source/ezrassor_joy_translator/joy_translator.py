@@ -46,7 +46,7 @@ def callback(data, additional_arguments):
 
     # AI Kill Bit
     if data.buttons[10] > 0:
-        pub_auto_toggles.publish(100000)
+        pub_auto_toggles.publish(0b100000)
         return
     
     twist = Twist()

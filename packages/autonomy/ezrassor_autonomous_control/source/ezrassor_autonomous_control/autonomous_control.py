@@ -51,6 +51,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     if real_odometry:
         # This topic will be changed to represent whatever
         # topic the odometry data is being published to
+        print("Real Odometry")
         rospy.Subscriber('stereo_odometer/odometry', 
                          Odometry, 
                          world_state.odometryCallBack)
