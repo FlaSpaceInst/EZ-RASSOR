@@ -36,14 +36,14 @@
     <param name="back_drum_instructions_topic"
            value="$(arg back_drum_instructions_topic)"/>
   </node>
-
+  <!--
   <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
     <param name="min_disparity" type="int" value="3"/>
     <param name="texture_threshold" type="int" value="100"/> 
     <param name="speckle_size" type="int" value="200"/>
-  </node>
-  <!--  
-  <node pkg="image_view" type="stereo_view" name="stereo_view">
+ </node>
+ 
+ <node pkg="image_view" type="stereo_view" name="stereo_view">
     <param name="stereo" value=""/>
     <param name="image" value="image_rect_color"/>
   </node>
