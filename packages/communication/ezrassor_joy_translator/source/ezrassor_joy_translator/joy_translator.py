@@ -16,7 +16,7 @@ def callback(data, additional_arguments):
     pub_front_drum = additional_arguments[3]
     pub_back_drum = additional_arguments[4]
     pub_auto_toggles = additional_arguments[5]
-    
+
     # Raw controller input data indexes
     # data.buttons[index]
     # 0 A : Back Drum Dump
@@ -45,7 +45,23 @@ def callback(data, additional_arguments):
     if data.buttons[10] > 0:
         pub_auto_toggles.publish(0b100000)
         return
-    
+    # Auto Functions
+    if data.axes[6] == 1:
+        pub_auto_toggles.publish(0b000010)
+        return
+    elif data.axes[6] == -1:
+        pub_auto_toggles.publish(0b000100)
+        return
+    elif data.axes[7] == 1:
+        pub_auto_toggles.publish(0b000001)
+        return
+    elif data.axes[7] == -1:
+        pub_auto_toggles.publish(0b001000)
+        return
+    elif data.buttons[9] > 0:
+        pub_auto_toggles.publish(0b010000)
+        return
+
     twist = Twist()
     twist.linear.x = ((data.axes[4] + data.axes[1]) / 2)
     twist.angular.z = ((data.axes[4] - data.axes[1]) / 2)

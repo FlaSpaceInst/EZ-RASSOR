@@ -90,11 +90,21 @@ def auto_dock(world_state, ros_util):
     
     ros_util.status_pub.publish("Auto Returning to {}"
                                 .format([0,0]))
+
+    old_target_x = world_state.target_location.x
+    old_target_y = world_state.target_location.y
+
     ros_util.threshold = 3
+    
     world_state.target_location.x = 0
     world_state.target_location.y = 0
+    
     auto_drive_location(world_state, ros_util)
     ros_util.threshold = .5
+    
+    world_state.target_location.x = old_target_x
+    world_state.target_location.y = old_target_y
+ 
 
 def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 

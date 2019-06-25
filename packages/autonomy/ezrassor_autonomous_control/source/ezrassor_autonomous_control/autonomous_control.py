@@ -95,6 +95,9 @@ def full_autonomy(world_state, ros_util):
         world_state.target_location.x = world_state.dig_site.x
         world_state.target_location.y = world_state.dig_site.y
     
+    world_state.target_location.x = world_state.dig_site.x
+    world_state.target_location.y = world_state.dig_site.y
+    
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
