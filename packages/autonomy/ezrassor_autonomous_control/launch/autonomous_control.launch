@@ -42,8 +42,13 @@
     <param name="texture_threshold" type="int" value="100"/> 
     <param name="speckle_size" type="int" value="200"/>
   </node>
-    
-  <node pkg="image_view" type="stereo_view" name="stereo_view"/>
+  <!--  
+  <node pkg="image_view" type="stereo_view" name="stereo_view">
+    <param name="stereo" value=""/>
+    <param name="image" value="image_rect_color"/>
+  </node>
+  
+  
   <node pkg="ezrassor_autonomous_control" type="tf_camera_broadcaster" 
 	name="tf_camera_broadcaster"/>
 
@@ -56,5 +61,5 @@
       <remap from="/stereo/right/camera_info" to="/front_camera/right/camera_info"/>
     </node>
   </group>
-
+ -->
 </launch>
