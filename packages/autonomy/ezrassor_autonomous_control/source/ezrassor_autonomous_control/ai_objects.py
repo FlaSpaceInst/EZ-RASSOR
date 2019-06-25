@@ -123,7 +123,7 @@ class ROSUtility():
         self.status_pub = rospy.Publisher('status', 
                                           String, 
                                           queue_size=10)
-        self.control_pub = rospy.Publisher('autonomous_override_toggle', 
+        self.control_pub = rospy.Publisher('secondary_override_toggle', 
                                            Bool, 
                                            queue_size=10)
         self.rate = rospy.Rate(45) # 10hz

@@ -36,7 +36,6 @@ class OverrideStatus:
         self.__status = status.data
         self.__status_lock.release()
 
-
 def route_item(item, additional_arguments):
     """Route an item to the output topic if the override status permits it."""
     output_publisher, override_status, expected_status = additional_arguments
