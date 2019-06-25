@@ -24,10 +24,16 @@ def auto_drive_location(world_state, ros_util):
     ros_util.status_pub.publish("Auto Driving to {}"
                                 .format(world_state.target_location))
     
+    # Set arms up for travel
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+    
     # Main loop until location is reached
     while at_target(world_state, ros_util):
         
-        uf.self_check(world_state, ros_util)
+        if uf.self_check(world_state, ros_util) != 1:
+            ros_util.status_pub.publish("Status Check Failed")
+            return
 
         # Get new heading angle relative to current heading as (0,0)
         new_heading = nf.calculate_heading(world_state, ros_util)
@@ -64,29 +70,23 @@ def auto_dig(world_state, ros_util, duration):
     """
     ros_util.status_pub.publish("Auto Digging for {} Seconds"
                                 .format(duration))
-
-    uf.set_front_arm_angle(world_state, ros_util, .15)
-    uf.set_back_arm_angle(world_state, ros_util, .15)
-
+    
+    uf.set_front_arm_angle(world_state, ros_util, -0.1)
+    uf.set_back_arm_angle(world_state, ros_util, -0.1)
+ 
     # Perform Auto Dig for the desired Duration
     t = 0
     while t < duration*40:        
+        if uf.self_check(world_state, ros_util) != 1:
+            return
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t+=1
         ros_util.rate.sleep()
     
-    uf.set_front_arm_angle(world_state, ros_util, 1.2)
-    uf.set_back_arm_angle(world_state, ros_util, 1.2)
-
-
-    uf.set_front_arm_angle(world_state, ros_util, 1.3)
-    uf.set_back_arm_angle(world_state, ros_util, 1.3)
-
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
-    print("Auto Returning to {}".format([0,0]))
     
     ros_util.status_pub.publish("Auto Returning to {}"
                                 .format([0,0]))
@@ -101,9 +101,14 @@ def auto_dump(world_state, ros_util, duration):
         for duration time in seconds. 
     """
     ros_util.status_pub.publish("Auto Dumping")
-    
+
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+ 
     t = 0
     while t < duration*40:        
+        if uf.self_check(world_state, ros_util) != 1:
+            return
         ros_util.publish_actions('stop', 0, 0, -1, -1)
         t+=1
         ros_util.rate.sleep()

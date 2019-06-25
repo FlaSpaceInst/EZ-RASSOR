@@ -4,7 +4,6 @@ import nav_functions as nf
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
-
     ros_util.status_pub.publish(
         "Setting Front Arm Angle to {} Radians".format(
             target_angle,
@@ -22,10 +21,8 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
-
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
-
     ros_util.status_pub.publish(
         "Setting Back Arm Angle to {} Radians".format(
             target_angle,
@@ -43,17 +40,17 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
-
 def self_check(world_state, ros_util):
     """ Check for unfavorable states in the system 
         and handle or quit gracefully. 
     """
-    
     if ros_util.auto_function_command == 32:
         ros_util.status_pub.publish("Cancel Auto Function Command Recieved")
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
+    # Future status checks for physical hardware
+    '''
     if world_state.on_side == True:
         ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
         return 2
@@ -66,10 +63,10 @@ def self_check(world_state, ros_util):
         ros_util.publish_actions('stop', 1, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
-    else:
         ros_util.status_pub.publish("Passed Status Check")
-        return 1
-        
+    '''
+    ros_util.status_pub.publish("Passed Status Check")
+    return 1
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
