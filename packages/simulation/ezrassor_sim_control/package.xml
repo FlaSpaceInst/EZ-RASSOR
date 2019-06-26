@@ -14,6 +14,7 @@
   <depend>velocity_controllers</depend>
   <depend>joint_state_controller</depend>
   <depend>robot_state_publisher</depend>
+  <depend>gazebo_plugins</depend>
   <depend>rospy</depend>
   <depend>roslaunch</depend>
   <depend>std_msgs</depend>
