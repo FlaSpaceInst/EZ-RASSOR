@@ -19,7 +19,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                 max_linear_velocity=1, max_angular_velocity=1, 
                 real_odometry=False):
     """ Initialization Function  """
-    print("On Start Up")
 
     # ROS Node Init Parameters 
     rospy.init_node('autonomous_control', anonymous=True)
@@ -50,6 +49,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
 
     # Setup Subscriber Callbacks
     if real_odometry:
+        # This topic will be changed to represent whatever
+        # topic the odometry data is being published to
         rospy.Subscriber('stereo_odometer/odometry', 
                          Odometry, 
                          world_state.odometryCallBack)
@@ -70,10 +71,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     rospy.Subscriber('autonomous_toggles', 
                      Int8, 
                      ros_util.autoCommandCallBack)
-
-    uf.set_back_arm_angle(world_state, ros_util, 1.5)
-    uf.set_front_arm_angle(world_state, ros_util, 1.5)
     
+
     autonomous_control_loop(world_state, ros_util)
 
 
@@ -82,25 +81,29 @@ def full_autonomy(world_state, ros_util):
     
     ros_util.status_pub.publish('Full Autonomy Activated.')
 
-    while(True):
-        print(world_state.dig_site)
+    while(ros_util.auto_function_command == 16):
         af.auto_drive_location(world_state, ros_util)
+        if ros_util.auto_function_command != 16:
+            break
         af.auto_dig(world_state, ros_util, 7)
+        if ros_util.auto_function_command != 16:
+            break       
         af.auto_dock(world_state, ros_util)
+        if ros_util.auto_function_command != 16:
+            break       
         af.auto_dump(world_state, ros_util, 4)
         world_state.target_location.x = world_state.dig_site.x
         world_state.target_location.y = world_state.dig_site.y
+    
+    world_state.target_location.x = world_state.dig_site.x
+    world_state.target_location.y = world_state.dig_site.y
     
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
     
-    print("Entered Control Loop")
-    print(ros_util.auto_function_command)
-
     while(True):
-
-        while ros_util.auto_function_command == 0:
+        while ros_util.auto_function_command == 0 or ros_util.auto_function_command == 32:
             ros_util.publish_actions('stop', 0, 0, 0, 0)
             ros_util.rate.sleep()
 
@@ -111,14 +114,17 @@ def autonomous_control_loop(world_state, ros_util):
         elif ros_util.auto_function_command == 2:
             af.auto_dig(world_state, ros_util, 10)
         elif ros_util.auto_function_command == 4:
-            af.auto_dump(world_state, ros_util, 10)
+            af.auto_dump(world_state, ros_util, 4)
         elif ros_util.auto_function_command == 8:
-            uf.self_right_from_side(world_state, ros_util)
+            af.auto_dock(world_state, ros_util)
         elif ros_util.auto_function_command == 16:
             full_autonomy(world_state, ros_util)
         else:
             ros_util.status_pub.publish('Error Incorrect Auto Function Request {}'
                                         .format(ros_util.auto_function_command))
         
+        ros_util.auto_function_command = 0
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
+
+

@@ -1,0 +1,4 @@
+# The default joystick that Joy listens to. You can specify a different joystick
+# using the launch files for provided for this node, so it is highly recommended
+# that you don't modify this file.
+joy_node/dev : /dev/input/js0

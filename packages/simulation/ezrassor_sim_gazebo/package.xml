@@ -11,6 +11,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>xacro</depend>
   <depend>gazebo_ros</depend>
+  <depend>gazebo_plugins</depend>
   <depend>robot_state_publisher</depend>
 
   <!-- This export hack is needed to allow Gazebo to reference the models in this package without needing to copy the files anywhere or do any special magic.
