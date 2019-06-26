@@ -8,7 +8,7 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError 
 from stereo_msgs.msg import DisparityImage
 import std_msgs
-from std_msgs.msg import Int16
+from std_msgs.msg import Int8
 from sensor_msgs.msg import LaserScan
 import time
 
@@ -39,8 +39,8 @@ def laser_scan_offset(data, increment):
 # Obstacle Detection
 def obst_detect(data):
 
-    pub = rospy.Publisher('ezrassor/obstacle_detect', Int16, queue_size=10)
-    laser_scan = rospy.Publisher('/scan', LaserScan, queue_size=10)
+    pub = rospy.Publisher('obstacle_detect', Int8, queue_size=10)
+    laser_scan = rospy.Publisher('scan', LaserScan, queue_size=10)
 
     scan = LaserScan()
 
@@ -122,7 +122,7 @@ def callback(data):
 
 def depth_estimator():
     rospy.init_node('depth_estimator', anonymous=True)
-    rospy.Subscriber("front_camera/disparity", DisparityImage, callback)
+    rospy.Subscriber("disparity", DisparityImage, callback)
     rospy.spin()
 
 if __name__ == "__main__":
