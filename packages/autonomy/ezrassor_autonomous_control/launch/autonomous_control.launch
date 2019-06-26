@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!-- Launch autonomous control for the EZ-RASSOR.
      Written by Tiger Sachse and Cameron Taylor. -->
-
 <launch>
   <arg name="wheel_instructions_topic"/>
   <arg name="front_arm_instructions_topic"/>
@@ -13,8 +11,8 @@
   <arg name="digsite_y_coord" default="10"/>
   <arg name="max_linear_velocity" default="1"/>
   <arg name="max_angular_velocity" default="1"/>
-  <arg name="enable_real_odometry" default="false"/>
   <arg name="enable_cameras" default="true"/>
+  <arg name="enable_real_odometry" default="false"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
@@ -50,11 +48,13 @@
       <remap from="image" to="/image_rect_color"/>
     </node>
 
-    <node pkg="ezrassor_autonomous_control" type="distance_map"
-	name="distance_map"/>
+    <node pkg="ezrassor_autonomous_control"
+          type="distance_map"
+          name="distance_map"/>
    
-    <node pkg="ezrassor_autonomous_control" type="tf_camera_broadcaster" 
-	name="tf_camera_broadcaster"/>
+    <node pkg="ezrassor_autonomous_control"
+          type="tf_camera_broadcaster" 
+          name="tf_camera_broadcaster"/>
   </group>
 
   <group if="$(arg enable_real_odometry)">
@@ -64,5 +64,4 @@
       <remap from="image" to="/image_rect_color"/>
     </node>
   </group>
- 
 </launch>
