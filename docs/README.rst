@@ -9,69 +9,86 @@ The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inex
 - Autonomously navigate around possible obstructions
 - Cooperate in a swarm of other EZ-RASSORs
 
-This repository contains all of the code for the EZ-RASSOR as well as supporting documentation.
+For more information, our `wiki`_ contains a high-level overview of the EZ-RASSOR and its many components.
 
-INSTALLATION
-------------
-Clone this repository with ``git`` to begin the installation process. You must use the ``--recursive`` flag when you clone with ``git``. This tells ``git`` to also clone submodules that this project relies on.
-::
-  git clone https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team.git --recursive
-  cd NASA-E-RASSOR-Team
+If you'd like to contribute, check out the `contributing guidelines`_ and the `license`_.
 
-Next, let the ``install.sh`` script do the heavy lifting. This script's general syntax looks like this:
+TYPICAL INSTALLATION
+--------------------
+Clone this repository with ``git`` and include the ``--recursive`` flag. This tells ``git`` to also clone the submodules that this project relies on.
 ::
-  sh install.sh <software> [arguments...]
+  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git --recursive
+  cd EZ-RASSOR
   
-All of the following are valid ``<software>`` options:
-
-``ros``
-  Install the ROS suite of software. This software is required to operate the EZ-RASSOR (and must be installed first). This script will automatically install ROS for Ubuntu Xenial and Ubuntu Bionic. For all other systems, check out these `wiki pages`_ to install ROS manually. After installing ROS with this script, **you must restart your terminal before proceeding**.
-``tools``
-  Install some ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, check out this `wiki section`_ to install the build tools manually.
-``packages [-e, --except <packages...> | -o, --only <packages...>]``
-  Install core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
-``help``
-  Display a help menu.
-
-Here are some example installations:
+If you've already cloned the repository without the ``--recursive`` flag you can run this command to clone the submodules manually:
 ::
-  # Installing on Ubuntu Xenial with all EZ-RASSOR packages.
-  git clone https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team.git --recursive
-  cd NASA-E-RASSOR-Team
+  git submodule update --recursive
+
+Finally, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
+::
   sh install.sh ros
   ** RESTART TERMINAL **
   sh install.sh tools
   sh install.sh packages
   ** RESTART TERMINAL **
   
-  # Installing on Ubuntu Bionic without the ezrassor_autonomous_control package.
-  git clone https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team.git --recursive
-  cd NASA-E-RASSOR-Team
-  sh install.sh ros
-  ** RESTART TERMINAL **
-  sh install.sh tools
-  sh install.sh packages --except ezrassor_autonomous_control
-  ** RESTART TERMINAL **
+You're all set! Proceed to the `usage`_ section.
+
+CUSTOMIZED INSTALLATION
+-----------------------
+Before performing a custom installation, you'll need to install `ROS manually`_. You'll also want to install the `ROS build tools`_. Finally, you'll need to familiarize yourself with the installation script. The script's general syntax looks like this:
+::
+  sh install.sh <software> [arguments...]
   
-  # Installing on Raspbian Jessie without any simulation packages.
-  git clone https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team.git --recursive
-  cd NASA-E-RASSOR-Team
-  ** INSTALL ROS AND BUILD TOOLS SEPARATELY **
+All of the following are valid ``<software>`` options:
+
+``ros``
+  Install the ROS suite of software. This software is required to operate the EZ-RASSOR (and must be installed first). This script will automatically install ROS for Ubuntu Xenial and Ubuntu Bionic. For all other systems, ROS must be installed manually. After installing ROS with this script, **you must restart your terminal before proceeding**.
+``tools``
+  Install the ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, you must install these tools manually.
+``packages [-e, --except <packages...> | -o, --only <packages...>]``
+  Install the core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
+``help``
+  Display a help menu.
+
+Once you have ROS and the ROS build tools installed, you can install any combination of our packages using the installation script. Here are some examples:
+::
+  # Install all packages except 'ezrassor_autonomous_control'.
+  sh install.sh packages --except ezrassor_autonomous_control
+
+  # Install all packages except the simulation packages.
   sh install.sh packages --except ezrassor_sim_control ezrassor_sim_description ezrassor_sim_gazebo
-  ** RESTART TERMINAL **
+  
+  # Install only the communication packages.
+  sh install.sh packages --only ezrassor_controller_server ezrassor_joy_translator ezrassor_topic_switch
   
 USAGE
 -----
-
-WIKI
-----
-Our `wiki`_ contains lots of information about our project! Check it out, or read our `blue paper`_.
-
-CONTRIBUTIONS
--------------
-Take a look at the `contributing guidelines`_ if you'd like to help develop this project!
-
-Also be sure to review the `license`_.
+The EZ-RASSOR is controlled via a collection of *launch files*. These files contain lists of commands that start up the robot's systems and the simulation environment. They are read, understood, and executed by a core ROS utility called ``roslaunch``, whose general syntax is as follows:
+::
+  roslaunch <package> <launch file> [arguments...]
+  
+Each launch file is located in one of our packages, and the most important launch files are located in the ``ezrassor_launcher`` package. To learn more about a specific launch file, visit that launch file's package's `wiki`_ page (via the navigation menu on the right). Here are some example commands that show launch files in action:
+::
+  # Launch the simulation with a single robot controlled by the mobile app.
+  roslaunch ezrassor_launcher configurable_simulation.launch control_methods:=app
+  
+  # Launch the simulation with a single robot controlled by an autonomous loop.
+  roslaunch ezrassor_launcher configurable_simulation.launch control_methods:=autonomy
+  
+  # Launch the simulation with two robots, both controlled by gamepads, on the moon.
+  roslaunch ezrassor_launcher configurable_simulation.launch \
+      control_methods:=gamepad \
+      world:=moon \
+      robot_count:=2 \
+      joysticks:="0 1" \
+      spawn_x_coords:="-1 1" \
+      spawn_y_coords:="1 -1"
+      
+  # Launch the communication system in dual mode: manual and autonomous control together.
+  roslaunch ezrassor_launcher configurable_communication.launch control_methods:="app gamepad autonomy"
+  
+Please read the `wiki page for the ezrassor_launcher`_ to learn more about what the main launch files can do.
 
 AUTHORS
 -------
@@ -86,12 +103,13 @@ AUTHORS
 - `Cameron Taylor`_
 - `Lucas Gonzalez`_
 
-.. _`wiki pages`: http://wiki.ros.org/ROS/Installation
-.. _`wiki section`: http://wiki.ros.org/kinetic/Installation/Source#Prerequisites
-.. _`wiki`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/wiki
-.. _`blue paper`: BLUE_PAPER.pdf
+.. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
+.. _`usage`: README.rst#Usage
+.. _`ROS manually`: http://wiki.ros.org/ROS/Installation
+.. _`ROS build tools`: http://wiki.ros.org/kinetic/Installation/Source#Prerequisites
+.. _`wiki page for the ezrassor_launcher`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki/ezrassor_launcher
 .. _`Sean Rapp`: https://github.com/shintoo
 .. _`Ron Marrero` : https://github.com/CSharpRon
 .. _`Tiger Sachse` : https://github.com/tgsachse

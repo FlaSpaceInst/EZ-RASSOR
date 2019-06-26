@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all machinery necessary to control the EZ-RASSOR in a simulation.
+     Written by Ron Marrero and Tiger Sachse. -->
+<launch>
+  <rosparam command="load"
+            file="$(find ezrassor_sim_control)/config/default_position_controllers.yaml"/>
+
+  <!-- Spawn the controllers. -->
+  <node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        output="screen"
+        args="left_wheel_back_velocity_controller
+              left_wheel_front_velocity_controller 
+              right_wheel_back_velocity_controller
+              right_wheel_front_velocity_controller 
+              arm_front_velocity_controller
+              arm_back_velocity_controller 
+              drum_front_velocity_controller
+              drum_back_velocity_controller
+              joint_state_controller"/>
+
+  <!-- Launch the driver nodes. --> 
+  <node pkg="ezrassor_sim_control"
+        name="arms_driver"
+        type="arms_driver"
+        output="screen"/>
+  <node pkg="ezrassor_sim_control"
+        name="wheels_driver"
+        type="wheels_driver"
+        output="screen"/>
+  <node pkg="ezrassor_sim_control"
+        name="drums_driver"
+        type="drums_driver"
+        output="screen"/>
+</launch>
