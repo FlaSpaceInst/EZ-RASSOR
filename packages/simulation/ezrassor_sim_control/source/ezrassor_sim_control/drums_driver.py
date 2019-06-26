@@ -10,7 +10,7 @@ from std_msgs.msg import Float32, Float64
 NODE = "drums"
 FRONT_TOPIC = "front_drum_instructions"
 BACK_TOPIC = "back_drum_instructions"
-MAX_DRUM_SPEED = 10
+MAX_DRUM_SPEED = 5
 
 # /ezrassor/drum_back_velocity_controller/command
 pub_FA = rospy.Publisher('drum_front_velocity_controller/command', 
