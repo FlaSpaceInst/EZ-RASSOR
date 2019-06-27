@@ -1,7 +1,6 @@
-"""A ROS node that moves the arms on the EZRC.
+"""A ROS node that moves the arms of the simulated robot.
 
-Written by Harrison Black and Tiger Sachse.
-Part of the EZ-RASSOR suite of software.
+Written by Harrison Black.
 """
 import rospy
 import std_msgs
@@ -21,13 +20,13 @@ pub_BA = rospy.Publisher('arm_back_velocity_controller/command',
                          queue_size = 10)
 
 def handle_front_arm_movements(data):
-    """Move the front arm of the EZRC per 
+    """Move the front arm of the robot per 
         the commands encoded in the instruction.
     """
     pub_FA.publish(data.data*MAX_ARM_SPEED)
 
 def handle_back_arm_movements(data):
-    """Move the back arm of the EZRC per 
+    """Move the back arm of the robot per 
         the commands encoded in the instruction.
     """
     pub_BA.publish(data.data*MAX_ARM_SPEED)
