@@ -6,6 +6,8 @@ DEVELOPMENT INSTRUCTIONS
 ----
 Before you begin developing, you must install ROS and the ROS build tools. If you are developing on Ubuntu Xenial or Ubuntu Bionic, you can install these software packages easily with the ``install.sh`` script. You also probably want to install this project's submodules (currently only Viso2) permanently. Execute these commands to get started:
 ::
+  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git --recursive
+  cd EZ-RASSOR
   sh install.sh ros
   sh install.sh tools
   ** RESTART TERMINAL **
