@@ -4,7 +4,7 @@
 <package format="2">
   <name>ezrassor_launcher</name>
   <license>MIT</license>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <description>A large collection of launch files for the EZ-RASSOR</description>
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
