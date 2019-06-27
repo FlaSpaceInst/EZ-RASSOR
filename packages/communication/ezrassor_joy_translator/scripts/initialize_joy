@@ -2,16 +2,17 @@
 # Initialize a joystick on the user's machine for the Joy ROS node.
 # Written by Tiger Sachse.
 
-TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
-JOYSTICKS="$(ls /dev/input | grep 'js.')"
-JOYSTICK_TEST_SCRIPT="run_joystick_tests"
-PACKAGE_NAME="ezrassor_joy_translator"
-CONFIG_FILE="joy_translator.yaml"
-ACTIVE_STICK_DEFAULT_COUNT=10
-YAML_PARAMETER="joy_node/dev"
 INPUT_PREFIX="/dev/input/js"
-CONFIG_DIR="config"
+YAML_PARAMETER="joy_node/dev"
+ACTIVE_STICK_DEFAULT_COUNT=10
+EVENT_LINE="^Event: type [0-9],.*$"
+PACKAGE_NAME="ezrassor_joy_translator"
+JOYSTICKS="$(ls /dev/input | grep 'js.')"
+CONFIG_FILE="joy_translator.yaml"
+JOYSTICK_TEST_SCRIPT="run_joystick_tests"
 SHARE_DIR="share"
+CONFIG_DIR="config"
+TEMPORARY_DIR="/tmp/temporary_joy_initialization_directory"
 
 # Exit this script with a farewell.
 exit_script() {
@@ -23,8 +24,8 @@ exit_script() {
 prepare_user() {
     printf "This script will configure Joy for you!\n"
     printf "\nYou have these joysticks currently active:\n"
-    for STICK in $JOYSTICKS; do
-        printf " -> %s\n" "$STICK"
+    for stick in $JOYSTICKS; do
+        printf " -> %s\n" "$stick"
     done
     printf "%s\n" \
            "Lets perform a test to properly identify your joystick. I'll be running" \
@@ -33,12 +34,12 @@ prepare_user() {
            "say stop. You may need to enter your password in a moment before we begin."
 
     while true; do
-        read -p "Are you ready? " RESPONSE
-        case $RESPONSE in
-            y|Y|yes|YES|Yes)
+        read -p "Are you ready? " response
+        case "$response" in
+            "y"|"Y"|"yes"|"YES"|"Yes")
                 break
                 ;;
-            n|N|no|NO|No)
+            "n"|"N"|"no"|"NO"|"No")
                 exit_script
                 ;;
             *)
@@ -50,41 +51,41 @@ prepare_user() {
 
 # Determine the active joystick on the machine (based on the tests' results).
 get_active_joystick() {
-    ACTIVE_STICK=false
-    ACTIVE_STICK_EVENT_COUNT="$ACTIVE_STICK_DEFAULT_COUNT"
-    EVENT_LINE="^Event: type [0-9],.*$"
-    for STICK in $JOYSTICKS; do
-        STICK_EVENT_COUNT="$(grep "$EVENT_LINE" "$TEMPORARY_DIR/$STICK" | wc -l)"
-        if [ "$STICK_EVENT_COUNT" -gt "$ACTIVE_STICK_EVENT_COUNT" ]; then
-            ACTIVE_STICK_EVENT_COUNT="$STICK_EVENT_COUNT"
-            ACTIVE_STICK="$STICK"
+    active_stick=false
+    active_stick_event_count="$ACTIVE_STICK_DEFAULT_COUNT"
+    for stick in $JOYSTICKS; do
+        stick_event_count="$(grep "$EVENT_LINE" "$TEMPORARY_DIR/$stick" | wc -l)"
+        if [ "$stick_event_count" -gt "$active_stick_event_count" ]; then
+            active_stick_event_count="$stick_event_count"
+            active_stick="$stick"
         fi
     done
 
-    if [ "$ACTIVE_STICK" = "false" ]; then
+    if [ "$active_stick" = "false" ]; then
         printf "No joystick detected!\n"
         exit_script
     else
-        printf "Your active joystick is %s.\n" "$ACTIVE_STICK"
-        return "$(printf "$ACTIVE_STICK\n" | grep -o "[0-9]\+")"
+        printf "Your active joystick is %s.\n" "$active_stick"
+
+        return "$(printf "$active_stick\n" | grep -o "[0-9]\+")"
     fi
 }
 
 # Update the configuration of the joy translator ROS node.
 update_config() {
-    SHARE_PATH="$SHARE_DIR/$PACKAGE_NAME/$CONFIG_DIR/$CONFIG_FILE"
-    TARGET_CONFIG_FILE="$(dirname "$(dirname "$(pwd)")")/$SHARE_PATH"
+    share_path="$SHARE_DIR/$PACKAGE_NAME/$CONFIG_DIR/$CONFIG_FILE"
+    target_config_file="$(dirname "$(dirname "$(pwd)")")/$share_path"
 
     # If the target configuration file exists, attempt to update it. Otherwise, fail.
-    if [ -f "$TARGET_CONFIG_FILE" ]; then
+    if [ -f "$target_config_file" ]; then
         printf "Attempting to update configuration file... "
-        SED_MATCH="s#$YAML_PARAMETER.*#$YAML_PARAMETER : /dev/input/js$ACTIVE_STICK_NUMBER#"
-        sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE" 1>/dev/null 2>&1
-        if [ "$?" != "0" ]; then
-            sudo sed -i "$SED_MATCH" "$TARGET_CONFIG_FILE" 1>/dev/null 2>&1
-            if [ "$?" != "0" ]; then
+        sed_match="s#$YAML_PARAMETER.*#$YAML_PARAMETER : /dev/input/js$active_stick_number#"
+        sed -i "$sed_match" "$target_config_file" > /dev/null 2>&1
+        if [ $? != 0 ]; then
+            sudo sed -i "$sed_match" "$target_config_file" > /dev/null 2>&1
+            if [ $? != 0 ]; then
                 printf "FAILED.\n"
-                fail_to_update "$ACTIVE_STICK_NUMBER"
+                fail_to_update "$active_stick_number"
             else
                 printf "SUCCESS.\n"
             fi
@@ -92,16 +93,17 @@ update_config() {
             printf "SUCCESS.\n"
         fi
     else
-        fail_to_update "$ACTIVE_STICK_NUMBER"
+        fail_to_update "$active_stick_number"
     fi
 }
 
 # Fail with grace.
 fail_to_update() {
+    active_stick_number="$1"
     printf "%s\n" \
            "The results of my tests could not be automatically applied. Update your" \
            "'$CONFIG_FILE' in the '$CONFIG_DIR/' directory of this package with this line:" \
-           "    $YAML_PARAMETER : ${INPUT_PREFIX}$1"
+           "    $YAML_PARAMETER : ${INPUT_PREFIX}$active_stick_number"
     exit_script
 }
 
@@ -117,8 +119,8 @@ sudo sh "$JOYSTICK_TEST_SCRIPT" "$TEMPORARY_DIR"
 # Get the active joystick. If no joystick is detected, this function will halt
 # this script's execution. Afterwards, set the correct permissions for that joystick.
 get_active_joystick
-ACTIVE_STICK_NUMBER="$?"
-sudo chmod a+rw "${INPUT_PREFIX}${ACTIVE_STICK_NUMBER}"
+active_stick_number="$?"
+sudo chmod a+rw "${INPUT_PREFIX}${active_stick_number}"
 
 # Update the configuration. If everything goes well: print a nice message.
 update_config
