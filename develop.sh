@@ -127,9 +127,11 @@ argument_in_list() {
     argument="$1"
     shift
     for item in "$@"; do
-        if [ "$argument" = "$item" ]; then
-            return 0
-        fi
+        case "$argument" in
+            $item)
+                return 0
+                ;;
+        esac
     done
    
     return 1
