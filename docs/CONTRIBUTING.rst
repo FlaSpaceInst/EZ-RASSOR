@@ -16,7 +16,14 @@ Before you begin developing, you must install ROS and the ROS build tools. If yo
   
 If you need more installation information or are using a different operating system, please see the `README`_.
 
-The next tool you'll want to get familiar with is the ``develop.sh`` script, which helps developers improve this software with ease. It's general syntax looks like this:
+The next thing you should do is install the dependencies for all of the packages in this repository, which can be done using the ``develop.sh`` script like so:
+::
+  sh develop.sh setup
+  sh develop.sh link --except viso2_ros libviso2 viso2
+  sh develop.sh resolve
+  ** RESTART TERMINAL **
+  
+Finally, you'll need to get familiar with the ``develop.sh`` script, which is intended to help developers improve this software with ease. It's general syntax looks like this:
 ::
   sh develop.sh <mode> [arguments...]
   
