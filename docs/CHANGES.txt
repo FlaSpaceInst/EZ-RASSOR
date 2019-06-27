@@ -1,4 +1,4 @@
-v1.0.0: 06/19/2019
+v1.0.0: 06/25/2019
 - Initial release of the EZ-RASSOR.
 - Provides a full simulation of the EZ-RASSOR, complete with 3D models and worlds.
 - Simulated robot can drive around and perform subroutines.
