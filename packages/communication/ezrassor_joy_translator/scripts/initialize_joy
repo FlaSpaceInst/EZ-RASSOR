@@ -55,7 +55,7 @@ get_active_joystick() {
     active_stick_event_count="$ACTIVE_STICK_DEFAULT_COUNT"
     for stick in $JOYSTICKS; do
         stick_event_count="$(grep "$EVENT_LINE" "$TEMPORARY_DIR/$stick" | wc -l)"
-        if [ "$stick_event_count" -gt "$active_stick_event_count" ]; then
+        if [ $stick_event_count -gt $active_stick_event_count ]; then
             active_stick_event_count="$stick_event_count"
             active_stick="$stick"
         fi
