@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>ezrassor_sim_gazebo</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <description>The ezrassor simulation package to control gazebo and the load robot model</description>
   <maintainer email="Harrison.W.Black@gmail.com">Harrison Black</maintainer>
   <maintainer email="Ronald.Marrero@outlook.com">Ronald Marrero</maintainer>
