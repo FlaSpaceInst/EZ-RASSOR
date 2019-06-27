@@ -8,6 +8,7 @@ EXTERNAL_DIR="external"
 WORKSPACE_DIR="$HOME/.workspace"
 WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
 WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
+PACKAGE_XML_FILE="package.xml"
 CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
 
@@ -178,6 +179,20 @@ test_packages() {
     cd - > /dev/null 2>&1
 }
 
+# Change the version number of all the packages.
+reversion_packages() {
+    sed_command="s|<version>.*</version>|<version>$1</version>|g"
+    for superpackage_dir in "$PWD/$PACKAGES_DIR"/*; do
+        for package_dir in "$superpackage_dir"/*; do
+            for item in "$package_dir"/*; do
+                if [ "$(basename "$item")" = "$PACKAGE_XML_FILE" ]; then
+                    sed -i "$sed_command" "$item"
+                fi
+            done
+        done
+    done
+}
+
 # Show a help menu. This menu is parsed from pre-existing documentation.
 throw_help() {
     printf "$USAGE_STRING"
@@ -227,6 +242,9 @@ case "$1" in
         ;;
     "test")
         test_packages
+        ;;
+    "reversion")
+        reversion_packages "$2"
         ;;
     "help")
         throw_help
