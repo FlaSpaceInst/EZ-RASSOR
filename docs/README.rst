@@ -22,7 +22,7 @@ Clone this repository with ``git`` and include the ``--recursive`` flag. This te
   
 If you've already cloned the repository without the ``--recursive`` flag you can run this command to clone the submodules manually:
 ::
-  git submodule update --recursive
+  git submodule update --init --recursive
 
 Finally, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
 ::
