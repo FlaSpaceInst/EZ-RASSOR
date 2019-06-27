@@ -5,15 +5,16 @@
   <name>ezrassor_topic_switch</name>
   <license>MIT</license>
   <version>1.1.0</version>
-  <description>Route topic data on the EZ-RASSOR.</description>
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
-  <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
+  <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
+  <description>Route topic data on the EZ-RASSOR.</description>
 
-  <build_depend>rostest</build_depend>
-  <buildtool_depend>catkin</buildtool_depend>
+  <!-- A list of package dependencies. -->
   <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>roslaunch</depend>
   <depend>geometry_msgs</depend>
+  <build_depend>rostest</build_depend>
+  <buildtool_depend>catkin</buildtool_depend>
 </package>
