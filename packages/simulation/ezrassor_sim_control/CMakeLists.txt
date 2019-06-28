@@ -1,3 +1,5 @@
+# CMake installation file for the ezrassor_sim_control ROS package.
+# Written by Ron Marrero.
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_sim_control)
 find_package(catkin REQUIRED)
