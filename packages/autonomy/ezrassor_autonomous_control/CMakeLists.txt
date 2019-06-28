@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_autonomous_control)
 
 find_package(catkin REQUIRED COMPONENTS 
-    message_generation
     std_msgs
     rospy
     roscpp
@@ -10,23 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
-## Generate messages in the 'msg' folder
-add_message_files(
-   FILES
-   ObstacleDetection.msg
-)
 
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-   DEPENDENCIES
-   std_msgs
-   ezrassor_autonomous_control
-)
-
-catkin_package(
-
-   CATKIN_DEPENDS message_runtime
-)
+catkin_package()
 
 catkin_install_python(
     PROGRAMS
