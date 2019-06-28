@@ -1,7 +1,6 @@
-"""A ROS node that moves the wheel on the EZRC.
+"""A ROS node that moves the wheel on the simulated robot.
 
-Written by Harrison Black and Tiger Sachse.
-Part of the EZ-RASSOR suite of software.
+Written by Harrison Black.
 """
 import rospy
 from std_msgs.msg import Int16, Float64

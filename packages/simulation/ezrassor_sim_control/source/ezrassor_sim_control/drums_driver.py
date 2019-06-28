@@ -1,7 +1,6 @@
-"""A ROS node that moves the drums on the EZRC.
+"""A ROS node that moves the drums on the simulated robot.
 
-Written by Harrison Black and Tiger Sachse.
-Part of the EZ-RASSOR suite of software.
+Written by Harrison Black.
 """
 import rospy
 import std_msgs
@@ -21,13 +20,13 @@ pub_BA = rospy.Publisher('drum_back_velocity_controller/command',
                          queue_size = 10)
 
 def handle_front_drum_movements(data):
-    """Move the front drum of the EZRC per 
+    """Move the front drum of the robot per 
         the commands encoded in the instruction.
     """
     pub_FA.publish(data.data*MAX_DRUM_SPEED)
 
 def handle_back_drum_movements(data):
-    """Move the back drum of the EZRC per 
+    """Move the back drum of the robot per 
         the commands encoded in the instruction.
     """
     pub_BA.publish(data.data*MAX_DRUM_SPEED)
