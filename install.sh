@@ -129,14 +129,23 @@ install_ros() {
     source_setups_in_directory "$ROS_INSTALL_PARTIAL_DIR/$ros_version"
 }
 
-# Install some build tools required to build EZ-RASSOR packages.
-install_tools() {
+# Install build tools required to build EZ-RASSOR packages.
+install_ros_tools() {
     require "sudo" "apt"
     sudo apt install -y python-rosdep python-pip build-essential
     set +e
     sudo rosdep init
     set -e
     rosdep update
+}
+
+# Install build tools required to build the EZ-RASSOR controller.
+install_app_tools() {
+    require "sudo" "apt"
+    sudo apt install -y curl software-properties-common
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    sudo apt install nodejs
+    sudo npm install expo-cli --global
 }
 
 # Install EZ-RASSOR packages from source.
@@ -237,8 +246,11 @@ case "$1" in
     "ros")
         install_ros "$os_version" "$ros_version" "$key_server"
         ;;
-    "tools")
-        install_tools
+    "tools"|"ros-tools") # Remove the first tag once #247 is ready to go
+        install_ros_tools
+        ;;
+    "app-tools")
+        install_app_tools
         ;;
     "packages")
         shift

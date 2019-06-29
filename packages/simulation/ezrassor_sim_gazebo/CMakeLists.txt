@@ -16,9 +16,3 @@ install(
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/worlds
 )
-install(
-    DIRECTORY
-        materials/
-    DESTINATION
-        ${CATKIN_PACKAGE_SHARE_DESTINATION}/materials
-)
