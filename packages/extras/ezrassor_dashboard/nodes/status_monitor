@@ -29,7 +29,7 @@ PROCESS_NAMES = (
 )
 
 # Main entry point to this node.
-ezrassor_status_monitor.start_node(
+ezrassor_status_monitor.status_monitor.start_node(
     DEFAULT_NODE_NAME,
     PROCESS_NAMES,
     CPU_USAGE_TOPIC,
