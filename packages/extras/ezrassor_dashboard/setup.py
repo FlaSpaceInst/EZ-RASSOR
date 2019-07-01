@@ -2,7 +2,7 @@
 
 Written by Tiger Sachse.
 """
-import disutils.core
+import distutils.core
 import catkin_pkg.python_setup
 
 setup_arguments = catkin_pkg.python_setup.generate_distutils_setup(
