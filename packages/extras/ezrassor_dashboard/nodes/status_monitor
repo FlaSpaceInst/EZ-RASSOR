@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+"""Call the status_monitor node in the ezrassor_status_monitor package.
+
+Written by Tiger Sachse.
+"""
+import ezrassor_status_monitor
+
+# Some constants for this node.
+QUEUE_SIZE = 10
+CPU_USAGE_TOPIC = "cpu_usage"
+DEFAULT_NODE_NAME = "status_monitor"
+PROCESS_NAMES = (
+    "ezrassor_launcher",
+    "cv_camera",
+    "libviso2",
+    "viso2",
+    "viso2_ros",
+    "ezrassor_controller_server",
+    "ezrassor_joy_translator",
+    "ezrassor_topic_switch",
+    "ai_objects",
+    "arm_force",
+    "auto_functions",
+    "ezrassor_autonomous_control",
+    "distance_map",
+    "left_image_frame_broadcaster",
+    "nav_functions",
+    "utility_functions",
+)
+
+# Main entry point to this node.
+ezrassor_status_monitor.start_node(
+    DEFAULT_NODE_NAME,
+    PROCESS_NAMES,
+    CPU_USAGE_TOPIC,
+    QUEUE_SIZE,
+)
