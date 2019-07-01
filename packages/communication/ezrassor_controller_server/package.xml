@@ -8,9 +8,7 @@
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
-  <description>
-    Handle incoming controller requests from the network for the EZ-RASSOR.
-  </description>
+  <description>Handle incoming network requests for the EZ-RASSOR.</description>
 
   <!-- A list of package dependencies. -->
   <depend>rospy</depend>
