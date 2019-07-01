@@ -8,9 +8,7 @@
   <author email="Ronald.Marrero@outlook.com">Ronald Marrero</author>
   <maintainer email="Ronald.Marrero@outlook.com">Ronald Marrero</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
-  <description>
-    The EZ-RASSOR simulation model description (based on the XACRO standard).
-  </description>
+  <description>The EZ-RASSOR simulation model XACRO description.</description>
 
   <!-- A list of package dependencies. -->
   <depend>rviz</depend>

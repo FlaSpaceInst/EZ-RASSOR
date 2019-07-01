@@ -1,24 +1,21 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ez_gui</name>
-  <version>0.0.0</version>
-  <description>EZ-RASSOR GUI application</description>
-  <maintainer email="taliaferrodev@gmail.com">Christopher Taliafero</maintainer>
+<!-- Package metadata for the ezrassor_dashboard ROS package.
+     Written by Tiger Sachse. -->
+  <name>ezrassor_dashboard</name>
+  <license>MIT</license>
+  <version>1.1.0</version>
+  <author email="seanprapp@gmail.com">Sean Rapp</author>
+  <author email="tgsachse@gmail.com">Tiger Sachse</author>
+  <author email="?">Lucas Gonzalez</author>
+  <author email="taliaferrodev@gmail.com">Christopher Taliaferro</author>
+  <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
+  <maintainer email="seanprapp@gmail.com">Sean Rapp</maintainer>
+  <description>A graphical application that monitors the EZ-RASSOR.</description>
 
-  <license>TODO</license>
-
+  <!-- A list of package dependencies. -->
+  <depend>rviz</depend>
+  <depend>rospy</depend>
+  <depend>roscpp</depend>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>rviz</build_depend>
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>rviz</build_export_depend>
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>rviz</exec_depend>
-
-  <export>
-
-  </export>
 </package>

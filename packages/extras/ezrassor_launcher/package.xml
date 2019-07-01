@@ -8,9 +8,7 @@
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
-  <description>
-    A large collection of launch files for the EZ-RASSOR.
-  </description>
+  <description>A large collection of launch files for the EZ-RASSOR.</description>
 
   <!-- A list of package dependencies. -->
   <depend>roslaunch</depend>

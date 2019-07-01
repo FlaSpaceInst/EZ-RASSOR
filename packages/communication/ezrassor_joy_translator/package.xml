@@ -9,9 +9,7 @@
   <author email="Harrison.W.Black@gmail.com">Harrison Black</author>
   <maintainer email="Harrison.W.Black@gmail.com">Harrison Black</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team</url>
-  <description>
-    Translate Joy controller data for the EZ-RASSOR.
-  </description>
+  <description>Translate Joy controller data for the EZ-RASSOR.</description>
 
   <!-- A list of package dependencies. -->
   <depend>joy</depend>
