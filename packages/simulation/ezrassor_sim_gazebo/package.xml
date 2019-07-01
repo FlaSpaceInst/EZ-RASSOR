@@ -9,9 +9,7 @@
   <maintainer email="Harrison.W.Black@gmail.com">Harrison Black</maintainer>
   <maintainer email="Ronald.Marrero@outlook.com">Ronald Marrero</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
-  <description>
-    Worlds and other model-related data for the EZ-RASSOR's Gazebo simulation.
-  </description>
+  <description>Worlds and other model-related data for the EZ-RASSOR.</description>
 
   <!-- A list of package dependencies. -->
   <depend>xacro</depend>
