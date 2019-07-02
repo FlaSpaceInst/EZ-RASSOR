@@ -14,7 +14,7 @@
   <description>A graphical application that monitors the EZ-RASSOR.</description>
 
   <!-- A list of package dependencies. -->
-  <depend>rviz</depend>
+  <!--<depend>rviz</depend>-->
   <depend>rospy</depend>
   <depend>roscpp</depend>
   <depend>python-psutil</depend>
