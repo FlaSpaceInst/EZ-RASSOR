@@ -17,5 +17,6 @@
   <depend>rviz</depend>
   <depend>rospy</depend>
   <depend>roscpp</depend>
+  <depend>python-psutil</depend>
   <buildtool_depend>catkin</buildtool_depend>
 </package>
