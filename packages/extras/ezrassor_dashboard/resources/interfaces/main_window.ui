@@ -28,6 +28,14 @@
     <height>630</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Ubuntu</family>
+    <pointsize>12</pointsize>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>EZ-RASSOR Dashboard</string>
   </property>
@@ -40,6 +48,11 @@
      <height>611</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Ubuntu</family>
+    </font>
+   </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
@@ -47,6 +60,192 @@
     <attribute name="title">
      <string>General</string>
     </attribute>
+    <widget class="QPushButton" name="ConnectButton">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>80</y>
+       <width>361</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ROSMasterURLLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>20</y>
+       <width>131</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>ROS Master URL</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ROSMasterURLLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>40</y>
+       <width>361</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>192.168.1.1:13001</string>
+     </property>
+     <property name="maxLength">
+      <number>100</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="LaunchFilesLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Launch Files</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LaunchButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>280</y>
+       <width>381</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Launch</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="LaunchFilesComboBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>381</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="ParametersTextEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>381</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;control_methods:=true&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;verbose:=true&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="overwriteMode">
+      <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ParametersLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Parameters</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>150</y>
+       <width>591</width>
+       <height>411</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/images/SWAMP_CROCODILE.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>120</y>
+       <width>31</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>?</string>
+     </property>
+    </widget>
+    <zorder>label</zorder>
+    <zorder>ConnectButton</zorder>
+    <zorder>ROSMasterURLLabel</zorder>
+    <zorder>ROSMasterURLLineEdit</zorder>
+    <zorder>LaunchFilesLabel</zorder>
+    <zorder>LaunchButton</zorder>
+    <zorder>LaunchFilesComboBox</zorder>
+    <zorder>ParametersTextEdit</zorder>
+    <zorder>ParametersLabel</zorder>
+    <zorder>pushButton</zorder>
    </widget>
    <widget class="QWidget" name="StatusTab">
     <attribute name="title">
@@ -55,49 +254,125 @@
     <widget class="QLabel" name="CPUUsageLabel">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>520</y>
-       <width>111</width>
+       <x>520</x>
+       <y>100</y>
+       <width>251</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
        <pointsize>14</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;CPU Usage &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CPU Usage &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="CPUUsageBar">
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>520</y>
-       <width>461</width>
+       <x>520</x>
+       <y>140</y>
+       <width>251</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
       </font>
      </property>
      <property name="value">
       <number>42</number>
      </property>
     </widget>
-    <widget class="QTextBrowser" name="LogBrowser">
+    <widget class="QTextBrowser" name="StandardOutBrowser">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>771</width>
-       <height>491</height>
+       <width>491</width>
+       <height>561</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="MemoryUsageLabel">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>240</y>
+       <width>251</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+       <pointsize>14</pointsize>
+       <italic>false</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Memory Usage&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="MemoryUsageBar">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>280</y>
+       <width>251</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+      </font>
+     </property>
+     <property name="value">
+      <number>56</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="BatteryRemainingLabel">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>380</y>
+       <width>251</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+       <pointsize>14</pointsize>
+       <italic>false</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Battery Remaining&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="BatteryRemainingBar">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>420</y>
+       <width>251</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+      </font>
+     </property>
+     <property name="value">
+      <number>70</number>
      </property>
     </widget>
    </widget>
@@ -124,21 +399,21 @@
     <widget class="QLabel" name="RightCameraLabel">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>450</y>
-       <width>121</width>
+       <x>400</x>
+       <y>440</y>
+       <width>361</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
        <pointsize>14</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Right Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Right Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QFrame" name="LeftCameraFrame">
@@ -160,21 +435,21 @@
     <widget class="QLabel" name="LeftCameraLabel">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>450</y>
-       <width>121</width>
+       <x>20</x>
+       <y>440</y>
+       <width>361</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
        <pointsize>14</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Left Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Left Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </widget>
@@ -217,41 +492,41 @@
     <widget class="QLabel" name="PointCloudLabel">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>450</y>
-       <width>121</width>
+       <x>20</x>
+       <y>440</y>
+       <width>361</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
        <pointsize>14</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Point Cloud &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Point Cloud &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="DisparityMapLabel">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>450</y>
-       <width>121</width>
+       <x>400</x>
+       <y>440</y>
+       <width>361</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Ubuntu Light</family>
+       <family>Ubuntu</family>
        <pointsize>14</pointsize>
        <italic>false</italic>
       </font>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Disparity Map &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Disparity Map &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </widget>
@@ -278,10 +553,10 @@
          <widget class="QLabel" name="OrientationDataBoxLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>13</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
+            <weight>75</weight>
+            <bold>true</bold>
             <underline>false</underline>
            </font>
           </property>
@@ -300,7 +575,7 @@
          <widget class="QLabel" name="OrientationXLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
             <kerning>true</kerning>
            </font>
@@ -314,7 +589,7 @@
          <widget class="QLabel" name="OrientationYLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -327,7 +602,7 @@
          <widget class="QLabel" name="OrientationZLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -344,10 +619,10 @@
          <widget class="QLabel" name="AngularVelocityDataBoxLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>13</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
+            <weight>75</weight>
+            <bold>true</bold>
             <underline>false</underline>
            </font>
           </property>
@@ -363,7 +638,7 @@
          <widget class="QLabel" name="AngularVelocityXLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -376,7 +651,7 @@
          <widget class="QLabel" name="AngularVelocityYLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -389,7 +664,7 @@
          <widget class="QLabel" name="AngularVelocityZLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -406,10 +681,10 @@
          <widget class="QLabel" name="LinearAccelerationDataBoxLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>13</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
+            <weight>75</weight>
+            <bold>true</bold>
             <underline>false</underline>
             <strikeout>false</strikeout>
            </font>
@@ -429,7 +704,7 @@
          <widget class="QLabel" name="LinearAccelerationXLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -442,7 +717,7 @@
          <widget class="QLabel" name="LinearAccelerationYLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -455,7 +730,7 @@
          <widget class="QLabel" name="LinearAccelerationZLabel">
           <property name="font">
            <font>
-            <family>Ubuntu Light</family>
+            <family>Ubuntu</family>
             <pointsize>12</pointsize>
            </font>
           </property>
@@ -508,6 +783,8 @@
    </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images.qrc"/>
+ </resources>
  <connections/>
 </ui>
