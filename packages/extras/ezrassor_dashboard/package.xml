@@ -18,5 +18,7 @@
   <depend>rospy</depend>
   <depend>roscpp</depend>
   <depend>python-psutil</depend>
+  <depend>qtbase5-dev</depend>
+  <buildtool_depend>qt5-qmake</buildtool_depend>
   <buildtool_depend>catkin</buildtool_depend>
 </package>
