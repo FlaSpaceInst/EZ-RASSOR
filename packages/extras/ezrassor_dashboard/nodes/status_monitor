@@ -7,23 +7,16 @@ import ezrassor_status_monitor
 
 # Some constants for this node.
 QUEUE_SIZE = 10
+TRIGGER_STRING = "ezrassor"
 CPU_USAGE_TOPIC = "cpu_usage"
 MEMORY_USAGE_TOPIC = "memory_usage"
 BATTERY_USAGE_TOPIC = "battery_usage"
 DEFAULT_NODE_NAME = "status_monitor"
-PROCESS_NAMES = {
-    "ezrassor_autonomous_control",
-    "ezrassor_controller_server",
-    "ezrassor_joy_translator",
-    "ezrassor_topic_switch",
-    "ezrassor_sim_control",
-    "ezrassor_launcher",
-}
 
 # Main entry point to this node.
 ezrassor_status_monitor.status_monitor.start_node(
     DEFAULT_NODE_NAME,
-    PROCESS_NAMES,
+    TRIGGER_STRING,
     CPU_USAGE_TOPIC,
     MEMORY_USAGE_TOPIC,
     BATTERY_USAGE_TOPIC,
