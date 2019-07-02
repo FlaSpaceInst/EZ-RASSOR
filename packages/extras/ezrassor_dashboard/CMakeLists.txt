@@ -1,33 +1,49 @@
 # CMake installation file for the ezrassor_dashboard ROS package.
 # Written by Tiger Sachse.
-cmake_minimum_required(VERSION 2.8.3)
-project(ezrassor_dashboard)
-add_compile_options(-std=c++11)
+cmake_minimum_required(VERSION 3.1.0)
+
+# Set some important variables so CMake knows where all the required files are.
+set(DASHBOARD_NAME ezrassor_dashboard)
+set(DASHBOARD_RESOURCES_DIR resources)
+set(DASHBOARD_INTERFACE_DIR ${DASHBOARD_RESOURCES_DIR}/interfaces)
+set(DASHBOARD_SOURCE_DIR source/ezrassor_dashboard)
+set(DASHBOARD_INCLUDE_DIR include/ezrassor_dashboard)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(catkin REQUIRED)# COMPONENTS
-#  roscpp
-#  rospy
-#  rviz
-#  cv_bridge
-#)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${DASHBOARD_INTERFACE_DIR})
 
-#include_directories(/opt/ros/kinetic/include/opencv-3.3.1-dev)
-# find_package(Boost REQUIRED COMPONENTS system)
-#find_package(Qt5 REQUIRED Core Widgets)
-#set(QT_LIBRARIES Qt5::Widgets)
-#file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
-#file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
-#file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/ros_gui/*.hpp *.h)
-#QT5_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
-#QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
-#QT5_WRAP_CPP(QT_MOC_HPP ${QT_MOC})
+# Initialize this project, plus hunt down Catkin and Qt5.
+project(${DASHBOARD_NAME})
+catkin_package()
+find_package(catkin REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES test
-#  CATKIN_DEPENDS roscpp rospy rviz
-#  DEPENDS system_lib
+# Tell Qt5 where the resources are for this project, then create a new C++
+# executable for the dashboard. Include necessary headers and finally install
+# the executable into the appropriate bin.
+qt5_add_resources(DASHBOARD_RESOURCES ${DASHBOARD_RESOURCES_DIR}/images.qrc)
+add_executable(
+    ${DASHBOARD_NAME}
+    ${DASHBOARD_INTERFACE_DIR}/main_window.ui
+    ${DASHBOARD_INTERFACE_DIR}/about_window.ui
+    ${DASHBOARD_INCLUDE_DIR}/main_window.h
+    ${DASHBOARD_INCLUDE_DIR}/about_window.h
+    ${DASHBOARD_SOURCE_DIR}/main_window.cpp
+    ${DASHBOARD_SOURCE_DIR}/about_window.cpp
+    ${DASHBOARD_SOURCE_DIR}/ezrassor_dashboard.cpp
+    ${DASHBOARD_RESOURCES}
 )
+target_include_directories(${DASHBOARD_NAME} PRIVATE ${DASHBOARD_INCLUDE_DIR})
+target_link_libraries(${DASHBOARD_NAME} Qt5::Widgets)
+install(
+    TARGETS
+        ${DASHBOARD_NAME}
+    RUNTIME DESTINATION
+        ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+# Install the status_monitor Python node.
 catkin_python_setup()
 catkin_install_python(
     PROGRAMS
@@ -35,13 +51,3 @@ catkin_install_python(
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-#include_directories(
-# include
-#  ${catkin_INCLUDE_DIRS}
-#)
-
-#file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
-#add_executable(ez_gui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-#target_link_libraries(ez_gui ${QT_LIBRARIES} ${catkin_LIBRARIES})
-#install(TARGETS ez_gui RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
