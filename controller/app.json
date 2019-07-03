@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "EZ-Controller",
+    "name": "EZ-RASSOR Controller",
     "description": "This controller application has been made for the EZ-RASSOR, an excavation robot that runs on ROS.",
-    "slug": "EZ-Controller",
+    "slug": "EZ-RASSOR Controller",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],
