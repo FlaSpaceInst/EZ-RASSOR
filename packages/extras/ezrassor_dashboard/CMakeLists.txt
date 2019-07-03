@@ -15,27 +15,31 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${DASHBOARD_INTERFACE_DIR})
 
 # Initialize this project, plus hunt down Catkin and Qt5.
 project(${DASHBOARD_NAME})
+find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+
 catkin_package()
-find_package(catkin REQUIRED)
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 # Tell Qt5 where the resources are for this project, then create a new C++
 # executable for the dashboard. Include necessary headers and finally install
 # the executable into the appropriate bin.
 qt5_add_resources(DASHBOARD_RESOURCES ${DASHBOARD_RESOURCES_DIR}/images.qrc)
+include_directories(${catkin_INCLUDE_DIRS})
 add_executable(
     ${DASHBOARD_NAME}
     ${DASHBOARD_INTERFACE_DIR}/main_window.ui
     ${DASHBOARD_INTERFACE_DIR}/about_window.ui
     ${DASHBOARD_INCLUDE_DIR}/main_window.h
     ${DASHBOARD_INCLUDE_DIR}/about_window.h
+    ${DASHBOARD_INCLUDE_DIR}/topic_translator.h
     ${DASHBOARD_SOURCE_DIR}/main_window.cpp
     ${DASHBOARD_SOURCE_DIR}/about_window.cpp
     ${DASHBOARD_SOURCE_DIR}/ezrassor_dashboard.cpp
+    ${DASHBOARD_SOURCE_DIR}/topic_translator.cpp
     ${DASHBOARD_RESOURCES}
 )
 target_include_directories(${DASHBOARD_NAME} PRIVATE ${DASHBOARD_INCLUDE_DIR})
-target_link_libraries(${DASHBOARD_NAME} Qt5::Widgets)
+target_link_libraries(${DASHBOARD_NAME} Qt5::Widgets ${catkin_LIBRARIES})
 install(
     TARGETS
         ${DASHBOARD_NAME}
@@ -51,3 +55,4 @@ catkin_install_python(
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+

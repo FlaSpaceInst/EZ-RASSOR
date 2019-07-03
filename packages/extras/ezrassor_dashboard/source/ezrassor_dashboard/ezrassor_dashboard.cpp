@@ -2,13 +2,13 @@
 #include "main_window.h"
 #include "about_window.h"
 
-int main(int argument_count, char** argument_vector) {
-    QApplication application(argument_count, argument_vector);
+int main(int argumentCount, char** argumentVector) {
+    QApplication application(argumentCount, argumentVector);
 
-    MainWindow main_window;
-    main_window.show();
-    AboutWindow about_window;
-    about_window.show();
+    MainWindow mainWindow;
+    mainWindow.show();
+    AboutWindow aboutWindow;
+    aboutWindow.show();
 
     return application.exec();
 }
