@@ -5,7 +5,7 @@
 #include <QWidget>
 #include "ui_main_window.h"
 
-class MainWindow : public QWidget, public Ui_MainWindow {
+class MainWindow : public QWidget, public Ui_mainWindow {
     Q_OBJECT
     public:
         MainWindow(QWidget *parent = NULL);
