@@ -17,7 +17,7 @@ int main(int argumentCount, char** argumentVector) {
         "dashboard",
         "cpu_usage",
         "memory_usage",
-        "battery_usage",
+        "battery_remaining",
         100
     );
 
@@ -44,7 +44,7 @@ int main(int argumentCount, char** argumentVector) {
     application.connect(
         &topicTranslator,
         SIGNAL(batteryDataReceived(int)),
-        mainWindow.batteryUsageBar,
+        mainWindow.batteryRemainingBar,
         SLOT(setValue(int))
     );
 
