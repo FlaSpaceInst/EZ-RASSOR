@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AboutWindow</class>
- <widget class="QWidget" name="AboutWindow">
+ <class>aboutWindow</class>
+ <widget class="QWidget" name="aboutWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -31,7 +31,7 @@
   <property name="windowTitle">
    <string>EZ-RASSOR Dashboard Help</string>
   </property>
-  <widget class="QTextBrowser" name="AboutBrowser">
+  <widget class="QTextBrowser" name="aboutBrowser">
    <property name="geometry">
     <rect>
      <x>10</x>
