@@ -4,9 +4,13 @@
 #include <QWidget>
 #include "ui_main_window.h"
 
-class MainWindow : public QWidget, private Ui::MainWindow {
+class MainWindow : public QWidget, public Ui_MainWindow {
     Q_OBJECT
     public:
         MainWindow(QWidget *parent = NULL);
+    signals:
+        void connectionRequested(const std::string&);
+    public slots:
+        void handleConnectionRequest();
 };
 #endif
