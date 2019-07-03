@@ -17,7 +17,6 @@ class TopicTranslator : public QThread {
             const std::string&,
             int
         );
-        int exec(void);
 
     public slots:
         void connectToMaster(const std::string&);
@@ -33,10 +32,8 @@ class TopicTranslator : public QThread {
         std::string processorUsageTopic;
         std::string memoryUsageTopic;
         std::string batteryRemainingTopic;
-        ros::Subscriber processorUsageSubscriber;
-        ros::Subscriber memoryUsageSubscriber;
-        ros::Subscriber batteryRemainingSubscriber;
         
+        void run(void);
         void handleProcessorData(const std_msgs::Float64::ConstPtr&);
         void handleMemoryData(const std_msgs::Float64::ConstPtr&);
         void handleBatteryData(const std_msgs::Float64::ConstPtr&);
