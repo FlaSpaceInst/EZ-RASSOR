@@ -114,7 +114,7 @@
       <string>http://localhost:11311</string>
      </property>
      <property name="maxLength">
-      <number>100</number>
+      <number>200</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

@@ -11,16 +11,12 @@ class TopicTranslator : public QThread {
     Q_OBJECT
     public:
         TopicTranslator(
-            const std::string& nodeName,
-            const std::string& processorUsageTopic,
-            const std::string& memoryUsageTopic,
-            const std::string& batteryUsageTopic,
-            int queueSize)
-            : nodeName(nodeName),
-              processorUsageTopic(processorUsageTopic),
-              memoryUsageTopic(memoryUsageTopic),
-              batteryUsageTopic(batteryUsageTopic),
-              queueSize(queueSize) {};
+            const std::string&,
+            const std::string&,
+            const std::string&,
+            const std::string&,
+            int
+        );
         int exec(void);
 
     public slots:
@@ -33,13 +29,13 @@ class TopicTranslator : public QThread {
 
     private:
         int queueSize;
-        const std::string& nodeName;
-        const std::string& processorUsageTopic;
-        const std::string& memoryUsageTopic;
-        const std::string& batteryUsageTopic;
+        std::string nodeName;
+        std::string processorUsageTopic;
+        std::string memoryUsageTopic;
+        std::string batteryRemainingTopic;
         ros::Subscriber processorUsageSubscriber;
         ros::Subscriber memoryUsageSubscriber;
-        ros::Subscriber batteryUsageSubscriber;
+        ros::Subscriber batteryRemainingSubscriber;
         
         void handleProcessorData(const std_msgs::Float64::ConstPtr&);
         void handleMemoryData(const std_msgs::Float64::ConstPtr&);
