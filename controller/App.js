@@ -3,10 +3,11 @@ import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity,
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import { Font } from 'expo';
+import { STYLES } from 'src/styles/stylesheet.js';
 
 // Fade in amimation
 class FadeInView extends React.Component { 
-  state = {
+  state = { 
     fadeAnim: new Animated.Value(0),  
   }
 
@@ -138,8 +139,7 @@ export default class App extends React.Component {
       //alert("Unable to connect to EZ-RASSOR");
       console.log(error);
     });
-  }
-
+  } 
 
   render() {
 
@@ -151,10 +151,10 @@ export default class App extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <View style={STYLES.container}>
         <StatusBar hidden />
         <Modal
-          style={styles.modalViewContainer}
+          style={STYLES.modalViewContainer}
           isVisible={this.state.modalVisible}
           onSwipe={() => this.setModalVisible(!this.state.modalVisible)}
           swipeDirection='down'
@@ -162,19 +162,19 @@ export default class App extends React.Component {
           >
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-                <TouchableOpacity style={styles.modalButton} onPress={()=>this.setXYModalVisible(true)}>
+                <TouchableOpacity style={STYLES.modalButton} onPress={()=>this.setXYModalVisible(true)}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10})}>
+              <TouchableOpacity style={STYLES.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10})}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b100})}>
+              <TouchableOpacity style={STYLES.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b100})}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b1000})}>
+              <TouchableOpacity style={STYLES.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b1000})}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10000})}>
+              <TouchableOpacity style={STYLES.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10000})}>
                 <Text adjustsFontSizeToFit numberOfLines={1} style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
               </TouchableOpacity>
             </View>
@@ -182,7 +182,7 @@ export default class App extends React.Component {
         </Modal>
 
         <Modal
-          style={styles.modalViewContainer}
+          style={STYLES.modalViewContainer}
           isVisible={this.state.modal2Visible}
           onSwipe={() => this.setModal2Visible(false)}
           swipeDirection='down'
@@ -223,7 +223,7 @@ export default class App extends React.Component {
         </Modal>
 
         <Modal
-          style={styles.modalViewContainer}
+          style={STYLES.modalViewContainer}
           isVisible={this.state.ipModal}
           onSwipe={() => this.setIPModalVisible(false)}
           swipeDirection='down'
@@ -233,14 +233,14 @@ export default class App extends React.Component {
             paddingRight={64}>
             <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>IP ADDRESS</Text>
             <TextInput
-              style={styles.ipInputBox}
+              style={STYLES.ipInputBox}
               onChangeText={(text) => this.changeIP(text)}
               value={this.state.ip}
               marginVertical={20} />
           </KeyboardAvoidingView>
         </Modal>
         <Modal
-          style={styles.modalViewContainer}
+          style={STYLES.modalViewContainer}
           isVisible={this.state.xyModal}
           onSwipe={() => this.setXYModalVisible(false)}
           swipeDirection='down'
@@ -250,7 +250,7 @@ export default class App extends React.Component {
             paddingRight={64}>
             <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>(X,Y)</Text>
             <TextInput
-              style={styles.ipInputBox}
+              style={STYLES.ipInputBox}
               onChangeText={(text) => this.changeXY(text)}
               value={this.state.xy}
               marginVertical={20} />
@@ -261,7 +261,7 @@ export default class App extends React.Component {
           </KeyboardAvoidingView>
         </Modal>
 
-        <FadeInView style={styles.headerContainer}>
+        <FadeInView style={STYLES.headerContainer}>
           <TouchableOpacity style={{ flex: 1, padding: 3 }}>
             <FontAwesome
               name="info-circle"
@@ -278,7 +278,7 @@ export default class App extends React.Component {
               onPress={() => this.setIPModalVisible(true)}
             />
           </TouchableOpacity>
-          <Text style={styles.text}>EZ-RASSOR Controller</Text>
+          <Text style={STYLES.text}>EZ-RASSOR Controller</Text>
           <TouchableOpacity style={{ flex: 1, padding: 3}}>
             <MaterialCommunityIcons
               style={{marginLeft: "auto"}}
@@ -301,9 +301,9 @@ export default class App extends React.Component {
           </TouchableOpacity>
         </FadeInView>
 
-        <FadeInView style={styles.buttonLayoutContainer}>
+        <FadeInView style={STYLES.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
-            <View style={styles.upAndDownDPad} 
+            <View style={STYLES.upAndDownDPad} 
             onTouchStart={() => this.twistUpdate({wheel_instruction:"forward"}) }
             onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
             >
@@ -316,7 +316,7 @@ export default class App extends React.Component {
             </TouchableOpacity>
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
-              <View style={styles.dPadLeft}
+              <View style={STYLES.dPadLeft}
               onTouchStart={() => this.twistUpdate({wheel_instruction:"left"}) }
               onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
               >
@@ -328,7 +328,7 @@ export default class App extends React.Component {
                   />
                 </TouchableOpacity>
               </View>
-              <View style={styles.dPadRight} 
+              <View style={STYLES.dPadRight} 
               onTouchStart={() => this.twistUpdate({wheel_instruction:"right"}) }
               onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
               >
@@ -341,7 +341,7 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.upAndDownDPad}
+            <View style={STYLES.upAndDownDPad}
             onTouchStart={() => this.twistUpdate({wheel_instruction:"backward"}) }
             onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
             >
@@ -355,7 +355,7 @@ export default class App extends React.Component {
             </View>
           </View>
 
-          <View style={styles.drumFunctionContainer}> 
+          <View style={STYLES.drumFunctionContainer}> 
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
@@ -411,7 +411,7 @@ export default class App extends React.Component {
                   </View>
                 </View>
               </View>
-              <Image style={styles.image} source={require('./assets/rassor.png')}/>
+              <Image style={STYLES.image} source={require('./assets/rassor.png')}/>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
@@ -472,117 +472,4 @@ export default class App extends React.Component {
       </View>
     );
   }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#5D6061',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  headerContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    marginTop: 10,
-    marginHorizontal: 10,
-    elevation: 3,
-    backgroundColor: '#2e3030',
-    borderRadius: 10,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
-  buttonLayoutContainer: {
-    flex: 8,
-    flexDirection: 'row',
-    marginVertical: 10,
-  },
-
-  text: {
-    fontFamily: 'NASA',
-    flex: 4,
-    fontSize: 25,
-    color: '#fff',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
-
-  image: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'contain',
-    paddingVertical:20,
-  },
-
-  modalViewContainer: {
-    borderRadius: 25,
-    backgroundColor: '#5D6061',
-  },
-
-  modalButton: {
-    flex: 1,
-    backgroundColor: '#767676',
-    borderRadius: 100,
-    marginHorizontal: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 100,
-    elevation: 5,
-  },
-
-  upAndDownDPad: {
-    flex: 1, 
-    backgroundColor: '#3a3d3d', 
-    borderRadius: 10, 
-    margin: 10, 
-    elevation: 5, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
-
-  dPadLeft: {
-    flex: 1, 
-    backgroundColor: '#3a3d3d', 
-    borderRadius: 10, 
-    marginHorizontal: 10, 
-    elevation: 5, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
-
-  dPadRight: {
-    flex: 1, 
-    backgroundColor: '#3a3d3d', 
-    borderRadius: 10,
-    marginRight: 10, 
-    elevation: 5, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
-
-  drumFunctionContainer: {
-    flex: 6, 
-    justifyContent: 'center', 
-    marginHorizontal: 10,
-    padding:10, 
-    borderRadius: 10, 
-    elevation: 3, 
-    backgroundColor: '#2e3030'
-  },
-
-  ipInputBox: {
-    height: 80, 
-    fontSize: 65, 
-    backgroundColor:'#2e3030', 
-    borderColor: 'gray', 
-    borderWidth: 1 , 
-    color: '#fff', 
-    textAlign: 'center',
-    textAlignVertical: 'center', 
-    fontFamily: 'NASA',
-  }
-});
+} 
