@@ -7,6 +7,20 @@
 #include "std_msgs/Float64.h"
 #include "topic_translator.h"
 
+TopicTranslator::TopicTranslator(
+    const std::string& nodeName,
+    const std::string& processorUsageTopic,
+    const std::string& memoryUsageTopic,
+    const std::string& batteryRemainingTopic,
+    int queueSize) {
+
+    this->nodeName = nodeName;
+    this->processorUsageTopic = processorUsageTopic;
+    this->memoryUsageTopic = memoryUsageTopic;
+    this->batteryRemainingTopic = batteryRemainingTopic;
+    this->queueSize = queueSize;
+}
+
 // Attempt to connect to a ROS Master Node.
 void TopicTranslator::connectToMaster(const std::string& masterURI) {
     std::map<std::string, std::string> masterURIRemap;
@@ -33,8 +47,8 @@ void TopicTranslator::connectToMaster(const std::string& masterURI) {
         &TopicTranslator::handleMemoryData,
         this
     );
-    batteryUsageSubscriber = nodeHandle.subscribe(
-        batteryUsageTopic,
+    batteryRemainingSubscriber = nodeHandle.subscribe(
+        batteryRemainingTopic,
         queueSize,
         &TopicTranslator::handleBatteryData,
         this
