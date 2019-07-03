@@ -5,7 +5,7 @@
 #include <QWidget>
 #include "ui_about_window.h"
 
-class AboutWindow : public QWidget, public Ui::AboutWindow {
+class AboutWindow : public QWidget, public Ui_aboutWindow {
     Q_OBJECT
     public:
         AboutWindow(QWidget *parent = NULL);
