@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QWidget" name="MainWindow">
+ <class>mainWindow</class>
+ <widget class="QWidget" name="mainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -39,7 +39,7 @@
   <property name="windowTitle">
    <string>EZ-RASSOR Dashboard</string>
   </property>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QTabWidget" name="mainTabWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -56,11 +56,11 @@
    <property name="currentIndex">
     <number>0</number>
    </property>
-   <widget class="QWidget" name="GeneralTab">
+   <widget class="QWidget" name="generalTab">
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QPushButton" name="ConnectButton">
+    <widget class="QPushButton" name="connectButton">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -79,7 +79,7 @@
       <string>Connect</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ROSMasterURILabel">
+    <widget class="QLabel" name="masterURILabel">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -98,7 +98,7 @@
       <string>ROS Master URI</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="ROSMasterURILineEdit">
+    <widget class="QLineEdit" name="masterURILineEdit">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -111,7 +111,7 @@
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>192.168.1.1:13001</string>
+      <string>http://localhost:11311</string>
      </property>
      <property name="maxLength">
       <number>100</number>
@@ -120,7 +120,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="LaunchFilesLabel">
+    <widget class="QLabel" name="launchFilesLabel">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -139,7 +139,7 @@
       <string>Launch Files</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="LaunchButton">
+    <widget class="QPushButton" name="launchButton">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -152,7 +152,7 @@
       <string>Launch</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="LaunchFilesComboBox">
+    <widget class="QComboBox" name="launchFilesComboBox">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -162,7 +162,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QTextEdit" name="ParametersTextEdit">
+    <widget class="QTextEdit" name="parametersTextEdit">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -191,7 +191,7 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="ParametersLabel">
+    <widget class="QLabel" name="parametersLabel">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -210,7 +210,7 @@ p, li { white-space: pre-wrap; }
       <string>Parameters</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="swampCrocodileLabel">
      <property name="geometry">
       <rect>
        <x>160</x>
@@ -223,7 +223,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/images/SWAMP_CROCODILE.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="helpButton">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -236,22 +236,22 @@ p, li { white-space: pre-wrap; }
       <string>?</string>
      </property>
     </widget>
-    <zorder>label</zorder>
-    <zorder>ConnectButton</zorder>
-    <zorder>ROSMasterURILabel</zorder>
-    <zorder>ROSMasterURILineEdit</zorder>
-    <zorder>LaunchFilesLabel</zorder>
-    <zorder>LaunchButton</zorder>
-    <zorder>LaunchFilesComboBox</zorder>
-    <zorder>ParametersTextEdit</zorder>
-    <zorder>ParametersLabel</zorder>
-    <zorder>pushButton</zorder>
+    <zorder>swampCrocodileLabel</zorder>
+    <zorder>connectButton</zorder>
+    <zorder>masterURILabel</zorder>
+    <zorder>masterURILineEdit</zorder>
+    <zorder>launchFilesLabel</zorder>
+    <zorder>launchButton</zorder>
+    <zorder>launchFilesComboBox</zorder>
+    <zorder>parametersTextEdit</zorder>
+    <zorder>parametersLabel</zorder>
+    <zorder>helpButton</zorder>
    </widget>
-   <widget class="QWidget" name="StatusTab">
+   <widget class="QWidget" name="statusTab">
     <attribute name="title">
      <string>Status</string>
     </attribute>
-    <widget class="QLabel" name="CPUUsageLabel">
+    <widget class="QLabel" name="processorUsageLabel">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -271,7 +271,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;CPU Usage &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="CPUUsageBar">
+    <widget class="QProgressBar" name="processorUsageBar">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
       <number>42</number>
      </property>
     </widget>
-    <widget class="QTextBrowser" name="StandardOutBrowser">
+    <widget class="QTextBrowser" name="standardOutBrowser">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="MemoryUsageLabel">
+    <widget class="QLabel" name="memoryUsageLabel">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -319,7 +319,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Memory Usage&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="MemoryUsageBar">
+    <widget class="QProgressBar" name="memoryUsageBar">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -337,7 +337,7 @@ p, li { white-space: pre-wrap; }
       <number>56</number>
      </property>
     </widget>
-    <widget class="QLabel" name="BatteryRemainingLabel">
+    <widget class="QLabel" name="batteryRemainingLabel">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -357,7 +357,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Battery Remaining&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QProgressBar" name="BatteryRemainingBar">
+    <widget class="QProgressBar" name="batteryRemainingBar">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -376,11 +376,11 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="CameraTab">
+   <widget class="QWidget" name="cameraTab">
     <attribute name="title">
      <string>Cameras</string>
     </attribute>
-    <widget class="QFrame" name="RightCameraFrame">
+    <widget class="QFrame" name="rightCameraFrame">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -396,7 +396,7 @@ p, li { white-space: pre-wrap; }
       <enum>QFrame::Raised</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="RightCameraLabel">
+    <widget class="QLabel" name="rightCameraLabel">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -416,7 +416,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Right Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QFrame" name="LeftCameraFrame">
+    <widget class="QFrame" name="leftCameraFrame">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -432,7 +432,7 @@ p, li { white-space: pre-wrap; }
       <enum>QFrame::Raised</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="LeftCameraLabel">
+    <widget class="QLabel" name="leftCameraLabel">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -453,11 +453,11 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="MapTab">
+   <widget class="QWidget" name="mapTab">
     <attribute name="title">
      <string>Map</string>
     </attribute>
-    <widget class="QFrame" name="PointCloudFrame">
+    <widget class="QFrame" name="pointCloudFrame">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -473,7 +473,7 @@ p, li { white-space: pre-wrap; }
       <enum>QFrame::Raised</enum>
      </property>
     </widget>
-    <widget class="QFrame" name="DisparityMapFrame">
+    <widget class="QFrame" name="disparityMapFrame">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -489,7 +489,7 @@ p, li { white-space: pre-wrap; }
       <enum>QFrame::Raised</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="PointCloudLabel">
+    <widget class="QLabel" name="pointCloudLabel">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -509,7 +509,7 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Point Cloud &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="DisparityMapLabel">
+    <widget class="QLabel" name="disparityMapLabel">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -530,7 +530,7 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="OrientationTab">
+   <widget class="QWidget" name="orientationTab">
     <attribute name="title">
      <string>Orientation</string>
     </attribute>
@@ -543,14 +543,14 @@ p, li { white-space: pre-wrap; }
        <height>121</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="OrientationDataBoxes">
+     <layout class="QHBoxLayout" name="orientationDataBoxes">
       <item>
-       <layout class="QVBoxLayout" name="OrientationDataBox">
+       <layout class="QVBoxLayout" name="orientationDataBox">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item>
-         <widget class="QLabel" name="OrientationDataBoxLabel">
+         <widget class="QLabel" name="orientationDataBoxLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -572,7 +572,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="OrientationXLabel">
+         <widget class="QLabel" name="orientationXLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -586,7 +586,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="OrientationYLabel">
+         <widget class="QLabel" name="orientationYLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -599,7 +599,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="OrientationZLabel">
+         <widget class="QLabel" name="orientationZLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -614,9 +614,9 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="AngularVelocityDataBox">
+       <layout class="QVBoxLayout" name="angularVelocityDataBox">
         <item>
-         <widget class="QLabel" name="AngularVelocityDataBoxLabel">
+         <widget class="QLabel" name="angularVelocityDataBoxLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -635,7 +635,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="AngularVelocityXLabel">
+         <widget class="QLabel" name="angularVelocityXLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -648,7 +648,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="AngularVelocityYLabel">
+         <widget class="QLabel" name="angularVelocityYLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -661,7 +661,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="AngularVelocityZLabel">
+         <widget class="QLabel" name="angularVelocityZLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -676,9 +676,9 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="LinearAccelerationDataBox">
+       <layout class="QVBoxLayout" name="linearAccelerationDataBox">
         <item>
-         <widget class="QLabel" name="LinearAccelerationDataBoxLabel">
+         <widget class="QLabel" name="linearAccelerationDataBoxLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -701,7 +701,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="LinearAccelerationXLabel">
+         <widget class="QLabel" name="linearAccelerationXLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -714,7 +714,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="LinearAccelerationYLabel">
+         <widget class="QLabel" name="linearAccelerationYLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -727,7 +727,7 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="LinearAccelerationZLabel">
+         <widget class="QLabel" name="linearAccelerationZLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -743,7 +743,7 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
-    <widget class="QFrame" name="OrientationFrame">
+    <widget class="QFrame" name="orientationFrame">
      <property name="geometry">
       <rect>
        <x>9</x>
@@ -760,11 +760,11 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="PoseTab">
+   <widget class="QWidget" name="poseTab">
     <attribute name="title">
      <string>Pose</string>
     </attribute>
-    <widget class="QFrame" name="PoseFrame">
+    <widget class="QFrame" name="poseFrame">
      <property name="geometry">
       <rect>
        <x>9</x>
