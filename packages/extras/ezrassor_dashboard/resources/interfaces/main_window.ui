@@ -79,7 +79,7 @@
       <string>Connect</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ROSMasterURLLabel">
+    <widget class="QLabel" name="ROSMasterURILabel">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -95,10 +95,10 @@
       </font>
      </property>
      <property name="text">
-      <string>ROS Master URL</string>
+      <string>ROS Master URI</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="ROSMasterURLLineEdit">
+    <widget class="QLineEdit" name="ROSMasterURILineEdit">
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -238,8 +238,8 @@ p, li { white-space: pre-wrap; }
     </widget>
     <zorder>label</zorder>
     <zorder>ConnectButton</zorder>
-    <zorder>ROSMasterURLLabel</zorder>
-    <zorder>ROSMasterURLLineEdit</zorder>
+    <zorder>ROSMasterURILabel</zorder>
+    <zorder>ROSMasterURILineEdit</zorder>
     <zorder>LaunchFilesLabel</zorder>
     <zorder>LaunchButton</zorder>
     <zorder>LaunchFilesComboBox</zorder>
