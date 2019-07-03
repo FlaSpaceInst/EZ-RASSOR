@@ -1,8 +1,10 @@
+// Defines the TopicTranslator class which reads ROS topics and emits appropriate
+// signals that notify the Dashboard of changes.
+// Written by Tiger Sachse.
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
-
 #include <QThread>
-#include <ros/ros.h>
+#include "ros/ros.h"
 #include "std_msgs/Float64.h"
 
 class TopicTranslator : public QThread {
