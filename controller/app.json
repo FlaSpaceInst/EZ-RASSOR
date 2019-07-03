@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "EZ-RASSOR Controller",
-    "description": "This project is a mobile app controller for NASA's EZ-RASSOR robot made by UCF students",
-    "slug": "ControllerApp",
+    "name": "EZ-Controller",
+    "description": "This controller application has been made for the EZ-RASSOR, an excavation robot that runs on ROS.",
+    "slug": "EZ-Controller",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],
