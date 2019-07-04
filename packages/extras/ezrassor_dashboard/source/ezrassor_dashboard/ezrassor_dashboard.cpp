@@ -24,17 +24,13 @@ int main(int argumentCount, char** argumentVector) {
     // Connect together all necessary signals and slots. This is how the GUI
     // and the topic translator are glued together.
     application.connect(
-        &mainWindow,
-        SIGNAL(connectionRequested(const std::string&)),
-        &topicTranslator,
-        SLOT(connectToMaster(const std::string&))
+        mainWindow.helpButton,
+        SIGNAL(clicked(void)),
+        &aboutWindow,
+        SLOT(show(void))
     );
-    application.connect(
-        &mainWindow,
-        SIGNAL(disconnectionRequested(void)),
-        &topicTranslator,
-        SLOT(disconnectFromMaster(void))
-    );
+
+    // Show relevant data from ROS topics in the GUI.
     application.connect(
         &topicTranslator,
         SIGNAL(processorDataReceived(int)),
@@ -53,11 +49,19 @@ int main(int argumentCount, char** argumentVector) {
         mainWindow.batteryRemainingBar,
         SLOT(setValue(int))
     );
+
+    // Handle connecting and disconnecting with the connectButton.
     application.connect(
-        mainWindow.helpButton,
-        SIGNAL(clicked(void)),
-        &aboutWindow,
-        SLOT(show(void))
+        &mainWindow,
+        SIGNAL(connectionRequested(const std::string&)),
+        &topicTranslator,
+        SLOT(connectToMaster(const std::string&))
+    );
+    application.connect(
+        &mainWindow,
+        SIGNAL(disconnectionRequested(void)),
+        &topicTranslator,
+        SLOT(disconnectFromMaster(void))
     );
     application.connect(
         &topicTranslator,
