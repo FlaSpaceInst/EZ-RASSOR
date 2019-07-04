@@ -3,12 +3,14 @@
 #ifndef MAIN_WINDOW_HEADER
 #define MAIN_WINDOW_HEADER
 #include <QWidget>
+#include <QCloseEvent>
 #include "ui_main_window.h"
 
 class MainWindow : public QWidget, public Ui_mainWindow {
     Q_OBJECT
     public:
         MainWindow(QWidget *parent = NULL);
+        void closeEvent(QCloseEvent*);
     
     public slots:
         void finalizeConnection(void);
@@ -17,6 +19,7 @@ class MainWindow : public QWidget, public Ui_mainWindow {
         void recoverFromConnectionFailure(void);
 
     signals:
+        void closed(void);
         void disconnectionRequested(void);
         void connectionRequested(const std::string&);
 };
