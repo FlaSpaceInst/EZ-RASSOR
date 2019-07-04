@@ -12,7 +12,7 @@ def start_node(
     trigger_string,
     cpu_usage_topic,
     memory_usage_topic,
-    battery_usage_topic,
+    battery_remaining_topic,
     queue_size):
     """Start the fun!"""
     try:
@@ -27,8 +27,8 @@ def start_node(
             std_msgs.msg.Float64,
             queue_size=queue_size,
         )
-        battery_usage_publisher = rospy.Publisher(
-            battery_usage_topic,
+        battery_remaining_publisher = rospy.Publisher(
+            battery_remaining_topic,
             std_msgs.msg.Float64,
             queue_size=queue_size,
         )
@@ -55,9 +55,9 @@ def start_node(
             memory_usage_publisher.publish(memory_usage)
 
             # Publish battery information as well.
-            battery_usage = psutil.sensors_battery()
-            if battery_usage is not None:
-                battery_usage_publisher.publish(battery_usage.percent)
+            battery_remaining = psutil.sensors_battery()
+            if battery_remaining is not None:
+                battery_remaining_publisher.publish(battery_remaining.percent)
 
             # Don't do this too fast, lest you waste precious CPU cycles.
             sleep_rate.sleep()

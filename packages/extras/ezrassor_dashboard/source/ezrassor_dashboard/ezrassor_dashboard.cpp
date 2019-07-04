@@ -1,39 +1,61 @@
+// The main entry point of the EZ-RASSOR Dashboard. This file configures the
+// Dashboard components and launches the GUI.
+// Written by Tiger Sachse.
 #include <QApplication>
 #include "main_window.h"
 #include "about_window.h"
 #include "topic_translator.h"
 
+// The main entry point of the EZ-RASSOR Dashboard.
 int main(int argumentCount, char** argumentVector) {
-    QApplication application(argumentCount, argumentVector);
 
+    // Initialize the application, its windows, and its topic translator.
+    QApplication application(argumentCount, argumentVector);
     MainWindow mainWindow;
-    mainWindow.show();
     AboutWindow aboutWindow;
-    aboutWindow.show();
     TopicTranslator topicTranslator(
         "dashboard",
         "cpu_usage",
         "memory_usage",
-        "battery_usage",
+        "battery_remaining",
         100
     );
 
-    //topicTranslator.connectToMaster("whatthefuck");
-    //topicTranslator.start();
-
-    application.connect(
-        &topicTranslator,
-        SIGNAL(processorDataReceived(int)),
-        mainWindow.CPUUsageBar,
-        SLOT(setValue(int))
-    );
-
+    // Connect together all necessary signals and slots. This is how the GUI
+    // and the topic translator are glued together.
     application.connect(
         &mainWindow,
         SIGNAL(connectionRequested(const std::string&)),
         &topicTranslator,
         SLOT(connectToMaster(const std::string&))
     );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(processorDataReceived(int)),
+        mainWindow.processorUsageBar,
+        SLOT(setValue(int))
+    );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(memoryDataReceived(int)),
+        mainWindow.memoryUsageBar,
+        SLOT(setValue(int))
+    );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(batteryDataReceived(int)),
+        mainWindow.batteryRemainingBar,
+        SLOT(setValue(int))
+    );
+    application.connect(
+        mainWindow.helpButton,
+        SIGNAL(clicked()),
+        &aboutWindow,
+        SLOT(show())
+    );
 
+    mainWindow.show();
+
+    // Run the application.
     return application.exec();
 }
