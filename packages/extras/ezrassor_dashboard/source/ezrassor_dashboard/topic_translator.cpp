@@ -22,11 +22,21 @@ TopicTranslator::TopicTranslator(
     this->queueSize = queueSize;
 }
 
+// Disconnect from the ROS Master Node and shut down the translator node.
+void TopicTranslator::disconnectFromMaster(void) {
+    ros::shutdown();
+    Q_EMIT disconnectionSucceeded();
+}
+
 // Attempt to connect to a ROS Master Node.
 void TopicTranslator::connectToMaster(const std::string& masterURI) {
     std::map<std::string, std::string> masterURIRemap;
     masterURIRemap["__master"] = masterURI;
     ros::init(masterURIRemap, nodeName);
+    
+    // This method of confirming the connection has issues. It doesn't really work
+    // with ROS Master Nodes on different ports, and it hasn't been tested with
+    // ROS graphs on remote systems. This will likely need to be revisited.
     if (ros::master::check()) {
         Q_EMIT connectionSucceeded();
         start();
@@ -34,11 +44,6 @@ void TopicTranslator::connectToMaster(const std::string& masterURI) {
     else {
         Q_EMIT connectionFailed();
     }
-}
-
-void TopicTranslator::disconnectFromMaster(void) {
-    ros::shutdown();
-    Q_EMIT disconnectionSucceeded();
 }
 
 // Run this thread (as a ROS node).
@@ -65,11 +70,6 @@ void TopicTranslator::run(void) {
     ros::spin();
 }
 
-// Handle incoming processor data from ROS.
-void TopicTranslator::handleProcessorData(const std_msgs::Float64::ConstPtr& message) {
-    Q_EMIT processorDataReceived((int) message->data);
-}
-
 // Handle incoming memory data from ROS.
 void TopicTranslator::handleMemoryData(const std_msgs::Float64::ConstPtr& message) {
     Q_EMIT memoryDataReceived((int) message->data);
@@ -78,4 +78,9 @@ void TopicTranslator::handleMemoryData(const std_msgs::Float64::ConstPtr& messag
 // Handle incoming battery data from ROS.
 void TopicTranslator::handleBatteryData(const std_msgs::Float64::ConstPtr& message) {
     Q_EMIT batteryDataReceived((int) message->data);
+}
+
+// Handle incoming processor data from ROS.
+void TopicTranslator::handleProcessorData(const std_msgs::Float64::ConstPtr& message) {
+    Q_EMIT processorDataReceived((int) message->data);
 }
