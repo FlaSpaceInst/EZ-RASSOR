@@ -11,9 +11,13 @@ class MainWindow : public QWidget, public Ui_mainWindow {
         MainWindow(QWidget *parent = NULL);
     
     public slots:
-        void handleConnectionRequest();
+        void handleConnectButtonPress(void);
+        void recoverFromConnectionFailure(void);
+        void finalizeConnection(void);
+        void finalizeDisconnection(void);
 
     signals:
         void connectionRequested(const std::string&);
+        void disconnectionRequested(void);
 };
 #endif
