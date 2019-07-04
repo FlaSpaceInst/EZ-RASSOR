@@ -95,13 +95,12 @@ int main(int argumentCount, char** argumentVector) {
         SLOT(finalizeDisconnection(void))
     );
 
-    mainWindow.show();
-
     // Run the application.
+    mainWindow.show();
     int returnValue = application.exec();
 
-    // Once the application has finished running, wait for the ROS node thread
-    // to die.
+    // The application dies once all windows are closed. After this, signal for
+    // the ROS node thread to disconnect from master and die.
     topicTranslator.disconnectFromMaster();
     while (topicTranslator.isRunning()) {};
 

@@ -33,8 +33,8 @@ class TopicTranslator : public QThread {
     private:
         int queueSize;
         std::string nodeName;
-        std::string processorUsageTopic;
         std::string memoryUsageTopic;
+        std::string processorUsageTopic;
         std::string batteryRemainingTopic;
         
         void run(void);
