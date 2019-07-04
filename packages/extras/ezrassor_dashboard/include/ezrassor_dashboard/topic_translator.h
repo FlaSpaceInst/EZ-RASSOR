@@ -20,8 +20,12 @@ class TopicTranslator : public QThread {
 
     public slots:
         void connectToMaster(const std::string&);
+        void disconnectFromMaster(void);
 
     signals:
+        void connectionSucceeded(void);
+        void connectionFailed(void);
+        void disconnectionSucceeded(void);
         void processorDataReceived(int);
         void memoryDataReceived(int);
         void batteryDataReceived(int);
