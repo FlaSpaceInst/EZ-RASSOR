@@ -37,12 +37,12 @@ void MainWindow::finalizeDisconnection(void) {
 void MainWindow::handleConnectButtonPress(void) {
 
     // I tried making the button checkable, but then it looked grayed out when
-    // checked which I didn't like. Instead, I check the button's text to determine
-    // its state. This isn't the cleanest but none of us are perfect, right?
+    // checked which I didn't like. Instead, I review the button's text to determine
+    // its state. This isn't the cleanest but nobody is perfect, right?
     if (connectButton->text() == "Connect") {
         Q_EMIT connectionRequested(masterURILineEdit->text().toStdString());
     }
-    else {
+    else if (connectButton->text() == "Disconnect") {
         Q_EMIT disconnectionRequested();
     }
 }
