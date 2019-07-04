@@ -24,7 +24,10 @@ TopicTranslator::TopicTranslator(
 
 // Disconnect from the ROS Master Node and shut down the translator node.
 void TopicTranslator::disconnectFromMaster(void) {
-    ros::shutdown();
+    if (ros::ok()) {
+        ros::shutdown();
+    }
+    while (ros::ok()) {};
     Q_EMIT disconnectionSucceeded();
 }
 
