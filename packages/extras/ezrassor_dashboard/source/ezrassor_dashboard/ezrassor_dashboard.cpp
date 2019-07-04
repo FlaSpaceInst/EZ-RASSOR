@@ -21,13 +21,26 @@ int main(int argumentCount, char** argumentVector) {
         100
     );
 
-    // Connect together all necessary signals and slots. This is how the GUI
-    // and the topic translator are glued together.
+    // Open a help window when the helpButton is pressed.
     application.connect(
         mainWindow.helpButton,
         SIGNAL(clicked(void)),
         &aboutWindow,
         SLOT(show(void))
+    );
+
+    // Close down the ROS node thread and aboutWindow if the mainWindow is closed.
+    application.connect(
+        &mainWindow,
+        SIGNAL(closed(void)),
+        &topicTranslator,
+        SLOT(disconnectFromMaster(void))
+    );
+    application.connect(
+        &mainWindow,
+        SIGNAL(closed(void)),
+        &aboutWindow,
+        SLOT(close(void))
     );
 
     // Show relevant data from ROS topics in the GUI.
@@ -85,5 +98,12 @@ int main(int argumentCount, char** argumentVector) {
     mainWindow.show();
 
     // Run the application.
-    return application.exec();
+    int returnValue = application.exec();
+
+    // Once the application has finished running, wait for the ROS node thread
+    // to die.
+    topicTranslator.disconnectFromMaster();
+    while (topicTranslator.isRunning()) {};
+
+    return returnValue;
 }
