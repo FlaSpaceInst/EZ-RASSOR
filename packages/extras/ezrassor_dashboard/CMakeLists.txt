@@ -3,18 +3,19 @@
 cmake_minimum_required(VERSION 3.1.0)
 
 # Set some important variables so CMake knows where all the required files are.
-set(DASHBOARD_NAME ezrassor_dashboard)
+set(EXECUTABLE_NAME dashboard)
+set(PACKAGE_NAME ezrassor_dashboard)
 set(DASHBOARD_RESOURCES_DIR resources)
 set(DASHBOARD_INTERFACE_DIR ${DASHBOARD_RESOURCES_DIR}/interfaces)
-set(DASHBOARD_SOURCE_DIR source/ezrassor_dashboard)
-set(DASHBOARD_INCLUDE_DIR include/ezrassor_dashboard)
+set(DASHBOARD_SOURCE_DIR source/${PACKAGE_NAME})
+set(DASHBOARD_INCLUDE_DIR include/${PACKAGE_NAME})
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${DASHBOARD_INTERFACE_DIR})
 
 # Initialize this project, plus hunt down Catkin and Qt5.
-project(${DASHBOARD_NAME})
+project(${PACKAGE_NAME})
 find_package(catkin REQUIRED COMPONENTS roscpp)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
@@ -26,7 +27,7 @@ catkin_package()
 qt5_add_resources(DASHBOARD_RESOURCES ${DASHBOARD_RESOURCES_DIR}/images.qrc)
 include_directories(${catkin_INCLUDE_DIRS})
 add_executable(
-    ${DASHBOARD_NAME}
+    ${EXECUTABLE_NAME}
     ${DASHBOARD_INTERFACE_DIR}/main_window.ui
     ${DASHBOARD_INTERFACE_DIR}/about_window.ui
     ${DASHBOARD_INCLUDE_DIR}/main_window.h
@@ -38,11 +39,11 @@ add_executable(
     ${DASHBOARD_SOURCE_DIR}/topic_translator.cpp
     ${DASHBOARD_RESOURCES}
 )
-target_include_directories(${DASHBOARD_NAME} PRIVATE ${DASHBOARD_INCLUDE_DIR})
-target_link_libraries(${DASHBOARD_NAME} Qt5::Widgets ${catkin_LIBRARIES})
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${DASHBOARD_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} Qt5::Widgets ${catkin_LIBRARIES})
 install(
     TARGETS
-        ${DASHBOARD_NAME}
+        ${EXECUTABLE_NAME}
     RUNTIME DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -55,4 +56,3 @@ catkin_install_python(
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
