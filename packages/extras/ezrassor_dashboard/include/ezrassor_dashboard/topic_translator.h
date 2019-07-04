@@ -19,16 +19,16 @@ class TopicTranslator : public QThread {
         );
 
     public slots:
-        void connectToMaster(const std::string&);
         void disconnectFromMaster(void);
+        void connectToMaster(const std::string&);
 
     signals:
-        void connectionSucceeded(void);
         void connectionFailed(void);
+        void connectionSucceeded(void);
         void disconnectionSucceeded(void);
-        void processorDataReceived(int);
         void memoryDataReceived(int);
         void batteryDataReceived(int);
+        void processorDataReceived(int);
 
     private:
         int queueSize;
@@ -38,8 +38,8 @@ class TopicTranslator : public QThread {
         std::string batteryRemainingTopic;
         
         void run(void);
-        void handleProcessorData(const std_msgs::Float64::ConstPtr&);
         void handleMemoryData(const std_msgs::Float64::ConstPtr&);
         void handleBatteryData(const std_msgs::Float64::ConstPtr&);
+        void handleProcessorData(const std_msgs::Float64::ConstPtr&);
 };
 #endif
