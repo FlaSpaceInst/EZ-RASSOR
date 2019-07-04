@@ -27,11 +27,13 @@ void TopicTranslator::disconnectFromMaster(void) {
     if (ros::ok()) {
         ros::shutdown();
     }
+
+    // Wait for the ROS node to die before declaring success.
     while (ros::ok()) {};
     Q_EMIT disconnectionSucceeded();
 }
 
-// Attempt to connect to a ROS Master Node.
+// Attempt to connect to a ROS Master Node. This function has *issues*.
 void TopicTranslator::connectToMaster(const std::string& masterURI) {
     std::map<std::string, std::string> masterURIRemap;
     masterURIRemap["__master"] = masterURI;
