@@ -78,9 +78,6 @@
      <property name="text">
       <string>Connect</string>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
     </widget>
     <widget class="QLabel" name="masterURILabel">
      <property name="geometry">

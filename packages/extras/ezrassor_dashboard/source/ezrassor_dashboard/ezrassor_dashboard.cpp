@@ -30,6 +30,12 @@ int main(int argumentCount, char** argumentVector) {
         SLOT(connectToMaster(const std::string&))
     );
     application.connect(
+        &mainWindow,
+        SIGNAL(disconnectionRequested(void)),
+        &topicTranslator,
+        SLOT(disconnectFromMaster(void))
+    );
+    application.connect(
         &topicTranslator,
         SIGNAL(processorDataReceived(int)),
         mainWindow.processorUsageBar,
@@ -49,9 +55,27 @@ int main(int argumentCount, char** argumentVector) {
     );
     application.connect(
         mainWindow.helpButton,
-        SIGNAL(clicked()),
+        SIGNAL(clicked(void)),
         &aboutWindow,
-        SLOT(show())
+        SLOT(show(void))
+    );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(connectionSucceeded(void)),
+        &mainWindow,
+        SLOT(finalizeConnection(void))
+    );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(connectionFailed(void)),
+        &mainWindow,
+        SLOT(recoverFromConnectionFailure(void))
+    );
+    application.connect(
+        &topicTranslator,
+        SIGNAL(disconnectionSucceeded(void)),
+        &mainWindow,
+        SLOT(finalizeDisconnection(void))
     );
 
     mainWindow.show();

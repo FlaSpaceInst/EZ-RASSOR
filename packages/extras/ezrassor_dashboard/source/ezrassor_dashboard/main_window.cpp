@@ -8,13 +8,32 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     setupUi(this);
     connect(
         connectButton,
-        SIGNAL(clicked()),
+        SIGNAL(clicked(void)),
         this,
-        SLOT(handleConnectionRequest())
+        SLOT(handleConnectButtonPress(void))
     );
 }
 
-// When a connection is requested, emit a signal with the appropriate Master URI.
-void MainWindow::handleConnectionRequest(void) {
-    Q_EMIT connectionRequested(masterURILineEdit->text().toStdString());
+void MainWindow::handleConnectButtonPress(void) {
+    if (connectButton->text() == "Connect") {
+        Q_EMIT connectionRequested(masterURILineEdit->text().toStdString());
+    }
+    else {
+        Q_EMIT disconnectionRequested();
+    }
+}
+
+#include <iostream>
+void MainWindow::recoverFromConnectionFailure(void) {
+    std::cout << "failed" << std::endl;
+}
+
+void MainWindow::finalizeConnection(void) {
+    connectButton->setText("Disconnect");
+    masterURILineEdit->setEnabled(false);
+}
+
+void MainWindow::finalizeDisconnection(void) {
+    connectButton->setText("Connect");
+    masterURILineEdit->setEnabled(true);
 }

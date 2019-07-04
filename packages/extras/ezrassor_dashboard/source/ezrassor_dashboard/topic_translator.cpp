@@ -27,13 +27,18 @@ void TopicTranslator::connectToMaster(const std::string& masterURI) {
     std::map<std::string, std::string> masterURIRemap;
     masterURIRemap["__master"] = masterURI;
     ros::init(masterURIRemap, nodeName);
-
-    if (!ros::master::check()) {
-        return;// false;
+    if (ros::master::check()) {
+        Q_EMIT connectionSucceeded();
+        start();
     }
+    else {
+        Q_EMIT connectionFailed();
+    }
+}
 
-    //return true;
-    start();
+void TopicTranslator::disconnectFromMaster(void) {
+    ros::shutdown();
+    Q_EMIT disconnectionSucceeded();
 }
 
 // Run this thread (as a ROS node).
