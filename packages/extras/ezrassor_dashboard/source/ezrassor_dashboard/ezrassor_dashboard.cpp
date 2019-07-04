@@ -47,10 +47,14 @@ int main(int argumentCount, char** argumentVector) {
         mainWindow.batteryRemainingBar,
         SLOT(setValue(int))
     );
+    application.connect(
+        mainWindow.helpButton,
+        SIGNAL(clicked()),
+        &aboutWindow,
+        SLOT(show())
+    );
 
-    // Show the windows.
     mainWindow.show();
-    aboutWindow.show();
 
     // Run the application.
     return application.exec();
