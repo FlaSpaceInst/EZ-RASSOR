@@ -1,6 +1,7 @@
 // The MainWindow class holds all of the interfaces for the Dashboard.
 // Written by Tiger Sachse.
 #include <QWidget>
+#include <QCloseEvent>
 #include "main_window.h"
 
 // Initialize this MainWindow class and set up the UI.
@@ -12,6 +13,12 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
         this,
         SLOT(handleConnectButtonPress(void))
     );
+}
+
+// Close the window and tell everyone about it.
+void MainWindow::closeEvent(QCloseEvent* closeEvent) {
+    Q_EMIT closed();
+    closeEvent->accept();
 }
 
 // Change the GUI to disable new connections.
@@ -40,6 +47,7 @@ void MainWindow::handleConnectButtonPress(void) {
     }
 }
 
+#include <iostream>
 void MainWindow::recoverFromConnectionFailure(void) {
     std::cout << "failed" << std::endl;
 }
