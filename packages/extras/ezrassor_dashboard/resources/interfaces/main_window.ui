@@ -60,66 +60,6 @@
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QPushButton" name="connectButton">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>80</y>
-       <width>361</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Connect</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="masterURILabel">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>20</y>
-       <width>131</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>ROS Master URI</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="masterURILineEdit">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>40</y>
-       <width>361</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>http://localhost:11311</string>
-     </property>
-     <property name="maxLength">
-      <number>200</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
     <widget class="QLabel" name="launchFilesLabel">
      <property name="geometry">
       <rect>
@@ -213,9 +153,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="swampCrocodileLabel">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>190</x>
        <y>150</y>
-       <width>591</width>
+       <width>561</width>
        <height>411</height>
       </rect>
      </property>
@@ -223,29 +163,35 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/images/SWAMP_CROCODILE.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="helpButton">
+    <widget class="QTextBrowser" name="aboutBrowser">
      <property name="geometry">
       <rect>
        <x>410</x>
-       <y>120</y>
-       <width>31</width>
-       <height>25</height>
+       <y>20</y>
+       <width>351</width>
+       <height>111</height>
       </rect>
      </property>
-     <property name="text">
-      <string>?</string>
+     <property name="font">
+      <font>
+       <family>Ubuntu</family>
+      </font>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To start the EZ-RASSOR, select a launch file from the dropdown menu on the left. For detailed instructions on all available launch files, check out this project's usage section in our &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR#usage&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;readme&lt;/span&gt;&lt;/a&gt;, or view the &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR/wiki&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;wiki&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <zorder>swampCrocodileLabel</zorder>
-    <zorder>connectButton</zorder>
-    <zorder>masterURILabel</zorder>
-    <zorder>masterURILineEdit</zorder>
     <zorder>launchFilesLabel</zorder>
     <zorder>launchButton</zorder>
     <zorder>launchFilesComboBox</zorder>
     <zorder>parametersTextEdit</zorder>
     <zorder>parametersLabel</zorder>
-    <zorder>helpButton</zorder>
+    <zorder>aboutBrowser</zorder>
    </widget>
    <widget class="QWidget" name="statusTab">
     <attribute name="title">
