@@ -1,4 +1,6 @@
-const STYLES = StyleSheet.create({
+import { StyleSheet } from 'react-native';
+
+const ControllerStyle = StyleSheet.create({
   
   buttonLayoutContainer: {
     flex: 8,
@@ -111,3 +113,5 @@ const STYLES = StyleSheet.create({
     fontFamily: 'NASA',
   }
 });
+
+export default ControllerStyle;
