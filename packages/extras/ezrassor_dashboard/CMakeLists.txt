@@ -32,7 +32,6 @@ add_executable(
     ${DASHBOARD_INCLUDE_DIR}/main_window.h
     ${DASHBOARD_INCLUDE_DIR}/topic_translator.h
     ${DASHBOARD_SOURCE_DIR}/main_window.cpp
-    ${DASHBOARD_SOURCE_DIR}/about_window.cpp
     ${DASHBOARD_SOURCE_DIR}/ezrassor_dashboard.cpp
     ${DASHBOARD_SOURCE_DIR}/topic_translator.cpp
     ${DASHBOARD_RESOURCES}
