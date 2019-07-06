@@ -1,49 +1,24 @@
-// The TopicTranslator class acts as a ROS node that reads all ROS topics that
-// the Dashboard needs to operate. It emits signals that notify the Dashboard
-// of any changes.
 // Written by Tiger Sachse.
 #include <QThread>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 #include "topic_translator.h"
 
-// Initialize this TopicTranslator with some topics.
 TopicTranslator::TopicTranslator(
+    int& argumentCount,
+    char** argumentVector,
     const std::string& nodeName,
-    const std::string& processorUsageTopic,
+    int queueSize,
     const std::string& memoryUsageTopic,
-    const std::string& batteryRemainingTopic,
-    int queueSize) {
+    const std::string& processorUsageTopic,
+    const std::string& batteryRemainingTopic)
+    : memoryUsageTopic(memoryUsageTopic),
+      processorUsageTopic(processorUsageTopic),
+      batteryRemainingTopic(batteryRemainingTopic),
+      queueSize(queueSize) {
 
-    this->nodeName = nodeName;
-    this->processorUsageTopic = processorUsageTopic;
-    this->memoryUsageTopic = memoryUsageTopic;
-    this->batteryRemainingTopic = batteryRemainingTopic;
-    this->queueSize = queueSize;
-}
-
-// Disconnect from the ROS Master Node and shut down the translator node.
-void TopicTranslator::disconnectFromMaster(void) {
-    if (ros::ok()) {
-        ros::shutdown();
-    }
-
-    // Wait for the ROS node to die before declaring success.
-    while (ros::ok()) {};
-    Q_EMIT disconnectionSucceeded();
-}
-
-// Attempt to connect to a ROS Master Node. This function has *issues*.
-void TopicTranslator::connectToMaster(const std::string& masterURI) {
-    std::map<std::string, std::string> masterURIRemap;
-    masterURIRemap["__master"] = masterURI;
-    ros::init(masterURIRemap, nodeName);
-    
-    // This method of confirming the connection has issues. It doesn't really work
-    // with ROS Master Nodes on different ports, and it hasn't been tested with
-    // ROS graphs on remote systems. This will likely need to be revisited.
+    ros::init(argumentCount, argumentVector, nodeName);
     if (ros::master::check()) {
-        Q_EMIT connectionSucceeded();
         start();
     }
     else {
@@ -51,7 +26,12 @@ void TopicTranslator::connectToMaster(const std::string& masterURI) {
     }
 }
 
-// Run this thread (as a ROS node).
+TopicTranslator::~TopicTranslator(void) {
+    ros::shutdown();
+    ros::waitForShutdown();
+    wait(5000);
+}
+
 void TopicTranslator::run(void) {
     ros::NodeHandle nodeHandle;
     ros::Subscriber processorUsageSubscriber = nodeHandle.subscribe(
