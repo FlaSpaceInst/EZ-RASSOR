@@ -15,6 +15,15 @@ int main(int argumentCount, char** argumentVector) {
     HelpWindow helpWindow;
     TopicTranslator* topicTranslator;
 
+    mainWindow.show();
+
+    application.connect(
+        &mainWindow,
+        SIGNAL(closed(void)),
+        &application,
+        SLOT(quit(void))
+    );
+
     try {
         topicTranslator = new TopicTranslator(
             argumentCount,
@@ -53,7 +62,5 @@ int main(int argumentCount, char** argumentVector) {
     }
 
     // Run the application.
-    mainWindow.show();
-
     return application.exec();
 }
