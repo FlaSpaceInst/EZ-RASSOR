@@ -11,7 +11,7 @@
   "dependencies": {
     "expo": "^31.0.2",
     "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.2.tar.gz",
     "react-native-modal": "^7.0.2"
   },
   "devDependencies": {
