@@ -29,9 +29,7 @@ include_directories(${catkin_INCLUDE_DIRS})
 add_executable(
     ${EXECUTABLE_NAME}
     ${DASHBOARD_INTERFACE_DIR}/main_window.ui
-    ${DASHBOARD_INTERFACE_DIR}/about_window.ui
     ${DASHBOARD_INCLUDE_DIR}/main_window.h
-    ${DASHBOARD_INCLUDE_DIR}/about_window.h
     ${DASHBOARD_INCLUDE_DIR}/topic_translator.h
     ${DASHBOARD_SOURCE_DIR}/main_window.cpp
     ${DASHBOARD_SOURCE_DIR}/about_window.cpp
