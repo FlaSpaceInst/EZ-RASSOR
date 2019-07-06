@@ -5,6 +5,8 @@
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 
+const int TRANSLATOR_INITIALIZATION_FAILED = 1;
+
 class TopicTranslator : public QThread {
     Q_OBJECT
     public:
@@ -20,7 +22,6 @@ class TopicTranslator : public QThread {
         ~TopicTranslator(void);
 
     signals:
-        void connectionFailed(void);
         void memoryDataReceived(int);
         void batteryDataReceived(int);
         void processorDataReceived(int);

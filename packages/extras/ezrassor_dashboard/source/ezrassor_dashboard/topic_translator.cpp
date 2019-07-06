@@ -18,18 +18,16 @@ TopicTranslator::TopicTranslator(
       queueSize(queueSize) {
 
     ros::init(argumentCount, argumentVector, nodeName);
-    if (ros::master::check()) {
-        start();
-    }
-    else {
-        Q_EMIT connectionFailed();
+    if (!ros::master::check()) {
+        throw TRANSLATOR_INITIALIZATION_FAILED;
     }
 }
 
+// Hangs if destroyed right after creation.
 TopicTranslator::~TopicTranslator(void) {
     ros::shutdown();
     ros::waitForShutdown();
-    wait(5000);
+    wait();
 }
 
 void TopicTranslator::run(void) {
