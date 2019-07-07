@@ -4,6 +4,7 @@
 #include <QThread>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
+#include "sensor_msgs/Image.h"
 
 const int TRANSLATOR_INITIALIZATION_FAILED = 1;
 
@@ -17,6 +18,8 @@ class TopicTranslator : public QThread {
             int,
             const std::string&,
             const std::string&,
+            const std::string&,
+            const std::string&,
             const std::string&
         );
         ~TopicTranslator(void);
@@ -25,6 +28,8 @@ class TopicTranslator : public QThread {
         void memoryDataReceived(int);
         void batteryDataReceived(int);
         void processorDataReceived(int);
+        void leftCameraImageReceived(const QPixmap&);
+        void rightCameraImageReceived(const QPixmap&);
 
     private:
         const int queueSize;
@@ -32,10 +37,16 @@ class TopicTranslator : public QThread {
         const std::string memoryUsageTopic;
         const std::string processorUsageTopic;
         const std::string batteryRemainingTopic;
+        const std::string leftCameraImageTopic;
+        const std::string rightCameraImageTopic;
+        QPixmap currentLeftCameraImage;
+        QPixmap currentRightCameraImage;
         
         void run(void);
         void handleMemoryData(const std_msgs::Float64::ConstPtr&);
         void handleBatteryData(const std_msgs::Float64::ConstPtr&);
         void handleProcessorData(const std_msgs::Float64::ConstPtr&);
+        void handleLeftCameraImage(const sensor_msgs::ImageConstPtr&);
+        void handleRightCameraImage(const sensor_msgs::ImageConstPtr&);
 };
 #endif

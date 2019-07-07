@@ -15,6 +15,7 @@
 
   <!-- A list of package dependencies. -->
   <!--<depend>rviz</depend>-->
+  <depend>cv_bridge</depend>
   <depend>rospy</depend>
   <depend>roscpp</depend>
   <depend>python-psutil</depend>
