@@ -32,7 +32,9 @@ int main(int argumentCount, char** argumentVector) {
             100,
             "memory_usage",
             "cpu_usage",
-            "battery_remaining"
+            "battery_remaining",
+            "left/image_raw",
+            "right/image_raw"
         );
 
         // Show relevant data from ROS topics in the GUI.
@@ -53,6 +55,12 @@ int main(int argumentCount, char** argumentVector) {
             SIGNAL(batteryDataReceived(int)),
             mainWindow.batteryRemainingBar,
             SLOT(setValue(int))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(rightCameraImageReceived(const QPixmap&)),
+            mainWindow.rightCameraLabel,
+            SLOT(setPixmap(const QPixmap&))
         );
 
         topicTranslator->start();
