@@ -16,7 +16,7 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${DASHBOARD_INTERFACE_DIR})
 
 # Initialize this project, plus hunt down Catkin and Qt5.
 project(${PACKAGE_NAME})
-find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge sensor_msgs std_msgs)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 catkin_package()
