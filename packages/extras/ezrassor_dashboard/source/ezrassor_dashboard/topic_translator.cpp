@@ -92,6 +92,13 @@ void TopicTranslator::handleProcessorData(const std_msgs::Float64::ConstPtr& mes
     Q_EMIT processorDataReceived((int) message->data);
 }
 
+/*
+void TopicTranslator::handleCameraImage(
+    const sensor_msgs::ImageConstPtr& message,
+    QPixmap* currentCameraImage,
+    )
+*/
+
 void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
 }
 
