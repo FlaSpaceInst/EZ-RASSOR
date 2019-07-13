@@ -1,4 +1,4 @@
-// Written by Tiger Sachse.
+// Written by Tiger Sachse and Sean Rapp.
 #include <QThread>
 #include <QPixmap>
 #include <QImage>
@@ -96,23 +96,39 @@ void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& me
 }
 
 void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
-    cv_bridge::CvImagePtr image;
+    cv_bridge::CvImagePtr cvImage;
     try {
-        image = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::RGB16);
+        cvImage = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
     }
     catch (cv_bridge::Exception& cvException) {
+        ROS_ERROR(
+            "Exception handling camera feed in cv_bridge: %s",
+            cvException.what()
+        );
+
         return;
     }
 
-    currentRightCameraImage.convertFromImage(
-        QImage(
-            image->image.data,
-            image->image.cols,
-            image->image.rows,
-            image->image.cols * image->image.elemSize(),
-            QImage::Format_RGB16
-        )
-    );
+    QImage::Format imageFormat;
+    if (cvImage->image.channels() == 3) {
+        imageFormat = QImage::Format_RGB888;
+    }
+    else {
+        imageFormat = QImage::Format_RGB32;
+    }
+
+    QImage qtImage(cvImage->image.cols, cvImage->image.rows, imageFormat);
+    int lineSize = cvImage->image.cols * cvImage->image.channels();
+    for (int row = 0; row < cvImage->image.rows; row++) {
+        memcpy(qtImage.scanLine(row), cvImage->image.ptr(row), lineSize);
+    }
+
+    if (cvImage->image.channels() == 3) {
+        currentRightCameraImage = QPixmap::fromImage(qtImage.rgbSwapped());
+    }
+    else {
+        currentRightCameraImage = QPixmap::fromImage(qtImage);
+    }
 
     Q_EMIT rightCameraImageReceived(currentRightCameraImage);
 }
