@@ -58,8 +58,14 @@ int main(int argumentCount, char** argumentVector) {
         );
         application.connect(
             topicTranslator,
+            SIGNAL(leftCameraImageReceived(const QPixmap&)),
+            mainWindow.leftCameraFeedLabel,
+            SLOT(setPixmap(const QPixmap&))
+        );
+        application.connect(
+            topicTranslator,
             SIGNAL(rightCameraImageReceived(const QPixmap&)),
-            mainWindow.rightCameraLabel,
+            mainWindow.rightCameraFeedLabel,
             SLOT(setPixmap(const QPixmap&))
         );
 
