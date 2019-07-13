@@ -54,7 +54,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="generalTab">
     <attribute name="title">
@@ -329,28 +329,12 @@ p, li { white-space: pre-wrap; }
     <attribute name="title">
      <string>Cameras</string>
     </attribute>
-    <widget class="QFrame" name="rightCameraFrame">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>100</y>
-       <width>361</width>
-       <height>341</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
     <widget class="QLabel" name="rightCameraLabel">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>410</x>
        <y>440</y>
-       <width>361</width>
+       <width>351</width>
        <height>41</height>
       </rect>
      </property>
@@ -365,28 +349,12 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Right Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QFrame" name="leftCameraFrame">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>100</y>
-       <width>361</width>
-       <height>341</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
     <widget class="QLabel" name="leftCameraLabel">
      <property name="geometry">
       <rect>
        <x>20</x>
        <y>440</y>
-       <width>361</width>
+       <width>351</width>
        <height>41</height>
       </rect>
      </property>
@@ -401,49 +369,46 @@ p, li { white-space: pre-wrap; }
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Left Camera &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
+    <widget class="QLabel" name="leftCameraFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rightCameraFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="mapTab">
     <attribute name="title">
      <string>Map</string>
     </attribute>
-    <widget class="QFrame" name="pointCloudFrame">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>100</y>
-       <width>361</width>
-       <height>341</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-    <widget class="QFrame" name="disparityMapFrame">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>100</y>
-       <width>361</width>
-       <height>341</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
     <widget class="QLabel" name="pointCloudLabel">
      <property name="geometry">
       <rect>
        <x>20</x>
        <y>440</y>
-       <width>361</width>
+       <width>351</width>
        <height>41</height>
       </rect>
      </property>
@@ -461,9 +426,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="disparityMapLabel">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>410</x>
        <y>440</y>
-       <width>361</width>
+       <width>351</width>
        <height>41</height>
       </rect>
      </property>
@@ -476,6 +441,35 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Disparity Map &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="disparityMapFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pointCloudFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -692,20 +686,17 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
-    <widget class="QFrame" name="orientationFrame">
+    <widget class="QLabel" name="orientationFeedLabel">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>9</y>
-       <width>771</width>
-       <height>431</height>
+       <x>20</x>
+       <y>10</y>
+       <width>751</width>
+       <height>421</height>
       </rect>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
@@ -713,20 +704,17 @@ p, li { white-space: pre-wrap; }
     <attribute name="title">
      <string>Pose</string>
     </attribute>
-    <widget class="QFrame" name="poseFrame">
+    <widget class="QLabel" name="poseFeedLabel">
      <property name="geometry">
       <rect>
-       <x>9</x>
-       <y>9</y>
+       <x>10</x>
+       <y>10</y>
        <width>771</width>
        <height>561</height>
       </rect>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
