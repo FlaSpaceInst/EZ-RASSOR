@@ -1,6 +1,10 @@
+// Define the topic translator, which translates data from ROS topics into
+// data that Qt can work with.
 // Written by Tiger Sachse.
+
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
+
 #include <QThread>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
@@ -50,4 +54,5 @@ class TopicTranslator : public QThread {
         void handleRightCameraImage(const sensor_msgs::ImageConstPtr&);
         void processCameraImage(const sensor_msgs::ImageConstPtr&, QPixmap*);
 };
+
 #endif
