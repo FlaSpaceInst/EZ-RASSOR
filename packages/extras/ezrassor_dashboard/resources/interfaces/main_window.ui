@@ -493,6 +493,9 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <layout class="QHBoxLayout" name="orientationDataBoxes">
+      <property name="spacing">
+       <number>20</number>
+      </property>
       <item>
        <layout class="QFormLayout" name="orientationDataBox">
         <item row="0" column="0" colspan="2">
