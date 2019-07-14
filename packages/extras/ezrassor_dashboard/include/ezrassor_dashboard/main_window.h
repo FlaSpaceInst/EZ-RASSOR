@@ -1,7 +1,9 @@
-// Defines the MainWindow class which holds all of the Dashboard's interfaces.
+// Defines the MainWindow class that holds all of the Dashboard's interfaces.
 // Written by Tiger Sachse.
+
 #ifndef MAIN_WINDOW_HEADER
 #define MAIN_WINDOW_HEADER
+
 #include <QWidget>
 #include <QCloseEvent>
 #include "ui_main_window.h"
@@ -17,4 +19,5 @@ class MainWindow : public QWidget, public Ui_mainWindow {
     protected:
         void closeEvent(QCloseEvent*);
 };
+
 #endif
