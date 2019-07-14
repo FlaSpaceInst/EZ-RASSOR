@@ -381,6 +381,9 @@ p, li { white-space: pre-wrap; }
      <property name="text">
       <string/>
      </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLabel" name="rightCameraFeedLabel">
      <property name="geometry">
@@ -395,7 +398,7 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
      <property name="scaledContents">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -456,7 +459,7 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
      <property name="scaledContents">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="pointCloudFeedLabel">
@@ -470,6 +473,9 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -698,6 +704,9 @@ p, li { white-space: pre-wrap; }
      <property name="text">
       <string/>
      </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="poseTab">
@@ -715,6 +724,9 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
