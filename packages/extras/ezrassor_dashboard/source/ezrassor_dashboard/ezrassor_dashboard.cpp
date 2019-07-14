@@ -38,7 +38,8 @@ int main(int argumentCount, char** argumentVector) {
             "cpu_usage",
             "battery_remaining",
             "left/image_raw",
-            "right/image_raw"
+            "right/image_raw",
+            "disparity"
         );
 
         // Show relevant data from ROS topics in the GUI.
@@ -124,6 +125,12 @@ int main(int argumentCount, char** argumentVector) {
             topicTranslator,
             SIGNAL(rightCameraImageReceived(const QPixmap&)),
             mainWindow.rightCameraFeedLabel,
+            SLOT(setPixmap(const QPixmap&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(disparityMapImageReceived(const QPixmap&)),
+            mainWindow.disparityMapFeedLabel,
             SLOT(setPixmap(const QPixmap&))
         );
 

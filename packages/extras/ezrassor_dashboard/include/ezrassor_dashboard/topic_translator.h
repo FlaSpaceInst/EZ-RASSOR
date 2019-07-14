@@ -12,6 +12,7 @@
 #include "sensor_msgs/Imu.h"
 #include "std_msgs/Float64.h"
 #include "sensor_msgs/Image.h"
+#include "stereo_msgs/DisparityImage.h"
 
 const int TRANSLATOR_INITIALIZATION_FAILED = 1;
 
@@ -23,6 +24,7 @@ class TopicTranslator : public QThread {
             char**,
             const std::string&,
             int,
+            const std::string&,
             const std::string&,
             const std::string&,
             const std::string&,
@@ -47,6 +49,7 @@ class TopicTranslator : public QThread {
         void zLinearAccelerationReceived(const QString&);
         void leftCameraImageReceived(const QPixmap&);
         void rightCameraImageReceived(const QPixmap&);
+        void disparityMapImageReceived(const QPixmap&);
 
     private:
         const int queueSize;
@@ -57,6 +60,7 @@ class TopicTranslator : public QThread {
         const std::string batteryRemainingTopic;
         const std::string leftCameraImageTopic;
         const std::string rightCameraImageTopic;
+        const std::string disparityMapImageTopic;
         QString currentXOrientation;
         QString currentYOrientation;
         QString currentZOrientation;
@@ -71,6 +75,7 @@ class TopicTranslator : public QThread {
         int currentProcessorPercentage;
         QPixmap currentLeftCameraImage;
         QPixmap currentRightCameraImage;
+        QPixmap currentDisparityMapImage;
         
         void run(void);
         void saveIMUData(const sensor_msgs::Imu::ConstPtr&);
@@ -79,6 +84,7 @@ class TopicTranslator : public QThread {
         void saveProcessorData(const std_msgs::Float64::ConstPtr&);
         void saveLeftCameraImage(const sensor_msgs::ImageConstPtr&);
         void saveRightCameraImage(const sensor_msgs::ImageConstPtr&);
+        void saveDisparityMapImage(const stereo_msgs::DisparityImage&);
         void processCameraImage(const sensor_msgs::ImageConstPtr&, QPixmap*);
 };
 
