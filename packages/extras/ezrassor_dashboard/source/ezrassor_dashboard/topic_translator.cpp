@@ -107,15 +107,15 @@ void TopicTranslator::run(void) {
 
 // Save incoming IMU data from ROS.
 void TopicTranslator::saveIMUData(const sensor_msgs::Imu::ConstPtr& message) {
-    currentXOrientation.setNum(message->orientation.x);
-    currentYOrientation.setNum(message->orientation.y);
-    currentZOrientation.setNum(message->orientation.z);
-    currentXAngularVelocity.setNum(message->angular_velocity.x);
-    currentYAngularVelocity.setNum(message->angular_velocity.y);
-    currentZAngularVelocity.setNum(message->angular_velocity.z);
-    currentXLinearAcceleration.setNum(message->linear_acceleration.x);
-    currentYLinearAcceleration.setNum(message->linear_acceleration.y);
-    currentZLinearAcceleration.setNum(message->linear_acceleration.z);
+    currentXOrientation.setNum(message->orientation.x, 'f', 2);
+    currentYOrientation.setNum(message->orientation.y, 'f', 2);
+    currentZOrientation.setNum(message->orientation.z, 'f', 2);
+    currentXAngularVelocity.setNum(message->angular_velocity.x, 'f', 2);
+    currentYAngularVelocity.setNum(message->angular_velocity.y, 'f', 2);
+    currentZAngularVelocity.setNum(message->angular_velocity.z, 'f', 2);
+    currentXLinearAcceleration.setNum(message->linear_acceleration.x, 'f', 2);
+    currentYLinearAcceleration.setNum(message->linear_acceleration.y, 'f', 2);
+    currentZLinearAcceleration.setNum(message->linear_acceleration.z, 'f', 2);
 
     Q_EMIT xOrientationReceived(currentXOrientation);
     Q_EMIT yOrientationReceived(currentYOrientation);
