@@ -1,22 +1,25 @@
-// The main entry point of the EZ-RASSOR Dashboard. This file configures the
+// The main entry point to the EZ-RASSOR Dashboard. This file configures the
 // Dashboard components and launches the GUI.
+// Inspired by Chris Taliaferro, Lucas Gonzalez, Sean Rapp, and Samuel Lewis.
 // Written by Tiger Sachse.
+
 #include <QApplication>
 #include "main_window.h"
 #include "help_window.h"
 #include "topic_translator.h"
 
-// The main entry point of the EZ-RASSOR Dashboard.
+// The main entry point to the EZ-RASSOR Dashboard.
 int main(int argumentCount, char** argumentVector) {
 
-    // Initialize the application and its main window, and its topic translator.
+    // Initialize the application, its windows, and its topic translator.
     QApplication application(argumentCount, argumentVector);
+    TopicTranslator* topicTranslator;
     MainWindow mainWindow;
     HelpWindow helpWindow;
-    TopicTranslator* topicTranslator;
 
     mainWindow.show();
 
+    // If the main window closes, the whole program should quit.
     application.connect(
         &mainWindow,
         SIGNAL(closed(void)),
