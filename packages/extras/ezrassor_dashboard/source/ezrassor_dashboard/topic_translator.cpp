@@ -84,6 +84,19 @@ void TopicTranslator::run(void) {
     ros::spin();
 }
 
+// Handle incoming IMU data from ROS.
+void handleIMUData(const sensor_msgs::Imu::ConstPtr& message) {
+    Q_EMIT imuOrientationXReceived((double) message->orientation.x);
+    Q_EMIT imuOrientationYReceived((double) message->orientation.y);
+    Q_EMIT imuOrientationZReceived((double) message->orientation.z);
+    Q_EMIT imuAngularVelocityXReceived((double) message->angular_velocity.x);
+    Q_EMIT imuAngularVelocityYReceived((double) message->angular_velocity.y);
+    Q_EMIT imuAngularVelocityZReceived((double) message->angular_velocity.z);
+    Q_EMIT imuLinearAccelerationXReceived((double) message->linear_acceleration.x);
+    Q_EMIT imuLinearAccelerationYReceived((double) message->linear_acceleration.y);
+    Q_EMIT imuLinearAccelerationZReceived((double) message->linear_acceleration.z);
+}
+
 // Handle incoming memory data from ROS.
 void TopicTranslator::handleMemoryData(const std_msgs::Float64::ConstPtr& message) {
     Q_EMIT memoryDataReceived((int) message->data);
