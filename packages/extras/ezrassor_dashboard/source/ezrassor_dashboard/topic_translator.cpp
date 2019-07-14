@@ -85,7 +85,7 @@ void TopicTranslator::run(void) {
 }
 
 // Handle incoming IMU data from ROS.
-void handleIMUData(const sensor_msgs::Imu::ConstPtr& message) {
+void TopicTranslator::handleIMUData(const sensor_msgs::Imu::ConstPtr& message) {
     Q_EMIT imuOrientationXReceived((double) message->orientation.x);
     Q_EMIT imuOrientationYReceived((double) message->orientation.y);
     Q_EMIT imuOrientationZReceived((double) message->orientation.z);

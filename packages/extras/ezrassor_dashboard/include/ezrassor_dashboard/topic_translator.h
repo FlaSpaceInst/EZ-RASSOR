@@ -7,6 +7,7 @@
 
 #include <QThread>
 #include "ros/ros.h"
+#include "sensor_msgs/Imu.h"
 #include "std_msgs/Float64.h"
 #include "sensor_msgs/Image.h"
 
