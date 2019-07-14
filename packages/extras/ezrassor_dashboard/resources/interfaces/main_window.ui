@@ -524,42 +524,42 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="orientationXLabel">
+         <widget class="QLabel" name="xOrientationLabel">
           <property name="text">
            <string> X:</string>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="orientationYLabel">
+         <widget class="QLabel" name="yOrientationLabel">
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="orientationZLabel">
+         <widget class="QLabel" name="zOrientationLabel">
           <property name="text">
            <string> Z:</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="orientationXLineEdit">
+         <widget class="QLineEdit" name="xOrientationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="orientationYLineEdit">
+         <widget class="QLineEdit" name="yOrientationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="orientationZLineEdit">
+         <widget class="QLineEdit" name="zOrientationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
@@ -595,42 +595,42 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="angularVelocityXLabel">
+         <widget class="QLabel" name="xAngularVelocityLabel">
           <property name="text">
            <string> X:</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="angularVelocityXLineEdit">
+         <widget class="QLineEdit" name="xAngularVelocityLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="angularVelocityYLabel">
+         <widget class="QLabel" name="yAngularVelocityLabel">
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="angularVelocityYLineEdit">
+         <widget class="QLineEdit" name="yAngularVelocityLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="angularVelocityZLabel">
+         <widget class="QLabel" name="zAngularVelocityLabel">
           <property name="text">
            <string> Z:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="angularVelocityZLineEdit">
+         <widget class="QLineEdit" name="zAngularVelocityLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
@@ -663,42 +663,42 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="linearAccelerationXLabel">
+         <widget class="QLabel" name="xLinearAccelerationLabel">
           <property name="text">
            <string> X:</string>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="linearAccelerationYLabel">
+         <widget class="QLabel" name="yLinearAccelerationLabel">
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="linearAccelerationZLabel">
+         <widget class="QLabel" name="zLinearAccelerationLabel">
           <property name="text">
            <string> Z:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="linearAccelerationZLineEdit">
+         <widget class="QLineEdit" name="zLinearAccelerationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="linearAccelerationYLineEdit">
+         <widget class="QLineEdit" name="yLinearAccelerationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="linearAccelerationXLineEdit">
+         <widget class="QLineEdit" name="xLinearAccelerationLineEdit">
           <property name="readOnly">
            <bool>true</bool>
           </property>
