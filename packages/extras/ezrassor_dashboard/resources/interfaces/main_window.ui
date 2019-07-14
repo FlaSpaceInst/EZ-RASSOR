@@ -494,7 +494,7 @@ p, li { white-space: pre-wrap; }
      </property>
      <layout class="QHBoxLayout" name="orientationDataBoxes" stretch="0,0,0">
       <property name="spacing">
-       <number>0</number>
+       <number>6</number>
       </property>
       <property name="leftMargin">
        <number>0</number>
