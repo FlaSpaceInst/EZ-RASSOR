@@ -48,5 +48,6 @@ class TopicTranslator : public QThread {
         void handleProcessorData(const std_msgs::Float64::ConstPtr&);
         void handleLeftCameraImage(const sensor_msgs::ImageConstPtr&);
         void handleRightCameraImage(const sensor_msgs::ImageConstPtr&);
+        void processCameraImage(const sensor_msgs::ImageConstPtr&, QPixmap*);
 };
 #endif
