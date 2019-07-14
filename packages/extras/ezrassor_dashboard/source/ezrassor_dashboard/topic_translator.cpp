@@ -11,6 +11,7 @@
 #include "topic_translator.h"
 #include "sensor_msgs/Image.h"
 #include "cv_bridge/cv_bridge.h"
+#include "stereo_msgs/DisparityImage.h"
 
 // Initialize the topic translator with a bunch of constants.
 TopicTranslator::TopicTranslator(
@@ -23,20 +24,23 @@ TopicTranslator::TopicTranslator(
     const std::string& processorUsageTopic,
     const std::string& batteryRemainingTopic,
     const std::string& leftCameraImageTopic,
-    const std::string& rightCameraImageTopic)
+    const std::string& rightCameraImageTopic,
+    const std::string& disparityMapImageTopic)
     : queueSize(queueSize),
       imuTopic(imuTopic),
       memoryUsageTopic(memoryUsageTopic),
       processorUsageTopic(processorUsageTopic),
       batteryRemainingTopic(batteryRemainingTopic),
       leftCameraImageTopic(leftCameraImageTopic),
-      rightCameraImageTopic(rightCameraImageTopic) {
+      rightCameraImageTopic(rightCameraImageTopic),
+      disparityMapImageTopic(disparityMapImageTopic) {
 
     currentMemoryPercentage = 0;
     currentBatteryPercentage = 0;
     currentProcessorPercentage = 0;
     currentLeftCameraImage = QPixmap();
     currentRightCameraImage = QPixmap();
+    currentDisparityMapImage = QPixmap();
     currentXOrientation = QString();
     currentYOrientation = QString();
     currentZOrientation = QString();
@@ -101,6 +105,12 @@ void TopicTranslator::run(void) {
         &TopicTranslator::saveRightCameraImage,
         this
     );
+    ros::Subscriber disparityMapImageSubscriber = nodeHandle.subscribe(
+        disparityMapImageTopic,
+        queueSize,
+        &TopicTranslator::saveDisparityMapImage,
+        this
+    );
 
     ros::spin();
 }
@@ -156,6 +166,50 @@ void TopicTranslator::saveLeftCameraImage(const sensor_msgs::ImageConstPtr& mess
 void TopicTranslator::saveRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
     processCameraImage(message, &currentRightCameraImage);
     Q_EMIT rightCameraImageReceived(currentRightCameraImage);
+}
+
+// Save incoming disparity images from ROS. This function is 90% duplicated from
+// processCameraImage() because C++ sucks. Someone who is better with C++ than I
+// am should combine the two functions.
+void TopicTranslator::saveDisparityMapImage(const stereo_msgs::DisparityImage& message) {
+    cv_bridge::CvImagePtr cvImage;
+    try {
+        cvImage = cv_bridge::toCvCopy(message.image);
+    }
+    catch (cv_bridge::Exception& cvException) {
+        ROS_ERROR(
+            "Exception handling disparity feed in cv_bridge: %s",
+            cvException.what()
+        );
+
+        return;
+    }
+
+    cv::Mat monochromeImage = cv::Mat(cvImage->image.size(), CV_8UC1);
+    cv::convertScaleAbs(cvImage->image, monochromeImage, 100, 0.0);
+
+    QImage::Format imageFormat;
+    if (monochromeImage.channels() == 3) {
+        imageFormat = QImage::Format_RGB888;
+    }
+    else {
+        imageFormat = QImage::Format_Grayscale8;
+    }
+
+    QImage qtImage(monochromeImage.cols, monochromeImage.rows, imageFormat);
+    int lineSize = monochromeImage.cols * monochromeImage.channels();
+    for (int row = 0; row < monochromeImage.rows; row++) {
+        memcpy(qtImage.scanLine(row), monochromeImage.ptr(row), lineSize);
+    }
+
+    if (monochromeImage.channels() == 3) {
+        currentDisparityMapImage = QPixmap::fromImage(qtImage.rgbSwapped());
+    }
+    else {
+        currentDisparityMapImage = QPixmap::fromImage(qtImage);
+    }
+
+    Q_EMIT disparityMapImageReceived(currentDisparityMapImage);
 }
 
 // Transform images from a ROS format to a Qt format using cv_bridge.
