@@ -1,6 +1,10 @@
+// Define the topic translator, which translates data from ROS topics into
+// data that Qt can work with.
 // Written by Tiger Sachse.
+
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
+
 #include <QThread>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
@@ -28,6 +32,15 @@ class TopicTranslator : public QThread {
         void memoryDataReceived(int);
         void batteryDataReceived(int);
         void processorDataReceived(int);
+        void imuOrientationXReceived(double);
+        void imuOrientationYReceived(double);
+        void imuOrientationZReceived(double);
+        void imuAngularVelocityXReceived(double);
+        void imuAngularVelocityYReceived(double);
+        void imuAngularVelocityZReceived(double);
+        void imuLinearAccelerationXReceived(double);
+        void imuLinearAccelerationYReceived(double);
+        void imuLinearAccelerationZReceived(double);
         void leftCameraImageReceived(const QPixmap&);
         void rightCameraImageReceived(const QPixmap&);
 
@@ -43,6 +56,7 @@ class TopicTranslator : public QThread {
         QPixmap currentRightCameraImage;
         
         void run(void);
+        void handleIMUData(const sensor_msgs::Imu::ConstPtr&);
         void handleMemoryData(const std_msgs::Float64::ConstPtr&);
         void handleBatteryData(const std_msgs::Float64::ConstPtr&);
         void handleProcessorData(const std_msgs::Float64::ConstPtr&);
@@ -50,4 +64,5 @@ class TopicTranslator : public QThread {
         void handleRightCameraImage(const sensor_msgs::ImageConstPtr&);
         void processCameraImage(const sensor_msgs::ImageConstPtr&, QPixmap*);
 };
+
 #endif

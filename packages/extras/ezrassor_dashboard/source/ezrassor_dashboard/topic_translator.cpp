@@ -1,14 +1,17 @@
+// A ROS node that translates data from ROS topics into data that Qt can work with.
+// Inspired by Chris Taliaferro, Samuel Lewis, and Lucas Gonzalez.
 // Written by Tiger Sachse and Sean Rapp.
+
+#include <QImage>
 #include <QThread>
 #include <QPixmap>
-#include <QImage>
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 #include "topic_translator.h"
 #include "sensor_msgs/Image.h"
-//#include "sensor_msgs/image_encodings.h"
 #include "cv_bridge/cv_bridge.h"
 
+// Initialize the topic translator with a bunch of constants.
 TopicTranslator::TopicTranslator(
     int& argumentCount,
     char** argumentVector,
@@ -29,19 +32,22 @@ TopicTranslator::TopicTranslator(
     currentLeftCameraImage = QPixmap();
     currentRightCameraImage = QPixmap();
 
+    // Attempt to contact ROS Master. If ROS Master can't be reached, throw
+    // an error.
     ros::init(argumentCount, argumentVector, nodeName);
     if (!ros::master::check()) {
         throw TRANSLATOR_INITIALIZATION_FAILED;
     }
 }
 
-// Hangs if destroyed right after creation.
+// Destroy this translator. Hangs if destroyed right after creation.
 TopicTranslator::~TopicTranslator(void) {
     ros::shutdown();
     ros::waitForShutdown();
     wait();
 }
 
+// Run the translator ROS node.
 void TopicTranslator::run(void) {
     ros::NodeHandle nodeHandle;
     ros::Subscriber processorUsageSubscriber = nodeHandle.subscribe(
@@ -74,7 +80,21 @@ void TopicTranslator::run(void) {
         &TopicTranslator::handleRightCameraImage,
         this
     );
+
     ros::spin();
+}
+
+// Handle incoming IMU data from ROS.
+void handleIMUData(const sensor_msgs::Imu::ConstPtr& message) {
+    Q_EMIT imuOrientationXReceived((double) message->orientation.x);
+    Q_EMIT imuOrientationYReceived((double) message->orientation.y);
+    Q_EMIT imuOrientationZReceived((double) message->orientation.z);
+    Q_EMIT imuAngularVelocityXReceived((double) message->angular_velocity.x);
+    Q_EMIT imuAngularVelocityYReceived((double) message->angular_velocity.y);
+    Q_EMIT imuAngularVelocityZReceived((double) message->angular_velocity.z);
+    Q_EMIT imuLinearAccelerationXReceived((double) message->linear_acceleration.x);
+    Q_EMIT imuLinearAccelerationYReceived((double) message->linear_acceleration.y);
+    Q_EMIT imuLinearAccelerationZReceived((double) message->linear_acceleration.z);
 }
 
 // Handle incoming memory data from ROS.
@@ -92,6 +112,19 @@ void TopicTranslator::handleProcessorData(const std_msgs::Float64::ConstPtr& mes
     Q_EMIT processorDataReceived((int) message->data);
 }
 
+// Handle incoming left camera images from ROS.
+void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
+    processCameraImage(message, &currentLeftCameraImage);
+    Q_EMIT leftCameraImageReceived(currentLeftCameraImage);
+}
+
+// Handle incoming right camera images from ROS.
+void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
+    processCameraImage(message, &currentRightCameraImage);
+    Q_EMIT rightCameraImageReceived(currentRightCameraImage);
+}
+
+// Transform images from a ROS format to a Qt format using cv_bridge.
 void TopicTranslator::processCameraImage(
     const sensor_msgs::ImageConstPtr& message,
     QPixmap* currentCameraImage) {
@@ -129,14 +162,4 @@ void TopicTranslator::processCameraImage(
     else {
         *currentCameraImage = QPixmap::fromImage(qtImage);
     }
-}
-
-void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
-    processCameraImage(message, &currentLeftCameraImage);
-    Q_EMIT leftCameraImageReceived(currentLeftCameraImage);
-}
-
-void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
-    processCameraImage(message, &currentRightCameraImage);
-    Q_EMIT rightCameraImageReceived(currentRightCameraImage);
 }
