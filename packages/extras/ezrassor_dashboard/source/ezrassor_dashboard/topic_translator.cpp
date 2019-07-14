@@ -92,17 +92,10 @@ void TopicTranslator::handleProcessorData(const std_msgs::Float64::ConstPtr& mes
     Q_EMIT processorDataReceived((int) message->data);
 }
 
-/*
-void TopicTranslator::handleCameraImage(
+void TopicTranslator::processCameraImage(
     const sensor_msgs::ImageConstPtr& message,
-    QPixmap* currentCameraImage,
-    )
-*/
-
-void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
-}
-
-void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
+    QPixmap* currentCameraImage) {
+    
     cv_bridge::CvImagePtr cvImage;
     try {
         cvImage = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
@@ -131,11 +124,19 @@ void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& m
     }
 
     if (cvImage->image.channels() == 3) {
-        currentRightCameraImage = QPixmap::fromImage(qtImage.rgbSwapped());
+        *currentCameraImage = QPixmap::fromImage(qtImage.rgbSwapped());
     }
     else {
-        currentRightCameraImage = QPixmap::fromImage(qtImage);
+        *currentCameraImage = QPixmap::fromImage(qtImage);
     }
+}
 
+void TopicTranslator::handleLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
+    processCameraImage(message, &currentLeftCameraImage);
+    Q_EMIT leftCameraImageReceived(currentLeftCameraImage);
+}
+
+void TopicTranslator::handleRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
+    processCameraImage(message, &currentRightCameraImage);
     Q_EMIT rightCameraImageReceived(currentRightCameraImage);
 }
