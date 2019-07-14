@@ -487,19 +487,16 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>450</y>
+       <y>474</y>
        <width>571</width>
-       <height>121</height>
+       <height>151</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="orientationDataBoxes">
       <item>
-       <layout class="QVBoxLayout" name="orientationDataBox">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
-        <item>
-         <widget class="QLabel" name="orientationDataBoxLabel">
+       <layout class="QFormLayout" name="orientationDataBox">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="orientationTitleLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -509,9 +506,6 @@ p, li { white-space: pre-wrap; }
             <underline>false</underline>
            </font>
           </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
           <property name="text">
            <string>Orientation</string>
           </property>
@@ -520,41 +514,22 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item>
+        <item row="1" column="0">
          <widget class="QLabel" name="orientationXLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-            <kerning>true</kerning>
-           </font>
-          </property>
           <property name="text">
-           <string> X: </string>
+           <string> X:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="2" column="0">
          <widget class="QLabel" name="orientationYLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
          <widget class="QLabel" name="orientationZLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Z:</string>
           </property>
@@ -563,9 +538,9 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="angularVelocityDataBox">
-        <item>
-         <widget class="QLabel" name="angularVelocityDataBoxLabel">
+       <layout class="QFormLayout" name="angularVelocityDataBox">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="angularVelocityTitleLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -583,40 +558,22 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item>
+        <item row="1" column="0">
          <widget class="QLabel" name="angularVelocityXLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> X:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="2" column="0">
          <widget class="QLabel" name="angularVelocityYLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
          <widget class="QLabel" name="angularVelocityZLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Z:</string>
           </property>
@@ -625,9 +582,9 @@ p, li { white-space: pre-wrap; }
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="linearAccelerationDataBox">
-        <item>
-         <widget class="QLabel" name="linearAccelerationDataBoxLabel">
+       <layout class="QFormLayout" name="linearAccelerationDataBox">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="linearAccelerationTitleLabel">
           <property name="font">
            <font>
             <family>Ubuntu</family>
@@ -635,54 +592,32 @@ p, li { white-space: pre-wrap; }
             <weight>75</weight>
             <bold>true</bold>
             <underline>false</underline>
-            <strikeout>false</strikeout>
            </font>
           </property>
           <property name="text">
            <string>Linear Acceleration</string>
-          </property>
-          <property name="textFormat">
-           <enum>Qt::RichText</enum>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="1" column="0">
          <widget class="QLabel" name="linearAccelerationXLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> X:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="2" column="0">
          <widget class="QLabel" name="linearAccelerationYLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Y:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
          <widget class="QLabel" name="linearAccelerationZLabel">
-          <property name="font">
-           <font>
-            <family>Ubuntu</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
           <property name="text">
            <string> Z:</string>
           </property>
@@ -698,7 +633,7 @@ p, li { white-space: pre-wrap; }
        <x>20</x>
        <y>10</y>
        <width>751</width>
-       <height>421</height>
+       <height>441</height>
       </rect>
      </property>
      <property name="text">
