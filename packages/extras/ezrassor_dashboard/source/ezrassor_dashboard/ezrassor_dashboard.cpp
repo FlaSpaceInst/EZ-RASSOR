@@ -33,6 +33,7 @@ int main(int argumentCount, char** argumentVector) {
             argumentVector,
             "dashboard",
             100,
+            "imu",
             "memory_usage",
             "cpu_usage",
             "battery_remaining",
@@ -41,6 +42,60 @@ int main(int argumentCount, char** argumentVector) {
         );
 
         // Show relevant data from ROS topics in the GUI.
+        application.connect(
+            topicTranslator,
+            SIGNAL(xOrientationReceived(const QString&)),
+            mainWindow.xOrientationLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(yOrientationReceived(const QString&)),
+            mainWindow.yOrientationLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(zOrientationReceived(const QString&)),
+            mainWindow.zOrientationLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(xAngularVelocityReceived(const QString&)),
+            mainWindow.xAngularVelocityLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(yAngularVelocityReceived(const QString&)),
+            mainWindow.yAngularVelocityLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(zAngularVelocityReceived(const QString&)),
+            mainWindow.zAngularVelocityLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(xLinearAccelerationReceived(const QString&)),
+            mainWindow.xLinearAccelerationLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(yLinearAccelerationReceived(const QString&)),
+            mainWindow.yLinearAccelerationLineEdit,
+            SLOT(setText(const QString&))
+        );
+        application.connect(
+            topicTranslator,
+            SIGNAL(zLinearAccelerationReceived(const QString&)),
+            mainWindow.zLinearAccelerationLineEdit,
+            SLOT(setText(const QString&))
+        );
         application.connect(
             topicTranslator,
             SIGNAL(processorDataReceived(int)),
