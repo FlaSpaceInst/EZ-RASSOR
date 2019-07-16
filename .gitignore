@@ -4,6 +4,7 @@ settings.json
 *.pyc
 *.swp
 *.blend1
+controller/package-lock.json
 node_modules/
 .expo/*
 npm-debug.*
