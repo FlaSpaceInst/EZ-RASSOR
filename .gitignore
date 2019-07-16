@@ -6,6 +6,7 @@ settings.json
 *.blend1
 
 # Ignore React Native Module files
+controller/package-lock.json
 node_modules/
 .expo/*
 npm-debug.*
