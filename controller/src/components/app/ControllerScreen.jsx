@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from "react-native-modal";
 import FadeInView from "./FadeInView";
+import EZRASSOR from '../../api/ezrassor-service'
 import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Font } from 'expo';
@@ -15,26 +16,12 @@ export default class ControllerScreen extends React.Component {
       ipModal: false,
       xyModal: false,
       isLoading: true,
-      ip:'128.217.243.159:8080',  
-      endpoint: '/',
       control: 0,
-      xy: '(0,0)', 
-      twist: {
-        autonomous_toggles:0,
-        target_coordinate:{
-              x:0,y:0
-        },
-        wheel_instruction: "none",
-        front_arm_instruction:0,
-        back_arm_instruction:0,
-        front_drum_instruction:0,
-        back_drum_instruction:0
-       },
-
-
+      xy: '(0,0)',
+      ip: '129.168.1.2:8080' 
     }; 
-    this.handleSubmit = this.handleSubmit.bind(this);
 
+    this.EZRASSOR = new EZRASSOR(this.state.ip);
     this.style = this.props.Style;
   }
 
@@ -61,60 +48,33 @@ export default class ControllerScreen extends React.Component {
     this.setState({xyModal:visible});
   }
 
+  toggleModalVisibility(_modal) {
+    this.setState({_modal:!this.state._modal.visible});
+  }
+
   changeXY(text){
     this.setState({xy:text})
   }
+
   changeIP(text){
-    this.setState({ip:text})
+    this.setState({ip:text}, () => {
+      this.EZRASSOR.ip = this.state.ip;
+    });
   }
 
-  controlUpdate(input){
-    
+  controlUpdate(input){ 
     newControl = this.state.control + input
     
     this.setState({control: newControl}, ()=> {
       console.log(this.state.control)
       this.handleSubmit(this.state.control)
-    })
-  
+    }); 
   }
 
-   twistUpdate(input){
-       this.setState({twist:input},()=>{
-           msg=this.state.twist
-           msg = JSON.stringify(msg)
-           console.log(msg)
-           this.handleSubmit(msg)
-       }) 
-
-   }
-
-   sendXY(){
-      xy = this.state.xy
-      console.log(xy)
-   }
-  
-  handleSubmit(event){
-
-    url = 'http://'+this.state.ip+this.state.endpoint
-    console.log(url)
-    
-    return fetch(
-      url,
-      {
-        headers: {"Content-Type":"text/plain; charset=utf-8"},
-        method: 'POST',
-        headers:{
-          Accept: 'application/json',
-        },
-        body: event.toString()
-      }
-    )
-    .catch((error) => {
-      //alert("Unable to connect to EZ-RASSOR");
-      console.log(error);
-    });
-  } 
+  sendXY(){
+     xy = this.state.xy
+     console.log(xy)
+  }
 
   render() {
 
@@ -125,16 +85,17 @@ export default class ControllerScreen extends React.Component {
       );
     }
 
-    return (
+    return ( 
+
       <View style={this.style.container}>
+        {/* View for the entire controller*/}
         <StatusBar hidden />
         <Modal
           style={this.style.modalViewContainer}
           isVisible={this.state.modalVisible}
           onSwipe={() => this.setModalVisible(!this.state.modalVisible)}
           swipeDirection='down'
-          onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}
-          >
+          onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}>
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
                 <TouchableOpacity style={this.style.modalButton} onPress={()=>this.setXYModalVisible(true)}>
@@ -156,6 +117,7 @@ export default class ControllerScreen extends React.Component {
           </TouchableHighlight>
         </Modal>
 
+        {/*Information Modal*/}
         <Modal
           style={this.style.modalViewContainer}
           isVisible={this.state.modal2Visible}
@@ -197,6 +159,7 @@ export default class ControllerScreen extends React.Component {
           </View>
         </Modal>
 
+        {/*Settings Modal*/}
         <Modal
           style={this.style.modalViewContainer}
           isVisible={this.state.ipModal}
@@ -276,12 +239,14 @@ export default class ControllerScreen extends React.Component {
           </TouchableOpacity>
         </FadeInView>
 
+        {/*Wheel Operations Board*/}
         <FadeInView style={this.style.buttonLayoutContainer}>
           <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
-            <View style={this.style.upAndDownDPad} 
-            onTouchStart={() => this.twistUpdate({wheel_instruction:"forward"}) }
-            onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
-            >
+            <View 
+              nativeID="WheelForward"
+              style={this.style.upAndDownDPad} 
+              onTouchStart={this.EZRASSOR.driveForward}
+              onTouchEnd={this.EZRASSOR.wheelsStop} >
             <TouchableOpacity>  
               <FontAwesome
                 name="chevron-up"
@@ -292,9 +257,8 @@ export default class ControllerScreen extends React.Component {
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
               <View style={this.style.dPadLeft}
-              onTouchStart={() => this.twistUpdate({wheel_instruction:"left"}) }
-              onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
-              >
+                onTouchStart={this.EZRASSOR.turnLeft}
+                onTouchEnd={this.EZRASSOR.wheelsStop} >
                 <TouchableOpacity>
                   <FontAwesome
                     name="chevron-left"
@@ -304,9 +268,8 @@ export default class ControllerScreen extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={this.style.dPadRight} 
-              onTouchStart={() => this.twistUpdate({wheel_instruction:"right"}) }
-              onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
-              >
+                onTouchStart={this.EZRASSOR.turnRight}
+                onTouchEnd={this.EZRASSOR.wheelsStop} >
                 <TouchableOpacity>
                   <FontAwesome
                     name="chevron-right"
@@ -317,9 +280,8 @@ export default class ControllerScreen extends React.Component {
               </View>
             </View>
             <View style={this.style.upAndDownDPad}
-            onTouchStart={() => this.twistUpdate({wheel_instruction:"backward"}) }
-            onTouchEnd={() => this.twistUpdate({wheel_instruction:"stop"}) }
-            >
+                onTouchStart={this.EZRASSOR.driveBackward}
+                onTouchEnd={this.EZRASSOR.wheelsStop} >
               <TouchableOpacity>
                 <FontAwesome
                   name="chevron-down"
@@ -330,14 +292,14 @@ export default class ControllerScreen extends React.Component {
             </View>
           </View>
 
+          {/*Drum/Arm Operations Board*/}
           <View style={this.style.drumFunctionContainer}> 
             <View style= {{ flex: 8}}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
-                  onTouchStart={() => this.twistUpdate({front_arm_instruction:1}) }
-                  onTouchEnd={() => this.twistUpdate({front_arm_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.frontArmUp}
+                    onTouchEnd={this.EZRASSOR.frontArmStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-up"
@@ -347,9 +309,8 @@ export default class ControllerScreen extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.twistUpdate({front_arm_instruction:-1}) }
-                  onTouchEnd={() => this.twistUpdate({front_arm_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.frontArmDown}
+                    onTouchEnd={this.EZRASSOR.frontArmStop} >
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-down"
@@ -361,9 +322,8 @@ export default class ControllerScreen extends React.Component {
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.twistUpdate({back_arm_instruction:1}) }
-                  onTouchEnd={() => this.twistUpdate({back_arm_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.backArmUp}
+                    onTouchEnd={this.EZRASSOR.backArmStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-up"
@@ -373,9 +333,8 @@ export default class ControllerScreen extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View 
-                  onTouchStart={() => this.twistUpdate({back_arm_instruction:-1}) }
-                  onTouchEnd={() => this.twistUpdate({back_arm_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.backArmDown}
+                    onTouchEnd={this.EZRASSOR.backArmStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="arrow-circle-down"
@@ -390,9 +349,8 @@ export default class ControllerScreen extends React.Component {
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View 
-                  onTouchStart={() => this.twistUpdate({front_drum_instruction:-1}) }
-                  onTouchEnd={() => this.twistUpdate({front_drum_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.frontDrumsRotateInward}
+                    onTouchEnd={this.EZRASSOR.frontDrumsStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-left"
@@ -402,9 +360,8 @@ export default class ControllerScreen extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.twistUpdate({front_drum_instruction:1}) }
-                  onTouchEnd={() => this.twistUpdate({front_drum_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.frontDrumsRotateOutward}
+                    onTouchEnd={this.EZRASSOR.frontDrumsStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-right"
@@ -416,9 +373,8 @@ export default class ControllerScreen extends React.Component {
                 </View>
                 <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
                   <View style={{ marginHorizontal: 15 }} 
-                  onTouchStart={() => this.twistUpdate({back_drum_instruction:-1}) }
-                  onTouchEnd={() => this.twistUpdate({back_drum_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.backDrumsRotateInward}
+                    onTouchEnd={this.EZRASSOR.backDrumsStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-left"
@@ -428,9 +384,8 @@ export default class ControllerScreen extends React.Component {
                     </TouchableOpacity>
                   </View>
                   <View 
-                  onTouchStart={() => this.twistUpdate({back_drum_instruction:1}) }
-                  onTouchEnd={() => this.twistUpdate({back_drum_instruction:0}) }
-                  >
+                    onTouchStart={this.EZRASSOR.backDrumsRotateOutward}
+                    onTouchEnd={this.EZRASSOR.backDrumsStop}>
                     <TouchableOpacity>
                       <FontAwesome
                         name="rotate-right"
