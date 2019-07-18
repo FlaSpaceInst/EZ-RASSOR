@@ -3,7 +3,9 @@ const Robot = Object.freeze({
     FRONTDRUM: Symbol('frontdrum'),
     BACKDRUM: Symbol('backdrum'),
     FRONTARM: Symbol('frontarm'),
-    BACKARM: Symbol('backarm')
+    BACKARM: Symbol('backarm'),
+    AUTONOMY: Symbol('autonomy'),
+    ALL: Symbol('all')
 });
 
 const Operation = Object.freeze({
@@ -14,9 +16,16 @@ const Operation = Object.freeze({
     TURNRIGHT: 'right',
     UP: 1,
     DOWN: -1,
-    OUTWARD: 1,
-    INWARD: -1,
-    STOP: 0
+    ROTATEOUTWARD: 1,
+    ROTATEINWARD: -1,
+    STOP: 0,
+
+    // Autonomous Functions
+    DRIVE: 1,
+    DIG: 2,
+    DUMP: 4,
+    SELFRIGHT: 8,
+    FULLAUTONOMY: 16
 });
 
 export {

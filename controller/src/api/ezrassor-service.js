@@ -1,4 +1,4 @@
-import {Robot, Operation} from '../enumerations/RobotCommands';
+import {Robot, Operation} from '../enumerations/robot-commands';
 import HTTP from './web-commands';
 
 export default class EZRASSOR { 
@@ -6,6 +6,7 @@ export default class EZRASSOR {
     constructor(host, route = '') {
         this.host = host;
         this.route = route;
+        this.setCoordinate(0, 0);
         this.allStop();
     }
 
@@ -31,6 +32,17 @@ export default class EZRASSOR {
         this._route = value;
     }
 
+    get coordinate() {
+        return this._coordinate;
+    }
+
+    setCoordinate(x, y) {
+        this._coordinate = {
+            x: x,
+            y: y
+        }
+    }
+
     // Build complete apiPath for HTTP requests
     get apiPath() {
         return 'http://' + this.host + '/' + this.route;
@@ -43,16 +55,26 @@ export default class EZRASSOR {
 
     // Update only the instruction needed
     updateTwistMsg(instruction) {
-        console.log("Attempting to add instruction: " + instruction.toString());
         this._twistMsg = {twist:instruction}; 
     } 
-    
+
+    updateAutonomyTwistMsg(instruction) {
+        if(instruction == Operation.DRIVE || instruction == Operation.FULLAUTONOMY) {
+            this._twistMsg = {
+                twist: instruction,
+                target_coordinate: this.coordinate
+            }
+            return;
+        }
+
+        this._twistMsg = {twist:instruction};
+    }
+   
+    // Stop all robot operations
     allStop = () => {
         this._twistMsg = { 
             autonomous_toggles:0,
-            target_coordinate:{
-                x:0,y:0
-            },
+            target_coordinate:this.coordinate,
             wheel_instruction: "none",
             front_arm_instruction:0,
             back_arm_instruction:0,
@@ -63,7 +85,14 @@ export default class EZRASSOR {
         HTTP.doPost(this.apiPath, this.twistMsg);
     }
 
+    // Execute the corresponding robot command from the enumeration items passed in
     executeRobotCommand(part, operation) {
+        // Needed when a stop override needs to occur
+        if (part == Robot.ALL && operation == Operation.STOP) {
+            this.allStop();
+            return;
+        }
+
         switch(part) {
             case Robot.FRONTARM:
                 this.updateTwistMsg({front_arm_instruction:operation});
@@ -80,82 +109,13 @@ export default class EZRASSOR {
             case Robot.WHEELS:
                 this.updateTwistMsg({wheel_instruction:operation});
                 break;
+            case Robot.AUTONOMY:
+                this.updateAutonomyTwistMsg(operation);
             default:
                 console.log('Invalid robot part selected');
                 return;
         }
+
         HTTP.doPost(this.apiPath, this.twistMsg);
-    }
-    
-    // WHEEL OPERATIONS
-    driveForward = () => {
-        this.executeRobotCommand(Robot.WHEELS, Operation.DRIVEFORWARD)
-    }
-
-    turnLeft = () => {
-        this.executeRobotCommand(Robot.WHEELS, Operation.TURNLEFT);
-    }
-
-    turnRight = () => {
-        this.executeRobotCommand(Robot.WHEELS, Operation.TURNRIGHT);
-    }
-
-    driveBackward = () => {
-       this.executeRobotCommand(Robot.WHEELS, Operation.DRIVEBACKWARD); 
-    }
-
-    wheelsStop = () => {
-       this.executeRobotCommand(Robot.WHEELS, Operation.STOPWHEELS); 
-    }
-
-    // DRUM OPERATIONS
-    frontDrumsRotateOutward = () => {
-       this.executeRobotCommand(Robot.FRONTDRUM, Operation.OUTWARD); 
-    }
-
-    frontDrumsRotateInward = () => { 
-       this.executeRobotCommand(Robot.FRONTDRUM, Operation.INWARD); 
-    }
-
-    frontDrumsStop = () => {
-        this.executeRobotCommand(Robot.FRONTDRUM, Operation.STOP);
-    }
-    
-    backDrumsRotateOutward = () => {
-       this.executeRobotCommand(Robot.BACKDRUM, Operation.OUTWARD); 
-    }
-    
-    backDrumsRotateInward = () => { 
-       this.executeRobotCommand(Robot.BACKDRUM, Operation.INWARD); 
-    }
-
-    backDrumsStop = () => { 
-        this.executeRobotCommand(Robot.BACKDRUM, Operation.STOP);
-    }
-
-    // ARM OPERATIONS
-    frontArmUp = () => {
-        this.executeRobotCommand(Robot.FRONTARM, Operation.UP);
-    }
-
-    frontArmDown = () => { 
-        this.executeRobotCommand(Robot.FRONTARM, Operation.DOWN);
-    }
-
-    frontArmStop = () => { 
-        this.executeRobotCommand(Robot.FRONTARM, Operation.STOP);
-    }
-
-    backArmUp = () => { 
-        this.executeRobotCommand(Robot.BACKARM, Operation.UP);
-    }
-
-    backArmDown = () => {
-        this.executeRobotCommand(Robot.BACKARM, Operation.DOWN); 
-    }
-
-    backArmStop = () => {
-        this.executeRobotCommand(Robot.BACKARM, Operation.STOP); 
-    }
-
+    } 
 }
