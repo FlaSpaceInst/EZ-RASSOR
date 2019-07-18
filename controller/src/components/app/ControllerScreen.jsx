@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from "react-native-modal";
 import FadeInView from "./FadeInView";
 import EZRASSOR from '../../api/ezrassor-service'
-import {Robot, Operation} from '../enumerations/RobotCommands';
+import {Robot, Operation} from '../../enumerations/robot-commands';
 import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Image, Button, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Font } from 'expo';
@@ -84,12 +84,6 @@ export default class ControllerScreen extends React.Component {
     });
   }
 
-  handlePress(event) {
-    requestAnimationFrame(() => {
-      event();
-    });
-  }
-
   render() {
 
     // Loading font
@@ -100,9 +94,8 @@ export default class ControllerScreen extends React.Component {
     }
 
     return ( 
-
       <View style={this.style.container}>
-        {/* View for the entire controller*/}
+        {/* Autonomy Popup Modal*/}
         <StatusBar hidden />
         <Modal
           style={this.style.modalViewContainer}
@@ -112,33 +105,41 @@ export default class ControllerScreen extends React.Component {
           onRequestClose={() => this.setModalVisible(!this.state.modalVisible)}>
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-                <TouchableOpacity style={this.style.modalButton} onPress={()=>this.setXYModalVisible(true)}>
-                <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={this.style.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10})}>
-                <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={this.style.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b100})}>
-                <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={this.style.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b1000})}>
-                <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={this.style.modalButton} onPress={()=>this.twistUpdate({autonomous_toggles:0b10000})}>
-                <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={this.style.modalButton} 
+                    onPress={()=>this.setXYModalVisible(true)}>
+                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={this.style.modalButton} 
+                    onPress={() => 
+                      {this.sendOperation(Robot.AUTONOMY, Operation.DIG)}}>
+                  <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text> 
+                </TouchableOpacity> 
+                <TouchableOpacity style={this.style.modalButton} 
+                    onPress={() => 
+                      {this.sendOperation(Robot.AUTONOMY, Operation.DUMP)}}>
+                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={this.style.modalButton} 
+                    onPress={() => 
+                      {this.sendOperation(Robot.AUTONOMY, Operation.SELFRIGHT)}}>
+                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={this.style.modalButton} 
+                    onPress={() => 
+                      {this.sendOperation(Robot.AUTONOMY, Operation.FULLAUTONOMY)}}>
+                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
+                </TouchableOpacity>
             </View>
           </TouchableHighlight>
         </Modal>
 
-        {/*Information Modal*/}
+        {/*Information Popup Modal*/}
         <Modal
           style={this.style.modalViewContainer}
           isVisible={this.state.modal2Visible}
           onSwipe={() => this.setModal2Visible(false)}
           swipeDirection='down'
-          onRequestClose={() => this.setModal2Visible(false)}
-          >
+          onRequestClose={() => this.setModal2Visible(false)}>
           <View style={{flexDirection: 'row'}}>
             <View style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>NASA EZ-RASSOR Controller</Text>
@@ -181,8 +182,8 @@ export default class ControllerScreen extends React.Component {
           swipeDirection='down'
           onRequestClose={() => {this.setIPModalVisible(false)}}>
           <KeyboardAvoidingView
-            paddingLeft={64}
-            paddingRight={64}>
+            paddingLeft={34}
+            paddingRight={34}>
             <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>IP ADDRESS</Text>
             <TextInput
               style={this.style.ipInputBox}
@@ -198,8 +199,8 @@ export default class ControllerScreen extends React.Component {
           swipeDirection='down'
           onRequestClose={() => {this.setXYModalVisible(false)}}>
           <KeyboardAvoidingView
-            paddingLeft={64}
-            paddingRight={64}>
+            paddingLeft={34}
+            paddingRight={34}>
             <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>(X,Y)</Text>
             <TextInput
               style={this.style.ipInputBox}
@@ -219,16 +220,21 @@ export default class ControllerScreen extends React.Component {
               name="info-circle"
               size={32}
               color='#fff'
-              onPress={() => { this.setModal2Visible(true); }}
-            />
+              onPress={() => { this.setModal2Visible(true); }} />
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1, padding: 3 }}>
+          <TouchableOpacity style={{ flex: 1, padding: 1 }}>
             <FontAwesome
               name="search"
               size={30}
               color='#fff'
-              onPress={() => this.setIPModalVisible(true)}
-            />
+              onPress={() => this.setIPModalVisible(true)} />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1, padding: 1 }}>
+            <FontAwesome
+              name="map-marker"
+              size={30}
+              color='#fff'
+              onPress={() => this.setXYModalVisible(true)} />
           </TouchableOpacity>
           <Text style={this.style.text}>EZ-RASSOR Controller</Text>
           <TouchableOpacity style={{ flex: 1, padding: 3}}>
@@ -237,10 +243,8 @@ export default class ControllerScreen extends React.Component {
               name="close-octagon"
               size={35}
               color='#fff'
-              onPress={() => {
-                this.setState({control: 0}, ()=> this.handleSubmit(0))
-              }}
-            />
+              onPress={() => 
+                {this.sendOperation(Robot.ALL, Operation.STOP)}}/>
           </TouchableOpacity>
           <TouchableOpacity style={{ flex: 1, padding: 3, }}>
             <MaterialCommunityIcons
@@ -248,8 +252,7 @@ export default class ControllerScreen extends React.Component {
               name="robot"
               size={32}
               color='#fff'
-              onPress={() => { this.setModalVisible(true); }}
-            />
+              onPress={() => { this.setModalVisible(true); }} />
           </TouchableOpacity>
         </FadeInView>
 
@@ -259,54 +262,51 @@ export default class ControllerScreen extends React.Component {
             <View style={this.style.upAndDownDPad} >
             <TouchableOpacity
                 onPressIn={() => 
-                  {this.handlePress(this.EZRASSOR.driveForward)}}
+                  {this.sendOperation(Robot.WHEELS, Operation.DRIVEFORWARD)}} 
                 onPressOut={() => 
-                  {this.handlePress(this.EZRASSOR.wheelsStop)}}>  
+                  {this.sendOperation(Robot.WHEELS, Operation.STOPWHEELS)}}>  
               <FontAwesome
                 name="chevron-up"
                 size={50}
-                color='#fff'
-              />
+                color='#fff'/>
             </TouchableOpacity>
             </View>
             <View style={{flex: 2 , flexDirection: 'row'}}>
               <View style={this.style.dPadLeft}>
                 <TouchableOpacity
                     onPressIn={() => 
-                      {this.handlePress(this.EZRASSOR.turnLeft)}}
+                      {this.sendOperation(Robot.WHEELS, Operation.TURNLEFT)}}
                     onPressOut={() =>
-                      {this.handlePress(this.EZRASSOR.wheelsStop)}}>
+                      {this.sendOperation(Robot.WHEELS, Operation.STOPWHEELS)}}>
                   <FontAwesome
                     name="chevron-left"
                     size={50}
-                    color='#fff'
-                  />
+                    color='#fff'/>
                 </TouchableOpacity>
               </View>
               <View style={this.style.dPadRight}>
                 <TouchableOpacity
                     onPressIn={() => 
-                      {this.handlePress(this.EZRASSOR.turnRight)}}
+                      {this.sendOperation(Robot.WHEELS, Operation.TURNRIGHT)}}
                     onPressOut={() =>
-                      {this.handlePress(this.EZRASSOR.wheelsStop)}}>
+                      {this.sendOperation(Robot.WHEELS, Operation.STOPWHEELS)}}>
                   <FontAwesome
                     name="chevron-right"
                     size={50}
-                    color='#fff'
-                  />
+                    color='#fff'/>
                 </TouchableOpacity>
               </View>
             </View>
             <View style={this.style.upAndDownDPad}>
               <TouchableOpacity
                   onPressIn={() => 
-                    {this.handlePress(this.EZRASSOR.driveBackward)}}
+                    {this.sendOperation(Robot.WHEELS, Operation.DRIVEBACKWARD)}}
                   onPressOut={() =>
-                    {this.handlePress(this.EZRASSOR.wheelsStop)}}>
+                    {this.sendOperation(Robot.WHEELS, Operation.STOPWHEELS)}}>
                 <FontAwesome
                   name="chevron-down"
                   size={50}
-                  color='#fff' />
+                  color='#fff'/>
               </TouchableOpacity>
             </View>
           </View>
@@ -319,21 +319,21 @@ export default class ControllerScreen extends React.Component {
                   <View>
                     <TouchableOpacity
                         onPressIn={() => 
-                          {this.handlePress(this.EZRASSOR.frontArmUp)}}
+                          {this.sendOperation(Robot.FRONTARM, Operation.UP)}}
                         onPressOut={() => 
-                          {this.handlePress(this.EZRASSOR.frontArmStop)}}>
+                          {this.sendOperation(Robot.FRONTARM, Operation.STOP)}}>
                       <FontAwesome
                         name="arrow-circle-up"
                         size={50}
-                        color='#fff' />
+                        color='#fff'/>
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }}> 
                     <TouchableOpacity
                         onPressIn={() =>
-                          {this.handlePress(this.EZRASSOR.frontArmDown)}}
+                          {this.sendOperation(Robot.FRONTARM, Operation.DOWN)}}
                         onPressOut={() =>
-                          {this.handlePress(this.EZRASSOR.frontArmStop)}}>
+                          {this.sendOperation(Robot.FRONTARM, Operation.STOP)}}>
                       <FontAwesome
                         name="arrow-circle-down"
                         size={50}
@@ -345,9 +345,9 @@ export default class ControllerScreen extends React.Component {
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity 
                         onPressIn={() => 
-                          {this.handlePress(this.EZRASSOR.backArmUp)}}
+                          {this.sendOperation(Robot.BACKARM, Operation.UP)}}
                         onPressOut={() => 
-                          {this.handlePress(this.EZRASSOR.backArmStop)}}>
+                          {this.sendOperation(Robot.BACKARM, Operation.STOP)}}>
                       <FontAwesome
                         name="arrow-circle-up"
                         size={50}
@@ -357,9 +357,9 @@ export default class ControllerScreen extends React.Component {
                   <View>
                     <TouchableOpacity 
                         onPressIn={() => 
-                          {this.handlePress(this.EZRASSOR.backArmDown)}}
+                          {this.sendOperation(Robot.BACKARM, Operation.DOWN)}}
                         onPressOut={() => 
-                          {this.handlePress(this.EZRASSOR.backArmStop)}}>
+                          {this.sendOperation(Robot.BACKARM, Operation.STOP)}}>
                       <FontAwesome
                         name="arrow-circle-down"
                         size={50}
@@ -374,22 +374,21 @@ export default class ControllerScreen extends React.Component {
                   <View>
                     <TouchableOpacity
                       onPressIn={() => 
-                        {this.handlePress(this.EZRASSOR.frontDrumsRotateInward)}}
+                        {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEINWARD)}}
                       onPressOut={() =>
-                        {this.handlePress(this.EZRASSOR.frontDrumsStop)}}>
+                        {this.sendOperation(Robot.FRONTDRUM, Operation.STOP)}}>
                       <FontAwesome
                         name="rotate-left"
                         size={50}
-                        color='#fff'
-                      />
+                        color='#fff'/>
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity
                       onPressIn={() =>
-                        {this.handlePress(this.EZRASSOR.frontDrumsRotateOutward)}}
+                        {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEOUTWARD)}}
                       onPressOut={() =>
-                        {this.handlePress(this.EZRASSOR.frontDrumsStop)}}>
+                        {this.sendOperation(Robot.FRONTDRUM, Operation.STOP)}}>
                       <FontAwesome
                         name="rotate-right"
                         size={50}
@@ -401,27 +400,25 @@ export default class ControllerScreen extends React.Component {
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity
                       onPressIn={() =>
-                        {this.handlePress(this.EZRASSOR.backDrumsRotateInward)}}
+                        {this.sendOperation(Robot.BACKDRUM, Operation.ROTATEINWARD)}}
                       onPressOut={() =>
-                        {this.handlePress(this.EZRASSOR.backDrumsStop)}}>
+                        {this.sendOperation(Robot.BACKDRUM, Operation.STOP)}}>
                       <FontAwesome
                         name="rotate-left"
                         size={50}
-                        color='#fff'
-                      />
+                        color='#fff'/>
                     </TouchableOpacity>
                   </View>
                   <View>
                     <TouchableOpacity
                       onPressIn={() =>
-                        {this.handlePress(this.EZRASSOR.backDrumsRotateOutward)}}
+                        {this.sendOperation(Robot.BACKDRUM, Operation.ROTATEOUTWARD)}}
                       onPressOut={() =>
-                        {this.handlePress(this.EZRASSOR.backDrumsStop)}}>
+                        {this.sendOperation(Robot.BACKDRUM, Operation.STOP)}}>
                       <FontAwesome
                         name="rotate-right"
                         size={50}
-                        color='#fff'
-                      />
+                        color='#fff'/>
                     </TouchableOpacity>
                   </View>
                 </View>
