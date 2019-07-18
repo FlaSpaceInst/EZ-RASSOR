@@ -89,7 +89,7 @@ export default class EZRASSOR {
     
     // WHEEL OPERATIONS
     driveForward = () => {
-       this.executeRobotCommand(Robot.WHEELS, Operation.DRIVEFORWARD); 
+        this.executeRobotCommand(Robot.WHEELS, Operation.DRIVEFORWARD)
     }
 
     turnLeft = () => {
