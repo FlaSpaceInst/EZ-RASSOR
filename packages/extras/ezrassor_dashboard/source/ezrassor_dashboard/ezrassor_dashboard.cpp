@@ -3,10 +3,10 @@
 // Inspired by Chris Taliaferro, Lucas Gonzalez, Sean Rapp, and Samuel Lewis.
 // Written by Tiger Sachse.
 
-#include <QApplication>
-#include "rviz_plugin.h"
-#include "main_window.h"
 #include "help_window.h"
+#include "main_window.h"
+#include "QApplication"
+#include "rviz_plugin.h"
 #include "topic_translator.h"
 
 // The main entry point to the EZ-RASSOR Dashboard.
@@ -15,11 +15,13 @@ int main(int argumentCount, char** argumentVector) {
     // Initialize the application, its windows, and its topic translator.
     QApplication application(argumentCount, argumentVector);
     TopicTranslator* topicTranslator;
+    RvizPlugin* orientationViewer;
+    RvizPlugin* pointCloudViewer;
+    RvizPlugin* poseViewer;
     MainWindow mainWindow;
     HelpWindow helpWindow;
 
     mainWindow.show();
-
 
     // If the main window closes, the whole program should quit.
     application.connect(
@@ -33,9 +35,11 @@ int main(int argumentCount, char** argumentVector) {
         topicTranslator = new TopicTranslator(
             argumentCount,
             argumentVector,
-            "dashboard",
             100,
+            "ezrassor_dashboard",
+            "dashboard",
             "imu",
+            "/rosout_agg",
             "memory_usage",
             "cpu_usage",
             "battery_remaining",
@@ -44,7 +48,23 @@ int main(int argumentCount, char** argumentVector) {
             "disparity"
         );
 
-        RvizPlugin pointCloudViewer(RvizPlugin::POINT_CLOUD_VIEWER, "pc");
+        /*
+        orientationViewer = new RvizPlugin(
+            mainWindow.orientationFeedWidget,
+            RvizPlugin::ORIENTATION_VIEWER,
+            "imu"
+        );*/
+
+        pointCloudViewer = new RvizPlugin(
+            mainWindow.pointCloudFeedWidget,
+            RvizPlugin::POINT_CLOUD_VIEWER,
+            "points2"
+        );
+
+        poseViewer = new RvizPlugin(
+            mainWindow.poseFeedWidget,
+            RvizPlugin::POSE_VIEWER
+        );
 
         // Show relevant data from ROS topics in the GUI.
         application.connect(
@@ -103,6 +123,12 @@ int main(int argumentCount, char** argumentVector) {
         );
         application.connect(
             topicTranslator,
+            SIGNAL(logDataReceived(const QString&)),
+            mainWindow.rosoutTextEdit,
+            SLOT(append(const QString&))
+        );
+        application.connect(
+            topicTranslator,
             SIGNAL(processorDataReceived(int)),
             mainWindow.processorUsageBar,
             SLOT(setValue(int))
@@ -140,10 +166,20 @@ int main(int argumentCount, char** argumentVector) {
 
         topicTranslator->start();
     }
-    catch (int TRANSLATOR_INITIALIZATION_FAILED) {
+    catch (int ROS_MASTER_UNREACHABLE) {
+        helpWindow.show();
+    }
+    catch (int WHITELIST_FILE_MISSING) {
         helpWindow.show();
     }
 
     // Run the application.
-    return application.exec();
+    int exitCode = application.exec();
+
+    //delete orientationViewer;
+    delete pointCloudViewer;
+    delete poseViewer;
+    delete topicTranslator;
+
+    return exitCode;
 }
