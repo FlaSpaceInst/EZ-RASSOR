@@ -4,6 +4,7 @@
 // Written by Tiger Sachse.
 
 #include <QApplication>
+#include "rviz_plugin.h"
 #include "main_window.h"
 #include "help_window.h"
 #include "topic_translator.h"
@@ -18,6 +19,7 @@ int main(int argumentCount, char** argumentVector) {
     HelpWindow helpWindow;
 
     mainWindow.show();
+
 
     // If the main window closes, the whole program should quit.
     application.connect(
@@ -41,6 +43,8 @@ int main(int argumentCount, char** argumentVector) {
             "right/image_raw",
             "disparity"
         );
+
+        RvizPlugin pointCloudViewer(RvizPlugin::POINT_CLOUD_VIEWER, "pc");
 
         // Show relevant data from ROS topics in the GUI.
         application.connect(

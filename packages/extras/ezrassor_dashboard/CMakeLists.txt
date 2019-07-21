@@ -16,7 +16,7 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ${DASHBOARD_INTERFACE_DIR})
 
 # Initialize this project, plus hunt down Catkin and Qt5.
 project(${PACKAGE_NAME})
-find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge sensor_msgs std_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge sensor_msgs std_msgs rviz)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 catkin_package()
@@ -28,14 +28,16 @@ qt5_add_resources(DASHBOARD_RESOURCES ${DASHBOARD_RESOURCES_DIR}/images.qrc)
 include_directories(${catkin_INCLUDE_DIRS})
 add_executable(
     ${EXECUTABLE_NAME}
-    ${DASHBOARD_INTERFACE_DIR}/main_window.ui
     ${DASHBOARD_INCLUDE_DIR}/main_window.h
+    ${DASHBOARD_INCLUDE_DIR}/rviz_plugin.h
     ${DASHBOARD_INCLUDE_DIR}/help_window.h
     ${DASHBOARD_INCLUDE_DIR}/topic_translator.h
     ${DASHBOARD_SOURCE_DIR}/main_window.cpp
+    ${DASHBOARD_SOURCE_DIR}/rviz_plugin.cpp
     ${DASHBOARD_SOURCE_DIR}/help_window.cpp
-    ${DASHBOARD_SOURCE_DIR}/ezrassor_dashboard.cpp
     ${DASHBOARD_SOURCE_DIR}/topic_translator.cpp
+    ${DASHBOARD_SOURCE_DIR}/ezrassor_dashboard.cpp
+    ${DASHBOARD_INTERFACE_DIR}/main_window.ui
     ${DASHBOARD_RESOURCES}
 )
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${DASHBOARD_INCLUDE_DIR})
