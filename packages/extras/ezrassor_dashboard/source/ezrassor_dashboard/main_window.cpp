@@ -1,9 +1,9 @@
 // A main window which contains all of the interfaces that make up the Dashboard.
 // Written by Tiger Sachse.
 
-#include <QWidget>
-#include <QCloseEvent>
 #include "main_window.h"
+#include "QCloseEvent"
+#include "QWidget"
 
 // Initialize this MainWindow class and set up the UI.
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {

@@ -2,60 +2,72 @@
 // Inspired by Chris Taliaferro, Samuel Lewis, and Lucas Gonzalez.
 // Written by Tiger Sachse and Sean Rapp.
 
-#include <QImage>
-#include <QThread>
-#include <QString>
-#include <QPixmap>
-#include "ros/ros.h"
-#include "std_msgs/Float64.h"
-#include "topic_translator.h"
-#include "sensor_msgs/Image.h"
 #include "cv_bridge/cv_bridge.h"
+#include "fstream"
+#include "QImage"
+#include "QPixmap"
+#include "QString"
+#include "QThread"
+#include "ros/package.h"
+#include "ros/ros.h"
+#include "rosgraph_msgs/Log.h"
+#include "sensor_msgs/Image.h"
+#include "std_msgs/Float64.h"
 #include "stereo_msgs/DisparityImage.h"
+#include "string"
+#include "topic_translator.h"
+#include "unordered_set"
 
 // Initialize the topic translator with a bunch of constants.
 TopicTranslator::TopicTranslator(
     int& argumentCount,
     char** argumentVector,
-    const std::string& nodeName,
     int queueSize,
+    const std::string& packageName,
+    const std::string& nodeName,
     const std::string& imuTopic,
+    const std::string& logTopic,
     const std::string& memoryUsageTopic,
     const std::string& processorUsageTopic,
     const std::string& batteryRemainingTopic,
     const std::string& leftCameraImageTopic,
     const std::string& rightCameraImageTopic,
-    const std::string& disparityMapImageTopic)
-    : queueSize(queueSize),
-      imuTopic(imuTopic),
-      memoryUsageTopic(memoryUsageTopic),
-      processorUsageTopic(processorUsageTopic),
-      batteryRemainingTopic(batteryRemainingTopic),
-      leftCameraImageTopic(leftCameraImageTopic),
-      rightCameraImageTopic(rightCameraImageTopic),
-      disparityMapImageTopic(disparityMapImageTopic) {
+    const std::string& disparityMapImageTopic):
+        queueSize(queueSize),
+        imuTopic(imuTopic),
+        logTopic(logTopic),
+        memoryUsageTopic(memoryUsageTopic),
+        processorUsageTopic(processorUsageTopic),
+        batteryRemainingTopic(batteryRemainingTopic),
+        leftCameraImageTopic(leftCameraImageTopic),
+        rightCameraImageTopic(rightCameraImageTopic),
+        disparityMapImageTopic(disparityMapImageTopic) {
 
-    currentMemoryPercentage = 0;
-    currentBatteryPercentage = 0;
-    currentProcessorPercentage = 0;
     currentLeftCameraImage = QPixmap();
     currentRightCameraImage = QPixmap();
     currentDisparityMapImage = QPixmap();
-    currentXOrientation = QString();
-    currentYOrientation = QString();
-    currentZOrientation = QString();
-    currentXAngularVelocity = QString();
-    currentYAngularVelocity = QString();
-    currentZAngularVelocity = QString();
-    currentXLinearAcceleration = QString();
-    currentYLinearAcceleration = QString();
-    currentZLinearAcceleration = QString();
+    whitelistedNodes = std::unordered_set<std::string>();
+
+    // Read the whitelisted nodes into an unordered set.
+    std::ifstream whitelistedNodesFile(
+        ros::package::getPath(packageName) + WHITELISTED_NODES_RELATIVE_PATH
+    );
+    if (whitelistedNodesFile.is_open()) {
+        std::string line;
+        while (getline(whitelistedNodesFile, line)) {
+            whitelistedNodes.insert(line);
+        }
+        whitelistedNodesFile.close();
+    }
+    else {
+        throw WHITELIST_FILE_MISSING;
+    }
 
     // Attempt to contact ROS Master. If ROS Master can't be reached, throw
     // an error.
     ros::init(argumentCount, argumentVector, nodeName);
     if (!ros::master::check()) {
-        throw TRANSLATOR_INITIALIZATION_FAILED;
+        throw ROS_MASTER_UNREACHABLE;
     }
 }
 
@@ -72,106 +84,169 @@ void TopicTranslator::run(void) {
     ros::Subscriber imuSubscriber = nodeHandle.subscribe(
         imuTopic,
         queueSize,
-        &TopicTranslator::saveIMUData,
+        &TopicTranslator::routeIMUData,
+        this
+    );
+    ros::Subscriber logSubscriber = nodeHandle.subscribe(
+        logTopic,
+        queueSize,
+        &TopicTranslator::routeLogData,
         this
     );
     ros::Subscriber processorUsageSubscriber = nodeHandle.subscribe(
         processorUsageTopic,
         queueSize,
-        &TopicTranslator::saveProcessorData,
+        &TopicTranslator::routeProcessorData,
         this
     );
     ros::Subscriber memoryUsageSubscriber = nodeHandle.subscribe(
         memoryUsageTopic,
         queueSize,
-        &TopicTranslator::saveMemoryData,
+        &TopicTranslator::routeMemoryData,
         this
     );
     ros::Subscriber batteryRemainingSubscriber = nodeHandle.subscribe(
         batteryRemainingTopic,
         queueSize,
-        &TopicTranslator::saveBatteryData,
+        &TopicTranslator::routeBatteryData,
         this
     );
     ros::Subscriber leftCameraImageSubscriber = nodeHandle.subscribe(
         leftCameraImageTopic,
         queueSize,
-        &TopicTranslator::saveLeftCameraImage,
+        &TopicTranslator::routeLeftCameraImage,
         this
     );
     ros::Subscriber rightCameraImageSubscriber = nodeHandle.subscribe(
         rightCameraImageTopic,
         queueSize,
-        &TopicTranslator::saveRightCameraImage,
+        &TopicTranslator::routeRightCameraImage,
         this
     );
     ros::Subscriber disparityMapImageSubscriber = nodeHandle.subscribe(
         disparityMapImageTopic,
         queueSize,
-        &TopicTranslator::saveDisparityMapImage,
+        &TopicTranslator::routeDisparityMapImage,
         this
     );
 
     ros::spin();
 }
 
-// Save incoming IMU data from ROS.
-void TopicTranslator::saveIMUData(const sensor_msgs::Imu::ConstPtr& message) {
-    currentXOrientation.setNum(message->orientation.x, 'f', 2);
-    currentYOrientation.setNum(message->orientation.y, 'f', 2);
-    currentZOrientation.setNum(message->orientation.z, 'f', 2);
-    currentXAngularVelocity.setNum(message->angular_velocity.x, 'f', 2);
-    currentYAngularVelocity.setNum(message->angular_velocity.y, 'f', 2);
-    currentZAngularVelocity.setNum(message->angular_velocity.z, 'f', 2);
-    currentXLinearAcceleration.setNum(message->linear_acceleration.x, 'f', 2);
-    currentYLinearAcceleration.setNum(message->linear_acceleration.y, 'f', 2);
-    currentZLinearAcceleration.setNum(message->linear_acceleration.z, 'f', 2);
-
-    Q_EMIT xOrientationReceived(currentXOrientation);
-    Q_EMIT yOrientationReceived(currentYOrientation);
-    Q_EMIT zOrientationReceived(currentZOrientation);
-    Q_EMIT xAngularVelocityReceived(currentXAngularVelocity);
-    Q_EMIT yAngularVelocityReceived(currentYAngularVelocity);
-    Q_EMIT zAngularVelocityReceived(currentZAngularVelocity);
-    Q_EMIT xLinearAccelerationReceived(currentXLinearAcceleration);
-    Q_EMIT yLinearAccelerationReceived(currentYLinearAcceleration);
-    Q_EMIT zLinearAccelerationReceived(currentZLinearAcceleration);
+// Route incoming IMU data from ROS.
+void TopicTranslator::routeIMUData(const sensor_msgs::Imu::ConstPtr& message) {
+    Q_EMIT xOrientationReceived(
+        QString().setNum(message->orientation.x, 'f', 3)
+    );
+    Q_EMIT yOrientationReceived(
+        QString().setNum(message->orientation.y, 'f', 3)
+    );
+    Q_EMIT zOrientationReceived(
+        QString().setNum(message->orientation.z, 'f', 3)
+    );
+    Q_EMIT xAngularVelocityReceived(
+        QString().setNum(message->angular_velocity.x, 'f', 3)
+    );
+    Q_EMIT yAngularVelocityReceived(
+        QString().setNum(message->angular_velocity.y, 'f', 3)
+    );
+    Q_EMIT zAngularVelocityReceived(
+        QString().setNum(message->angular_velocity.z, 'f', 3)
+    );
+    Q_EMIT xLinearAccelerationReceived(
+        QString().setNum(message->linear_acceleration.x, 'f', 3)
+    );
+    Q_EMIT yLinearAccelerationReceived(
+        QString().setNum(message->linear_acceleration.y, 'f', 3)
+    );
+    Q_EMIT zLinearAccelerationReceived(
+        QString().setNum(message->linear_acceleration.z, 'f', 3)
+    );
 }
 
-// Save incoming memory data from ROS.
-void TopicTranslator::saveMemoryData(const std_msgs::Float64::ConstPtr& message) {
-    currentMemoryPercentage = (int) message->data;
-    Q_EMIT memoryDataReceived(currentMemoryPercentage);
+// Route incoming log data from ROS.
+void TopicTranslator::routeLogData(const rosgraph_msgs::Log::ConstPtr& message) {
+
+    // Get the node name and node namespace from the message.
+    int nodeNamePosition = (int) message->name.rfind('/');
+    int namespaceNamePosition = (int) message->name.rfind(
+        '/',
+        nodeNamePosition - 1
+    );
+    std::string nodeName = message->name.substr(nodeNamePosition + 1);
+    std::string namespaceName;
+    if (nodeNamePosition <= 0) {
+        namespaceName = "";
+    }
+    else {
+        namespaceName = message->name.substr(
+            namespaceNamePosition + 1,
+            nodeNamePosition - namespaceNamePosition - 1
+        );
+    }
+
+    // Filter out unwanted messages.
+    if (namespaceName != "") {
+        return;
+    }
+    if ((whitelistedNodes.find(nodeName)) == whitelistedNodes.end()) {
+        return;
+    }
+    if ((int) message->level != LOG_LEVEL_INFO) {
+        return;
+    }
+
+    // Create a QString with the node name prefixed to the message.
+    QString logLine = QString::fromStdString(
+        "[" + nodeName + "] " + message->msg
+    );
+
+    Q_EMIT logDataReceived(logLine);
 }
 
-// Save incoming battery data from ROS.
-void TopicTranslator::saveBatteryData(const std_msgs::Float64::ConstPtr& message) {
-    currentBatteryPercentage = (int) message->data;
-    Q_EMIT batteryDataReceived(currentBatteryPercentage);
+// Route incoming memory data from ROS.
+void TopicTranslator::routeMemoryData(
+    const std_msgs::Float64::ConstPtr& message) {
+
+    Q_EMIT memoryDataReceived((int) message->data);
 }
 
-// Save incoming processor data from ROS.
-void TopicTranslator::saveProcessorData(const std_msgs::Float64::ConstPtr& message) {
-    currentProcessorPercentage = (int) message->data;
-    Q_EMIT processorDataReceived(currentProcessorPercentage);
+// Route incoming battery data from ROS.
+void TopicTranslator::routeBatteryData(
+    const std_msgs::Float64::ConstPtr& message) {
+
+    Q_EMIT batteryDataReceived((int) message->data);
 }
 
-// Save incoming left camera images from ROS.
-void TopicTranslator::saveLeftCameraImage(const sensor_msgs::ImageConstPtr& message) {
+// Route incoming processor data from ROS.
+void TopicTranslator::routeProcessorData(
+    const std_msgs::Float64::ConstPtr& message) {
+
+    Q_EMIT processorDataReceived((int) message->data);
+}
+
+// Route incoming left camera images from ROS.
+void TopicTranslator::routeLeftCameraImage(
+    const sensor_msgs::ImageConstPtr& message) {
+
     processCameraImage(message, &currentLeftCameraImage);
     Q_EMIT leftCameraImageReceived(currentLeftCameraImage);
 }
 
-// Save incoming right camera images from ROS.
-void TopicTranslator::saveRightCameraImage(const sensor_msgs::ImageConstPtr& message) {
+// Route incoming right camera images from ROS.
+void TopicTranslator::routeRightCameraImage(
+    const sensor_msgs::ImageConstPtr& message) {
+
     processCameraImage(message, &currentRightCameraImage);
     Q_EMIT rightCameraImageReceived(currentRightCameraImage);
 }
 
-// Save incoming disparity images from ROS. This function is 90% duplicated from
+// Route incoming disparity images from ROS. This function is 90% duplicated from
 // processCameraImage() because C++ sucks. Someone who is better with C++ than I
 // am should combine the two functions (I was salty when I wrote this).
-void TopicTranslator::saveDisparityMapImage(const stereo_msgs::DisparityImage& message) {
+void TopicTranslator::routeDisparityMapImage(
+    const stereo_msgs::DisparityImage& message) {
+
     cv_bridge::CvImagePtr cvImage;
     try {
         cvImage = cv_bridge::toCvCopy(message.image);
@@ -216,7 +291,7 @@ void TopicTranslator::saveDisparityMapImage(const stereo_msgs::DisparityImage& m
 void TopicTranslator::processCameraImage(
     const sensor_msgs::ImageConstPtr& message,
     QPixmap* currentCameraImage) {
-    
+
     cv_bridge::CvImagePtr cvImage;
     try {
         cvImage = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);

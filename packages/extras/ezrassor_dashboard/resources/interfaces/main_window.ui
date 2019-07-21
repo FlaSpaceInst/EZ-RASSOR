@@ -204,7 +204,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>100</y>
+       <y>60</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -224,7 +224,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>140</y>
+       <y>100</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -238,21 +238,11 @@ p, li { white-space: pre-wrap; }
       <number>42</number>
      </property>
     </widget>
-    <widget class="QTextBrowser" name="standardOutBrowser">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>491</width>
-       <height>561</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLabel" name="memoryUsageLabel">
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>240</y>
+       <y>200</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -272,7 +262,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>280</y>
+       <y>240</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -290,7 +280,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>380</y>
+       <y>340</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -310,7 +300,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>420</y>
+       <y>380</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -322,6 +312,19 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="value">
       <number>70</number>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="rosoutTextEdit">
+     <property name="geometry">
+      <rect>
+       <x>13</x>
+       <y>19</y>
+       <width>481</width>
+       <height>541</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -378,6 +381,14 @@ p, li { white-space: pre-wrap; }
        <height>331</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -401,6 +412,44 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QLabel" name="leftCameraNoFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>No Feed Available :(</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="rightCameraNoFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>No Feed Available :(</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <zorder>rightCameraNoFeedLabel</zorder>
+    <zorder>leftCameraNoFeedLabel</zorder>
+    <zorder>rightCameraFeedLabel</zorder>
+    <zorder>leftCameraFeedLabel</zorder>
+    <zorder>rightCameraLabel</zorder>
+    <zorder>leftCameraLabel</zorder>
    </widget>
    <widget class="QWidget" name="mapTab">
     <attribute name="title">
@@ -462,16 +511,54 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QWidget" name="pointCloudWidget" native="true">
+    <widget class="QWidget" name="pointCloudFeedWidget" native="true">
      <property name="geometry">
       <rect>
-       <x>39</x>
-       <y>39</y>
-       <width>401</width>
-       <height>371</height>
+       <x>20</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
       </rect>
      </property>
     </widget>
+    <widget class="QLabel" name="disparityMapNoFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>No Feed Available :(</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="pointCloudNoFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>100</y>
+       <width>351</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>No Feed Available :(</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <zorder>pointCloudNoFeedLabel</zorder>
+    <zorder>disparityMapNoFeedLabel</zorder>
+    <zorder>pointCloudLabel</zorder>
+    <zorder>disparityMapLabel</zorder>
+    <zorder>disparityMapFeedLabel</zorder>
+    <zorder>pointCloudFeedWidget</zorder>
    </widget>
    <widget class="QWidget" name="orientationTab">
     <attribute name="title">
@@ -702,41 +789,64 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
-    <widget class="QLabel" name="orientationFeedLabel">
+    <widget class="QWidget" name="orientationFeedWidget" native="true">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>10</y>
-       <width>751</width>
-       <height>411</height>
+       <x>9</x>
+       <y>9</y>
+       <width>771</width>
+       <height>431</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="orientationNoFeedLabel">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>9</y>
+       <width>771</width>
+       <height>431</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>No Feed Available :(</string>
      </property>
-     <property name="scaledContents">
-      <bool>true</bool>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <zorder>orientationNoFeedLabel</zorder>
+    <zorder>layoutWidget</zorder>
+    <zorder>orientationFeedWidget</zorder>
    </widget>
    <widget class="QWidget" name="poseTab">
     <attribute name="title">
      <string>Pose</string>
     </attribute>
-    <widget class="QLabel" name="poseFeedLabel">
+    <widget class="QLabel" name="poseNoFeedLabel">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>771</width>
-       <height>561</height>
+       <x>20</x>
+       <y>20</y>
+       <width>751</width>
+       <height>541</height>
       </rect>
      </property>
      <property name="text">
-      <string/>
+      <string>No Feed Available :(</string>
      </property>
-     <property name="scaledContents">
-      <bool>true</bool>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QWidget" name="poseFeedWidget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>751</width>
+       <height>541</height>
+      </rect>
      </property>
     </widget>
    </widget>
