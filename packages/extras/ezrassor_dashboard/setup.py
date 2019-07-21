@@ -2,8 +2,8 @@
 
 Written by Tiger Sachse.
 """
-import distutils.core
 import catkin_pkg.python_setup
+import distutils.core
 
 setup_arguments = catkin_pkg.python_setup.generate_distutils_setup(
     packages=("ezrassor_status_monitor", ),
