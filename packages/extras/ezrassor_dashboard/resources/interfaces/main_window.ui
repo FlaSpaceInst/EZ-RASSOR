@@ -462,21 +462,16 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="pointCloudFeedLabel">
+    <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>100</y>
+       <x>10</x>
+       <y>30</y>
        <width>351</width>
-       <height>331</height>
+       <height>341</height>
       </rect>
      </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
+     <layout class="QVBoxLayout" name="pointCloudWidgetContainer"/>
     </widget>
    </widget>
    <widget class="QWidget" name="orientationTab">
