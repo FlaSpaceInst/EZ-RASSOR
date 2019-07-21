@@ -170,7 +170,7 @@ void TopicTranslator::saveRightCameraImage(const sensor_msgs::ImageConstPtr& mes
 
 // Save incoming disparity images from ROS. This function is 90% duplicated from
 // processCameraImage() because C++ sucks. Someone who is better with C++ than I
-// am should combine the two functions.
+// am should combine the two functions (I was salty when I wrote this).
 void TopicTranslator::saveDisparityMapImage(const stereo_msgs::DisparityImage& message) {
     cv_bridge::CvImagePtr cvImage;
     try {
