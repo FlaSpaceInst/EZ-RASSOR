@@ -1,14 +1,15 @@
 //
 //
 
-#include <QObject>
-#include "rviz_plugin.h"
+#include "QObject"
+#include "QWidget"
 #include "rviz/display.h"
 #include "rviz/render_panel.h"
 #include "rviz/visualization_manager.h"
+#include "rviz_plugin.h"
 
-RvizPlugin::RvizPlugin(RvizPlugin::Type type, QString topic) {
-    renderPanel = new rviz::RenderPanel();
+RvizPlugin::RvizPlugin(QWidget* parent, RvizPlugin::Type type, QString topic) {
+    renderPanel = new rviz::RenderPanel(parent);
     visualizationManager = new rviz::VisualizationManager(renderPanel);
     renderPanel->initialize(
         visualizationManager->getSceneManager(),
@@ -27,9 +28,9 @@ RvizPlugin::RvizPlugin(RvizPlugin::Type type, QString topic) {
             display->subProp("Topic")->setValue(topic);
             break;
 
-        case RvizPlugin::IMU_VIEWER:
+        case RvizPlugin::ORIENTATION_VIEWER:
             display = visualizationManager->createDisplay(
-                "rviz_plugin_tutorials/Imu",
+                "rviz/Imu",
                 "Imu",
                 true
             );

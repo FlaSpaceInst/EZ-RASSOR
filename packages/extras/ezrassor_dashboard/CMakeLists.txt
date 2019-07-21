@@ -48,6 +48,12 @@ install(
     RUNTIME DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+install(
+    DIRECTORY
+        config/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
+)
 
 # Install the status_monitor Python node.
 catkin_python_setup()
