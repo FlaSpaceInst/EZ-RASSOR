@@ -5,25 +5,35 @@
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
 
-#include <QThread>
-#include <QString>
-#include <QPixmap>
+#include "limits"
+#include "QPixmap"
+#include "QString"
+#include "QThread"
 #include "ros/ros.h"
+#include "rosgraph_msgs/Log.h"
+#include "sensor_msgs/Image.h"
 #include "sensor_msgs/Imu.h"
 #include "std_msgs/Float64.h"
-#include "sensor_msgs/Image.h"
 #include "stereo_msgs/DisparityImage.h"
+#include "string"
+#include "unordered_set"
 
-const int TRANSLATOR_INITIALIZATION_FAILED = 1;
+const int LOG_LEVEL_INFO = 2;
+const int ROS_MASTER_UNREACHABLE = std::numeric_limits<int>::min();
+const int WHITELIST_FILE_MISSING = std::numeric_limits<int>::min() + 1;
+const std::string WHITELISTED_NODES_RELATIVE_PATH = "/config/whitelisted_nodes.txt";
 
 class TopicTranslator : public QThread {
     Q_OBJECT
+
     public:
         TopicTranslator(
             int&,
             char**,
-            const std::string&,
             int,
+            const std::string&,
+            const std::string&,
+            const std::string&,
             const std::string&,
             const std::string&,
             const std::string&,
@@ -38,6 +48,7 @@ class TopicTranslator : public QThread {
         void memoryDataReceived(int);
         void batteryDataReceived(int);
         void processorDataReceived(int);
+        void logDataReceived(const QString&);
         void xOrientationReceived(const QString&);
         void yOrientationReceived(const QString&);
         void zOrientationReceived(const QString&);
@@ -55,36 +66,27 @@ class TopicTranslator : public QThread {
         const int queueSize;
         const std::string nodeName;
         const std::string imuTopic;
+        const std::string logTopic;
         const std::string memoryUsageTopic;
         const std::string processorUsageTopic;
         const std::string batteryRemainingTopic;
         const std::string leftCameraImageTopic;
         const std::string rightCameraImageTopic;
         const std::string disparityMapImageTopic;
-        QString currentXOrientation;
-        QString currentYOrientation;
-        QString currentZOrientation;
-        QString currentXAngularVelocity;
-        QString currentYAngularVelocity;
-        QString currentZAngularVelocity;
-        QString currentXLinearAcceleration;
-        QString currentYLinearAcceleration;
-        QString currentZLinearAcceleration;
-        int currentMemoryPercentage;
-        int currentBatteryPercentage;
-        int currentProcessorPercentage;
         QPixmap currentLeftCameraImage;
         QPixmap currentRightCameraImage;
         QPixmap currentDisparityMapImage;
-        
+        std::unordered_set<std::string> whitelistedNodes;
+
         void run(void);
-        void saveIMUData(const sensor_msgs::Imu::ConstPtr&);
-        void saveMemoryData(const std_msgs::Float64::ConstPtr&);
-        void saveBatteryData(const std_msgs::Float64::ConstPtr&);
-        void saveProcessorData(const std_msgs::Float64::ConstPtr&);
-        void saveLeftCameraImage(const sensor_msgs::ImageConstPtr&);
-        void saveRightCameraImage(const sensor_msgs::ImageConstPtr&);
-        void saveDisparityMapImage(const stereo_msgs::DisparityImage&);
+        void routeIMUData(const sensor_msgs::Imu::ConstPtr&);
+        void routeLogData(const rosgraph_msgs::Log::ConstPtr&);
+        void routeMemoryData(const std_msgs::Float64::ConstPtr&);
+        void routeBatteryData(const std_msgs::Float64::ConstPtr&);
+        void routeProcessorData(const std_msgs::Float64::ConstPtr&);
+        void routeLeftCameraImage(const sensor_msgs::ImageConstPtr&);
+        void routeRightCameraImage(const sensor_msgs::ImageConstPtr&);
+        void routeDisparityMapImage(const stereo_msgs::DisparityImage&);
         void processCameraImage(const sensor_msgs::ImageConstPtr&, QPixmap*);
 };
 
