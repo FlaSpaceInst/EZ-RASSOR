@@ -2,8 +2,8 @@
 
 Written by Samuel Lewis and Tiger Sachse.
 """
-import rospy
 import psutil
+import rospy
 import std_msgs.msg
 
 
@@ -33,9 +33,10 @@ def start_node(
             queue_size=queue_size,
         )
 
+        rospy.loginfo("Status monitor initialized.")
+
         # Publish the sum of CPU and memory usage for all processes whose calls
         # contain the trigger string.
-        sleep_rate = rospy.Rate(1)
         cpu_count = psutil.cpu_count()
         while not rospy.is_shutdown():
             cpu_usage = 0.0
@@ -49,6 +50,7 @@ def start_node(
                                 memory_usage += process.memory_percent()
                                 break
                 except psutil.NoSuchProcess:
+                    rospy.logwarn("Attempted to analyze non-existent process.")
                     pass
 
             cpu_usage_publisher.publish(cpu_usage / cpu_count)
@@ -60,7 +62,7 @@ def start_node(
                 battery_remaining_publisher.publish(battery_remaining.percent)
 
             # Don't do this too fast, lest you waste precious CPU cycles.
-            sleep_rate.sleep()
+            rospy.sleep(1)
 
     except rospy.ROSInterruptException:
         pass
