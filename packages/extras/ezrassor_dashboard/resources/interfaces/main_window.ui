@@ -462,16 +462,15 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QWidget" name="verticalLayoutWidget">
+    <widget class="QWidget" name="pointCloudWidget" native="true">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>351</width>
-       <height>341</height>
+       <x>39</x>
+       <y>39</y>
+       <width>401</width>
+       <height>371</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="pointCloudWidgetContainer"/>
     </widget>
    </widget>
    <widget class="QWidget" name="orientationTab">
