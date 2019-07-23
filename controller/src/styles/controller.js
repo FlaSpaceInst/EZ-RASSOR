@@ -102,8 +102,8 @@ const ControllerStyle = StyleSheet.create({
   }, 
 
   ipInputBox: {
-    height: 80, 
-    fontSize: 65, 
+    height: 60, 
+    fontSize: 50, 
     backgroundColor:'#2e3030', 
     borderColor: 'gray', 
     borderWidth: 1 , 
