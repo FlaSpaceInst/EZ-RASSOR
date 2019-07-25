@@ -54,6 +54,12 @@ install(
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
+install(
+    DIRECTORY
+        launch/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
 
 # Install the status_monitor Python node.
 catkin_python_setup()
