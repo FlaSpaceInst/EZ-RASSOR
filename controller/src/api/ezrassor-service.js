@@ -48,7 +48,6 @@ export default class EZRASSOR {
             y = split[1];
         }
 
-        console.log('Setting x and y to ' + x + ' and ' + y);
         this._coordinate = {
             x: x,
             y: y
