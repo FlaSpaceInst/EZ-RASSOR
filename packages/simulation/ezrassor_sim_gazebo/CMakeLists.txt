@@ -1,3 +1,5 @@
+# CMake installation file for the ezrassor_sim_gazebo ROS package.
+# Written by Ron Marrero.
 cmake_minimum_required(VERSION 2.8.3)
 project(ezrassor_sim_gazebo)
 find_package(catkin REQUIRED)
@@ -13,10 +15,4 @@ install(
         worlds/
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/worlds
-)
-install(
-    DIRECTORY
-        materials/
-    DESTINATION
-        ${CATKIN_PACKAGE_SHARE_DESTINATION}/materials
 )

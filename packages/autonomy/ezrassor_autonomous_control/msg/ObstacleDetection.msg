@@ -1,3 +1,0 @@
-uint8 camera
-uint8 obstacle_present
-uint8 detection_column
