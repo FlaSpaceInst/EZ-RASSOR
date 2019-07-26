@@ -4,7 +4,7 @@ import FadeInView from "./FadeInView";
 import EZRASSOR from '../../api/ezrassor-service' 
 import ControllerStyle from '../../styles/controller';
 import {Robot, Operation} from '../../enumerations/robot-commands';
-import { Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
+import { Linking, Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Font } from 'expo';
 
@@ -19,10 +19,8 @@ export default class ControllerScreen extends React.Component {
       xyModal: false,
       isLoading: true,
       control: 0,
-      x: '0',
-      y: '0',
-      xy: '(0,0)',
-      ip: '129.168.1.2:8080' 
+      xy: '0,0',
+      ip: '192.168.1.2:8080' 
     }; 
 
     this.EZRASSOR = new EZRASSOR(this.state.ip);
@@ -51,25 +49,16 @@ export default class ControllerScreen extends React.Component {
     this.setState({xyModal:visible});
   }
 
-  changeXY(x, y){
-    this.setState({xy:text}, () => {
-      this.EZRASSOR.setCoordinate(x, y);
+  changeXY(combined){
+    this.setState({xy:combined}, () => {
+      this.EZRASSOR.setCoordinate(this.state.xy);
     });
   }
 
   changeIP(text){
     this.setState({ip:text}, () => {
-      this.EZRASSOR.ip = this.state.ip;
+      this.EZRASSOR.host = this.state.ip;
     });
-  }
-
-  controlUpdate(input){ 
-    newControl = this.state.control + input
-    
-    this.setState({control: newControl}, ()=> {
-      console.log(this.state.control)
-      this.handleSubmit(this.state.control)
-    }); 
   }
 
   // Update animation frame before processing click so that opacity can change on click 
@@ -99,22 +88,27 @@ export default class ControllerScreen extends React.Component {
           onRequestClose={() => this.setAutonomyModalVisible(!this.state.autonomyModalVisible)}>
           
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
-            <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}> 
-                <TouchableOpacity style={ControllerStyle.modalButton} onPress={()=>this.setXYModalVisible(true)}>
-                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Drive</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.DIG)}}>
-                  <Text style={{ fontWeight: 'bold', color: '#fff' }}>Dig</Text> 
-                </TouchableOpacity> 
-                <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.DUMP)}}>
-                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Dump</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.SELFRIGHT)}}>
-                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Self-Right</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.FULLAUTONOMY)}}>
-                  <Text adjustsFontSizeToFit style={{ fontWeight: 'bold', color: '#fff' }}>Full-Autonomy</Text>
-                </TouchableOpacity>
+            <View>
+              <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
+                <Text style={ControllerStyle.textLarge}>Activate Autonomout Function(s)</Text>
+              </View>
+              <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}> 
+                  <TouchableOpacity style={ControllerStyle.modalButton} onPress={()=>this.setXYModalVisible(true)}>
+                    <Text style={ControllerStyle.textSmall}>Drive</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.DIG)}}>
+                    <Text style={ControllerStyle.textSmall}>Dig</Text> 
+                  </TouchableOpacity> 
+                  <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.DUMP)}}>
+                    <Text style={ControllerStyle.textSmall}>Dump</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.SELFRIGHT)}}>
+                    <Text style={[ControllerStyle.textSmall, ControllerStyle.columnText]}>Self -    Right</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={ControllerStyle.modalButton} onPress={() => {this.sendOperation(Robot.AUTONOMY, Operation.FULLAUTONOMY)}}>
+                    <Text style={[ControllerStyle.textSmall, ControllerStyle.columnText]}>Auto      Mode</Text>
+                  </TouchableOpacity>
+              </View>
             </View>
           </TouchableHighlight>
         </Modal>
@@ -127,35 +121,38 @@ export default class ControllerScreen extends React.Component {
           swipeDirection='down'
           onRequestClose={() => this.setInfoModalVisible(false)}>
           <View style={{flexDirection: 'row'}}>
-            <View style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff', textAlign: 'center'}}>NASA EZ-RASSOR Controller</Text>
-              <View style={{marginVertical: 10}}/>
-              <Text style={{fontSize:15, fontWeight: 'bold', color: '#fff'}}>App Developer</Text>
+            <View style={ControllerStyle.columnHeader}>
+              <Text style={ControllerStyle.textSmall}>App Developer</Text>
               <Text style={{color: '#fff'}}>Christopher Taliaferro</Text>
               <View style={{marginVertical: 10}}/>
-              <Text style={{fontSize:15, fontWeight: 'bold', color: '#fff'}}>EZ-RASSOR Team</Text>
+              <Text style={ControllerStyle.textSmall}>EZ-RASSOR Team</Text>
               <View style={{flexDirection: 'row'}}>
                 <View>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Camilo Lozano</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Cameron Taylor</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Harrison Black</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Ron Marrero</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Samuel Lewis</Text>
+                  <Text style={ControllerStyle.columnText}>Camilo Lozano</Text>
+                  <Text style={ControllerStyle.columnText}>Cameron Taylor</Text>
+                  <Text style={ControllerStyle.columnText}>Harrison Black</Text>
+                  <Text style={ControllerStyle.columnText}>Ron Marrero</Text>
+                  <Text style={ControllerStyle.columnText}>Samuel Lewis</Text>
                 </View>
                 <View style={{marginHorizontal:5}}/>
                 <View>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Sean Rapp</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Tiger Sachse</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Tyler Duncan</Text>
-                  <Text style={{color: '#fff', textAlign: 'center'}}>Lucas Gonzalez</Text>
+                  <Text style={ControllerStyle.columnText}>Sean Rapp</Text>
+                  <Text style={ControllerStyle.columnText}>Tiger Sachse</Text>
+                  <Text style={ControllerStyle.columnText}>Tyler Duncan</Text>
+                  <Text style={ControllerStyle.columnText}>Lucas Gonzalez</Text>
                 </View>
               </View>
             </View>
             <View style={{ flex: .5, borderRadius:20, backgroundColor: '#2e3030'}}></View>
-            <View style={{ flex: 20, marginHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{fontSize:20, fontWeight: 'bold', color: '#fff'}}>Our Mission</Text>
+            <View style={ControllerStyle.columnHeader}>
+              <Text style={ControllerStyle.textSmall}>Our Mission</Text>
               <View style={{marginVertical: 10}}/>
-              <Text style={{color: '#fff', textAlign: 'center'}}>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center.</Text>
+              <Text style={ControllerStyle.columnText}>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center.</Text>
+              <View style={{marginVertical: 10}}/>
+              <Text style={[ControllerStyle.textTiny, ControllerStyle.columnText]}>Visit
+                  <Text style={[ControllerStyle.textTiny, ControllerStyle.columnHyperlink]} onPress={() => Linking.openURL('https://github.com/FlaSpaceInst/EZ-RASSOR')}> our GitHub repository </Text>
+                  for more information
+              </Text>
             </View>
           </View>
         </Modal>
@@ -170,7 +167,7 @@ export default class ControllerScreen extends React.Component {
           <KeyboardAvoidingView
             paddingLeft={34}
             paddingRight={34}>
-            <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 45,}}>IP ADDRESS</Text>
+            <Text style={[ControllerStyle.textLarge, ControllerStyle.columnText]}>EZ-RASSOR Host to Control</Text>
             <TextInput
               style={ControllerStyle.ipInputBox}
               onChangeText={(text) => this.changeIP(text)}
@@ -184,28 +181,15 @@ export default class ControllerScreen extends React.Component {
           onSwipe={() => this.setXYModalVisible(false)}
           swipeDirection='down'
           onRequestClose={() => {this.setXYModalVisible(false)}}>
-          <KeyboardAvoidingView paddingLeft={34} paddingRight={34}>
-
-            <Text style={{color: '#fff', textAlign: 'center', fontFamily: 'NASA', fontSize: 20}}>
-              Enter the x,y coordinates where the robot will drive to.
-            </Text>
-
-            <Text style={{color: '#fff', textAlign: 'left', fontFamily: 'NASA', fontSize: 45,}}>
-              X: 
-            </Text>
-            <TextInput style={ControllerStyle.ipInputBox} 
-                onChangeText={(text) => this.changeXY(text, this.state.y)} value={this.state.x} marginVertical={20} /> 
-            
-            <Text style={{color: '#fff', textAlign: 'left', fontFamily: 'NASA', fontSize: 45,}}>
-              Y: 
-            </Text>
-            <TextInput style={ControllerStyle.ipInputBox} 
-                onChangeText={(text) => this.changeXY(this.state.x, text)} value={this.state.y} marginVertical={20} />
-              
-            <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}} 
-                onPress={()=> this.EZRASSOR.executeRobotCommand(Robot.AUTONOMY, Operation.DRIVE)}>
-                <Text>Go</Text>
-            </TouchableOpacity>
+          <KeyboardAvoidingView
+            paddingLeft={64}
+            paddingRight={64}>
+            <Text style={[ControllerStyle.textSmall, ControllerStyle.columnText]}>Enter the X,Y coordinates where the robot will drive to</Text>
+            <TextInput style={ControllerStyle.ipInputBox} onChangeText={(text) => this.changeXY(text)} value={this.state.xy} placeholder='x,y' marginVertical={20} />
+              <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}}
+                  onPress={()=> this.sendOperation(Robot.AUTONOMY, Operation.DRIVE)}>
+                    <Text>Done</Text>
+              </TouchableOpacity>
           </KeyboardAvoidingView>
         </Modal>
 
@@ -219,11 +203,8 @@ export default class ControllerScreen extends React.Component {
           <TouchableOpacity style={{ flex: 1, padding: 1 }} onPress={() => this.setIPModalVisible(true)}>
             <FontAwesome name="search" size={30} color='#fff'/>
           </TouchableOpacity>
-          <TouchableOpacity style={{ flex: 1, padding: 1 }} onPress={() => this.setXYModalVisible(true)}>
-            <FontAwesome name="map-marker" size={30} color='#fff'/>
-          </TouchableOpacity> 
 
-          <Text style={ControllerStyle.text}>EZ-RASSOR Controller</Text>
+          <Text style={ControllerStyle.textMedium}>EZ-RASSOR Controller</Text>
 
           {/*Right Row Icons*/}
           <TouchableOpacity style={{ flex: 1, padding: 3}} onPress={() => {this.sendOperation(Robot.ALL, Operation.STOP)}}>
@@ -237,7 +218,7 @@ export default class ControllerScreen extends React.Component {
 
         {/*Wheel Operations Board*/}
         <FadeInView style={ControllerStyle.buttonLayoutContainer}>
-          <View style={{ flex: 3,  marginLeft: 10, borderRadius: 10, elevation: 3, backgroundColor: '#2e3030' }}>
+          <View style={ControllerStyle.wheelFunctionContainer}>
             <View style={ControllerStyle.upAndDownDPad} >
             <TouchableOpacity 
                 onPressIn={() => {this.sendOperation(Robot.WHEELS, Operation.DRIVEFORWARD)}} 
@@ -290,7 +271,7 @@ export default class ControllerScreen extends React.Component {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
+                <View style={ControllerStyle.rightSideRow}>
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity 
                         onPressIn={() => {this.sendOperation(Robot.BACKARM, Operation.UP)}}
@@ -312,20 +293,20 @@ export default class ControllerScreen extends React.Component {
                 <View style={{ flexDirection: 'row' }}>
                   <View>
                     <TouchableOpacity
-                      onPressIn={() => {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEINWARD)}}
+                      onPressIn={() => {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEOUTWARD)}}
                       onPressOut={() => {this.sendOperation(Robot.FRONTDRUM, Operation.STOP)}}>
                       <FontAwesome name="rotate-left" size={50} color='#fff'/>
                     </TouchableOpacity>
                   </View>
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity
-                      onPressIn={() => {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEOUTWARD)}}
+                      onPressIn={() => {this.sendOperation(Robot.FRONTDRUM, Operation.ROTATEINWARD)}}
                       onPressOut={() => {this.sendOperation(Robot.FRONTDRUM, Operation.STOP)}}>
                       <FontAwesome name="rotate-right" size={50} color='#fff'/>
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={{ flexDirection: 'row', position: 'absolute', right: 0 }}>
+                <View style={ControllerStyle.rightSideRow}>
                   <View style={{ marginHorizontal: 15 }}>
                     <TouchableOpacity
                       onPressIn={() => {this.sendOperation(Robot.BACKDRUM, Operation.ROTATEINWARD)}}
