@@ -36,7 +36,19 @@ export default class EZRASSOR {
         return this._coordinate;
     }
 
-    setCoordinate(x, y) {
+    setCoordinate(combinedCoordinate) {
+       
+        var coordinates = (typeof combinedCoordinate === "string") ? combinedCoordinate.trim() : '0';
+        var split = coordinates.split(',');
+
+        var x = split[0];        
+        var y = '0';
+        
+        if (split.length == 2 && split[1] != '') {
+            y = split[1];
+        }
+
+        console.log('Setting x and y to ' + x + ' and ' + y);
         this._coordinate = {
             x: x,
             y: y
@@ -55,7 +67,7 @@ export default class EZRASSOR {
 
     // Update only the instruction needed
     updateTwistMsg(instruction) {
-        this._twistMsg = {twist:instruction}; 
+        this._twistMsg = instruction; 
     } 
 
     updateAutonomyTwistMsg(instruction) {

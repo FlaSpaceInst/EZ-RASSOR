@@ -45,6 +45,14 @@ const ControllerStyle = StyleSheet.create({
     backgroundColor: '#2e3030'
   },
 
+  wheelFunctionContainer: {
+    flex: 3,
+    marginLeft: 10,
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: '#2e3030' 
+  },
+
   headerContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -66,13 +74,48 @@ const ControllerStyle = StyleSheet.create({
     paddingVertical:20,
   },
 
-  text: {
+  textLarge: {
+    fontFamily: 'NASA', 
+    fontSize: 30, 
+    color: '#fff'
+  },
+
+  textMedium: {
     fontFamily: 'NASA',
     flex: 4,
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
     textAlignVertical: 'center',
+  },
+
+  textSmall: {
+    fontFamily: 'NASA', 
+    fontSize: 22, 
+    color: '#fff'
+  },
+  
+  textTiny: {
+    fontFamily: 'NASA', 
+    fontSize: 12, 
+    color: '#fff'
+  },
+
+  columnText: {
+    color: '#fff',
+    textAlign: 'center'
+  },
+
+  columnHyperlink: {
+    color: 'blue',
+    textAlign: 'center'
+  },
+
+  columnHeader: {
+    flex: 20,
+    marginHorizontal: 15,
+    justifyContent: 'center',
+    alignItems: 'center' 
   },
 
   modalViewContainer: {
@@ -111,6 +154,22 @@ const ControllerStyle = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center', 
     fontFamily: 'NASA',
+  },
+
+  ipInputBoxMedium: {
+    backgroundColor:'#2e3030', 
+    borderColor: 'gray', 
+    color: '#fff', 
+    fontSize: 15, 
+    textAlign: 'center',
+    fontFamily: 'NASA',
+    
+  },
+
+  rightSideRow: {
+    flexDirection: 'row', 
+    position: 'absolute', 
+    right: 0 
   }
 });
 
