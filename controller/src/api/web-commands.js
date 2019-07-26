@@ -1,8 +1,6 @@
 export default class HTTP { 
 
     static doPost(host, message) { 
-        console.log("Attempting to post: " + message);
-        console.log("\nTo Host: " + host);
 
         return fetch(
             host,
