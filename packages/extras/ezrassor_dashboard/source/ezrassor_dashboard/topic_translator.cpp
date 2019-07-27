@@ -8,6 +8,7 @@
 #include "QPixmap"
 #include "QString"
 #include "QThread"
+#include "ros/console.h"
 #include "ros/package.h"
 #include "ros/ros.h"
 #include "rosgraph_msgs/Log.h"
@@ -43,12 +44,14 @@ TopicTranslator::TopicTranslator(
         rightCameraImageTopic(rightCameraImageTopic),
         disparityMapImageTopic(disparityMapImageTopic) {
 
-    currentLeftCameraImage = QPixmap();
-    currentRightCameraImage = QPixmap();
-    currentDisparityMapImage = QPixmap();
-    whitelistedNodes = std::unordered_set<std::string>();
+    ros::init(argumentCount, argumentVector, nodeName);
+
+    currentLeftCameraImage = QPixmap();//
+    currentRightCameraImage = QPixmap();//
+    currentDisparityMapImage = QPixmap();//
 
     // Read the whitelisted nodes into an unordered set.
+    whitelistedNodes = std::unordered_set<std::string>();
     std::ifstream whitelistedNodesFile(
         ros::package::getPath(packageName) + WHITELISTED_NODES_RELATIVE_PATH
     );
@@ -60,14 +63,7 @@ TopicTranslator::TopicTranslator(
         whitelistedNodesFile.close();
     }
     else {
-        throw WHITELIST_FILE_MISSING;
-    }
-
-    // Attempt to contact ROS Master. If ROS Master can't be reached, throw
-    // an error.
-    ros::init(argumentCount, argumentVector, nodeName);
-    if (!ros::master::check()) {
-        throw ROS_MASTER_UNREACHABLE;
+        ROS_WARN("Node whitelist not found. Expect log to be blank.");
     }
 }
 
@@ -76,6 +72,18 @@ TopicTranslator::~TopicTranslator(void) {
     ros::shutdown();
     ros::waitForShutdown();
     wait();
+}
+
+// Confirm that the topic translator can talk to ROS Master.
+bool TopicTranslator::initialized(void) {
+    if (!ros::master::check()) {
+        ROS_ERROR("ROS Master cannot be contacted.");
+
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 // Run the translator ROS node.

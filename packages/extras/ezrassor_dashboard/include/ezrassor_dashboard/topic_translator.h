@@ -5,7 +5,6 @@
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
 
-#include "limits"
 #include "QPixmap"
 #include "QString"
 #include "QThread"
@@ -19,8 +18,6 @@
 #include "unordered_set"
 
 const int LOG_LEVEL_INFO = 2;
-const int ROS_MASTER_UNREACHABLE = std::numeric_limits<int>::min();
-const int WHITELIST_FILE_MISSING = std::numeric_limits<int>::min() + 1;
 const std::string WHITELISTED_NODES_RELATIVE_PATH = "/config/whitelisted_nodes.txt";
 
 class TopicTranslator : public QThread {
@@ -43,6 +40,7 @@ class TopicTranslator : public QThread {
             const std::string&
         );
         ~TopicTranslator(void);
+        bool initialized(void);
 
     signals:
         void memoryDataReceived(int);
