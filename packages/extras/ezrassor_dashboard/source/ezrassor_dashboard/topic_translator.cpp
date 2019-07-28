@@ -4,12 +4,15 @@
 
 #include "cv_bridge/cv_bridge.h"
 #include "fstream"
+#include "mutex"
 #include "QImage"
 #include "QPixmap"
 #include "QString"
+#include "QStringList"
 #include "QThread"
 #include "ros/console.h"
 #include "ros/package.h"
+#include "ros/rate.h"
 #include "ros/ros.h"
 #include "rosgraph_msgs/Log.h"
 #include "sensor_msgs/Image.h"
@@ -18,6 +21,7 @@
 #include "string"
 #include "topic_translator.h"
 #include "unordered_set"
+#include "vector"
 
 // Initialize the topic translator with a bunch of constants.
 TopicTranslator::TopicTranslator(
@@ -46,6 +50,9 @@ TopicTranslator::TopicTranslator(
 
     ros::init(argumentCount, argumentVector, nodeName);
 
+    currentNamespace = "/";
+    currentNamespaceUpdated = true;
+
     currentLeftCameraImage = QPixmap();//
     currentRightCameraImage = QPixmap();//
     currentDisparityMapImage = QPixmap();//
@@ -53,7 +60,7 @@ TopicTranslator::TopicTranslator(
     // Read the whitelisted nodes into an unordered set.
     whitelistedNodes = std::unordered_set<std::string>();
     std::ifstream whitelistedNodesFile(
-        ros::package::getPath(packageName) + WHITELISTED_NODES_RELATIVE_PATH
+        ros::package::getPath(packageName) + WHITELIST_PATH
     );
     if (whitelistedNodesFile.is_open()) {
         std::string line;
@@ -86,59 +93,135 @@ bool TopicTranslator::initialized(void) {
     }
 }
 
+// Get a list of available namespaces.
+void TopicTranslator::discoverNamespaces(void) {
+
+    // Get all node names.
+    std::vector<std::string> nodeNames;
+    ros::master::getNodes(nodeNames);
+
+    // Build a QStringList of namespaces, then remove duplicates.
+    QStringList nodeNamespaces;
+    for (std::string nodeName : nodeNames) {
+        std::string nodeNamespace = ros::names::parentNamespace(nodeName);
+        if (nodeNamespace.empty() or nodeNamespace.back() != '/') {
+            nodeNamespace += "/";
+        }
+        nodeNamespaces.append(QString::fromStdString(nodeNamespace));
+    }
+    nodeNamespaces.removeDuplicates();
+
+    Q_EMIT namespacesDiscovered(nodeNamespaces);
+}
+
+// Update the current namespace.
+void TopicTranslator::updateNamespace(const QString& newNamespace) {
+
+    // Ensure that newNamespace isn't empty before proceeding. Some signals
+    // trigger this function with empty strings, and those triggers should
+    // be ignored.
+    if (!newNamespace.isEmpty()) {
+        std::lock_guard<std::mutex> lock(currentNamespaceMutex);
+        currentNamespace = newNamespace.toUtf8().constData();
+        currentNamespaceUpdated = true;
+        ROS_INFO_STREAM("Updating current namespace to " << currentNamespace);
+    }
+}
+
 // Run the translator ROS node.
 void TopicTranslator::run(void) {
+
+    // Create the master NodeHandle and the logSubscriber. The logTopic is
+    // never namespaced and so it does not need to be inside the main loop.
+    // This subscriber will remain in-scope until this function returns.
     ros::NodeHandle nodeHandle;
-    ros::Subscriber imuSubscriber = nodeHandle.subscribe(
-        imuTopic,
-        queueSize,
-        &TopicTranslator::routeIMUData,
-        this
-    );
     ros::Subscriber logSubscriber = nodeHandle.subscribe(
-        logTopic,
+        "/" + logTopic,
         queueSize,
         &TopicTranslator::routeLogData,
         this
     );
-    ros::Subscriber processorUsageSubscriber = nodeHandle.subscribe(
-        processorUsageTopic,
-        queueSize,
-        &TopicTranslator::routeProcessorData,
-        this
-    );
-    ros::Subscriber memoryUsageSubscriber = nodeHandle.subscribe(
-        memoryUsageTopic,
-        queueSize,
-        &TopicTranslator::routeMemoryData,
-        this
-    );
-    ros::Subscriber batteryRemainingSubscriber = nodeHandle.subscribe(
-        batteryRemainingTopic,
-        queueSize,
-        &TopicTranslator::routeBatteryData,
-        this
-    );
-    ros::Subscriber leftCameraImageSubscriber = nodeHandle.subscribe(
-        leftCameraImageTopic,
-        queueSize,
-        &TopicTranslator::routeLeftCameraImage,
-        this
-    );
-    ros::Subscriber rightCameraImageSubscriber = nodeHandle.subscribe(
-        rightCameraImageTopic,
-        queueSize,
-        &TopicTranslator::routeRightCameraImage,
-        this
-    );
-    ros::Subscriber disparityMapImageSubscriber = nodeHandle.subscribe(
-        disparityMapImageTopic,
-        queueSize,
-        &TopicTranslator::routeDisparityMapImage,
-        this
-    );
 
-    ros::spin();
+    int iterationsPerSecond = 10;
+    ros::WallRate rate(iterationsPerSecond);
+    while(ros::ok()) {
+
+        // Make a copy of the currentNamespace string locally. This string and
+        // its boolean variable are protected with a lock because they reside
+        // in the main thread. A bad read could occur if this function (in the
+        // ROS thread) attempts to read currentNamespace as the main thread
+        // updates it. I make a copy of the string instead of locking the entire
+        // subscriber contruction section to reduce the duration of the critical
+        // section of this function.
+        std::string currentNamespace;
+        {
+            std::lock_guard<std::mutex> lock(currentNamespaceMutex);
+            currentNamespace = this->currentNamespace;
+            currentNamespaceUpdated = false;
+        }
+        ROS_INFO_STREAM(
+            "Initializing subscribers under namespace " << currentNamespace
+        );
+
+        ros::Subscriber imuSubscriber = nodeHandle.subscribe(
+            currentNamespace + imuTopic,
+            queueSize,
+            &TopicTranslator::routeIMUData,
+            this
+        );
+        ros::Subscriber processorUsageSubscriber = nodeHandle.subscribe(
+            currentNamespace + processorUsageTopic,
+            queueSize,
+            &TopicTranslator::routeProcessorData,
+            this
+        );
+        ros::Subscriber memoryUsageSubscriber = nodeHandle.subscribe(
+            currentNamespace + memoryUsageTopic,
+            queueSize,
+            &TopicTranslator::routeMemoryData,
+            this
+        );
+        ros::Subscriber batteryRemainingSubscriber = nodeHandle.subscribe(
+            currentNamespace + batteryRemainingTopic,
+            queueSize,
+            &TopicTranslator::routeBatteryData,
+            this
+        );
+        ros::Subscriber leftCameraImageSubscriber = nodeHandle.subscribe(
+            currentNamespace + leftCameraImageTopic,
+            queueSize,
+            &TopicTranslator::routeLeftCameraImage,
+            this
+        );
+        ros::Subscriber rightCameraImageSubscriber = nodeHandle.subscribe(
+            currentNamespace + rightCameraImageTopic,
+            queueSize,
+            &TopicTranslator::routeRightCameraImage,
+            this
+        );
+        ros::Subscriber disparityMapImageSubscriber = nodeHandle.subscribe(
+            currentNamespace + disparityMapImageTopic,
+            queueSize,
+            &TopicTranslator::routeDisparityMapImage,
+            this
+        );
+
+        Q_EMIT subscribersInitialized();
+
+        // Spin this node, but occasionally check to see if the currentNamespace
+        // has been updated. If so, loop back to the beginning and rebuild the
+        // subscribers.
+        while (ros::ok()) {
+            for (int iteration = 1; iteration < iterationsPerSecond; iteration++) {
+                ros::spinOnce();
+                rate.sleep();
+            }
+            std::lock_guard<std::mutex> lock(currentNamespaceMutex);
+            if (currentNamespaceUpdated) {
+                break;
+            }
+        }
+    }
 }
 
 // Route incoming IMU data from ROS.
