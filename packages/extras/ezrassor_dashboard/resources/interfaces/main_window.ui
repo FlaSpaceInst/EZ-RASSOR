@@ -60,12 +60,12 @@
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QLabel" name="launchFilesLabel">
+    <widget class="QLabel" name="launchFileSelectionLabel">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>121</width>
+       <width>161</width>
        <height>17</height>
       </rect>
      </property>
@@ -76,14 +76,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Launch Files</string>
+      <string>Launch File Selection</string>
      </property>
     </widget>
     <widget class="QPushButton" name="launchButton">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>207</y>
        <width>381</width>
        <height>25</height>
       </rect>
@@ -92,7 +92,7 @@
       <string>Launch</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="launchFilesComboBox">
+    <widget class="QComboBox" name="launchFileSelectionComboBox">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -106,9 +106,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>70</y>
        <width>381</width>
-       <height>161</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="font">
@@ -129,25 +129,6 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="placeholderText">
       <string/>
-     </property>
-    </widget>
-    <widget class="QLabel" name="parametersLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>121</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Parameters</string>
      </property>
     </widget>
     <widget class="QLabel" name="swampCrocodileLabel">
@@ -188,13 +169,57 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QComboBox" name="namespaceSelectionComboBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>280</y>
+       <width>295</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="namespaceSelectionLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>171</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Namespace Selection</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="refreshButton">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>280</y>
+       <width>81</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Refresh</string>
+     </property>
+    </widget>
     <zorder>swampCrocodileLabel</zorder>
-    <zorder>launchFilesLabel</zorder>
+    <zorder>launchFileSelectionLabel</zorder>
     <zorder>launchButton</zorder>
-    <zorder>launchFilesComboBox</zorder>
+    <zorder>launchFileSelectionComboBox</zorder>
     <zorder>parametersTextEdit</zorder>
-    <zorder>parametersLabel</zorder>
     <zorder>aboutBrowser</zorder>
+    <zorder>namespaceSelectionComboBox</zorder>
+    <zorder>namespaceSelectionLabel</zorder>
+    <zorder>refreshButton</zorder>
    </widget>
    <widget class="QWidget" name="statusTab">
     <attribute name="title">
@@ -235,7 +260,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="value">
-      <number>42</number>
+      <number>0</number>
      </property>
     </widget>
     <widget class="QLabel" name="memoryUsageLabel">
@@ -273,7 +298,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="value">
-      <number>56</number>
+      <number>0</number>
      </property>
     </widget>
     <widget class="QLabel" name="batteryRemainingLabel">
@@ -311,7 +336,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="value">
-      <number>70</number>
+      <number>0</number>
      </property>
     </widget>
     <widget class="QTextEdit" name="rosoutTextEdit">
