@@ -5,10 +5,11 @@
 #ifndef TOPIC_TRANSLATOR_HEADER
 #define TOPIC_TRANSLATOR_HEADER
 
+#include "mutex"
 #include "QPixmap"
 #include "QString"
+#include "QStringList"
 #include "QThread"
-#include "ros/ros.h"
 #include "rosgraph_msgs/Log.h"
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/Imu.h"
@@ -18,7 +19,7 @@
 #include "unordered_set"
 
 const int LOG_LEVEL_INFO = 2;
-const std::string WHITELISTED_NODES_RELATIVE_PATH = "/config/whitelisted_nodes.txt";
+const std::string WHITELIST_PATH = "/config/whitelisted_nodes.txt";
 
 class TopicTranslator : public QThread {
     Q_OBJECT
@@ -42,6 +43,10 @@ class TopicTranslator : public QThread {
         ~TopicTranslator(void);
         bool initialized(void);
 
+    public slots:
+        void discoverNamespaces(void);
+        void updateNamespace(const QString&);
+
     signals:
         void memoryDataReceived(int);
         void batteryDataReceived(int);
@@ -59,6 +64,8 @@ class TopicTranslator : public QThread {
         void leftCameraImageReceived(const QPixmap&);
         void rightCameraImageReceived(const QPixmap&);
         void disparityMapImageReceived(const QPixmap&);
+        void subscribersInitialized(void);
+        void namespacesDiscovered(const QStringList&);
 
     private:
         const int queueSize;
@@ -71,6 +78,9 @@ class TopicTranslator : public QThread {
         const std::string leftCameraImageTopic;
         const std::string rightCameraImageTopic;
         const std::string disparityMapImageTopic;
+        bool currentNamespaceUpdated;
+        std::string currentNamespace;
+        std::mutex currentNamespaceMutex;
         QPixmap currentLeftCameraImage;
         QPixmap currentRightCameraImage;
         QPixmap currentDisparityMapImage;
