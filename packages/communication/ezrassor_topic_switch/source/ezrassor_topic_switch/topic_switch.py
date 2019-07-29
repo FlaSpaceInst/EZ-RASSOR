@@ -105,6 +105,8 @@ def start_node(default_node_name, override_topic, queue_size):
             ),
         )
 
+        rospy.loginfo("Topic switch initialized.")
+
         # Keep this baby alive!
         rospy.spin()
 
