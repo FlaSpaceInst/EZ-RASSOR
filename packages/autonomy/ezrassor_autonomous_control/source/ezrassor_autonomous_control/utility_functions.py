@@ -4,11 +4,9 @@ import nav_functions as nf
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
-    ros_util.status_pub.publish(
-        "Setting Front Arm Angle to {} Radians".format(
-            target_angle,
-        )
-    )
+    rospy.loginfo('Setting front arm angle to %s radian%s...',
+                  str(target_angle),
+                  "" if target_angle == 1 else "s")
 
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
@@ -23,11 +21,9 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
-    ros_util.status_pub.publish(
-        "Setting Back Arm Angle to {} Radians".format(
-            target_angle,
-        ),
-    )
+    rospy.loginfo('Setting back arm angle to %s radian%s...',
+                  str(target_angle),
+                  "" if target_angle == 1 else "s")
 
     if target_angle > world_state.back_arm_angle:
         while target_angle > world_state.back_arm_angle:
@@ -45,27 +41,25 @@ def self_check(world_state, ros_util):
         and handle or quit gracefully. 
     """
     if ros_util.auto_function_command == 32:
-        ros_util.status_pub.publish("Cancel Auto Function Command Recieved")
+        rospy.loginfo("Cancelling auto-function command...")
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
     # Future status checks for physical hardware
     '''
     if world_state.on_side == True:
-        ros_util.status_pub.publish("On Side - Attempting Auto Self Right")
+        rospy.loginfo("On side! Attempting auto self-right...")
         return 2
     if world_state.battery < 10:
-        ros_util.status_pub.publish("Low Battery - Returning to Base")
+        rospy.loginfo("Low battery! Returning to origin...")
         world_state.target_location = [0,0]
         return 3
     if world_state.hardware_status == False:
-        ros_util.status_pub.publish("Hardware Failure Shutting Down")
+        rospy.loginfo("Hardware failure! Shutting down...")
         ros_util.publish_actions('stop', 1, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
-        ros_util.status_pub.publish("Passed Status Check")
     '''
-    ros_util.status_pub.publish("Passed Status Check")
     return 1
 
 def reverse_turn(world_state, ros_util):
@@ -120,7 +114,7 @@ def dodge_right(world_state, ros_util):
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
-    ros_util.status_pub.publish("Initiating Self Right")
+    rospy.loginfo("Starting auto self-right...")
     while(world_state.on_side != False):
         ros_util.publish_actions('stop', 0, 1, 0, 0)
         ros_util.publish_actions('stop', 1, 0, 0, 0)

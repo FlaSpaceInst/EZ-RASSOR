@@ -21,7 +21,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     """ Initialization Function  """
 
     # ROS Node Init Parameters 
-    rospy.init_node('autonomous_control', anonymous=True)
+    rospy.init_node('autonomous_control')
     
     #Create Utility Objects
     world_state = obj.WorldState()
@@ -44,8 +44,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
 
     world_state.target_location = target_location
     world_state.dig_site = temp
-
-    ros_util.status_pub.publish('Spinning Up AI Control')
 
     # Setup Subscriber Callbacks
     if real_odometry:
@@ -72,6 +70,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                      Int8, 
                      ros_util.autoCommandCallBack)
     
+    rospy.loginfo('Autonomous control initialized.')
 
     autonomous_control_loop(world_state, ros_util)
 
@@ -79,7 +78,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
 def full_autonomy(world_state, ros_util):
     """ Full Autonomy Loop Function """ 
     
-    ros_util.status_pub.publish('Full Autonomy Activated.')
+    rospy.loginfo('Full autonomy activated.')
 
     while(ros_util.auto_function_command == 16):
         af.auto_drive_location(world_state, ros_util)
@@ -120,8 +119,8 @@ def autonomous_control_loop(world_state, ros_util):
         elif ros_util.auto_function_command == 16:
             full_autonomy(world_state, ros_util)
         else:
-            ros_util.status_pub.publish('Error Incorrect Auto Function Request {}'
-                                        .format(ros_util.auto_function_command))
+            rospy.loginfo('Invalid auto-function request: %s.',
+                          str(ros_util.auto_function_command))
         
         ros_util.auto_function_command = 0
         ros_util.publish_actions('stop', 0, 0, 0, 0)

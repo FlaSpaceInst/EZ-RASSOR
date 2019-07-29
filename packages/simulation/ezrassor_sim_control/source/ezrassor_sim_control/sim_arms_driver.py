@@ -6,7 +6,7 @@ import rospy
 import std_msgs
 from std_msgs.msg import Float32, Float64
 
-NODE = "arms"
+NODE = "sim_arms_driver"
 FRONT_TOPIC = "front_arm_instructions"
 BACK_TOPIC = "back_arm_instructions"
 MAX_ARM_SPEED = 2.5
@@ -35,9 +35,10 @@ def handle_back_arm_movements(data):
 def start_node():
     # Main entry point to the node.
     try:
-        rospy.init_node(NODE, anonymous=True)
+        rospy.init_node(NODE)
         rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_arm_movements)
         rospy.Subscriber(BACK_TOPIC, Float32, handle_back_arm_movements)
+        rospy.loginfo("Simulation arms driver initialized.")
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
