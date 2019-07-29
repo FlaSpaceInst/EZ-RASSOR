@@ -1,5 +1,5 @@
-import {Robot, Operation} from '../enumerations/robot-commands';
-import HTTP from './web-commands';
+import {Robot, Operation} from 'ezrassor-app/src/enumerations/robot-commands';
+import HTTP from 'ezrassor-app/src/api/web-commands';
 
 export default class EZRASSOR { 
 
