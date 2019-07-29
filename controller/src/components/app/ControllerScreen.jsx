@@ -1,9 +1,9 @@
 import React from 'react';
 import Modal from "react-native-modal";
-import FadeInView from "./FadeInView";
-import EZRASSOR from '../../api/ezrassor-service' 
-import ControllerStyle from '../../styles/controller';
-import {Robot, Operation} from '../../enumerations/robot-commands';
+import FadeInView from "ezrassor-app/src/components/app/FadeInView";
+import EZRASSOR from 'ezrassor-app/src/api/ezrassor-service' 
+import ControllerStyle from 'ezrassor-app/src/styles/controller';
+import {Robot, Operation} from 'ezrassor-app/src/enumerations/robot-commands';
 import { Linking, Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Font } from 'expo';
