@@ -49,12 +49,12 @@
     </node>
 
     <node pkg="ezrassor_autonomous_control"
-          type="distance_map"
-          name="distance_map"/>
+          type="depth_estimator"
+          name="depth_estimator"/>
 
     <node pkg="ezrassor_autonomous_control"
-          type="tf_camera_broadcaster"
-          name="tf_camera_broadcaster"/>
+          type="transform_broadcaster"
+          name="transform_broadcaster"/>
   </group>
 
   <group if="$(arg enable_real_odometry)">
