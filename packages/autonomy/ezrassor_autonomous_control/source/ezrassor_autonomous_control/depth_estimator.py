@@ -61,16 +61,16 @@ def obst_detect(data):
 
     """Set thresholds.""" 
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1.5:
-        print("MOVE RIGHT!")
+        rospy.logdebug("MOVE RIGHT!")
         pub.publish(1)
     elif data[LEFT].min() > data[RIGHT].min() and data[RIGHT].min() < 1.5:
-        print("MOVE LEFT!")
+        rospy.logdebug("MOVE LEFT!")
         pub.publish(2)
     elif data[LEFT].min() < 1 and data[RIGHT].min() < 1.5:
-        print("MOVE BACKWARD!")
+        rospy.logdebug("MOVE BACKWARD!")
         pub.publish(3)
     else:
-        print("MOVE FORWARD!")
+        rospy.logdebug("MOVE FORWARD!")
         pub.publish(0)
 
 
@@ -121,8 +121,9 @@ def callback(data):
 
 
 def depth_estimator():
-    rospy.init_node('depth_estimator', anonymous=True)
+    rospy.init_node('depth_estimator')
     rospy.Subscriber("disparity", DisparityImage, callback)
+    rospy.loginfo("Depth estimator initialized.")
     rospy.spin()
 
 if __name__ == "__main__":

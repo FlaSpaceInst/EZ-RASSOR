@@ -158,6 +158,8 @@ def start_node(
             queue_size=queue_size,
         )
         
+        rospy.loginfo("Creating HTTP server...")
+
         # Create an HTTP server.
         server = BaseHTTPServer.HTTPServer(
             ("", port),
@@ -172,6 +174,8 @@ def start_node(
             )),
         )
 
+        rospy.loginfo("Creating server kill thread...")
+
         # Launch a kill thread that kills the server when roscore dies.
         kill_thread = threading.Thread(
             target=kill_server,
@@ -181,6 +185,8 @@ def start_node(
             ),
         )
         kill_thread.start()
+
+        rospy.loginfo("Controller server initialized.")
         
         # Run the server infinitely.
         server.serve_forever(poll_interval=sleep_duration)

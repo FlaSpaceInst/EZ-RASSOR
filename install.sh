@@ -215,7 +215,7 @@ install_packages() {
     cp "$LICENSE_FILE" "$INSTALLED_DOCS_DIR"
 
     # Source the installed EZ-RASSOR packages.
-    source_setups_in_directory "$EZRASSOR_INSTALL_DIR" 
+    source_setups_in_directory "$EZRASSOR_INSTALL_DIR"
 }
 
 # THE SCRIPT BEGINS HERE.

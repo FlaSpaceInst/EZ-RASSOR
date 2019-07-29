@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019 Sean Rapp, Ronald Marrero, Tiger Sachse,  Tyler Duncan, Samuel Lewis, Harrison Black, Camilo Lozano, Christopher Taliaferro, Cameron Taylor, Lucas Gonzalez, The Florida Space Institute, and The National Aeronautics and Space Administration
+Copyright (c) 2019 Sean Rapp, Ronald Marrero, Tiger Sachse, Tyler Duncan, Samuel Lewis, Harrison Black, Camilo Lozano, Christopher Taliaferro, Cameron Taylor, Lucas Gonzalez, The Florida Space Institute, and The National Aeronautics and Space Administration
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

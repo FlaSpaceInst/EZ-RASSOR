@@ -21,8 +21,9 @@ def at_target(world_state, ros_util):
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-    ros_util.status_pub.publish("Auto Driving to {}"
-                                .format(world_state.target_location))
+    rospy.loginfo('Auto-driving to [%s, %s]...',
+                  str(world_state.target_location.x),
+                  str(world_state.target_location.y))
     
     # Set arms up for travel
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
@@ -32,7 +33,7 @@ def auto_drive_location(world_state, ros_util):
     while at_target(world_state, ros_util):
         
         if uf.self_check(world_state, ros_util) != 1:
-            ros_util.status_pub.publish("Status Check Failed")
+            rospy.logdebug('Status check failed.')
             return
 
         # Get new heading angle relative to current heading as (0,0)
@@ -55,21 +56,21 @@ def auto_drive_location(world_state, ros_util):
             uf.dodge_left(world_state, ros_util)
         if world_state.warning_flag == 3:
             uf.reverse_turn(world_state, ros_util)
-            ros_util.status_pub.publish("Obstacle Detected: Avoiding")
+            rospy.loginfo('Avoiding detected obstacle...')
 
         # Otherwise go forward
         ros_util.publish_actions('forward', 0, 0, 0, 0)
             
         ros_util.rate.sleep()
     
+    rospy.loginfo('Destination reached!')
     ros_util.publish_actions('stop', 0, 0, 0, 0)
         
 def auto_dig(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
-    ros_util.status_pub.publish("Auto Digging for {} Seconds"
-                                .format(duration))
+    rospy.loginfo('Auto-digging for %d seconds...', duration)
     
     uf.set_front_arm_angle(world_state, ros_util, -0.1)
     uf.set_back_arm_angle(world_state, ros_util, -0.1)
@@ -88,8 +89,7 @@ def auto_dig(world_state, ros_util, duration):
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
     
-    ros_util.status_pub.publish("Auto Returning to {}"
-                                .format([0,0]))
+    rospy.loginfo('Auto-returning to origin...')
 
     old_target_x = world_state.target_location.x
     old_target_y = world_state.target_location.y
@@ -110,7 +110,7 @@ def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
-    ros_util.status_pub.publish("Auto Dumping")
+    rospy.loginfo('Auto-dumping drum contents...')
 
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
