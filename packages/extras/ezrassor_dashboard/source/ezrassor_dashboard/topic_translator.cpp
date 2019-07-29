@@ -39,6 +39,7 @@ TopicTranslator::TopicTranslator(
     const std::string& rightCameraImageTopic,
     const std::string& disparityMapImageTopic):
         queueSize(queueSize),
+        nodeName(nodeName),
         imuTopic(imuTopic),
         logTopic(logTopic),
         memoryUsageTopic(memoryUsageTopic),
@@ -62,6 +63,7 @@ TopicTranslator::TopicTranslator(
     std::ifstream whitelistedNodesFile(
         ros::package::getPath(packageName) + WHITELIST_PATH
     );
+    ROS_INFO("Loading node whitelist...");
     if (whitelistedNodesFile.is_open()) {
         std::string line;
         while (getline(whitelistedNodesFile, line)) {
@@ -72,6 +74,8 @@ TopicTranslator::TopicTranslator(
     else {
         ROS_WARN("Node whitelist not found. Expect log to be blank.");
     }
+
+    ROS_INFO("Dashboard initialized.");
 }
 
 // Destroy this translator. Hangs if destroyed right after creation.
@@ -124,7 +128,9 @@ void TopicTranslator::updateNamespace(const QString& newNamespace) {
         std::lock_guard<std::mutex> lock(currentNamespaceMutex);
         currentNamespace = newNamespace.toUtf8().constData();
         currentNamespaceUpdated = true;
-        ROS_INFO_STREAM("Updating current namespace to " << currentNamespace);
+        ROS_INFO_STREAM(
+            "Namespace updated to '" << currentNamespace << "'."
+        );
     }
 }
 
@@ -159,9 +165,6 @@ void TopicTranslator::run(void) {
             currentNamespace = this->currentNamespace;
             currentNamespaceUpdated = false;
         }
-        ROS_INFO_STREAM(
-            "Initializing subscribers under namespace " << currentNamespace
-        );
 
         ros::Subscriber imuSubscriber = nodeHandle.subscribe(
             currentNamespace + imuTopic,
@@ -258,38 +261,36 @@ void TopicTranslator::routeIMUData(const sensor_msgs::Imu::ConstPtr& message) {
 // Route incoming log data from ROS.
 void TopicTranslator::routeLogData(const rosgraph_msgs::Log::ConstPtr& message) {
 
-    // Get the node name and node namespace from the message.
-    int nodeNamePosition = (int) message->name.rfind('/');
-    int namespaceNamePosition = (int) message->name.rfind(
-        '/',
-        nodeNamePosition - 1
-    );
-    std::string nodeName = message->name.substr(nodeNamePosition + 1);
-    std::string namespaceName;
-    if (nodeNamePosition <= 0) {
-        namespaceName = "";
-    }
-    else {
-        namespaceName = message->name.substr(
-            namespaceNamePosition + 1,
-            nodeNamePosition - namespaceNamePosition - 1
-        );
+    // Get the node name and node namespace, then confirm we care about its
+    // message. parentNamespace() returns the node's namespace without a forward
+    // slash suffix, unless of course the namespace is only "/". To properly
+    // match with the format of currentNamespace, a forward slash suffix is
+    // added to any node namespace that is not the global namespace ("/").
+    std::string nodeName = message->name.substr(message->name.rfind('/') + 1);
+    std::string nodeNamespace = ros::names::parentNamespace(message->name);
+    if (nodeNamespace != "/") {
+        nodeNamespace += "/";
     }
 
-    // Filter out unwanted messages.
-    if (namespaceName != "") {
-        return;
-    }
-    if ((whitelistedNodes.find(nodeName)) == whitelistedNodes.end()) {
-        return;
-    }
-    if ((int) message->level != LOG_LEVEL_INFO) {
-        return;
+    // Filter out messages that are not priority level INFO, that are from nodes
+    // not on the whitelist, and/or that are from nodes in the wrong namespace.
+    // Apply these filters to all nodes except this node... this node is allowed
+    // to publish whatever it wants. :)
+    if (nodeName != this->nodeName) {
+        if ((int) message->level != LOG_LEVEL_INFO) {
+            return;
+        }
+        if (nodeNamespace.find(currentNamespace) == std::string::npos) {
+            return;
+        }
+        if ((whitelistedNodes.find(nodeName)) == whitelistedNodes.end()) {
+            return;
+        }
     }
 
-    // Create a QString with the node name prefixed to the message.
+    // Create a QString with the full node name prefixed to the message.
     QString logLine = QString::fromStdString(
-        "[" + nodeName + "] " + message->msg
+        "[" + message->name + "] " + message->msg
     );
 
     Q_EMIT logDataReceived(logLine);

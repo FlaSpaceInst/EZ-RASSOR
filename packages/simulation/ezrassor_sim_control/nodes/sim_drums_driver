@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 import ezrassor_sim_control
 
-ezrassor_sim_control.drums_driver.start_node()
+ezrassor_sim_control.sim_drums_driver.start_node()
