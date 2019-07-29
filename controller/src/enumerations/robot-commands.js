@@ -1,5 +1,5 @@
 const Robot = Object.freeze({
-    WHEELS:     Symbol('wheels'),
+    WHEELS: Symbol('wheels'),
     FRONTDRUM: Symbol('frontdrum'),
     BACKDRUM: Symbol('backdrum'),
     FRONTARM: Symbol('frontarm'),
