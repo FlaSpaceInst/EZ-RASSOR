@@ -58,8 +58,9 @@ class WorldState():
         try:
             index = data.name.index(namespace)
         except Exception:
-            print("Failed setting index to 1")
-            index = 1
+            rospy.logdebug("Failed to get index. Skipping...")
+
+            return
             
 
         self.positionX = data.pose[index].position.x
@@ -119,10 +120,6 @@ class ROSUtility():
         self.back_drum_pub = rospy.Publisher(back_drum_topic, 
                                              Float32, 
                                              queue_size=10)
-
-        self.status_pub = rospy.Publisher('status', 
-                                          String, 
-                                          queue_size=10)
         self.control_pub = rospy.Publisher('secondary_override_toggle', 
                                            Bool, 
                                            queue_size=10)
@@ -161,6 +158,3 @@ class ROSUtility():
     def autoCommandCallBack(self, data):
         """ Set auto_function_command to the current choice. """
         self.auto_function_command = data.data
-        print(data)
-
-

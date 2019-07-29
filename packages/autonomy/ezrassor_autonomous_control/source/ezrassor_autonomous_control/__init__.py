@@ -2,6 +2,6 @@ import autonomous_control
 import ai_objects
 import nav_functions
 import utility_functions
-import left_image_frame_broadcaster
-import distance_map
+import transform_broadcaster
+import depth_estimator
 import auto_functions

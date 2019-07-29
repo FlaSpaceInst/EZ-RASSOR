@@ -7,9 +7,9 @@ catkin_package()
 catkin_python_setup()
 catkin_install_python(
     PROGRAMS
-        nodes/arms_driver
-        nodes/drums_driver
-        nodes/wheels_driver
+        nodes/sim_arms_driver
+        nodes/sim_drums_driver
+        nodes/sim_wheels_driver
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

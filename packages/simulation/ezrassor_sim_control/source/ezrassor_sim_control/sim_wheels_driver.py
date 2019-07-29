@@ -6,7 +6,7 @@ import rospy
 from std_msgs.msg import Int16, Float64
 from geometry_msgs.msg import Twist
 
-NODE = "wheels"
+NODE = "sim_wheels_driver"
 TOPIC = "wheel_instructions"
 MAX_VELOCITY = 5
 
@@ -29,6 +29,7 @@ def start_node():
     try:
         rospy.init_node(NODE, anonymous = True)
         rospy.Subscriber(TOPIC, Twist, wheel_movement_callback)
+        rospy.loginfo("Simulation wheels driver initialized.")
         rospy.spin()
 
     except rospy.ROSInterruptException:
