@@ -11,7 +11,7 @@ The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inex
 
 For more information, our `wiki`_ contains a high-level overview of the EZ-RASSOR and its many components.
 
-If you'd like to contribute, check out the `contributing guidelines`_ and the `license`_.
+**POTENTIAL CONTRIBUTORS:** check out the `contributing guidelines`_ and the `license`_.
 
 TYPICAL INSTALLATION
 --------------------
