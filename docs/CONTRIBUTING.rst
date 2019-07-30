@@ -23,7 +23,7 @@ The next thing you should do is install the dependencies for all of the packages
   sh develop.sh resolve
   ** RESTART TERMINAL **
   
-Finally, you'll need to get familiar with the ``develop.sh`` script, which is designed to help developers improve this software with ease. Its general syntax looks like this:
+Finally, you'll need to get familiar with the ``develop.sh`` script, which is designed to help developers improve this software with ease. **This script is intended to completely wrap Catkin and this project's ROS workspace. Use this script instead of making changes to the workspace or calling Catkin directly.** Its general syntax looks like this:
 ::
   sh develop.sh <mode> [arguments...]
   
