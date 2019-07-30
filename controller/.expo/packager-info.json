@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 9470,
+  "expoServerNgrokUrl": "https://gv-pmk.anonymous.controller.exp.direct",
+  "packagerNgrokUrl": "https://packager.gv-pmk.anonymous.controller.exp.direct",
+  "ngrokPid": 9621
 }

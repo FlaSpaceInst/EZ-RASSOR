@@ -187,7 +187,9 @@ export default class ControllerScreen extends React.Component {
             <Text style={[ControllerStyle.textSmall, ControllerStyle.columnText]}>Enter the X,Y coordinates where the robot will drive to</Text>
             <TextInput style={ControllerStyle.ipInputBox} onChangeText={(text) => this.changeXY(text)} value={this.state.xy} placeholder='x,y' marginVertical={20} />
               <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#DDDDDD', padding: 10}}
-                  onPress={()=> this.sendOperation(Robot.AUTONOMY, Operation.DRIVE)}>
+                  onPress={()=> {
+                      this.sendOperation(Robot.AUTONOMY, Operation.DRIVE);
+                      this.setXYModalVisible(false);}}>
                     <Text>Done</Text>
               </TouchableOpacity>
           </KeyboardAvoidingView>
