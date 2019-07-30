@@ -49,8 +49,8 @@ export default class EZRASSOR {
         }
 
         this._coordinate = {
-            x: x,
-            y: y
+            x: parseInt(x),
+            y: parseInt(y)
         }
     }
 
@@ -72,13 +72,13 @@ export default class EZRASSOR {
     updateAutonomyTwistMsg(instruction) {
         if(instruction == Operation.DRIVE || instruction == Operation.FULLAUTONOMY) {
             this._twistMsg = {
-                twist: instruction,
-                target_coordinate: this.coordinate
+                autonomous_toggles:instruction,
+                target_coordinate:this.coordinate
             }
             return;
         }
 
-        this._twistMsg = {twist:instruction};
+        this._twistMsg = {autonomous_toggles:instruction};
     }
    
     // Stop all robot operations
@@ -122,6 +122,7 @@ export default class EZRASSOR {
                 break;
             case Robot.AUTONOMY:
                 this.updateAutonomyTwistMsg(operation);
+                break;
             default:
                 console.log('Invalid robot part selected');
                 return;
