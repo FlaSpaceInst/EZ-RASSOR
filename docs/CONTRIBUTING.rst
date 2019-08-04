@@ -14,6 +14,11 @@ Before you begin developing, you must install ROS and the ROS build tools. If yo
   sh install.sh packages --only viso2_ros libviso2
   ** RESTART TERMINAL **
   
+If you encounter ``Sub-process /usr/bin/dpkg returned an error code...``, try to fix the broken install with the following command, then rerun the original command:
+::
+  sudo apt --fix-broken install
+  ** RERUN ORIGINAL COMMAND **
+  
 If you need more installation information or are using a different operating system, please see the `README`_.
 
 The next thing you should do is install the dependencies for all of the packages in this repository, which can be done using the ``develop.sh`` script like so:
