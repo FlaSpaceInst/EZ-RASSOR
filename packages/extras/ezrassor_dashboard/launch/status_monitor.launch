@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a status monitor. Written by Tiger Sachse. -->
-<launch>
-  <node name="status_monitor"
-        pkg="ezrassor_dashboard"
-        type="status_monitor"
-        output="screen"/>
-</launch>
