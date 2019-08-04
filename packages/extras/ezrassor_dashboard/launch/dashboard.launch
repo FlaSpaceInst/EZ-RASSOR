@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch the Dashboard. Written by Tiger Sachse. -->
-<launch>
-  <node name="dashboard"
-        pkg="ezrassor_dashboard"
-        type="dashboard"
-        output="screen"/>
-</launch>
