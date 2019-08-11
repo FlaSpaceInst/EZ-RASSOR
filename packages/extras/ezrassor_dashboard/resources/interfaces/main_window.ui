@@ -60,77 +60,6 @@
     <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QLabel" name="launchFileSelectionLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>161</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Launch File Selection</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="launchButton">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>207</y>
-       <width>381</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Launch</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="launchFileSelectionComboBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>381</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QTextEdit" name="parametersTextEdit">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>381</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="html">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;control_methods:=true&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;verbose:=true&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="overwriteMode">
-      <bool>false</bool>
-     </property>
-     <property name="placeholderText">
-      <string/>
-     </property>
-    </widget>
     <widget class="QLabel" name="swampCrocodileLabel">
      <property name="geometry">
       <rect>
@@ -147,10 +76,10 @@ p, li { white-space: pre-wrap; }
     <widget class="QTextBrowser" name="aboutBrowser">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>20</x>
        <y>20</y>
-       <width>351</width>
-       <height>111</height>
+       <width>441</width>
+       <height>151</height>
       </rect>
      </property>
      <property name="font">
@@ -163,7 +92,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To start the EZ-RASSOR, select a launch file from the dropdown menu on the left. For detailed instructions on all available launch files, check out this project's usage section in our &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR#usage&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;readme&lt;/span&gt;&lt;/a&gt;, or view the &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR/wiki&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;wiki&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Welcome to the EZ-RASSOR Dashboard! Use the launch files located in the &amp;quot;ezrassor_launcher&amp;quot; package to start a simulation or run the hardware. Check out this project's usage section in our &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR#usage&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;readme&lt;/span&gt;&lt;/a&gt;, or view the &lt;a href=&quot;https://github.com/FlaSpaceInst/EZ-RASSOR/wiki&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0048e8;&quot;&gt;wiki&lt;/span&gt;&lt;/a&gt; for detailed instructions on all available launch files. Once the system is running, you may switch between available EZ-RASSORs with the selection menu below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="openExternalLinks">
       <bool>true</bool>
@@ -172,9 +101,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QComboBox" name="namespaceSelectionComboBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>280</y>
-       <width>295</width>
+       <x>20</x>
+       <y>220</y>
+       <width>351</width>
        <height>25</height>
       </rect>
      </property>
@@ -182,8 +111,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="namespaceSelectionLabel">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>260</y>
+       <x>20</x>
+       <y>200</y>
        <width>171</width>
        <height>17</height>
       </rect>
@@ -201,8 +130,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="refreshButton">
      <property name="geometry">
       <rect>
-       <x>310</x>
-       <y>280</y>
+       <x>380</x>
+       <y>220</y>
        <width>81</width>
        <height>25</height>
       </rect>
@@ -211,15 +140,6 @@ p, li { white-space: pre-wrap; }
       <string>Refresh</string>
      </property>
     </widget>
-    <zorder>swampCrocodileLabel</zorder>
-    <zorder>launchFileSelectionLabel</zorder>
-    <zorder>launchButton</zorder>
-    <zorder>launchFileSelectionComboBox</zorder>
-    <zorder>parametersTextEdit</zorder>
-    <zorder>aboutBrowser</zorder>
-    <zorder>namespaceSelectionComboBox</zorder>
-    <zorder>namespaceSelectionLabel</zorder>
-    <zorder>refreshButton</zorder>
    </widget>
    <widget class="QWidget" name="statusTab">
     <attribute name="title">
@@ -352,7 +272,11 @@ p, li { white-space: pre-wrap; }
       <bool>true</bool>
      </property>
      <property name="html">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; } &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:20px; margin-right:0px; -qt-block-indent:0; text-indent:-20px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:20px; margin-right:0px; -qt-block-indent:0; text-indent:-20px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </widget>
