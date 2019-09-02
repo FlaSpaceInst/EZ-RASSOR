@@ -3,7 +3,6 @@
      Written by Tiger Sachse. -->
 <launch>
   <arg name="control_methods"/>
-  <arg name="monitor_methods"/>
   <arg name="robot_count" default="1"/>
   <arg name="ports" default="default"/>
   <arg name="joysticks" default="default"/>
@@ -16,8 +15,10 @@
   <arg name="debug" default="default"/>
   <arg name="paused" default="default"/>
   <arg name="verbose" default="default"/>
+  <arg name="show_gui" default="default"/>
   <arg name="recording" default="default"/>
   <arg name="use_sim_time" default="default"/>
+  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
   <!-- Launch the communication system for a simulated robot. -->
@@ -36,12 +37,7 @@
       <arg name="digsite_y_coord"
            value="$(eval str(digsite_y_coords).split()[robot_count - 1])"
            unless="$(eval digsite_y_coords == 'default')"/>
-      <arg name="enable_cameras"
-           value="true"
-           if="$(eval 'cameras' in monitor_methods)"/>
-      <arg name="enable_cameras"
-           value="false"
-           unless="$(eval 'cameras' in monitor_methods)"/>
+      <arg name="enable_cameras" value="$(arg enable_cameras)"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
     </include>
 
@@ -61,53 +57,40 @@
 
     <!-- Launch the model controls. -->
     <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
-
-    <!-- Launch a status monitor for this model if the Dashboard is requested. -->
-    <include file="$(find ezrassor_dashboard)/launch/status_monitor.launch"
-             if="$(eval 'dashboard' in monitor_methods)"/>
   </group>
 
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
        marked as 'default' are ignored and the defaults within the gazebo launch
        file are used. -->
-  <group if="$(eval robot_count == 1)">
-    <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch">
-      <arg name="world"
-           value="$(arg world)"
-           unless="$(eval world == 'default')"/>
-      <arg name="debug"
-           value="$(arg debug)"
-           unless="$(eval debug == 'default')"/>
-      <arg name="paused"
-           value="$(arg paused)"
-           unless="$(eval paused == 'default')"/>
-      <arg name="verbose"
-           value="$(arg verbose)"
-           unless="$(eval verbose == 'default')"/>
-      <arg name="show_gui"
-           value="true"
-           if="$(eval 'gazebo' in monitor_methods)"/>
-      <arg name="show_gui"
-           value="false"
-           unless="$(eval 'gazebo' in monitor_methods)"/>
-      <arg name="recording"
-           value="$(arg recording)"
-           unless="$(eval recording == 'default')"/>
-      <arg name="use_sim_time"
-           value="$(arg use_sim_time)"
-           unless="$(eval use_sim_time == 'default')"/>
-    </include>
-
-    <!-- Launch the Dashboard if requested. -->
-    <include file="$(find ezrassor_dashboard)/launch/dashboard.launch"
-             if="$(eval 'dashboard' in monitor_methods)"/>
-  </group>
+  <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch"
+           if="$(eval robot_count == 1)">
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="debug"
+         value="$(arg debug)"
+         unless="$(eval debug == 'default')"/>
+    <arg name="paused"
+         value="$(arg paused)"
+         unless="$(eval paused == 'default')"/>
+    <arg name="verbose"
+         value="$(arg verbose)"
+         unless="$(eval verbose == 'default')"/>
+    <arg name="show_gui"
+         value="$(arg show_gui)"
+         unless="$(eval show_gui == 'default')"/>
+    <arg name="recording"
+         value="$(arg recording)"
+         unless="$(eval recording == 'default')"/>
+    <arg name="use_sim_time"
+         value="$(arg use_sim_time)"
+         unless="$(eval use_sim_time == 'default')"/>
+  </include>
 
   <!-- If the final robot has not been spawned, recursively call this script again. -->
   <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch"
            unless="$(eval robot_count == 1)">
     <arg name="control_methods" value="$(arg control_methods)"/>
-    <arg name="monitor_methods" value="$(arg monitor_methods)"/>
     <arg name="robot_count" value="$(eval robot_count - 1)"/>
     <arg name="ports" value="$(arg ports)"/>
     <arg name="joysticks" value="$(arg joysticks)"/>
@@ -120,8 +103,10 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="paused" value="$(arg paused)"/>
     <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="show_gui" value="$(arg show_gui)"/>
     <arg name="recording" value="$(arg recording)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="enable_cameras" value="$(arg enable_cameras)"/>
     <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
   </include>
 </launch>

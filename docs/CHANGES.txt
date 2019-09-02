@@ -1,3 +1,8 @@
+v1.1.0: 09/01/2019
+- Added proper logging to nodes.
+- Heavily refactored mobile application and various parts of the project.
+- Released mobile application on Google Play app store.
+
 v1.0.0: 06/25/2019
 - Initial release of the EZ-RASSOR.
 - Provides a full simulation of the EZ-RASSOR, complete with 3D models and worlds.
