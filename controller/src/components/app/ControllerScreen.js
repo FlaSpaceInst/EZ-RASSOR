@@ -6,7 +6,7 @@ import ControllerStyle from 'ezrassor-app/src/styles/controller';
 import {Robot, Operation} from 'ezrassor-app/src/enumerations/robot-commands';
 import { Linking, Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Font } from 'expo';
+import * as Font  from 'expo-font';
 
 export default class ControllerScreen extends React.Component {
 
