@@ -11,7 +11,7 @@ The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inex
 
 For more information, our `wiki`_ contains a high-level overview of the EZ-RASSOR and its many components.
 
-If you'd like to contribute, check out the `contributing guidelines`_ and the `license`_.
+**POTENTIAL CONTRIBUTORS:** check out the `contributing guidelines`_ and the `license`_.
 
 TYPICAL INSTALLATION
 --------------------
@@ -31,8 +31,13 @@ Finally, let the ``install.sh`` script do the heavy lifting! A typical installat
   sh install.sh tools
   sh install.sh packages
   ** RESTART TERMINAL **
+
+If you encounter ``Sub-process /usr/bin/dpkg returned an error code...``, try to fix the broken install with the following command, then rerun the original command:
+::
+  sudo apt --fix-broken install
+  ** RERUN ORIGINAL COMMAND **
   
-You're all set! Proceed to the `usage`_ section.
+Everything's installed now! Proceed to the `usage`_ section.
 
 CUSTOMIZED INSTALLATION
 -----------------------

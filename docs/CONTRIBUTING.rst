@@ -14,6 +14,11 @@ Before you begin developing, you must install ROS and the ROS build tools. If yo
   sh install.sh packages --only viso2_ros libviso2
   ** RESTART TERMINAL **
   
+If you encounter ``Sub-process /usr/bin/dpkg returned an error code...``, try to fix the broken install with the following command, then rerun the original command:
+::
+  sudo apt --fix-broken install
+  ** RERUN ORIGINAL COMMAND **
+  
 If you need more installation information or are using a different operating system, please see the `README`_.
 
 The next thing you should do is install the dependencies for all of the packages in this repository, which can be done using the ``develop.sh`` script like so:
@@ -23,7 +28,9 @@ The next thing you should do is install the dependencies for all of the packages
   sh develop.sh resolve
   ** RESTART TERMINAL **
   
-Finally, you'll need to get familiar with the ``develop.sh`` script, which is designed to help developers improve this software with ease. Its general syntax looks like this:
+Finally, you'll need to get familiar with the ``develop.sh`` script, which is designed to help developers improve this software with ease. **This script is intended to completely wrap Catkin and this project's ROS workspace. It is important that you use this script instead of making changes to the workspace or calling Catkin directly.** Read `the script`_ if you want gory details about how it works.
+
+Its general syntax looks like this:
 ::
   sh develop.sh <mode> [arguments...]
   
@@ -79,3 +86,4 @@ Here are some example commands to get started.
 .. _`MIT license`: LICENSE.txt
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
 .. _`README`: README.rst#INSTALLATION
+.. _`the script`: ../develop.sh
