@@ -107,7 +107,7 @@ const ControllerStyle = StyleSheet.create({
   },
 
   columnHyperlink: {
-    color: 'blue',
+    color: 'cornflowerblue',
     textAlign: 'center'
   },
 
