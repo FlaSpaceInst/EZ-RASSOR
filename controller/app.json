@@ -1,6 +1,8 @@
 {
   "expo": {
     "android":{
+      "adaptiveIcon.backgroundImage": "./assets/adaptive-icon.png",
+      "adaptiveIcon.backgroundColor": "slategray",
       "permissions": []
     },
     "name": "EZ-RASSOR Controller",
@@ -11,7 +13,7 @@
     "platforms": ["ios", "android"],
     "version": "1.1.0",
     "orientation": "landscape",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/color-icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
