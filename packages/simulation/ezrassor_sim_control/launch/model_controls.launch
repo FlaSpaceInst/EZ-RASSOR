@@ -11,26 +11,26 @@
         type="spawner"
         output="screen"
         args="left_wheel_back_velocity_controller
-              left_wheel_front_velocity_controller 
+              left_wheel_front_velocity_controller
               right_wheel_back_velocity_controller
-              right_wheel_front_velocity_controller 
+              right_wheel_front_velocity_controller
               arm_front_velocity_controller
-              arm_back_velocity_controller 
+              arm_back_velocity_controller
               drum_front_velocity_controller
               drum_back_velocity_controller
               joint_state_controller"/>
 
-  <!-- Launch the driver nodes. --> 
+  <!-- Launch the driver nodes. -->
   <node pkg="ezrassor_sim_control"
-        name="arms_driver"
-        type="arms_driver"
+        name="sim_arms_driver"
+        type="sim_arms_driver"
         output="screen"/>
   <node pkg="ezrassor_sim_control"
-        name="wheels_driver"
-        type="wheels_driver"
+        name="sim_wheels_driver"
+        type="sim_wheels_driver"
         output="screen"/>
   <node pkg="ezrassor_sim_control"
-        name="drums_driver"
-        type="drums_driver"
+        name="sim_drums_driver"
+        type="sim_drums_driver"
         output="screen"/>
 </launch>

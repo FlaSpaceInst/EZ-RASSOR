@@ -3,9 +3,10 @@ import tf
 
 
 def run():
-	rospy.init_node('left_image_frame_broadcaster', anonymous=True)
+	rospy.init_node('transform_broadcaster')
 	camera_left = tf.TransformBroadcaster()
 	camera_depth = tf.TransformBroadcaster()
+        rospy.loginfo("Transform broadcaster initialized.")
 	rate = rospy.Rate(100000.0)
 	while not rospy.is_shutdown():
 		camera_left.sendTransform((.3, 0.035, -.1), (-0.5, 0.5, -0.5, 0.5), rospy.Time.now(), "left_camera_optical_frame","base_link")

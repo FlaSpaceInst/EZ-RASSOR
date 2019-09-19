@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Launch autonomous control for the EZ-RASSOR.
-     Written by Tiger Sachse and Cameron Taylor. -->
+     Written by Cameron Taylor and Tiger Sachse. -->
 <launch>
   <arg name="wheel_instructions_topic"/>
   <arg name="front_arm_instructions_topic"/>
@@ -39,22 +39,22 @@
   <group if="$(arg enable_cameras)">
     <node pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc">
       <param name="min_disparity" type="int" value="3"/>
-      <param name="texture_threshold" type="int" value="100"/> 
+      <param name="texture_threshold" type="int" value="100"/>
       <param name="speckle_size" type="int" value="200"/>
     </node>
- 
+
     <node pkg="image_view" type="stereo_view" name="stereo_view">
       <remap from="stereo" to="/"/>
       <remap from="image" to="/image_rect_color"/>
     </node>
 
     <node pkg="ezrassor_autonomous_control"
-          type="distance_map"
-          name="distance_map"/>
-   
+          type="depth_estimator"
+          name="depth_estimator"/>
+
     <node pkg="ezrassor_autonomous_control"
-          type="tf_camera_broadcaster" 
-          name="tf_camera_broadcaster"/>
+          type="transform_broadcaster"
+          name="transform_broadcaster"/>
   </group>
 
   <group if="$(arg enable_real_odometry)">
