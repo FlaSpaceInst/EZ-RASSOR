@@ -90,7 +90,7 @@ export default class ControllerScreen extends React.Component {
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View>
               <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
-                <Text style={ControllerStyle.textLarge}>Activate Autonomout Function(s)</Text>
+                <Text style={ControllerStyle.textLarge}>Activate Autonomous Function(s)</Text>
               </View>
               <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}> 
                   <TouchableOpacity style={ControllerStyle.modalButton} onPress={()=>this.setXYModalVisible(true)}>
@@ -131,7 +131,7 @@ export default class ControllerScreen extends React.Component {
                   <Text style={ControllerStyle.columnText}>Camilo Lozano</Text>
                   <Text style={ControllerStyle.columnText}>Cameron Taylor</Text>
                   <Text style={ControllerStyle.columnText}>Harrison Black</Text>
-                  <Text style={ControllerStyle.columnText}>Ron Marrero</Text>
+                  <Text style={ControllerStyle.columnText}>Ronald Marrero</Text>
                   <Text style={ControllerStyle.columnText}>Samuel Lewis</Text>
                 </View>
                 <View style={{marginHorizontal:5}}/>
@@ -151,7 +151,7 @@ export default class ControllerScreen extends React.Component {
               <View style={{marginVertical: 10}}/>
               <Text style={[ControllerStyle.textTiny, ControllerStyle.columnText]}>Visit
                   <Text style={[ControllerStyle.textTiny, ControllerStyle.columnHyperlink]} onPress={() => Linking.openURL('https://github.com/FlaSpaceInst/EZ-RASSOR')}> our GitHub repository </Text>
-                  for more information
+                  for more information.
               </Text>
             </View>
           </View>
