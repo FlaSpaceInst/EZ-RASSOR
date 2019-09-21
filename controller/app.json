@@ -3,7 +3,8 @@
     "android":{
       "adaptiveIcon.backgroundImage": "./assets/adaptive-icon.png",
       "adaptiveIcon.backgroundColor": "slategray",
-      "permissions": []
+      "permissions": [],
+      "versionCode": 2
     },
     "name": "EZ-RASSOR Controller",
     "description": "This controller application has been made for the EZ-RASSOR, an excavation robot that runs on ROS.",
