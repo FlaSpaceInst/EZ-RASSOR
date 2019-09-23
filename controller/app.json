@@ -1,8 +1,11 @@
 {
   "expo": {
     "android":{
-      "adaptiveIcon.backgroundImage": "./assets/adaptive-icon.png",
-      "adaptiveIcon.backgroundColor": "slategray",
+      "adaptiveIcon": {
+        "backgroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#708090"
+      },
+      "package": "com.FlaSpaceInst.EZRASSORController",
       "permissions": [],
       "versionCode": 2
     },
@@ -28,9 +31,6 @@
     ],
     "ios": {
       "supportsTablet": true
-    },
-    "android": {
-      "package": "com.FlaSpaceInst.EZRASSORController"
     }
   }
 }
