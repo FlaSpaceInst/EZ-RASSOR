@@ -4,7 +4,7 @@
 <package format="2">
   <name>ezrassor_autonomous_control</name>
   <license>MIT</license>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <author email="cetaylorfl@gmail.com">Cameron Taylor</author>
   <maintainer email="cetaylorfl@gmail.com">Cameron Taylor</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
