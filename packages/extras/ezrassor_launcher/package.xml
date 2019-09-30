@@ -4,7 +4,7 @@
 <package format="2">
   <name>ezrassor_launcher</name>
   <license>MIT</license>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
