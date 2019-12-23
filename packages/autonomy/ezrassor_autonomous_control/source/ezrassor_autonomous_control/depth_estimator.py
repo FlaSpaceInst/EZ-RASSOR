@@ -2,14 +2,13 @@
 
 import rospy
 import math
-import numpy as np 
+import numpy as np
 from numpy import inf, nan
 import cv2
-from cv_bridge import CvBridge, CvBridgeError 
+from cv_bridge import CvBridge, CvBridgeError
 from stereo_msgs.msg import DisparityImage
 import std_msgs
 from std_msgs.msg import Int8
-from sensor_msgs.msg import LaserScan
 import time
 
 LEFT = 0
@@ -17,49 +16,12 @@ RIGHT = 1
 
 # Written by Tyler Duncan
 
-# Offset Laserscan data
-def laser_scan_offset(data, increment):
-    ranges = []
-    number_of_scans = len(data)
-    theta = 1.39626
-    theta_prime = 2 * np.arctan(theta / 2)
-    for i in range(number_of_scans):
-        arc_length = data[i] * theta_prime
-        new_distance = np.sqrt(((0.5 * arc_length) ** 2) + (data[i] ** 2))
-        ranges.append(new_distance)
-        if i < number_of_scans / 2:
-            theta_prime -= increment * 2
-        elif i > number_of_scans / 2:
-            theta_prime += increment * 2
-        else:
-            theta_prime = 0
-
-    return ranges
-
 # Obstacle Detection
 def obst_detect(data):
 
     pub = rospy.Publisher('obstacle_detect', Int8, queue_size=10)
-    laser_scan = rospy.Publisher('scan', LaserScan, queue_size=10)
 
-    scan = LaserScan()
-
-    scan.header.stamp = rospy.Time.now()
-    scan.header.frame_id = "camera_depth_frame"
-    scan.angle_min = -0.698132
-    scan.angle_max = 0.698132
-    scan.angle_increment = 0.0174533
-    scan.time_increment = 1 / 60
-    scan.scan_time = 1 / 60
-    scan.range_min = 0
-    scan.range_max = 500.0
-    scan.ranges = laser_scan_offset((np.append(data[LEFT],data[RIGHT]))[::-1], scan.angle_increment)
-    scan.intensities = []
-
-    laser_scan.publish(scan)
-
-
-    """Set thresholds.""" 
+    """Set thresholds."""
     if data[RIGHT].min() > data[LEFT].min() and data[LEFT].min() < 1.5:
         rospy.logdebug("MOVE RIGHT!")
         pub.publish(1)
@@ -79,10 +41,10 @@ def callback(data):
     """Convert disparity image message to Numpy matrix"""
     bridge = CvBridge()
     cv_image = bridge.imgmsg_to_cv2(data.image, "8UC1").astype("float64")
-    
-    """Convert disparity values to distance values. 
-    
-    Using this equation: 
+
+    """Convert disparity values to distance values.
+
+    Using this equation:
 
                                 Z[i][j] = fT / d[i][j]
 
@@ -91,9 +53,9 @@ def callback(data):
 
     Every entry in the disparity matrix must inverted to it's reciprocal.
     Then multiplied by both the focal length of both cameras, f, and the baseline
-    distance between the cameras, T.  
-    This is done by performing a Hadamard Product (element-wise) on the disparty 
-    matrix.  
+    distance between the cameras, T.
+    This is done by performing a Hadamard Product (element-wise) on the disparty
+    matrix.
     """
 
     depth_mat = np.multiply((data.f * data.T), np.reciprocal(cv_image.astype("float64")))
@@ -111,7 +73,7 @@ def callback(data):
 
     """Perform mean pooling on distance matrix to minimize noise."""
     mean_pool = depth_mat[:MK*K, :NL*L].reshape(MK, K, NL, L).mean(axis=(1,3))
-    
+
     """Divide distance matrix into two vertical columns."""
     div_mat = np.split(mean_pool[20], 2, axis=0)
     # print(div_mat)
