@@ -21,7 +21,8 @@
   <depend>python-numpy</depend>
   <depend>python-opencv</depend>
   <depend>robot_state_publisher</depend>
+  <depend>image_view</depend>
+  <depend>depthimage_to_laserscan</depend>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
-  <depend>image_view</depend>
 </package>
