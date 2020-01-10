@@ -1,6 +1,5 @@
 import rospy
 from std_msgs.msg import String, Float32, Bool
-from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
@@ -10,8 +9,8 @@ import math
 from random import uniform
 
 class WorldState():
-    """ World State Object Representing 
-        All Sensor Data 
+    """ World State Object Representing
+        All Sensor Data
     """
 
     def __init__(self):
@@ -38,18 +37,11 @@ class WorldState():
 
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
-    
 
-    def odometryCallBack(self, data):
-        """ Set state_flags world position data. """
-
-        self.positionX = data.pose.pose.position.z
-        self.positionY = data.pose.pose.position.y
-        self.heading = nf.quaternion_to_yaw(data.pose.pose.orientation)
 
     def simStateCallBack(self, data):
-        """ More accurate position data to use for 
-            testing and experimentation. 
+        """ More accurate position data to use for
+            testing and experimentation.
         """
         index = 0
 
@@ -61,14 +53,14 @@ class WorldState():
             rospy.logdebug("Failed to get index. Skipping...")
 
             return
-            
+
 
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
-        
+
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
-        
+
         heading = nf.quaternion_to_yaw(data.pose[index]) * 180/math.pi
 
         if heading > 0:
@@ -101,27 +93,27 @@ class ROSUtility():
     """
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
-                 front_drum_topic, back_drum_topic, 
+                 front_drum_topic, back_drum_topic,
                  max_linear_velocity, max_angular_velocity):
         """ Initialize the ROS Utility Object. """
-        
-        self.movement_pub = rospy.Publisher(movement_topic, 
-                                            Twist, 
+
+        self.movement_pub = rospy.Publisher(movement_topic,
+                                            Twist,
                                             queue_size=10)
-        self.front_arm_pub = rospy.Publisher(front_arm_topic, 
-                                             Float32, 
+        self.front_arm_pub = rospy.Publisher(front_arm_topic,
+                                             Float32,
                                              queue_size=10)
-        self.back_arm_pub = rospy.Publisher(back_arm_topic, 
-                                            Float32, 
+        self.back_arm_pub = rospy.Publisher(back_arm_topic,
+                                            Float32,
                                             queue_size=10)
-        self.front_drum_pub = rospy.Publisher(front_drum_topic, 
-                                              Float32, 
+        self.front_drum_pub = rospy.Publisher(front_drum_topic,
+                                              Float32,
                                               queue_size=10)
-        self.back_drum_pub = rospy.Publisher(back_drum_topic, 
-                                             Float32, 
+        self.back_drum_pub = rospy.Publisher(back_drum_topic,
+                                             Float32,
                                              queue_size=10)
-        self.control_pub = rospy.Publisher('secondary_override_toggle', 
-                                           Bool, 
+        self.control_pub = rospy.Publisher('secondary_override_toggle',
+                                           Bool,
                                            queue_size=10)
         self.rate = rospy.Rate(45) # 10hz
 
@@ -132,7 +124,7 @@ class ROSUtility():
 
         self.threshold = .5
 
-    def publish_actions(self, movement, front_arm, back_arm, 
+    def publish_actions(self, movement, front_arm, back_arm,
                         front_drum, back_drum):
         """ Publishes actions for all joints and motors """
 

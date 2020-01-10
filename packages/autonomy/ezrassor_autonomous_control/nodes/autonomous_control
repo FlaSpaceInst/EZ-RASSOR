@@ -11,15 +11,13 @@ front_drum_topic = rospy.get_param('autonomous_control/front_drum_instructions_t
 back_drum_topic = rospy.get_param('autonomous_control/back_drum_instructions_topic')
 max_linear_velocity = rospy.get_param('autonomous_control/max_linear_velocity')
 max_angular_velocity = rospy.get_param('autonomous_control/max_angular_velocity')
-real_odometry = rospy.get_param('autonomous_control/enable_real_odometry')
 
 autonomous_control.on_start_up(target_x,
                                target_y,
-                               movement_topic, 
+                               movement_topic,
                                front_arm_topic,
                                back_arm_topic,
                                front_drum_topic,
-                               back_drum_topic, 
+                               back_drum_topic,
                                float(max_linear_velocity),
-                               float(max_angular_velocity),
-                               bool(real_odometry))
+                               float(max_angular_velocity))
