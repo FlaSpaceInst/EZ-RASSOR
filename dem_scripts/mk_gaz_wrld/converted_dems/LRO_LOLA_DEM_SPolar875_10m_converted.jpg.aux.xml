@@ -1,0 +1,20 @@
+<PAMDataset>
+  <SRS>PROJCS["Moon2000_spole",GEOGCS["GCS_Moon",DATUM["Moon_2000",SPHEROID["Moon_2000_IAU_IAG",1737400,0]],PRIMEM["Reference_Meridian",0],UNIT["degree",0.0174532925199433]],PROJECTION["Polar_Stereographic"],PARAMETER["latitude_of_origin",-90],PARAMETER["central_meridian",0],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]]]</SRS>
+  <GeoTransform> -7.5840000000000000e+04,  2.9567251461988303e+02,  0.0000000000000000e+00,  7.5840000000000000e+04,  0.0000000000000000e+00, -2.9567251461988303e+02</GeoTransform>
+  <Metadata>
+    <MDI key="AREA_OR_POINT">Area</MDI>
+    <MDI key="Corder">LRCP</MDI>
+    <MDI key="TIFFTAG_RESOLUTIONUNIT">3 (pixels/cm)</MDI>
+    <MDI key="TIFFTAG_XRESOLUTION">0.39370701</MDI>
+    <MDI key="TIFFTAG_YRESOLUTION">0.39370701</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <NoDataValue>-3.27680000000000E+04</NoDataValue>
+    <Metadata domain="IMAGE_STRUCTURE">
+      <MDI key="COMPRESSION">JPEG</MDI>
+    </Metadata>
+    <Metadata>
+      <MDI key="NETCDF_VARNAME">z</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
