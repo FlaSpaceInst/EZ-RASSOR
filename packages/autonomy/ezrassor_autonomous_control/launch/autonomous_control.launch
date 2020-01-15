@@ -45,6 +45,12 @@
       <remap from="camera_info" to="depth/camera_info"/>
     </node>
 
+    <node pkg="nodelet" type="nodelet"
+          name="obstacles_detection"
+          args="standalone rtabmap_ros/obstacles_detection">
+      <remap from="cloud" to="depth/points"/>
+    </node>
+
     <node pkg="ezrassor_autonomous_control"
           type="depth_estimator"
           name="depth_estimator"/>
