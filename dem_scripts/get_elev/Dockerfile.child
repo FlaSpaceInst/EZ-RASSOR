@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     python-gdal \
     python3-gdal 
 
-ADD queued_dems /tmp/queued_dems
-ADD dem_results /tmp/dem_results
-COPY testGdal.py /tmp/
-COPY localMaxima.py /tmp/
-COPY sample_all_dems.sh /tmp/
+ADD /get_elev/queued_dems /tmp/queued_dems
+ADD /get_elev/dem_results /tmp/dem_results
+COPY /get_elev/testGdal.py /tmp/
+COPY /get_elev/localMaxima.py /tmp/
+COPY /get_elev/sample_all_dems.sh /tmp/
 
 CMD ["sh", "./tmp/sample_all_dems.sh"]
