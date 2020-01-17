@@ -11,9 +11,9 @@ RUN apt-get update && apt-get install -y \
     python-gdal \
     python3-gdal 
     
-ADD queued_dems /tmp/queued_dems
-ADD downsized_dems /tmp/downsized_dems
-ADD converted_dems /tmp/converted_dems
-COPY script_convert.sh /tmp/
+ADD /mk_gaz_wrld/queued_dems /tmp/queued_dems
+ADD /mk_gaz_wrld/downsized_dems /tmp/downsized_dems
+ADD /mk_gaz_wrld/converted_dems /tmp/converted_dems
+COPY /mk_gaz_wrld/script_convert.sh /tmp/
 
 CMD ["sh", "./tmp/script_convert.sh"]
