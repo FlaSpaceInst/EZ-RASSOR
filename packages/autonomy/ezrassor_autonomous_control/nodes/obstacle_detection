@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+from ezrassor_autonomous_control import obstacle_detection
+
+obstacle_detection.obstacle_detection()
