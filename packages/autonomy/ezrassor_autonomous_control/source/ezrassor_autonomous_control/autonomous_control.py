@@ -6,6 +6,7 @@ from geometry_msgs.msg import Point
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
+from sensor_msgs.msg import LaserScan
 
 from numpy import random as r
 
@@ -60,6 +61,9 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     rospy.Subscriber('autonomous_toggles',
                      Int8,
                      ros_util.autoCommandCallBack)
+    rospy.Subscriber('scan',
+                     LaserScan,
+                     af.on_scan_update)
 
     rospy.loginfo('Autonomous control initialized.')
 

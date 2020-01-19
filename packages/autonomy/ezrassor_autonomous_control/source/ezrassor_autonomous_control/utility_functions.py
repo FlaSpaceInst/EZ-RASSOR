@@ -40,7 +40,7 @@ def self_check(world_state, ros_util):
     """ Check for unfavorable states in the system 
         and handle or quit gracefully. 
     """
-    if ros_util.auto_function_command == 32:
+    if ros_util.auto_function_command == 32 or ros_util.auto_function_command == 0:
         rospy.loginfo("Cancelling auto-function command...")
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
@@ -61,6 +61,13 @@ def self_check(world_state, ros_util):
         return -1
     '''
     return 1
+
+def turn(new_heading, direction, world_state, ros_util):
+
+    # Adjust heading until it matches new heading
+    while not ((new_heading - 5) < world_state.heading < (new_heading + 5)):
+        ros_util.publish_actions(direction, 0, 0, 0, 0)
+        ros_util.rate.sleep()
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """

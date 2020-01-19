@@ -3,6 +3,14 @@ import math
 import utility_functions as uf
 import nav_functions as nf
 import arm_force as armf
+from sensor_msgs.msg import LaserScan
+
+scan = None
+threshold = 4.0
+
+def on_scan_update(new_scan):
+    global scan
+    scan = new_scan
 
 def at_target(world_state, ros_util):
     """ Determine if the current position is within 
@@ -17,7 +25,7 @@ def at_target(world_state, ros_util):
     value = ((targetX - ros_util.threshold) < positionX < (targetX + ros_util.threshold) 
             and (targetY - ros_util.threshold) < positionY < (targetY + ros_util.threshold))
 
-    return not value
+    return value
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
@@ -30,33 +38,47 @@ def auto_drive_location(world_state, ros_util):
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
     
     # Main loop until location is reached
-    while at_target(world_state, ros_util):
+    while not at_target(world_state, ros_util):
         
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
 
         # Get new heading angle relative to current heading as (0,0)
-        new_heading = nf.calculate_heading(world_state, ros_util)
-        angle_difference = nf.adjust_angle(world_state.heading, new_heading)
-        if angle_difference < 0:
+        new_heading_degrees = nf.calculate_heading(world_state, ros_util)
+        angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
+        
+        if angle2goal_radians < 0:
             direction = 'right'
         else:
             direction = 'left'
-
-        # Adjust heading until it matches new heading
-        while not ((new_heading - 5) < world_state.heading < (new_heading + 5)):
-            ros_util.publish_actions(direction, 0, 0, 0, 0)
-            ros_util.rate.sleep()
         
-        # Avoid obstacles by turning left or right if warning flag is raised
-        if world_state.warning_flag == 1:
-            uf.dodge_right(world_state, ros_util)
-        if world_state.warning_flag == 2:
-            uf.dodge_left(world_state, ros_util)
-        if world_state.warning_flag == 3:
-            uf.reverse_turn(world_state, ros_util)
-            rospy.loginfo('Avoiding detected obstacle...')
+        rospy.loginfo("angle2goal_radians: {}".format(angle2goal_radians))
+        rospy.loginfo("scan.angle_max: {}".format(scan.angle_max))
+        rospy.loginfo("scan.angle_min: {}".format(scan.angle_min))
+        rospy.loginfo("world_state.heading: {}".format(world_state.heading))
+        
+        # if we can't see the goal, face it
+        if angle2goal_radians > scan.angle_max or angle2goal_radians < scan.angle_min:
+            rospy.loginfo("can't see the goal, turning")
+            uf.turn(new_heading_degrees, direction, world_state, ros_util)
+            continue
+        
+        scan_index = int((angle2goal_radians - scan.angle_min) / scan.angle_increment)
+        
+        if math.isnan(scan.ranges[scan_index]) or scan.ranges[scan_index] >= threshold:
+            rospy.loginfo("passed threshold")
+        else:
+            # do wedgebug stuff
+            # search for new relative angle
+            rospy.loginfo("stopping")
+            ros_util.publish_actions('stop', 0, 0, 0, 0)
+            continue
+            
+            
+        rospy.loginfo("we see goal, turning")
+            
+        uf.turn(new_heading_degrees, direction, world_state, ros_util)
 
         # Otherwise go forward
         ros_util.publish_actions('forward', 0, 0, 0, 0)
