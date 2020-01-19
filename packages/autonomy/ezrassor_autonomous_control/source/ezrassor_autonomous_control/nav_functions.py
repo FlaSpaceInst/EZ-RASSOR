@@ -23,6 +23,7 @@ def calculate_heading(world_state, ros_util):
     dx = x2 - x1
 
     new_heading = math.atan2(dy, dx)
+    
     new_heading = (180 * new_heading/math.pi)
 
     if new_heading < 0:
@@ -39,7 +40,7 @@ def adjust_angle(heading, new_heading):
     angle_difference = new_heading - heading
     angle_difference = (angle_difference + 180) % 360 - 180
     
-    return angle_difference
+    return (math.pi * angle_difference/180)
 
 
 def quaternion_to_yaw(pose):
