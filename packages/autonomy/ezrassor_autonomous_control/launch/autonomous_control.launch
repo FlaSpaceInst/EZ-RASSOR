@@ -52,8 +52,8 @@
     </node>
 
     <node pkg="ezrassor_autonomous_control"
-          type="depth_estimator"
-          name="depth_estimator"/>
+          type="obstacle_detection"
+          name="obstacle_detection"/>
 
     <node pkg="ezrassor_autonomous_control"
           type="transform_broadcaster"

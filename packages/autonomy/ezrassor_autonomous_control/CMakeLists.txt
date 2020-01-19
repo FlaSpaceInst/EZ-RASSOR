@@ -11,7 +11,7 @@ catkin_python_setup()
 catkin_package()
 catkin_install_python(
     PROGRAMS
-        nodes/depth_estimator
+        nodes/obstacle_detection
         nodes/autonomous_control
         nodes/transform_broadcaster
     DESTINATION
