@@ -12,6 +12,7 @@
   <arg name="max_linear_velocity" default="1"/>
   <arg name="max_angular_velocity" default="1"/>
   <arg name="enable_cameras" default="true"/>
+  <arg name="enable_real_odometry" default="false"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
@@ -22,6 +23,7 @@
     <param name="digsite_y_coord" value="$(arg digsite_y_coord)"/>
     <param name="max_linear_velocity" value="$(arg max_linear_velocity)"/>
     <param name="max_angular_velocity" value="$(arg max_angular_velocity)"/>
+    <param name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
     <param name="wheel_instructions_topic"
            value="$(arg wheel_instructions_topic)"/>
     <param name="front_arm_instructions_topic"
