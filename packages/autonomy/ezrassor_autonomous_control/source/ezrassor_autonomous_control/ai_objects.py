@@ -1,5 +1,6 @@
 import rospy
 from std_msgs.msg import String, Float32, Bool
+from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
@@ -38,6 +39,12 @@ class WorldState():
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
 
+    def odometryCallBack(self, data):
+        """ Set state_flags world position data. """
+
+        self.positionX = data.pose.pose.position.z
+        self.positionY = data.pose.pose.position.y
+        self.heading = nf.quaternion_to_yaw(data.pose.pose)
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for
