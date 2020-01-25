@@ -65,7 +65,7 @@ def self_check(world_state, ros_util):
 def turn(new_heading, direction, world_state, ros_util):
 
     # Adjust heading until it matches new heading
-    while not ((new_heading - 5) < world_state.heading < (new_heading + 5)):
+    while not ((new_heading - 3) < world_state.heading < (new_heading + 3)):
         ros_util.publish_actions(direction, 0, 0, 0, 0)
         ros_util.rate.sleep()
 

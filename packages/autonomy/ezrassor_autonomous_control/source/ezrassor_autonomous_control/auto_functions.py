@@ -5,14 +5,24 @@ import nav_functions as nf
 import arm_force as armf
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
+import copy
 
 scan = None
 threshold = 4.0
 
 # threshold that determines if a point in the laser scan is a discontinuity
 discThresh = 3.0
+buffer = 1
 
 def on_scan_update(new_scan):
+    ranges = [float("nan")] * len(new_scan.ranges)
+    for i in range(1, len(new_scan.ranges)-1):
+        if math.isnan(new_scan.ranges[i]) and not math.isnan(new_scan.ranges[i-1]) and not math.isnan(new_scan.ranges[i+1]):
+            # rospy.loginfo("replacing NaN")
+            ranges[i] = (new_scan.ranges[i-1]+new_scan.ranges[i+1])/2
+        else:
+            ranges[i] = new_scan.ranges[i]
+    new_scan.ranges = ranges
     global scan
     scan = new_scan
 
@@ -40,6 +50,7 @@ def auto_drive_location(world_state, ros_util):
     while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x,
                         world_state.target_location.y, ros_util.threshold):
         
+        # rospy.loginfo("current heading: {}".format(world_state.heading))
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
@@ -53,15 +64,17 @@ def auto_drive_location(world_state, ros_util):
         else:
             direction = 'left'
 
+        scan_copy = copy.deepcopy(scan)
+
         # If we are not facing the goal, turn to face it.
-        if angle2goal_radians > scan.angle_max or angle2goal_radians < scan.angle_min:
+        if angle2goal_radians > scan_copy.angle_max or angle2goal_radians < scan_copy.angle_min:
             rospy.loginfo("can't see the goal, turning")
             uf.turn(new_heading_degrees, direction, world_state, ros_util)
             continue
         
-        scan_index = int((angle2goal_radians - scan.angle_min) / scan.angle_increment)
+        scan_index = int((angle2goal_radians - scan_copy.angle_min) / scan_copy.angle_increment)
         
-        if math.isnan(scan.ranges[scan_index]) or scan.ranges[scan_index] >= threshold:
+        if math.isnan(scan_copy.ranges[scan_index]) or scan_copy.ranges[scan_index] >= threshold:
             rospy.loginfo("passed threshold")
             uf.turn(new_heading_degrees, direction, world_state, ros_util)
 
@@ -72,47 +85,70 @@ def auto_drive_location(world_state, ros_util):
         else:
 
             # If we can't see the goal directly, check for the best direction of travel
-            bestAngle = 0.0
-            besti = 0
             bestDist = 10000.0
-            bestXDist = None
-            bestYDist = None
 
-            rospy.loginfo("scan.ranges: {}".format(scan.ranges))
+            rospy.loginfo("scan_copy.ranges: {}".format(scan_copy.ranges))
 
-            for i in range(len(scan.ranges)):
+            for i in range(1, len(scan_copy.ranges)):
                 # check for discontinuties within a specified threshold
 
-                current = scan.ranges[i]
-                previous = scan.ranges[i-1]
+                current = scan_copy.ranges[i]
+                previous = scan_copy.ranges[i-1]
 
-                # If the current or previous ray is nan, set its value to a very far away constant.
-                if math.isnan(current):
-                    current = 1000000
-                if math.isnan(previous):
-                    previous = 1000000
+                # both current and previous are NaN: no discontinuity
+                if math.isnan(current) and math.isnan(previous):
+                    continue
+                # only one of current and previous are NaN: discontinuity
+                elif math.isnan(current) or math.isnan(previous):
+                    if math.isnan(current):
+                        obst_to_safe = True
+                        discDist = previous
+                        idx = i-1
+                    else:
+                        obst_to_safe = False
+                        discDist = current
+                        idx = i
+                # neither are NaN: must be sufficient difference for discontinuity
+                elif abs(current - previous) > discThresh:
+                    if current > previous:
+                        obst_to_safe = True
+                        discDist = previous
+                        idx = i-1
+                    else:
+                        obst_to_safe = False
+                        discDist = current
+                        idx = i
+                # no discontinuity in any other case
+                else:
+                    continue
 
-                if (i>0) and (abs(current - previous) > discThresh):
+                dAng = scan_copy.angle_min + idx*scan_copy.angle_increment
+#                if obst_to_safe:
+#                    rospy.loginfo("adding buffer for {}".format(discDist))
+#                    dAng += math.atan(buffer/discDist)
+#                else:
+#                    rospy.loginfo("subtracting buffer for {}".format(discDist))
+#                    dAng -= math.atan(buffer/discDist)
+                total_angle = (world_state.heading*math.pi/180.) + dAng
+                dX = discDist * math.sin(total_angle)
+                dY = discDist * math.cos(total_angle)
+                obst_x = world_state.positionX + dX
+                obst_y = world_state.positionY + dY
 
-                    # output the index for the discontinuity and the angle value and the distance to that discontinuity
-                    discDist = scan.ranges[i]
+                heurDist = math.sqrt((world_state.target_location.x - obst_x)**2 + (world_state.target_location.y - obst_y)**2)
 
-                    if discDist == float('nan'):
-                        discDist = scan.range_max
+                if (heurDist + discDist) < bestDist:
+                    bestDist = heurDist + discDist
+                    besti = idx
+                    bestAngle = dAng
+                    bestX = obst_x
+                    bestY = obst_y
 
-                    dAng = scan.angle_min + i * scan.angle_increment
-                    xDist = discDist * math.sin(dAng)
-                    yDist = discDist * math.cos(dAng)
-                    heurDist = math.sqrt((world_state.target_location.x - xDist) ** 2 + (world_state.target_location.y - yDist) ** 2)
-
-                    if ((heurDist + discDist) < bestDist):
-                        bestDist = heurDist + discDist
-                        bestAngle = dAng
-                        bestXDist = xDist
-                        bestYDist = yDist
-
-            rospy.loginfo("best i (ray): {}".format(scan.ranges[besti]))
+            rospy.loginfo("best i (ray): {}".format(scan_copy.ranges[besti]))
             rospy.loginfo("best angle: {}".format(bestAngle))
+            rospy.loginfo("best angle (abs): {}".format(rel_to_abs(world_state.heading, bestAngle)))
+            rospy.loginfo("current x: {}, current y: {}".format(world_state.positionX, world_state.positionY))
+            rospy.loginfo("target x: {}, target y: {}".format(bestX, bestY))
 
             if bestAngle < 0:
                 direction = 'right'
@@ -122,13 +158,14 @@ def auto_drive_location(world_state, ros_util):
             rospy.loginfo("Attempting to turn towards best heuristic!")
             rospy.loginfo("current heading: {}, new heading: {}".format(world_state.heading, rel_to_abs(world_state.heading, bestAngle)))
             uf.turn(rel_to_abs(world_state.heading, bestAngle), direction, world_state, ros_util)
-
-            target_x = world_state.positionX + bestXDist
-            target_y = world_state.positionY + bestYDist
+            rospy.loginfo("heading after turning: {}".format(world_state.heading))
 
             while not at_target(world_state.positionX, world_state.positionY,
-                                target_x, target_y, ros_util.threshold):
+                                obst_x, obst_y, ros_util.threshold):
+#                if world_state.positionX > 5 or world_state.positionY > 5:
+#                    rospy.loginfo("current position: ({}, {})".format(world_state.positionX, world_state.positionY))
                 ros_util.publish_actions('forward', 0, 0, 0, 0)
+            rospy.loginfo("reached goal!!")
             
         ros_util.rate.sleep()
 
