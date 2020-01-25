@@ -127,6 +127,9 @@ def auto_drive_location(world_state, ros_util):
                 else:
                     d_angle -= buffer_angle
 
+                # Scale distance so that robot gets to a point parallel to the obstacle
+                dist = math.sqrt(buffer**2 + dist**2)
+
                 # Add current heading to get angle in world reference
                 total_angle = (world_state.heading*math.pi/180.) + d_angle
 
@@ -148,10 +151,11 @@ def auto_drive_location(world_state, ros_util):
                     best_angle = d_angle
                     best_x = obst_x
                     best_y = obst_y
+                    best_dist = dist
 
             rospy.loginfo("ranges: {}".format(scan_copy.ranges))
             rospy.loginfo("best direction: {}".format(best_angle))
-            rospy.loginfo("range for best angle: {}".format(scan_copy.ranges[best_i]))
+            rospy.loginfo("range for best angle: {}".format(best_dist))
             rospy.loginfo("current coordinates: ({}, {})".format(world_state.positionX, world_state.positionY))
             rospy.loginfo("target coordinates: ({}, {})".format(best_x, best_y))
             rospy.loginfo("current heading: {}, new heading: {}".format(world_state.heading, rel_to_abs(world_state.heading, best_angle)))
