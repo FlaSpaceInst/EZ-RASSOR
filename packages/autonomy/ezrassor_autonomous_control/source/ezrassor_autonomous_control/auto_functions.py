@@ -11,8 +11,8 @@ scan = None
 threshold = 4.0
 
 # threshold that determines if a point in the laser scan is a discontinuity
-discThresh = 3.0
-buffer = 1.0
+dist_thresh = 3.0
+buffer = 1.5
 
 def on_scan_update(new_scan):
     ranges = [float("nan")] * len(new_scan.ranges)
@@ -102,7 +102,7 @@ def auto_drive_location(world_state, ros_util):
                         dist = current
                         idx = i
                 # Neither are NaN: there must be sufficient difference for obstacle edge
-                elif abs(current - previous) > discThresh:
+                elif abs(current - previous) > dist_thresh:
                     if current > previous:
                         obst_to_safe = True
                         dist = previous
@@ -118,12 +118,21 @@ def auto_drive_location(world_state, ros_util):
                 # Calculate angle at this index
                 d_angle = scan_copy.angle_min + idx*scan_copy.angle_increment
 
+                # Calculate how much to change angle in order for robot to clear obstacle
+                buffer_angle = math.atan(buffer/dist)
+
+                # Add room for clearing obstacle
+                if obst_to_safe:
+                    d_angle += buffer_angle
+                else:
+                    d_angle -= buffer_angle
+
                 # Add current heading to get angle in world reference
                 total_angle = (world_state.heading*math.pi/180.) + d_angle
 
                 # Calculate the change in X, Y to get to the edge of the obstacle
-                d_x = dist * math.sin(total_angle)
-                d_y = dist * math.cos(total_angle)
+                d_x = dist * math.cos(total_angle)
+                d_y = dist * math.sin(total_angle)
 
                 # Calculate coordinates of the edge of the obstacle
                 obst_x = world_state.positionX + d_x
