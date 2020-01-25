@@ -12,13 +12,12 @@ threshold = 4.0
 
 # threshold that determines if a point in the laser scan is a discontinuity
 discThresh = 3.0
-buffer = 1
+buffer = 1.0
 
 def on_scan_update(new_scan):
     ranges = [float("nan")] * len(new_scan.ranges)
     for i in range(1, len(new_scan.ranges)-1):
         if math.isnan(new_scan.ranges[i]) and not math.isnan(new_scan.ranges[i-1]) and not math.isnan(new_scan.ranges[i+1]):
-            # rospy.loginfo("replacing NaN")
             ranges[i] = (new_scan.ranges[i-1]+new_scan.ranges[i+1])/2
         else:
             ranges[i] = new_scan.ranges[i]
@@ -50,12 +49,11 @@ def auto_drive_location(world_state, ros_util):
     while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x,
                         world_state.target_location.y, ros_util.threshold):
         
-        # rospy.loginfo("current heading: {}".format(world_state.heading))
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
 
-        # Get new heading angle relative to current heading as (0,0)
+        # Get new heading angle relative to current heading
         new_heading_degrees = nf.calculate_heading(world_state, ros_util)
         angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
         
@@ -64,108 +62,106 @@ def auto_drive_location(world_state, ros_util):
         else:
             direction = 'left'
 
+        # Create a copy of the current scan so the values don't change later on
         scan_copy = copy.deepcopy(scan)
 
         # If we are not facing the goal, turn to face it.
         if angle2goal_radians > scan_copy.angle_max or angle2goal_radians < scan_copy.angle_min:
-            rospy.loginfo("can't see the goal, turning")
             uf.turn(new_heading_degrees, direction, world_state, ros_util)
             continue
         
         scan_index = int((angle2goal_radians - scan_copy.angle_min) / scan_copy.angle_increment)
         
+        # If we can see the goal (no obstacles in the way), go towards it
         if math.isnan(scan_copy.ranges[scan_index]) or scan_copy.ranges[scan_index] >= threshold:
-            rospy.loginfo("passed threshold")
             uf.turn(new_heading_degrees, direction, world_state, ros_util)
-
-            # Otherwise go forward
             ros_util.publish_actions('forward', 0, 0, 0, 0)
-        
         # If we enter here, there is an obstacle blocking our path. Use wedgebug to avoid obstacles.
         else:
+            best_total_dist = None
 
-            # If we can't see the goal directly, check for the best direction of travel
-            bestDist = 10000.0
-
-            rospy.loginfo("scan_copy.ranges: {}".format(scan_copy.ranges))
-
+            # Find best direction to travel to get to goal while avoiding obstacles.
+            # This is done by finding the edge of the obstacle that would allow the robot to
+            # minimize the distance it travels away from the goal while avoiding the obstacle.
             for i in range(1, len(scan_copy.ranges)):
-                # check for discontinuties within a specified threshold
-
+                # Get range for current and previous LaserScan angles
                 current = scan_copy.ranges[i]
                 previous = scan_copy.ranges[i-1]
 
-                # both current and previous are NaN: no discontinuity
+                # Both current and previous are NaN: no obstacle edge
                 if math.isnan(current) and math.isnan(previous):
                     continue
-                # only one of current and previous are NaN: discontinuity
+                # Only one of current and previous are NaN: obstacle edge
                 elif math.isnan(current) or math.isnan(previous):
                     if math.isnan(current):
                         obst_to_safe = True
-                        discDist = previous
+                        dist = previous
                         idx = i-1
                     else:
                         obst_to_safe = False
-                        discDist = current
+                        dist = current
                         idx = i
-                # neither are NaN: must be sufficient difference for discontinuity
+                # Neither are NaN: there must be sufficient difference for obstacle edge
                 elif abs(current - previous) > discThresh:
                     if current > previous:
                         obst_to_safe = True
-                        discDist = previous
+                        dist = previous
                         idx = i-1
                     else:
                         obst_to_safe = False
-                        discDist = current
+                        dist = current
                         idx = i
-                # no discontinuity in any other case
+                # No obstacle edge in any other case
                 else:
                     continue
 
-                dAng = scan_copy.angle_min + idx*scan_copy.angle_increment
-#                if obst_to_safe:
-#                    rospy.loginfo("adding buffer for {}".format(discDist))
-#                    dAng += math.atan(buffer/discDist)
-#                else:
-#                    rospy.loginfo("subtracting buffer for {}".format(discDist))
-#                    dAng -= math.atan(buffer/discDist)
-                total_angle = (world_state.heading*math.pi/180.) + dAng
-                dX = discDist * math.sin(total_angle)
-                dY = discDist * math.cos(total_angle)
-                obst_x = world_state.positionX + dX
-                obst_y = world_state.positionY + dY
+                # Calculate angle at this index
+                d_angle = scan_copy.angle_min + idx*scan_copy.angle_increment
 
-                heurDist = math.sqrt((world_state.target_location.x - obst_x)**2 + (world_state.target_location.y - obst_y)**2)
+                # Add current heading to get angle in world reference
+                total_angle = (world_state.heading*math.pi/180.) + d_angle
 
-                if (heurDist + discDist) < bestDist:
-                    bestDist = heurDist + discDist
-                    besti = idx
-                    bestAngle = dAng
-                    bestX = obst_x
-                    bestY = obst_y
+                # Calculate the change in X, Y to get to the edge of the obstacle
+                d_x = dist * math.sin(total_angle)
+                d_y = dist * math.cos(total_angle)
 
-            rospy.loginfo("best i (ray): {}".format(scan_copy.ranges[besti]))
-            rospy.loginfo("best angle: {}".format(bestAngle))
-            rospy.loginfo("best angle (abs): {}".format(rel_to_abs(world_state.heading, bestAngle)))
-            rospy.loginfo("current x: {}, current y: {}".format(world_state.positionX, world_state.positionY))
-            rospy.loginfo("target x: {}, target y: {}".format(bestX, bestY))
+                # Calculate coordinates of the edge of the obstacle
+                obst_x = world_state.positionX + d_x
+                obst_y = world_state.positionY + d_y
 
-            if bestAngle < 0:
+                # Calculate heuristic: distance between the goal and the edge of the obstacle
+                heur_dist = math.sqrt((world_state.target_location.x - obst_x)**2 + (world_state.target_location.y - obst_y)**2)
+
+                # Save direction that minimizes veering off-track from our goal while avoiding obstacles
+                if best_total_dist is None or (heur_dist + dist) < best_total_dist:
+                    best_total_dist = heur_dist + dist
+                    best_i = idx
+                    best_angle = d_angle
+                    best_x = obst_x
+                    best_y = obst_y
+
+            rospy.loginfo("ranges: {}".format(scan_copy.ranges))
+            rospy.loginfo("best direction: {}".format(best_angle))
+            rospy.loginfo("range for best angle: {}".format(scan_copy.ranges[best_i]))
+            rospy.loginfo("current coordinates: ({}, {})".format(world_state.positionX, world_state.positionY))
+            rospy.loginfo("target coordinates: ({}, {})".format(best_x, best_y))
+            rospy.loginfo("current heading: {}, new heading: {}".format(world_state.heading, rel_to_abs(world_state.heading, best_angle)))
+
+            if best_angle < 0:
                 direction = 'right'
             else:
                 direction = 'left'
 
-            rospy.loginfo("Attempting to turn towards best heuristic!")
-            rospy.loginfo("current heading: {}, new heading: {}".format(world_state.heading, rel_to_abs(world_state.heading, bestAngle)))
-            uf.turn(rel_to_abs(world_state.heading, bestAngle), direction, world_state, ros_util)
+            # Turn towards the direction chosen
+            uf.turn(rel_to_abs(world_state.heading, best_angle), direction, world_state, ros_util)
+
             rospy.loginfo("heading after turning: {}".format(world_state.heading))
 
             while not at_target(world_state.positionX, world_state.positionY,
-                                obst_x, obst_y, ros_util.threshold):
-#                if world_state.positionX > 5 or world_state.positionY > 5:
-#                    rospy.loginfo("current position: ({}, {})".format(world_state.positionX, world_state.positionY))
+                                best_x, best_y, ros_util.threshold):
                 ros_util.publish_actions('forward', 0, 0, 0, 0)
-            rospy.loginfo("reached goal!!")
+
+            rospy.loginfo('Reached edge of obstacle')
             
         ros_util.rate.sleep()
 
