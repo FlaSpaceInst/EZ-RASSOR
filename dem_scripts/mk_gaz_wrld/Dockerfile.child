@@ -1,0 +1,19 @@
+FROM mybase
+
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    python3 
+
+RUN add-apt-repository -y ppa:ubuntugis/ppa
+
+RUN apt-get update && apt-get install -y \ 
+    gdal-bin \
+    python-gdal \
+    python3-gdal 
+    
+ADD /mk_gaz_wrld/queued_dems /tmp/queued_dems
+ADD /mk_gaz_wrld/downsized_dems /tmp/downsized_dems
+ADD /mk_gaz_wrld/converted_dems /tmp/converted_dems
+COPY /mk_gaz_wrld/script_convert.sh /tmp/
+
+CMD ["sh", "./tmp/script_convert.sh"]
