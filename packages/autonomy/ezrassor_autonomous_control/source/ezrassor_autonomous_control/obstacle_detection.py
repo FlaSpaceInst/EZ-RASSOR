@@ -15,8 +15,15 @@ ranges_size = None
 scan_time = None
 range_min = None
 range_max = None
+floor_height = 0.08
+min_hole_height = 0.05
+floor_error = 1.05
 
 farthest_point_pub = rospy.Publisher('obstacle_detection/farthest_point',
+                                        LaserScan, queue_size = 10)
+floor_projection_pub = rospy.Publisher('obstacle_detection/floor_proj',
+                                        LaserScan, queue_size = 10)
+holes_pub = rospy.Publisher('obstacle_detection/holes',
                                         LaserScan, queue_size = 10)
 
 """ Initializes data for LaserScan messages
@@ -82,22 +89,45 @@ obstacle using Kinect sensor" to create a LaserScan containing the farthest
 point the robot can see in each direction. This LaserScan is useful for
 detecting cliffs or deep holes that the robot cannot see past.
 """
-def farthest_point(point_cloud):
-    ranges = [float("nan")] * ranges_size
+def hole_detection(point_cloud):
+    far_ranges = [float("nan")] * ranges_size
+    proj_ranges = [float("nan")] * ranges_size
     for p in pc2.read_points(point_cloud, field_names = ("x", "y", "z"),
                                 skip_nans=True):
         forward = p[2]
         down = p[1]
         right = p[0]
 
-        angle = math.atan(right / forward)
+        farthest_point(far_ranges, forward, down, right)
+
+        floor_projection(proj_ranges, forward, down, right)
+
+    min_ranges = [np.nanmin((x, y)) for (x, y) in zip(far_ranges, proj_ranges)]
+
+    farthest_point_pub.publish(create_laser_scan(far_ranges))
+    floor_projection_pub.publish(create_laser_scan(proj_ranges))
+    holes_pub.publish(create_laser_scan(min_ranges))
+
+def farthest_point(ranges, forward, down, right):
+    angle = math.atan(right / forward)
+    step = int((angle - angle_min) / angle_increment)
+    dist =  math.sqrt(((forward**2) + (right**2)))
+
+    if math.isnan(ranges[step]) or dist > ranges[step]:
+        ranges[step] = dist
+
+def floor_projection(ranges, forward, down, right):
+    if (down > floor_height * floor_error + min_hole_height):
+
+        forward_proj = forward * floor_height / down
+        right_proj = right * forward_proj / forward
+
+        angle = math.atan(right_proj / forward_proj)
         step = int((angle - angle_min) / angle_increment)
-        range =  math.sqrt(((forward**2) + (right**2)))
+        dist =  math.sqrt(((forward_proj**2) + (right_proj**2)))
 
-        if math.isnan(ranges[step]) or range > ranges[step]:
-            ranges[step] = range
-
-    farthest_point_pub.publish(create_laser_scan(ranges))
+        if math.isnan(ranges[step]) or dist < ranges[step]:
+            ranges[step] = dist
 
 """Initializes obstacle detection."""
 def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
@@ -108,7 +138,7 @@ def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
     globals()['range_max'] = range_max
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
     init_laserscan(camera_info)
-    rospy.Subscriber("depth/points", PointCloud2, farthest_point)
+    rospy.Subscriber("depth/points", PointCloud2, hole_detection)
     rospy.spin()
 
 if __name__ == "__main__":
