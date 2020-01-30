@@ -63,11 +63,15 @@ def self_check(world_state, ros_util):
     return 1
 
 def turn(new_heading, direction, world_state, ros_util):
+    rospy.loginfo("initial heading: {}".format(world_state.heading))
+    angle_dist = abs((new_heading - world_state.heading + 180) % 360 - 180)
+    angle_traveled = 0
 
-    # Adjust heading until it matches new heading
-    while not ((new_heading - 2) < world_state.heading < (new_heading + 2)):
+    while angle_traveled < angle_dist - 2:
+        old_heading = world_state.heading
         ros_util.publish_actions(direction, 0, 0, 0, 0)
         ros_util.rate.sleep()
+        angle_traveled += abs((world_state.heading - old_heading + 180) % 360 - 180)
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
