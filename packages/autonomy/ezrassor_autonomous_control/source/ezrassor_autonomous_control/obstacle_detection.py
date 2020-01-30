@@ -6,6 +6,7 @@ from sensor_msgs.msg import PointCloud2, LaserScan, CameraInfo
 import numpy as np
 import math
 import image_geometry
+import time
 
 angle_min = None
 angle_max = None
@@ -90,44 +91,66 @@ point the robot can see in each direction. This LaserScan is useful for
 detecting cliffs or deep holes that the robot cannot see past.
 """
 def hole_detection(point_cloud):
+    start_total = time.time()
     far_ranges = [float("nan")] * ranges_size
     proj_ranges = [float("nan")] * ranges_size
-    for p in pc2.read_points(point_cloud, field_names = ("x", "y", "z"),
-                                skip_nans=True):
-        forward = p[2]
-        down = p[1]
-        right = p[0]
 
-        farthest_point(far_ranges, forward, down, right)
+    start = time.time()
+    pcTest = pc2.read_points_list(point_cloud, field_names = ("x", "y", "z"),
+                                skip_nans=True)
+    rospy.loginfo("Read pc test: {}".format(str(time.time() - start)))
 
-        floor_projection(proj_ranges, forward, down, right)
 
-    min_ranges = [np.nanmin((x, y)) for (x, y) in zip(far_ranges, proj_ranges)]
+    start = time.time()
+    pc = np.array(list(pc2.read_points(point_cloud, field_names = ("x", "y", "z"),
+                                skip_nans=True)))
+    rospy.loginfo("Read pc: {}".format(str(time.time() - start)))
 
-    farthest_point_pub.publish(create_laser_scan(far_ranges))
-    floor_projection_pub.publish(create_laser_scan(proj_ranges))
-    holes_pub.publish(create_laser_scan(min_ranges))
+    if pc.size > 0:
+        start = time.time()
+        farthest_point(far_ranges, pc)
+        rospy.loginfo("farthest point: {}".format(str(time.time() - start)))
+        start = time.time()
+        floor_projection(proj_ranges, pc)
+        rospy.loginfo("floor project: {}".format(str(time.time() - start)))
 
-def farthest_point(ranges, forward, down, right):
-    angle = math.atan(right / forward)
-    step = int((angle - angle_min) / angle_increment)
-    dist =  math.sqrt(((forward**2) + (right**2)))
+        min_ranges = [np.nanmin((x, y)) for (x, y) in zip(far_ranges, proj_ranges)]
 
-    if math.isnan(ranges[step]) or dist > ranges[step]:
-        ranges[step] = dist
+        farthest_point_pub.publish(create_laser_scan(far_ranges))
+        floor_projection_pub.publish(create_laser_scan(proj_ranges))
+        holes_pub.publish(create_laser_scan(min_ranges))
+    rospy.loginfo("total: {}".format(str(time.time() - start_total)))
 
-def floor_projection(ranges, forward, down, right):
-    if (down > floor_height * floor_error + min_hole_height):
+def to_laser_scan(forward, right):
+    angles = np.arctan2(right, forward)
+    steps = np.divide(np.subtract(angles, angle_min), angle_increment).astype(int)
+    dists = np.sqrt(np.add(np.square(forward), np.square(right)))
+    return steps, dists
 
-        forward_proj = forward * floor_height / down
-        right_proj = right * forward_proj / forward
-
-        angle = math.atan(right_proj / forward_proj)
-        step = int((angle - angle_min) / angle_increment)
-        dist =  math.sqrt(((forward_proj**2) + (right_proj**2)))
-
-        if math.isnan(ranges[step]) or dist < ranges[step]:
+def farthest_point(ranges, pc):
+    forward = pc[:,2]
+    right = pc[:,0]
+    steps, dists = to_laser_scan(forward, right)
+    for step, dist in zip(steps, dists):
+        if math.isnan(ranges[step]) or dist > ranges[step]:
             ranges[step] = dist
+
+def floor_projection(ranges, pc):
+    filtered_pc = np.array([a for a in pc if a[1] > (floor_height * floor_error + min_hole_height)])
+
+    if filtered_pc.size > 0:
+        forward = filtered_pc[:,2]
+        down = filtered_pc[:,1]
+        right = filtered_pc[:,0]
+
+        forward_projs = np.divide(np.multiply(forward, floor_height), down)
+        right_projs = np.divide(np.multiply(right, forward_projs), forward)
+
+        steps, dists = to_laser_scan(forward_projs, right_projs)
+
+        for step, dist in zip(steps, dists):
+            if math.isnan(ranges[step]) or dist < ranges[step]:
+                ranges[step] = dist
 
 """Initializes obstacle detection."""
 def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
