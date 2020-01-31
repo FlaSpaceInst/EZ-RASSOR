@@ -134,7 +134,8 @@ def farthest_point(ranges, pc):
             ranges[step] = dist
 
 def floor_projection(ranges, pc):
-    filtered_pc = np.array([a for a in pc if a[1] > (floor_height * floor_error + min_hole_height)])
+    threshold = floor_height * floor_error + min_hole_height
+    filtered_pc = pc[pc[:,1] > threshold]
 
     if filtered_pc.size > 0:
         forward = filtered_pc[:,2]
