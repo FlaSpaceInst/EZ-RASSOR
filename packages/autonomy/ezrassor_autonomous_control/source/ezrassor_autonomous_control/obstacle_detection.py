@@ -96,14 +96,12 @@ def hole_detection(point_cloud):
     proj_ranges = [float("nan")] * ranges_size
 
     start = time.time()
-    pcTest = pc2.read_points_list(point_cloud, field_names = ("x", "y", "z"),
-                                skip_nans=True)
-    rospy.loginfo("Read pc test: {}".format(str(time.time() - start)))
-
-
-    start = time.time()
-    pc = np.array(list(pc2.read_points(point_cloud, field_names = ("x", "y", "z"),
-                                skip_nans=True)))
+    # read points directly from point cloud message
+    pc = np.frombuffer(point_cloud.data, np.float32)
+    # reshape into array of xyz values
+    pc = np.reshape(pc, (-1, 8))[:, :3]
+    # remove NaN points
+    pc = pc[~np.isnan(pc).any(axis=1)]
     rospy.loginfo("Read pc: {}".format(str(time.time() - start)))
 
     if pc.size > 0:
