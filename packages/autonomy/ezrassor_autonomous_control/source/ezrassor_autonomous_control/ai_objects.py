@@ -6,6 +6,7 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
 import nav_functions as nf
 import math
+from tf import transformations
 
 from random import uniform
 
@@ -39,10 +40,19 @@ class WorldState():
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
 
+    def odometryTest(self, data):
+        quaternion = (data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w)
+#        rospy.loginfo("euler angles: {}".format(transformations.euler_from_quaternion(quaternion)))
+#        rospy.loginfo("estimated coordinates: ({}, {}), actual coordinates: ({},  {})".format(data.pose.pose.position.z,
+#                                                                                              data.pose.pose.position.y,
+#                                                                                              self.positionX, self.positionY))
+#        rospy.loginfo("estimated heading: {}, actual heading: {}".format(nf.quaternion_to_yaw(data.pose.pose),
+#                                                                         self.heading))
+
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
-        self.positionX = data.pose.pose.position.z
+        self.positionX = data.pose.pose.position.x
         self.positionY = data.pose.pose.position.y
         self.heading = nf.quaternion_to_yaw(data.pose.pose)
 
