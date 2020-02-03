@@ -47,11 +47,6 @@
       <remap from="camera_info" to="depth/camera_info"/>
     </node>
 
-	<node pkg="imu_complementary_filter" type="complementary_filter_node"
-		name="complementary_filter_node">
-		<remap from="imu/data_raw" to="imu"/>
-	</node>
-
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		<rosparam command="load" file="$(find ezrassor_autonomous_control)/launch/ekf_template.yaml" />
 	</node>
