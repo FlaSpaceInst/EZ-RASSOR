@@ -35,26 +35,47 @@ class WorldState():
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
-        #print(data.position[0], data.position[1])
 
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
-
-    def odometryTest(self, data):
-        quaternion = (data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w)
-#        rospy.loginfo("euler angles: {}".format(transformations.euler_from_quaternion(quaternion)))
-#        rospy.loginfo("estimated coordinates: ({}, {}), actual coordinates: ({},  {})".format(data.pose.pose.position.z,
-#                                                                                              data.pose.pose.position.y,
-#                                                                                              self.positionX, self.positionY))
-#        rospy.loginfo("estimated heading: {}, actual heading: {}".format(nf.quaternion_to_yaw(data.pose.pose),
-#                                                                         self.heading))
 
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
         self.positionX = data.pose.pose.position.x
         self.positionY = data.pose.pose.position.y
-        self.heading = nf.quaternion_to_yaw(data.pose.pose)
+
+        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
+
+        if heading > 0:
+            self.heading = heading
+        else:
+            self.heading = 360 + heading
+
+    def odometryOrientationCallBack(self, data):
+        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
+
+        if heading > 0:
+            self.heading = heading
+        else:
+            self.heading = 360 + heading
+
+    def simStatePositionCallBack(self, data):
+        """ More accurate position data to use for
+            testing and experimentation.
+        """
+        index = 0
+
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+        try:
+            index = data.name.index(namespace)
+        except Exception:
+            rospy.logdebug("Failed to get index. Skipping...")
+            return
+
+        self.positionX = data.pose[index].position.x
+        self.positionY = data.pose[index].position.y
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for
@@ -68,12 +89,7 @@ class WorldState():
             index = data.name.index(namespace)
         except Exception:
             rospy.logdebug("Failed to get index. Skipping...")
-
             return
-
-
-        self.positionX = data.pose[index].position.x
-        self.positionY = data.pose[index].position.y
 
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y

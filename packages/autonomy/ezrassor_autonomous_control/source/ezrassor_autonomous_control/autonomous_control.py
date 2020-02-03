@@ -49,14 +49,14 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     if real_odometry:
         rospy.Subscriber('odometry/filtered',
                          Odometry,
-                         world_state.odometryCallBack)
+                         world_state.odometryOrientationCallBack)
+        rospy.Subscriber('/gazebo/link_states',
+                         LinkStates,
+                         world_state.simStatePositionCallBack)
     else:
         rospy.Subscriber('/gazebo/link_states',
                          LinkStates,
                          world_state.simStateCallBack)
-        rospy.Subscriber('odometry/filtered',
-                         Odometry,
-                         world_state.odometryTest)
 
     rospy.Subscriber('imu',
                      Imu,
