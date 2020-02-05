@@ -8,6 +8,7 @@
   <arg name="digsite_x_coord" default="default"/>
   <arg name="digsite_y_coord" default="default"/>
   <arg name="enable_cameras" default="default"/>
+  <arg name="enable_real_odometry" default="default"/>
 
   <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>
@@ -95,6 +96,9 @@
         <arg name="enable_cameras"
              value="$(arg enable_cameras)"
              unless="$(eval enable_cameras == 'default')"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
@@ -162,6 +166,9 @@
         <arg name="enable_cameras"
              value="$(arg enable_cameras)"
              unless="$(eval enable_cameras == 'default')"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
       </include>
     </group>
   </group>
