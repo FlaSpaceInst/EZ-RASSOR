@@ -3,6 +3,7 @@ import sys
 
 from std_msgs.msg import Int8, Int16, String
 from geometry_msgs.msg import Point
+from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
@@ -15,7 +16,8 @@ import utility_functions as uf
 
 def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                 back_arm_topic, front_drum_topic, back_drum_topic,
-                max_linear_velocity=1, max_angular_velocity=1):
+                max_linear_velocity=1, max_angular_velocity=1,
+                real_odometry=False):
     """ Initialization Function  """
 
     # ROS Node Init Parameters
@@ -44,7 +46,15 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     world_state.dig_site = temp
 
     # Setup Subscriber Callbacks
-    rospy.Subscriber('/gazebo/link_states',
+    if real_odometry:
+        rospy.Subscriber('odometry/filtered',
+                         Odometry,
+                         world_state.odometryOrientationCallBack)
+        rospy.Subscriber('/gazebo/link_states',
+                         LinkStates,
+                         world_state.simStatePositionCallBack)
+    else:
+        rospy.Subscriber('/gazebo/link_states',
                          LinkStates,
                          world_state.simStateCallBack)
 
