@@ -1,0 +1,43 @@
+1 get_elev
+2 mk_gaz_wrld
+3 extract_tile
+4 1->2
+5 3->2
+6 3->2->1
+
+1
+2
+3
+	3 permute 2
+1 2 get_elev -> mk_gaz_wrld (not practical)
+	Get elevation in large file and then downsize to use in gazebo
+2 1 mk_gaz_wrld -> get_elev y
+	Downsize for gazebo and use downsize to get elevation
+1 3 get_elev -> extract_tile (might be practical but treat as impractical)
+	Get elevation in large file and split into tiles
+3 1 extract_tile -> get_elev (might be practical but treat as impractical)
+	Split into tiles and then get elevation
+2 3 mk_gaz_wrld -> extract_tile (not practical)
+	Downsize for gazebo and then extract tiles from downsize
+3 2 extract_tile -> mk_gaz_wrld y
+	Extract tiles and then use tiles for respective gazebo world  
+
+	3 permute 3 (only 1 useful permutation given rules in 3 permute 2)
+3 2 1 extract_tile -> mk_gaz_wrld -> get_elev y
+	Extract tiles and make gazebo worlds with tiles, get elevation for tiles
+1 2 3 (get_elev -> (mk_gaz_wrld)* -> extract_tile)* (not practical)
+	Get elevation for large dem then downsize dem and extract tiles
+1 3 2 (get_elev -> extract_tile)* -> mk_gaz_wrld (not practical) maybe 1
+	Get elevation of large dem and then extract tiles which can make gazebo worlds
+3 1 2 (extract_tile -> get_elev)* -> mk_gaz_wrld (not practical) maybe 2 
+	Extract tiels form large dem and then get elevation of tiles and use tiles to make gaz worlds
+2 3 1 (mk_gaz_wrld -> extract_tile)* -> get_elev (not practical)
+	Downsize dem and then extract tiles from downsize and then get elevation from tiles
+2 1 3 mk_gaz_wrld -> (get_elev -> extract_tile)* (not practical) maybe but unlikely
+	Downsize large dem to get elevation of downsized and use downsize to create tiles
+
+
+Conclusion
+	Give users the ability to order program execution in non practical ways
+	- Constant while loop until execute 0, 1, 2, 3 programs
+	- Move if statements for each program into a function
