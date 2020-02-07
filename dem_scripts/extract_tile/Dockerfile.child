@@ -1,4 +1,4 @@
-FROM mybase_tile
+FROM mybase
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
