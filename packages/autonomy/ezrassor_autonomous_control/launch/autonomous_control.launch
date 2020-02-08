@@ -47,6 +47,13 @@
       <remap from="camera_info" to="depth/camera_info"/>
     </node>
 
+	<node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
+		<remap from="rgb/image" to="color/image_raw"/>
+		<remap from="rgb/camera_info" to="color/camera_info"/>
+		<remap from="depth/image" to="depth/image_raw"/>
+		<remap from="odom" to="visual_odom"/>
+	</node>
+
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		<rosparam command="load" file="$(find ezrassor_autonomous_control)/launch/ekf_template.yaml" />
 	</node>
