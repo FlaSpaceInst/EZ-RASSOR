@@ -61,9 +61,5 @@
     <node pkg="ezrassor_autonomous_control"
           type="depth_estimator"
           name="depth_estimator"/>
-
-    <node pkg="ezrassor_autonomous_control"
-          type="transform_broadcaster"
-          name="transform_broadcaster"/>
   </group>
 </launch>
