@@ -48,6 +48,10 @@
     </node>
 
 	<node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
+		<param name="frame_id" value="depth_camera_optical_frame"/>
+		<param name="publish_tf" value="false"/>
+		<param name="publish_null_when_lost" value="false"/>
+		<param name="Odom/ResetCountdown" value="1"/>
 		<remap from="rgb/image" to="color/image_raw"/>
 		<remap from="rgb/camera_info" to="color/camera_info"/>
 		<remap from="depth/image" to="depth/image_raw"/>
