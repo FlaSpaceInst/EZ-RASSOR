@@ -8,8 +8,8 @@
     <include>
       <uri>model://tile_test</uri>
       <friction>
-        <mu> 100 </mu>
-        <mu2> 100 </mu2>
+        <mu> 0.01</mu>
+        <mu2> 0.01 </mu2>
       </friction>
     </include>
     <!--Hopper Model-->
@@ -21,7 +21,7 @@
           <surface>
             <friction>
               <ode>
-                <mu>30</mu>
+                <mu>0.01</mu>
               </ode>
               <torsional>
                 <ode/>
@@ -41,8 +41,8 @@
           <geometry>
             <heightmap>
               <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-              <size>129 129 49</size>
-              <pos>0 0 -100</pos>
+              <size>129 129 0</size>
+              <pos>0 0 -50</pos>
               <texture>
                 <size>10</size>
                 <diffuse>__default__</diffuse>
@@ -74,7 +74,7 @@
                 <fade_dist>5</fade_dist>
               </blend>
               <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-              <size>129 129 49</size>
+              <size>129 129 0</size>
               <pos>0 0 0</pos>
             </heightmap>
           </geometry>
@@ -124,3 +124,4 @@
       </gui>
   </world>
 </sdf>
+
