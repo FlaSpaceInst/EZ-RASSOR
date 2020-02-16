@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch a Gazebo simulation which demonstrates a swarm of EZ-RASSORs collaborating to mine regolith
+     Written by Daniel Silva. -->
+
+<launch>
+  <arg name="robot_count" default="default"/>
+  <arg name="spawn_x_coords" default="default"/>
+  <arg name="spawn_y_coords" default="default"/>
+  <arg name="spawn_z_coords" default="default"/>
+  <arg name="digsite_x_coords" default="default"/>
+  <arg name="digsite_y_coords" default="default"/>
+  <arg name="world" default="default"/>
+  <arg name="debug" default="default"/>
+  <arg name="paused" default="default"/>
+  <arg name="verbose" default="default"/>
+  <arg name="show_gui" default="default"/>
+  <arg name="recording" default="default"/>
+  <arg name="use_sim_time" default="default"/>
+  <arg name="enable_cameras" default="default"/>
+  <arg name="enable_real_odometry" default="default"/>
+
+  <!-- Launch the swarm management system -->
+  <include file="$(find ezrassor_swarm_control)/launch/swarm_control.launch">
+    <arg name="robot_count" value="$(arg robot_count)"/>
+    <arg name="digsite_x_coords" value="$(arg robot_count)"/>
+    <arg name="digsite_y_coords" value="$(arg robot_count)"/>
+  </include>
+
+  <!-- Spawn each of the rovers and start their individual communication systems -->
+  <include file="$(find ezrassor_swarm_control)/launch/spawn_rovers.launch">
+    <arg name="robot_count" value="$(arg robot_count)"/>
+    <arg name="spawn_x_coords" default="$(arg robot_count)"/>
+    <arg name="spawn_y_coords" default="$(arg robot_count)"/>
+    <arg name="spawn_z_coords" default="$(arg robot_count)"/>
+    <arg name="enable_cameras" default="$(arg enable_cameras)"/>
+    <arg name="enable_real_odometry" default="$(arg enable_real_odometry)"/>
+  </include>
+
+  <!-- Load the world once all rovers have been spawned
+       Any arguments marked as 'default' are ignored and the
+       defaults within the gazebo launch file are used. -->
+  <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch"
+           if="$(eval robot_count == 1)">
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="debug"
+         value="$(arg debug)"
+         unless="$(eval debug == 'default')"/>
+    <arg name="paused"
+         value="$(arg paused)"
+         unless="$(eval paused == 'default')"/>
+    <arg name="verbose"
+         value="$(arg verbose)"
+         unless="$(eval verbose == 'default')"/>
+    <arg name="show_gui"
+         value="$(arg show_gui)"
+         unless="$(eval show_gui == 'default')"/>
+    <arg name="recording"
+         value="$(arg recording)"
+         unless="$(eval recording == 'default')"/>
+    <arg name="use_sim_time"
+         value="$(arg use_sim_time)"
+         unless="$(eval use_sim_time == 'default')"/>
+  </include>
+</launch>

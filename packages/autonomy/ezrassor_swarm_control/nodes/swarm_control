@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+import rospy
+from ezrassor_swarm_control import swarm_control
+
+robot_count = rospy.get_param('swarm_control/robot_count')
+target_xs = rospy.get_param('swarm_control/digsite_x_coords')
+target_ys = rospy.get_param('swarm_control/digsite_y_coords')
+
+swarm_control.on_start_up(robot_count, target_xs, target_ys)

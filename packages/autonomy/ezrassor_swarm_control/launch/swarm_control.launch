@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch the swarm control system control for the EZ-RASSOR. -->
+
+<launch>
+  <arg name="robot_count" default="2"/>
+  <arg name="digsite_x_coords" default="10"/>
+  <arg name="digsite_y_coords" default="10"/>
+
+  <!-- Launch the autonomous control node. -->
+  <node pkg="ezrassor_swarm_control"
+        name="swarm_control"
+        type="swarm_control"
+        output="screen">
+    <param name="robot_count" value="$(arg robot_count)"/>
+    <param name="digsite_x_coords" value="$(arg digsite_x_coords)"/>
+    <param name="digsite_y_coords" value="$(arg digsite_y_coords)"/>
+  </node>
+</launch>
