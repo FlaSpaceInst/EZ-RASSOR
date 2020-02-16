@@ -15,8 +15,7 @@
               drum_front_velocity_controller
               drum_back_velocity_controller
               joint_state_controller
-              diff_drive_controller_front
-              diff_drive_controller_back"/>
+              diff_drive_controller"/>
 
   <!-- Launch the driver nodes. -->
   <node pkg="ezrassor_sim_control"
