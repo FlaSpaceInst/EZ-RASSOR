@@ -9,8 +9,9 @@ class SwarmController:
         self.dig_sites = dig_sites
 
     def run(self):
-        rospy.loginfo('Running swarm manager for {} rovers'.format(self.robot_count))
-        rospy.loginfo('Dig site(s): {}'.format(self.dig_sites))
+        rospy.loginfo('Running the swarm controller for {} rover(s)'.format(self.robot_count))
+        rospy.loginfo('{} total dig sites: {}'
+                      .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
 
 def on_start_up(robot_count, target_xs, target_ys):
     """ Initialization Function  """
@@ -30,10 +31,10 @@ def on_start_up(robot_count, target_xs, target_ys):
 
     for i in range(len(target_xs)):
         coord = Point()
-        coord.x = target_xs[i]
-        coord.y = target_ys[i]
+        coord.x = float(target_xs[i])
+        coord.y = float(target_ys[i])
 
         dig_sites.append(coord)
 
-    swarm_manager = SwarmController(robot_count, dig_sites)
-    swarm_manager.run()
+    swarm_controller = SwarmController(robot_count, dig_sites)
+    swarm_controller.run()

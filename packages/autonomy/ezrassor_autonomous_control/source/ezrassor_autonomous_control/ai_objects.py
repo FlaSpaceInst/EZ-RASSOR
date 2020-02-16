@@ -97,7 +97,7 @@ class WorldState():
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
-        subscribers, and convinient ROS utilies.
+        subscribers, and convenient ROS utilies.
     """
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
