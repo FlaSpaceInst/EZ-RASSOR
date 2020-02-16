@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ezrassor_swarm_control</name>
+  <version>0.0.0</version>
+  <description>The ezrassor_swarm_control package</description>
+
+  <maintainer email="danielzgsilva@knights.ucf.edu">Daniel Silva</maintainer>
+
+
+  <license>MIT</license>
+
+  <url type="website">http://github.com/FlaSpaceInst/EZ-RASSOR</url>
+
+  <author email="danielzgsilva@knights.ucf.edu">Daniel Silva</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

@@ -128,7 +128,7 @@ class ROSUtility():
         self.max_linear_velocity = max_linear_velocity
         self.max_angular_velocity = max_angular_velocity
 
-        self.auto_function_command = 0
+        self.auto_function_command = 16
 
         self.threshold = .5
 
