@@ -5,13 +5,11 @@
   <description>The ezrassor_swarm_control package</description>
 
   <maintainer email="danielzgsilva@knights.ucf.edu">Daniel Silva</maintainer>
-
+  <author email="danielzgsilva@knights.ucf.edu">Daniel Silva</author>
 
   <license>MIT</license>
 
   <url type="website">http://github.com/FlaSpaceInst/EZ-RASSOR</url>
-
-  <author email="danielzgsilva@knights.ucf.edu">Daniel Silva</author>
 
 
   <buildtool_depend>catkin</buildtool_depend>

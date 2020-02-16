@@ -21,19 +21,33 @@
 
   <!-- Launch the swarm management system -->
   <include file="$(find ezrassor_swarm_control)/launch/swarm_control.launch">
-    <arg name="robot_count" value="$(arg robot_count)"/>
-    <arg name="digsite_x_coords" value="$(arg robot_count)"/>
-    <arg name="digsite_y_coords" value="$(arg robot_count)"/>
+    <arg name="robot_count"
+            value="$(arg robot_count)"
+            unless="$(eval robot_count == 'default')"/>
+    <arg name="digsite_x_coords"
+            value="$(arg digsite_x_coords)"
+            unless="$(eval digsite_x_coords == 'default')"/>
+    <arg name="digsite_y_coords"
+            value="$(arg digsite_y_coords)"
+            unless="$(eval digsite_y_coords == 'default')"/>
   </include>
 
   <!-- Spawn each of the rovers and start their individual communication systems -->
   <include file="$(find ezrassor_swarm_control)/launch/spawn_rovers.launch">
-    <arg name="robot_count" value="$(arg robot_count)"/>
-    <arg name="spawn_x_coords" default="$(arg robot_count)"/>
-    <arg name="spawn_y_coords" default="$(arg robot_count)"/>
-    <arg name="spawn_z_coords" default="$(arg robot_count)"/>
-    <arg name="enable_cameras" default="$(arg enable_cameras)"/>
-    <arg name="enable_real_odometry" default="$(arg enable_real_odometry)"/>
+    <arg name="robot_count"
+            value="$(arg robot_count)"
+            unless="$(eval robot_count == 'default')"/>
+    <arg name="spawn_x_coords"
+            value="$(arg spawn_x_coords)"
+            unless="$(eval spawn_x_coords == 'default')"/>
+    <arg name="spawn_y_coords"
+            value="$(arg spawn_y_coords)"
+            unless="$(eval spawn_y_coords == 'default')"/>
+    <arg name="spawn_z_coords"
+            value="$(arg spawn_z_coords)"
+            unless="$(eval spawn_z_coords == 'default')"/>
+    <arg name="enable_cameras" value="$(arg enable_cameras)"/>
+    <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
   </include>
 
   <!-- Load the world once all rovers have been spawned
