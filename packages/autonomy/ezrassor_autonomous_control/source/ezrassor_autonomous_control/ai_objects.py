@@ -51,31 +51,6 @@ class WorldState():
         else:
             self.heading = 360 + heading
 
-    def odometryOrientationCallBack(self, data):
-        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
-
-        if heading > 0:
-            self.heading = heading
-        else:
-            self.heading = 360 + heading
-
-    def simStatePositionCallBack(self, data):
-        """ More accurate position data to use for
-            testing and experimentation.
-        """
-        index = 0
-
-        namespace = rospy.get_namespace()
-        namespace = namespace[1:-1]+"::base_link"
-        try:
-            index = data.name.index(namespace)
-        except Exception:
-            rospy.logdebug("Failed to get index. Skipping...")
-            return
-
-        self.positionX = data.pose[index].position.x
-        self.positionY = data.pose[index].position.y
-
     def simStateCallBack(self, data):
         """ More accurate position data to use for
             testing and experimentation.
