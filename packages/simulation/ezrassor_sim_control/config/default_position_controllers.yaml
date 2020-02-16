@@ -3,23 +3,6 @@ joint_state_controller:
   type: joint_state_controller/JointStateController
   publish_rate: 50 
 
-# Position Controllers ---------------------------------------
-#left_wheel_back_velocity_controller:
-  #type: velocity_controllers/JointVelocityController
-  #joint: left_wheel_back_hinge
-  #pid: {p: 100.0, i: 0.01, d: 10.0}
-#left_wheel_front_velocity_controller:
-  #type: velocity_controllers/JointVelocityController
-  #joint: left_wheel_front_hinge
-  #pid: {p: 100.0, i: 0.01, d: 10.0}
-#right_wheel_back_velocity_controller:
-  #type: velocity_controllers/JointVelocityController
-  #joint: right_wheel_back_hinge
-  #pid: {p: 100.0, i: 0.01, d: 10.0}
-#right_wheel_front_velocity_controller:
-  #type: velocity_controllers/JointVelocityController
-  #joint: right_wheel_front_hinge
-  #pid: {p: 100.0, i: 0.01, d: 10.0}
 arm_front_velocity_controller:
   type: velocity_controllers/JointVelocityController
   joint: arm_front_hinge
@@ -37,10 +20,10 @@ drum_back_velocity_controller:
   joint: drum_back_hinge
   pid: {p: 100.0, i: 0.01, d: 10.0}
 
-diff_drive_controller_front:
+diff_drive_controller:
   type: diff_drive_controller/DiffDriveController
-  left_wheel: [ 'left_wheel_front_hinge' ]
-  right_wheel: [ 'right_wheel_front_hinge']
+  left_wheel: [ 'left_wheel_front_hinge', 'left_wheel_back_hinge' ]
+  right_wheel: [ 'right_wheel_front_hinge', 'right_wheel_back_hinge' ]
   wheel_separation: 0.4
   wheel_radius: 0.18
   cmd_vel_timeout: 0.5
@@ -48,14 +31,12 @@ diff_drive_controller_front:
   pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
   twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
   base_frame_id: base_link
-diff_drive_controller_back:
-  type: diff_drive_controller/DiffDriveController
-  left_wheel: [ 'left_wheel_back_hinge' ]
-  right_wheel: [ 'right_wheel_back_hinge']
-  wheel_separation: 0.4
-  wheel_radius: 0.18
-  cmd_vel_timeout: 0.5
-  enable_odom_tf: true
-  pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
-  twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
-  base_frame_id: base_link
+  linear:
+    x:
+      has_velocity_limits    : true
+      max_velocity           : 1.0  # m/s
+      min_velocity           : -1.0 # m/s
+      has_acceleration_limits: true
+      max_acceleration       : 5.0  # m/s^2
+      min_acceleration       : -5.0 # m/s^2
+   
