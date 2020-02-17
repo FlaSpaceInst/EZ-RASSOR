@@ -89,6 +89,9 @@ class WorldState():
 
         self.warning_flag = data.data
 
+    def targetCallBack(self, data):
+        self.target_location = data
+
     def get_arm_force(self):
         front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
         back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
@@ -128,7 +131,7 @@ class ROSUtility():
         self.max_linear_velocity = max_linear_velocity
         self.max_angular_velocity = max_angular_velocity
 
-        self.auto_function_command = 16
+        self.auto_function_command = 0
 
         self.threshold = .5
 
