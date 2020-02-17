@@ -85,6 +85,7 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.rate.sleep()
     
     ros_util.publish_actions('stop', 0, 0, 0, 0)
+    rospy.loginfo('Done digging')
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
