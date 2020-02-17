@@ -17,16 +17,26 @@ imu0_nodelay: false
 imu0_differential: false
 imu0_relative: true
 imu0_queue_size: 5
-
 imu0_remove_gravitational_acceleration: true
 
-odom0: visual_odom
+odom0: diff_drive_controller/odom
 odom0_config: [false, false, false,
               false,  false,  false,
-              true, true, false,
+              true, false, false,
               false,  false,  true,
               false,  false,  false]
 odom0_nodelay: false
 odom0_differential: false
 odom0_relative: true
-odom0_queue_size: 5
+odom0_queue_size: 10
+
+odom1: visual_odom
+odom1_config: [false, false, false,
+              false,  false,  false,
+              true, false, false,
+              false,  false,  true,
+              false,  false,  false]
+odom1_nodelay: false
+odom1_differential: false
+odom1_relative: true
+odom1_queue_size: 5
