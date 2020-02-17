@@ -1,7 +1,7 @@
 # Publish all joint states -----------------------------------
 joint_state_controller:
   type: joint_state_controller/JointStateController
-  publish_rate: 50 
+  publish_rate: 50
 
 arm_front_velocity_controller:
   type: velocity_controllers/JointVelocityController
@@ -61,4 +61,4 @@ diff_drive_controller:
       max_acceleration       : 5.0  # m/s^2
       min_acceleration       : -5.0 # m/s^2
 
-  # Could also include for constraints for angular but linear caps ensure rover doesn't rotate too fast   
+  # Could also include for constraints for angular but linear caps ensure rover doesn't rotate too fast
