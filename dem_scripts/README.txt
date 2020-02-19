@@ -31,6 +31,9 @@ Note about Docker:
       Remove a docker image by tag:
         docker rmi test1:ver_number
 
+    If you would like to know why we're using docker and some details about how
+    it works, see the section below labeled "Docker: Isolation"
+
 
 ***************************** Running the programs *************************************
 
@@ -174,3 +177,45 @@ Quick and Dirty Setup:
     7. Move the world file into EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds/
     8. You can now use this world by adding the flag "world:=whatever_you_named_the_world_without_the_extension"
     when launching the simulation
+
+***************************** Docker: Isolation *********************************************
+
+Because DEM readers aren't built into Ubuntu, we need to use either an application,
+driver, or a library that can be used to read them in. In most applications and libraries,
+they use a library called GDAL (https://gdal.org/) as the base for all their functionality.
+GDAL is "a translator library for raster and vector geospatial data formats" of which
+includes support for PDS (Nasa's Planetary Data System format) and GeoTiff (.tiff). The
+problem is that GDAL conflicts with the dependencies for Gazebo so in order to do read DEMs
+without breaking the environment to run the EZ-RASSOR simulation, we have to isolate it.
+
+We have 3 options: VirtualMachine, Docker, or Anaconda. VMs are quite heavy since
+we don't need a whole operating system, just a terminal. Anaconda is popular package
+manager for python and can also provide isolated environments for python. The
+main problems with it are that since it doesn't play well with ROS out of the box
+and it can install excess packages (mostly data science) we don't need for our
+application. Anaconda would be a great choice if you're already using python
+for data science stuff but in our case, it's only for EZ-RASSOR. In hindsight,
+there is the lighter version of Anaconda called Miniconda that you could use but
+learning docker can be applied to more fields so using docker for only this application
+isn't as bloatware-y as -conda stuff is to non-data scientists.
+
+In terms of docker implementation, each program has there own docker image associated
+with it. If you notice, there is a Dockerfile.base and a Dockerfile.child file rather
+than the standard one Dockerfile per directory. The Dockerfile.base and entrypoint.sh
+are just for setting up the program to run as a local user vs root. Even though that
+a docker container is used for isolation, it's insecure to run as root.
+
+Why to not run as root (there are other articles that mention this):
+https://americanexpress.io/do-not-run-dockerized-applications-as-root/
+
+Another thing that we do that is not standard, we use bind mounts to mount a host
+directory inside a docker container. The most popular way to store data with Docker
+is through volumes but isn't the ideal for our application. Volumes are usually the
+recommended choice since they are more secure and a great way to transfer data from
+container to container. Although we could store our data in volumes and pass it to
+other containers created if a user runs more than one of the programs in the script,
+we ultimately need to get the results back to the host, which isn't possible or at
+least quite difficult to do. This makes bind mounts the best choice in this case.
+
+Full comparison of storage formats in Docker:
+https://docs.docker.com/storage/
