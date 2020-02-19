@@ -55,7 +55,10 @@
 		<remap from="rgb/image" to="color/image_raw"/>
 		<remap from="rgb/camera_info" to="color/camera_info"/>
 		<remap from="depth/image" to="depth/image_raw"/>
-		<remap from="odom" to="visual_odom"/>
+		<remap from="odom" to="visual_odom/odom"/>
+		<remap from="odom_info" to="visual_odom/odom_info"/>
+		<remap from="odom_last_frame" to="visual_odom/odom_last_frame"/>
+		<remap from="odom_local_map" to="visual_odom/odom_local_map"/>
 	</node>
 
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
