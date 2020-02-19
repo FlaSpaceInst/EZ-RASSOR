@@ -2,54 +2,64 @@
 
 dot="$(cd "$(dirname "$0")"; pwd)"
 #StringArray=("reset" "populate" "run" "clean" "queue_reset")
-choose_prog() 
+choose_prog()
 {
     request=$1
     #previous=$2
     echo "Building"
-    
+
     if [ $request -eq 1 ]
     then
         #cp -a "$dot/queue/." "$dot/get_elev/queued_dems/"
-        
+
         docker image build --tag mybase -f "$dot/get_elev/Dockerfile.base" .
         docker image build --tag elev_img:1.0 -f "$dot/get_elev/Dockerfile.child" .
-        
+
         echo "Running get_elev"
-        
+
         docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` --mount src="$(pwd)/get_elev",target=/tmp,type=bind --name elev_cont elev_img:1.0
-        
+
         cp -a "$dot/get_elev/dem_results/." "$dot/results/"
-        
+
     elif [ $request -eq 2 ]
     then
         #cp -a "$dot/queue/." "$dot/mk_gaz_wrld/queued_dems/"
 
         docker image build --tag mybase -f "$dot/mk_gaz_wrld/Dockerfile.base" .
         docker image build --tag mk_gaz_img:1.0 -f "$dot/mk_gaz_wrld/Dockerfile.child" .
-        
+
         echo "Running mk_gaz_wrld"
-        
+
         docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` --mount src="$(pwd)/mk_gaz_wrld",target=/tmp,type=bind --name gaz_cont mk_gaz_img:1.0
-        
+
         cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/results/"
         cp -a "$dot/mk_gaz_wrld/converted_dems/." "$dot/results/"
 
-    elif [ $request -eq 3 ] 
+    elif [ $request -eq 3 ]
     then
         #cp -a "$dot/queue/." "$dot/extract_tile/queued_dems/"
 
         docker image build --tag mybase -f "$dot/extract_tile/Dockerfile.base" .
         docker image build --tag extr_tile:1.0 -f "$dot/extract_tile/Dockerfile.child" .
-        
+
         echo "Running extract_tile"
-        
+
         docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` --mount src="$(pwd)/extract_tile",target=/tmp,type=bind --name extr_tile_cont extr_tile:1.0
-        
-        cp -a "$dot/extract_tile/results/." "$dot/results/"                
+
+        cp -a "$dot/extract_tile/results/." "$dot/results/"
+    elif [ $request -eq 4 ]
+    then
+        docker image build --tag mybase -f "$dot/convert2tif/Dockerfile.base" .
+        docker image build --tag convert2tif:1.0 -f "$dot/convert2tif/Dockerfile.child" .
+
+        echo "Running convert2tif"
+
+        docker run --rm -it -e LOCAL_USER_ID=`id -u $USER` --mount src="$(pwd)/convert2tif",target=/tmp,type=bind --name conv_tif convert2tif:1.0
+
+        cp -a "$dot/convert2tif/results/." "$dot/results/"
     else
         echo "Something went wrong"
-    fi    
+    fi
 }
 
 if [ -z $1 ]
@@ -71,6 +81,9 @@ else
             echo "Resetting extract_tile"
             rm -rf "$dot/extract_tile/queued_dems"/*
             rm -rf "$dot/extract_tile/results"/*
+            echo "Resetting convert2tif"
+            rm -rf "$dot/convert2tif/queued_dems"/*
+            rm -rf "$dot/convert2tif/results"/*
             ;;
         queue_reset)
             echo "Removing items from queue"
@@ -83,11 +96,11 @@ else
         run)
             request=0
             num_prog=0
-            read -p "How many programs to run? [0-3]" num_query
+            read -p "How many programs to run? [0-4]" num_query
             #order_prog[0]="hi"
             while [ $request -eq 0 ] && [ $num_prog -ne $num_query ]
             do
-                read -p "Would you like to run get_elev, mk_gaz_wrld, or extract_tile? [1, 2, 3]" ans
+                read -p "Would you like to run get_elev, mk_gaz_wrld, extract_tile, or convert2tif? [1, 2, 3, or 4]" ans
                 case $ans in
                     1)
                         request=1
@@ -99,14 +112,20 @@ else
                             if [[ $temp -eq 2 ]]
                             then
                                 echo "copy from mk_gaz_wrld"
-                                cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/get_elev/queued_dems/"
+                                if [ -z "$(ls -A "$dot/mk_gaz_wrld/downsized_dems/.")" ]
+                                then
+                                    cp -a "$dot/mk_gaz_wrld/queued_dems/." "$dot/get_elev/queued_dems/"
+                                else
+                                    cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/get_elev/queued_dems/"
+                                fi
                             elif [[ $temp -eq 3 ]]
                             then
-                                #read -p "Full path: " tile
-                                #echo "$tile"
-                                #COULD CONVERT ALL TILES
+                                echo "copy from extract_tile"
                                 cp -a "$dot/extract_tile/results/." "$dot/get_elev/queued_dems/"
-                                
+                            elif [[ $temp -eq 4 ]]
+                            then
+                                echo "copy from convert2tif"
+                                cp -a "$dot/convert2tif/results/." "$dot/get_elev/queued_dems/"
                             else
                                 echo "invalid previous"
                             fi
@@ -135,10 +154,12 @@ else
                                 cp -a "$dot/get_elev/queued_dems/." "$dot/mk_gaz_wrld/queued_dems/"
                             elif [[ $temp -eq 3 ]]
                             then
+                                echo "copy from extract_tile"
                                 cp -a "$dot/extract_tile/results/." "$dot/mk_gaz_wrld/queued_dems/"
-                                #echo "$tile"
-                                #COULD JUST CONVERT ALL TILES
-                                #cp "$tile" "$dot/mk_gaz_wrld/queued_dems/"
+                            elif [[ $temp -eq 4 ]]
+                            then
+                                echo "copy from convert2tif"
+                                cp -a "$dot/convert2tif/results/." "$dot/mk_gaz_wrld/queued_dems/"
                             else
                                 echo "invalid previous"
                             fi
@@ -163,11 +184,20 @@ else
                             then
                                 # counter intuitive
                                 echo "copy from get_elev"
-                                cp -a "$dot/get_elev/queued_dems/." "$dot/mk_gaz_wrld/queued_dems/"
+                                cp -a "$dot/get_elev/queued_dems/." "$dot/extract_tile/queued_dems/"
                             elif [[ $temp -eq 2 ]]
                             then
                                 echo "copy from mk_gaz_wrld"
-                                cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/extract_tile/queued_dems/"
+                                if [ -z "$(ls -A "$dot/mk_gaz_wrld/downsized_dems/.")" ]
+                                then
+                                    cp -a "$dot/mk_gaz_wrld/queued_dems/." "$dot/extract_tile/queued_dems/"
+                                else
+                                    cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/extract_tile/queued_dems/"
+                                fi
+                            elif [[ $temp -eq 4 ]]
+                            then
+                                echo "copy from convert2tif"
+                                cp -a "$dot/convert2tif/results/." "$dot/extract_tile/queued_dems/"
                             else
                                 echo "invalid previous"
                             fi
@@ -181,11 +211,47 @@ else
                         num_prog=$((num_prog+1))
                         request=0
                         ;;
+                    4)
+                        request=4
+                        if [[ $num_prog -ne 0 ]]
+                        then
+                            temp=${order_prog[num_prog-1]}
+                            echo "$temp"
+                            if [[ $temp -eq 1 ]]
+                                then
+                                echo "copy from get_elev"
+                                cp -a "$dot/get_elev/queued_dems/." "$dot/convert2tif/queued_dems/"
+                            elif [[ $temp -eq 2 ]]
+                            then
+                                echo "copy from mk_gaz_wrld"
+                                if [ -z "$(ls -A "$dot/mk_gaz_wrld/downsized_dems/.")" ]
+                                then
+                                    cp -a "$dot/mk_gaz_wrld/queued_dems/." "$dot/convert2tif/queued_dems/"
+                                else
+                                    cp -a "$dot/mk_gaz_wrld/downsized_dems/." "$dot/convert2tif/queued_dems/"
+                                fi
+                            elif [[ $temp -eq 3 ]]
+                            then
+                                echo "copy from extract_tile"
+                                cp -a "$dot/extract_tile/results/." "$dot/convert2tif/queued_dems/"
+                            else
+                                echo "invalid previous"
+                            fi
+                        else
+                            echo "copy from queue"
+                            cp -a "$dot/queue/." "$dot/convert2tif/queued_dems/"
+                        fi
+                        choose_prog $request
+                        order_prog[num_prog]=$request
+                        #echo "${order_prog[num_prog]}"
+                        num_prog=$((num_prog+1))
+                        request=0
+                        ;;
                     *)
-                        echo "I didn't understand, please enter 1, 2, or 3"
+                        echo "I didn't understand, please enter 1, 2, 3, or 4"
                         ;;
                 esac
-            done   
+            done
             ;;
         clean)
             read -p "Would you like to purge your computer of all Docker stuff (won't uninstall docker tho) [y/n] " pur
@@ -195,7 +261,7 @@ else
                 docker system prune -a
             else
                 echo "Please remove manaully the Docker images"
-            fi    
+            fi
             ;;
         *)
             echo "I don't understand"

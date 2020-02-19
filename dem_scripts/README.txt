@@ -1,76 +1,176 @@
-README for mk_gaz_wrld and get_elev
+dem_scripts README
 
-*********************************** Pipeline ****************************************************
-                    (Bulletpoints simply state what files CAN be used for) 
-    
-    mk_gaz_wrld -> (resized dem, jpg)
-        jpg -> make gaz model -> make gaz world 
-        resized dem -> get_elev
-    get_elev -> (text file matrix data, text file local maxima coordinates : elevation)
-        text file matrix data -> find selen coordinates of (x, y) pixel, elev at (x, y)
-        text file local maxima (x,y) coordinates : elevation -> compare with observed horizon
-    
-************************************************************************************************
+****************************** Pre-requisites *******************************************
 
-************************************* IMPORTANT *************************************************
+Prior to running this script ensure you:
+    - Have docker installed
+    - Have one or multiple Digital Elevation Models (DEM) you wish to test
+        - Place the DEM(s) in the dem_scripts/queue folder
 
-    1. DO NOT PUSH ORIGINAL DEMS TO GITHUB, SINCE MOST DEMS ARE QUITE LARGE, YOUR COMMIT PROBABLY WILL BE REJECTED IF THE FILE IS OVER THE 100 MB AND FILES 50-100 MB WILL BE GIVEN A WARNING.
-    2. AFTER RUNNING, PLEASE AT LEAST MAKE SURE TO EXECUTE RESET BEFORE RUNNING THE SCRIPT AGAIN.
-    3. YOU MAY HAVE TO CHANGE THE PERMISSIONS FOR THE RESULTING FILES.
-    4. PLEASE ONLY USE .tif FILES. IF YOU WANT TO USE OTHER DEM TYPES, REFER TO THE gdal DOCUMENTATION AS TO HOW TO MODIFY script_convert.sh IN mk_gaz_wrld AND POSSIBLY localMaxima.py OR testGdal.py IN get_elev.   
+************************ Important Notes *************************************************
 
-*************************************************************************************************
+Note about Github:
+    DO NOT PUSH ORIGINAL DEMS TO GITHUB, SINCE MOST DEMS ARE QUITE LARGE, YOUR
+    COMMIT PROBABLY WILL BE REJECTED IF THE FILE IS OVER THE 100 MB AND FILES
+    50-100 MB WILL BE GIVEN A WARNING.
 
-******************************** BUILDING AND EXECUTING ***************************************    
+Note about Docker:
+    The more you run this script, the more memory the docker images will take up
+    since it appears that each build of an image is kept in like a linked list cache.
+    It may also take sometime to load up a docker image since it needs to install
+    dependencies before running a program. But once you have run one of programs before, it
+    will cache some of the computation when you run it again. However, this may create
+    another image, which is something to keep in mind if you're using docker for more
+    than this application. If you want to keep your other docker stuff, you'll have to
+    manually delete the images. Otherwise, you can simply run the clean command and it
+    will wipe all docker containers, images, etc. Because the containers are set
+    to remove themselves after execution, you just need to get rid of the images.
 
-The only thing you need besides the files in this directory is Docker. After installing Docker, you should be able to run this script although you may need to run sudo depending on your access level with Docker.
+      Remove all docker images:
+        docker rmi $(docker images -q)
+      Remove a docker image by tag:
+        docker rmi test1:ver_number
 
-The following programs that this script can run is mk_gaz_wrld and get_elev.
-    
-    mk_gaz_wrld - given a .tif file, it will downsize it and also produce a .jpg from the downsized .tif. The .jpg will allow you to put it in gazebo as a heightmap or you can put it in as a model so it persists after you restart your computer. The latter requires extra steps but the example s_pole directory contains the all that's need to make a model and the moon_test.world is the file that references the s_pole model.
-    
-    Overview of how to make gazebo world with results (Refer to included example or google for details):
-    
+
+***************************** Running the programs *************************************
+
+NOTE: Please run the reset, queue_reset, and results_reset command first since
+there is just a placeholder file in the otherwise empty folders
+
+To run the script:
+    sudo bash run_programs.sh WHATEVER_COMMAND
+
+    NOTE: sudo is not necessary but you have to make sure that you're a part of
+    the docker group permissions on your computer, see the link for details:
+    https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
+
+Script commands:
+    queue_reset - deletes all files from dem_scripts/queue folder
+    results_reset - deletes all files from dem_scripts/results folder
+    reset - deletes all files from each respective program's nested queued_dems
+            and results folders but not dem_scripts/queue nor dem_scripts/results
+    clean - purge your system of docker containers, images, etc.
+    run
+
+Running the programs:
+    When you execute the script with the run command, you will be prompted with
+    how many programs you would like to run, from 0 to 4. If in range and not 0,
+    you will be prompted with what program would you like to run for each iteration.
+    If you run more than 1 program, the output for each sequential execution will
+    feed off each other. For example, if you say you want to run 2 programs,
+    extract_tile and mk_gaz_wrld, once extract_tile is finished, the results
+    will be queued into mk_gaz_wrld. The script allows you to order the programs
+    however you want, just keep in mind that some permutations aren't efficient
+    or just redundant. If you want to do all of them in a single run, the
+    recommended order is 4->3->2->1.
+
+    Programs:
+
+    1 - get_elev:
+            Given a DEM (.tif), it will output two text files:
+
+                - DEM_FILE_NAME_extr_out.txt - consists of the decimal coordinates
+                (lat, long) of each corner pixel, dimensions of the DEM, and all
+                the elevation values
+
+                - DEM_FILE_NAME_loc_max_out.txt - gets the local maxima values
+                and the (row, col) where they occur within the DEM
+
+    2 - mk_gaz_wrld:
+            Given a DEM (.tif), it will output two files:
+
+                - DEM_FILE_NAME_resized.tif - a downsized dem of a given size
+                - DEM_FILE_NAME_converted.jpg - converted dem to jpg using _resized.tif
+
+            You can use the .jpg to create a gazebo world, see the respectively
+            named section below
+
+    3 - extract_tile:
+            Given a DEM (.tif), it will create DEM tiles (.tif) for each part of the DEM:
+
+                - DEM_FILE_NAME_SOMEX_SOMEY.tif - extracted "tile" of a given size
+
+            This functionality is included to keep the right scaling factor when
+            trying to create a gazebo world from a DEM. DEMs are quite large and
+            represent quite large areas, so to get it into the right format for
+            gazebo, we have to downsize or compress it, which can make quite
+            exaggerated and unrealistic terrain.
+
+      4 - convert2tif:
+              Given a PDS (.lbl + ((aux.xml + .jp2) or (.img))), converts to a
+              DEM (.tif). Might work with ISIS files (.cub + .lbl) but not tested
+
+              If you encounter errors such as:
+                  band 1: IReadBlock failed at X offset 0, Y offset 0: Failed
+                  to read scanline 0
+
+                  or
+
+                  0ERROR 1: Tile part length size inconsistent with stream length
+              Either part of the file is corrupted or missing, try using a
+              different pds or re-download it
+
+IMPORTANT NOTE: Before executing run again, you might want to at least execute
+the reset command otherwise it will execute the old jobs you sent to them as well
+as the new ones in the queues.
+
+Output:
+    Output files can be found in each program's nested results folder and also the
+    dem_scripts/results folder (fed all the output files of each program).
+    NOTE: You may have to change the permissions on the files to edit them.
+
+
+
+****************************** Making a Gazebo World ***********************************
+
+After executing the mk_gaz_wrld, you can use the outputted jpg file to create
+a gazebo world. Unfortunately, we don't have functionality to automate this
+for you but it is possible for to create a script that does since world files
+are essential xml.
+
+Definitions:
+
+    - Model:
+        This is essential making the jpg into a persistent gazebo world object
+        you call in the world file. This consists of multiple items, all within
+        a model_name folder:
+            - model.config
+                References the .sdf file and has metadata
+            - model.sdf
+                Reference the path to the dem jpg (creates the geometry of
+                the object) as well as to paths for normal and diffuse texturing
+            - materials/
+                Stores the jpg and all the other files used for textures or appearance
+    - World:
+        This is where you define the environment that the rover will load up into.
+
+Quick overview:
+
     - Make a model and put in ~/.gazebo/models/
-        - Name_of_model_dir/ 
+        - Name_of_model_dir/
             - model.config
             - model.sdf
             - materials/
     - World file which is moved to EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds
         - ref model in uri and textures as "model://Name_of_model_dir/path_to_files"
         - add physics
-    
-    get_elev - given a .tif file, it will output a text file containing the original elevation data, as well as the decimal degree coordinate of the corner pixels, and it will also output a textfile containing the indices of the local maxima elevation points.
-    
-    If you select the option to run both programs, get_elev will be run with the downsized .tif file from mk_gaz_wrld.
-    
-To run the script, you sh run_programs.sh [KEYWORD], where [KEYWORD] is replaces with one of the following keywords.  
 
-Keywords:
-    
-    reset - deletes files in queued_dems, downsized_dems, converted_dems, and dem_results
-    populate - copy file from queue to queued_dems in mk_gaz_wrld
-    clean - removes all docker containers, images, etc. THIS WILL REMOVE ALL DOCKER STUFF CREATED ON THE COMPUTER
-    queue_reset - deletes files in the queue
-    results_reset - deletes files in the results 
-    run
-        1 - copies files from queue then runs get_elev
-        2 - runs mk_gaz_wrld
-        3 - runs mk_gaz_wrld and then copies resized dem so that it can run get_elev
-        
-Output files are in respective folders, each program's output files are specified in pipeline
-    - All files are also included in results folder
-    
-Example execution:
-        
-    So first you need to copy your files into the queue folder. Next, you run the populate command and then you can run the run command. After execution, you can run the reset the command and then rerun the prior commands in order. The queue_reset and results_reset commands are pretty self explainatory. The clean command is very important, although the script removes the containers from memory, the clean command is there to clean out all Docker things created ever on your computer. If you don't run this, you will have to manually remove the Docker images you don't want, if you wish to clean up the cache. Everytime you run this with different .tif files or of just a new combination of known .tif files, it will put them in Docker cache memory so it would be best to run the clean command before you shut off your computer if you're worried about memory consumption.
+Quick and Dirty Setup:
+    The best way to understand is to look at the example and gazebo documentation.
+    Or you can copy and tweak the model and world examples included in the current
+    directory to create your own world. These instructions will make a world of lunar
+    appearance and physics so adjust for your application.
 
-
-An example of what the results of mk_gaz_wrld could be used to make:
-
-    Move the s_pole directory to ~/.gazebo/models and moon_test.world should already be in /packages/simulation/ezrassor_sim_gazebo/worlds. You now run the roslaunch as normal but simply add the flag to your command "world:=moon_test.world".
-
-    Original DEM used as input for mk_gaz_wrld to create moon_test.world is from: https://astrogeology.usgs.gov/search/map/Moon/LRO/LOLA/Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014 and it's the smaller file for south pole
-
-************************************************************************************************** 
-
+    1. Rename the model folder
+    2. In the .sdf, change the filename in the <heightmap><uri> tag to the
+    name of the new dem jpg
+    3. Also in the .sdf, change the base of the path "model://original_model/..."
+    to "model://whatever_you_renamed_the_folder" for each reference to an image
+    4. Remove the old dem jpg from your materials folder and add the new dem jpg to it
+    5. Copy the model folder into your ~/.gazebo/models/
+    6. Rename the world file to whatever you want
+    6. In the world file, change the filenames and "model://name_of_model"
+    to account for the new model name and the new dem jpg
+    7. Move the world file into EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds/
+    8. You can now use this world by adding the flag "world:=whatever_you_named_the_world_without_the_extension"
+    when launching the simulation
