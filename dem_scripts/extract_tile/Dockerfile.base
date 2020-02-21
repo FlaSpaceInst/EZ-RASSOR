@@ -5,8 +5,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     curl
 
 RUN apt-get update && apt-get install -y \
-    gnupg dirmngr 
-
+    gnupg dirmngr
+    
 RUN mkdir ~/.gnupg
 RUN echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
 
@@ -17,7 +17,7 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
     && rm /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu
 
-COPY /get_elev/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY /extract_tile/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
