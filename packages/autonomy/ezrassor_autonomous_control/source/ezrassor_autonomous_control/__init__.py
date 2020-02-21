@@ -5,3 +5,4 @@ import utility_functions
 import transform_broadcaster
 import obstacle_detection
 import auto_functions
+import laserscan_merger

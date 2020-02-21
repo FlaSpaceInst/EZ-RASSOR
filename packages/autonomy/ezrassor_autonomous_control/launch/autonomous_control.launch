@@ -63,6 +63,10 @@
           name="obstacle_detection"/>
 
     <node pkg="ezrassor_autonomous_control"
+          type="laserscan_merger"
+          name="laserscan_merger"/>
+
+    <node pkg="ezrassor_autonomous_control"
           type="transform_broadcaster"
           name="transform_broadcaster"/>
   </group>
