@@ -13,6 +13,7 @@ catkin_install_python(
     PROGRAMS
         nodes/obstacle_detection
         nodes/autonomous_control
+        nodes/laserscan_merger
         nodes/transform_broadcaster
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
