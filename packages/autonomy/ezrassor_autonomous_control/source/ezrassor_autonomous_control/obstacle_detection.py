@@ -91,33 +91,25 @@ point the robot can see in each direction. This LaserScan is useful for
 detecting cliffs or deep holes that the robot cannot see past.
 """
 def hole_detection(point_cloud):
-    start_total = time.time()
     far_ranges = [float("nan")] * ranges_size
     proj_ranges = [float("nan")] * ranges_size
 
-    start = time.time()
     # read points directly from point cloud message
     pc = np.frombuffer(point_cloud.data, np.float32)
     # reshape into array of xyz values
     pc = np.reshape(pc, (-1, 8))[:, :3]
     # remove NaN points
     pc = pc[~np.isnan(pc).any(axis=1)]
-    rospy.loginfo("Read pc: {}".format(str(time.time() - start)))
 
     if pc.size > 0:
-        start = time.time()
         farthest_point(far_ranges, pc)
-        rospy.loginfo("farthest point: {}".format(str(time.time() - start)))
-        start = time.time()
         floor_projection(proj_ranges, pc)
-        rospy.loginfo("floor project: {}".format(str(time.time() - start)))
 
         min_ranges = [np.nanmin((x, y)) for (x, y) in zip(far_ranges, proj_ranges)]
 
         farthest_point_pub.publish(create_laser_scan(far_ranges))
         floor_projection_pub.publish(create_laser_scan(proj_ranges))
         holes_pub.publish(create_laser_scan(min_ranges))
-    rospy.loginfo("total: {}".format(str(time.time() - start_total)))
 
 def to_laser_scan(forward, right):
     angles = np.arctan2(right, forward)
