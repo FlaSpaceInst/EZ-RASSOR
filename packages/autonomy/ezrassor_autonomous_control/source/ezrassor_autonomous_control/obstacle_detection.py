@@ -16,15 +16,20 @@ ranges_size = None
 scan_time = None
 range_min = None
 range_max = None
+
 floor_height = 0.08
 min_hole_height = 0.05
 floor_error = 1.05
+
+min_obstacle_height = 0.03
 
 cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                         LaserScan, queue_size = 10)
 holes_pub = rospy.Publisher('obstacle_detection/holes',
                                         LaserScan, queue_size = 10)
-negative_pub = rospy.Publisher('obstacle_detection/negative',
+positive_pub = rospy.Publisher('obstacle_detection/positive',
+                                        LaserScan, queue_size = 10)
+combined_pub = rospy.Publisher('obstacle_detection/combined',
                                         LaserScan, queue_size = 10)
 
 """ Initializes data for LaserScan messages
@@ -93,6 +98,7 @@ detecting cliffs or deep holes that the robot cannot see past.
 def hole_detection(point_cloud):
     cliff_ranges = [float("nan")] * ranges_size
     hole_ranges = [float("nan")] * ranges_size
+    positive_ranges = [float("nan")] * ranges_size
 
     # read points directly from point cloud message
     pc = np.frombuffer(point_cloud.data, np.float32)
@@ -104,12 +110,14 @@ def hole_detection(point_cloud):
     if pc.size > 0:
         farthest_point(cliff_ranges, pc)
         floor_projection(hole_ranges, pc)
+        positive_obstacle_detection(positive_ranges, pc)
 
-        min_ranges = [np.nanmin((x, y)) for (x, y) in zip(cliff_ranges, hole_ranges)]
+        min_ranges = [np.nanmin((a, b, c)) for (a, b, c) in zip(cliff_ranges, hole_ranges, positive_ranges)]
 
         cliffs_pub.publish(create_laser_scan(cliff_ranges))
         holes_pub.publish(create_laser_scan(hole_ranges))
-        negative_pub.publish(create_laser_scan(min_ranges))
+        positive_pub.publish(create_laser_scan(positive_ranges))
+        combined_pub.publish(create_laser_scan(min_ranges))
 
 def to_laser_scan(forward, right):
     angles = np.arctan2(right, forward)
@@ -142,6 +150,17 @@ def floor_projection(ranges, pc):
         for step, dist in zip(steps, dists):
             if math.isnan(ranges[step]) or dist < ranges[step]:
                 ranges[step] = dist
+
+def positive_obstacle_detection(ranges, pc):
+    threshold = floor_height * (2 - floor_error) - min_obstacle_height
+    filtered_pc = pc[pc[:,1] < threshold]
+
+    forward = filtered_pc[:,2]
+    right = filtered_pc[:,0]
+    steps, dists = to_laser_scan(forward, right)
+    for step, dist in zip(steps, dists):
+        if math.isnan(ranges[step]) or dist < ranges[step]:
+            ranges[step] = dist
 
 """Initializes obstacle detection."""
 def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
