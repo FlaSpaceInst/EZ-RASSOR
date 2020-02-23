@@ -47,6 +47,20 @@
       <remap from="camera_info" to="depth/camera_info"/>
     </node>
 
+	<node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
+		<param name="frame_id" value="depth_camera_optical_frame"/>
+		<param name="publish_tf" value="false"/>
+		<param name="publish_null_when_lost" value="false"/>
+		<param name="Odom/ResetCountdown" value="1"/>
+		<remap from="rgb/image" to="color/image_raw"/>
+		<remap from="rgb/camera_info" to="color/camera_info"/>
+		<remap from="depth/image" to="depth/image_raw"/>
+		<remap from="odom" to="visual_odom/odom"/>
+		<remap from="odom_info" to="visual_odom/odom_info"/>
+		<remap from="odom_last_frame" to="visual_odom/odom_last_frame"/>
+		<remap from="odom_local_map" to="visual_odom/odom_local_map"/>
+	</node>
+
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		<rosparam command="load" file="$(find ezrassor_autonomous_control)/config/ekf_template.yaml" />
 	</node>
@@ -54,9 +68,5 @@
     <node pkg="ezrassor_autonomous_control"
           type="depth_estimator"
           name="depth_estimator"/>
-
-    <node pkg="ezrassor_autonomous_control"
-          type="transform_broadcaster"
-          name="transform_broadcaster"/>
   </group>
 </launch>

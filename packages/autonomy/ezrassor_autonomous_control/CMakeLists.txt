@@ -13,7 +13,6 @@ catkin_install_python(
     PROGRAMS
         nodes/depth_estimator
         nodes/autonomous_control
-        nodes/transform_broadcaster
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

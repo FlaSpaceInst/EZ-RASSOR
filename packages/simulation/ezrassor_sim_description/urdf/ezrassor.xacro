@@ -405,6 +405,13 @@
     <child link="depth_camera_front"/>
   </joint>
 
+  <joint name="depth_camera_optical_joint" type="fixed">
+	  <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+	  <parent link="depth_camera_front"/>
+	  <child link="depth_camera_optical_frame"/>
+  </joint>
+  <link name="depth_camera_optical_frame"/>
+
   <joint type="continuous" name="left_wheel_front_hinge">
     <origin xyz="0.20 0.285 0" rpy="0 0 0"/>
     <child link="left_wheel_front"/>
