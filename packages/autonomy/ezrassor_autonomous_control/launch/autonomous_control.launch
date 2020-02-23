@@ -68,7 +68,5 @@
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		<rosparam command="load" file="$(find ezrassor_autonomous_control)/config/ekf_template.yaml" />
 	</node>
-
-    <node pkg="ezrassor_autonomous_control"
   </group>
 </launch>
