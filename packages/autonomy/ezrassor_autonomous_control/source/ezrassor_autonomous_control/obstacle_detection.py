@@ -21,7 +21,7 @@ floor_height = 0.08
 min_hole_height = 0.05
 floor_error = 1.05
 
-min_obstacle_height = 0.03
+min_obstacle_height = 0.07
 
 cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                         LaserScan, queue_size = 10)
