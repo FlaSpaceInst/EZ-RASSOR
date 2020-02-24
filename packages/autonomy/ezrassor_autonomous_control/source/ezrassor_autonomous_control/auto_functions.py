@@ -13,7 +13,7 @@ threshold = 4.0
 
 # threshold that determines if a point in the laser scan is a discontinuity
 dist_thresh = 3.0
-buffer_safe = 1.1
+buffer_safe = 1.4
 buffer = buffer_safe * 1.2
 
 def on_scan_update(new_scan):
@@ -79,7 +79,7 @@ def auto_drive_location(world_state, ros_util):
         rospy.loginfo("np.isnan(np.nanmin(scan.ranges)) = {}".format(np.isnan(np.nanmin(scan.ranges))))
 
         # If we can see the goal (no obstacles in the way), go towards it
-        if angle_is_safe(angle2goal_radians, threshold, world_state, ros_util):
+        if angle_is_safe(angle2goal_radians, threshold, world_state, ros_util, 0):
             rospy.loginfo("Turning towards the goal and there is no obstacle in our way!")
             uf.turn(new_heading_degrees, direction, world_state, ros_util)
             ros_util.publish_actions('forward', 0, 0, 0, 0)
@@ -97,9 +97,9 @@ def auto_drive_location(world_state, ros_util):
 
             rospy.loginfo("ranges max = {}, ranges min = {}, Difference between angles = {}".format(scan.angle_max,scan.angle_min, (scan.angle_max - scan.angle_min)))
 
-            # TODO: If the best angle is None, we need to look at an adjacent wedge that we have not already seen!
+            #TODO: If the best angle is None, we need to look at an adjacent wedge that we have not already seen!
+            #TODO: Figure out how to always progress towards the goal and not go back and forth in some cases.
             if best_angle is None:
-
                 continue
                 # # Continue to check different wedges in search for a possible way to progress.
                 # while best_angle is None:   #TODO: Dont just take the first best angle that we see. We want to always pick the one that will take us closest to the goal!
@@ -144,7 +144,7 @@ def auto_drive_location(world_state, ros_util):
                 # TODO: Deadlocks here when too close to an obstacle!!!
 
                 # If obstacles are too close, figure out how to get around them.
-                if np.nanmin(scan.ranges) <= 0.8:
+                if np.nanmin(scan.ranges) <= 1.1:
                     rospy.loginfo("Obstacle too close! Stopping!")
                     ros_util.publish_actions("stop", 0, 0, 0, 0)
                     break
@@ -167,7 +167,7 @@ def auto_drive_location(world_state, ros_util):
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
 # Scan if the laser scan, angle is in radians and dist is the distance to an object or threshold value.
-def angle_is_safe(angle, dist, world_state, ros_util):
+def angle_is_safe(angle, dist, world_state, ros_util, recursive_flag):
 
     # If everything in front of us is open, return true as this is safe to traverse.
     if np.isnan(np.nanmin(scan.ranges)):
@@ -186,13 +186,10 @@ def angle_is_safe(angle, dist, world_state, ros_util):
     start = min(index1, index2)
     end = max(index1, index2)
 
-    # This is the amount of nan values that we need to look for to see if we can fit through
-    rospy.loginfo("Our epsilon array size is = {}".format(end - start))
+    if start < 0 or end >= len(scan.ranges):  #TODO: Should I add a recursive_flag to eliminate the possibility of multiple recursice calls????
 
-    rospy.loginfo(scan.ranges)
-
-    if start < 0 or end >= len(scan.ranges):
-        rospy.loginfo("We are out of the scan.ranges array! Turning towards the area of uncertainty.")
+        if recursive_flag > 0:
+            return False
 
         if start < 0:
             for i in range(0, end):
@@ -203,7 +200,6 @@ def angle_is_safe(angle, dist, world_state, ros_util):
 
             direction = 'right'
             directionBack = 'left'
-            new_angle = start * scan.angle_increment + scan.angle_min + buffer_angle
         else:
             for i in range(start, len(scan.ranges) - 1):
                 # might need to fine-tune dist
@@ -213,21 +209,15 @@ def angle_is_safe(angle, dist, world_state, ros_util):
 
             direction = 'left'
             directionBack = 'right'
-            new_angle = end * scan.angle_increment + scan.angle_min - buffer_angle
 
+        rospy.loginfo("We are out of the scan.ranges array! Turning towards the area of uncertainty.")
         old_heading = world_state.heading
 
         # Turn towards the area of uncertainty and check if it is open and then turn back.
-        uf.turn(rel_to_abs(world_state.heading, new_angle), direction, world_state, ros_util)
-        retVal = angle_is_safe(new_angle, dist, world_state, ros_util)
+        uf.turn(rel_to_abs(world_state.heading, angle), direction, world_state, ros_util)
+        retVal = angle_is_safe(angle, dist, world_state, ros_util, recursive_flag + 1)
         uf.turn(old_heading, directionBack, world_state, ros_util)
         return retVal
-
-    # rospy.loginfo("whole array: {}".format(scan.ranges))
-    # test = []
-    # for i in range(start, end):
-    #     test.append(scan.ranges[i])
-    # rospy.loginfo("epsilon array: {}".format(test))
 
     for i in range(start, end):
         # might need to fine-tune dist
@@ -248,7 +238,7 @@ def get_best_angle(world_state, ros_util):  #TODO: We need to account for the ca
         current = scan.ranges[i]
         previous = scan.ranges[i-1]
 
-        # Both current and previous are NaN: no obstacle edge
+        # Both current and previous are NaN: no obstacle edge   #TODO: What if we see all nan's infront of the goal?? FIX THIS!!!
         if math.isnan(current) and math.isnan(previous):
             continue
         # Only one of current and previous are NaN: obstacle edge
@@ -275,6 +265,10 @@ def get_best_angle(world_state, ros_util):  #TODO: We need to account for the ca
         else:
             continue
 
+        if math.isnan(dist):
+            rospy.loginfo("dist is NAN!!!! I knew it!!!!!!")
+            dist = threshold
+
         # Calculate angle at this index
         d_angle = scan.angle_min + idx * scan.angle_increment
 
@@ -287,10 +281,8 @@ def get_best_angle(world_state, ros_util):  #TODO: We need to account for the ca
         else:
             d_angle -= buffer_angle
 
-        # Scale distance so that robot gets to a point parallel to the obstacle
-        dist = math.sqrt(buffer ** 2 + dist ** 2)
-
-        if not angle_is_safe(d_angle, dist, world_state, ros_util):  # TODO: Should this be dist or a slightly greater value????
+        # We only enter this code if we have found a discontinuity or obstacle edge!
+        if not angle_is_safe(d_angle, dist, world_state, ros_util, 0):  # TODO: Should this be dist or a slightly greater value????
             continue
 
         # Add current heading to get angle in world reference
