@@ -50,6 +50,9 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
         rospy.Subscriber('odometry/filtered',
                          Odometry,
                          world_state.odometryCallBack)
+        rospy.Subscriber('/gazebo/link_states',
+                          LinkStates,
+                          world_state.simStateZPositionCallBack)
     else:
         rospy.Subscriber('/gazebo/link_states',
                          LinkStates,
