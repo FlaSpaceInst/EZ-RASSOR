@@ -51,6 +51,22 @@ class WorldState():
         else:
             self.heading = 360 + heading
 
+    def simStateZPositionCallBack(self, data):
+        """ More accurate position data to use for
+            testing and experimentation.
+        """
+        index = 0
+
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+        try:
+            index = data.name.index(namespace)
+        except Exception:
+            rospy.logdebug("Failed to get index. Skipping...")
+            return
+
+        self.positionZ = data.pose[index].position.z
+
     def simStateCallBack(self, data):
         """ More accurate position data to use for
             testing and experimentation.

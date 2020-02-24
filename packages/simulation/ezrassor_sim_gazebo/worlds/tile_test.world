@@ -42,7 +42,7 @@
             <heightmap>
               <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
               <size>129 129 0</size>
-              <pos>0 0 -50</pos>
+              <pos>0 0 0</pos>
               <texture>
                 <size>10</size>
                 <diffuse>__default__</diffuse>
