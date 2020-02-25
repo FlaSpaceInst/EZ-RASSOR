@@ -8,6 +8,13 @@ import math
 import image_geometry
 import time
 
+# Coordinate system X, Y, Z = RIGHT, DOWN, FORWARD
+XYZ = {
+    "RIGHT" : 0,
+    "DOWN" : 1,
+    "FORWARD" : 2
+}
+
 angle_min = None
 angle_max = None
 angle_increment = None
@@ -23,6 +30,7 @@ floor_error = 1.05
 
 min_obstacle_height = 0.07
 
+# Publishers
 cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                         LaserScan, queue_size = 10)
 holes_pub = rospy.Publisher('obstacle_detection/holes',
@@ -41,27 +49,34 @@ is based heavily on the C++ source code of the "depthimage_to_laserscan"
 package.
 """
 def init_laserscan(camera_info):
+    # Initialize camera 
     cam_model = image_geometry.PinholeCameraModel()
     cam_model.fromCameraInfo(camera_info)
     width = camera_info.width
 
+    # Find vector for leftmost view in camera
     raw_pixel_left = (0, cam_model.cy())
     rect_pixel_left = cam_model.rectifyPoint(raw_pixel_left)
     left_ray = cam_model.projectPixelTo3dRay(rect_pixel_left)
 
+    # Find vector for rightmost view in camera
     raw_pixel_right = (width-1, cam_model.cy())
     rect_pixel_right = cam_model.rectifyPoint(raw_pixel_right)
     right_ray = cam_model.projectPixelTo3dRay(rect_pixel_right)
 
+    # Find vector for center view of camera
     raw_pixel_center = (cam_model.cx(), cam_model.cy())
     rect_pixel_center = cam_model.rectifyPoint(raw_pixel_center)
     center_ray = cam_model.projectPixelTo3dRay(rect_pixel_center)
 
+    # Find the range of angles to be covered in the LaserScan
     global angle_max, angle_min, angle_increment, frame_id, ranges_size
     ranges_size = width
     frame_id = camera_info.header.frame_id
     angle_max = angle_between_rays(left_ray, center_ray)
     angle_min = -angle_between_rays(center_ray, right_ray)
+
+    # Find size of angle buckets in LaserScan
     angle_increment = (angle_max-angle_min) / (ranges_size-1)
 
 """Finds the angle (in radians) between two 3D rays."""
@@ -87,31 +102,44 @@ def create_laser_scan(ranges):
     scan.intensities = []
     return scan
 
-""" Converts PointCloud2 to LaserScan based on Farthest Point method
+""" Converts PointCloud2 to LaserScan
 
-Given a PointCloud2 message representing the floor, this method uses the
-Farthest Point method proposed by Ghani et al. in "Detecting negative
-obstacle using Kinect sensor" to create a LaserScan containing the farthest
-point the robot can see in each direction. This LaserScan is useful for
-detecting cliffs or deep holes that the robot cannot see past.
+Given a PointCloud2 message representing the floor, this method uses the 
+Farthest Point and Floor Projection methods proposed by Ghani et al. in 
+"Detecting negative obstacle using Kinect sensor" to create a LaserScan 
+containing the farthest point the robot can see in each direction. This 
+LaserScan is useful for detecting cliffs or deep holes that the robot 
+cannot see past.
+
+Using a hybrid of the prior two methods, the same PointCloud2 is used to
+create a LaserScan containing the the farthest distance the robot can 
+travel in each direction before encountering an obstacle above the ground.
+
+A final LaserScan is determined by using data from both the detected 
+negative and positive obstacles. This LaserScan is useful for detecting
+any obstacle (above or below the ground) the robot may not traverse over.
 """
-def hole_detection(point_cloud):
+def point_cloud_to_laser_scan(point_cloud):
+    # Initial LaserScans assume infinite travel in every direction
     cliff_ranges = [float("nan")] * ranges_size
     hole_ranges = [float("nan")] * ranges_size
     positive_ranges = [float("nan")] * ranges_size
 
-    # read points directly from point cloud message
+    # Read points directly from point cloud message
     pc = np.frombuffer(point_cloud.data, np.float32)
-    # reshape into array of xyz values
+    # Reshape into array of xyz values
     pc = np.reshape(pc, (-1, 8))[:, :3]
-    # remove NaN points
+    # Remove nan points
     pc = pc[~np.isnan(pc).any(axis=1)]
 
+    # Check if the PointCloud2 has non-nan points
     if pc.size > 0:
+        # Find LaserScans which detect cliffs, holes, and regular obstacles
         farthest_point(cliff_ranges, pc)
         floor_projection(hole_ranges, pc)
         positive_obstacle_detection(positive_ranges, pc)
 
+        # Combine the LaserScans to find the shortest distance until an obstacle in every direction
         min_ranges = [np.nanmin((a, b, c)) for (a, b, c) in zip(cliff_ranges, hole_ranges, positive_ranges)]
 
         cliffs_pub.publish(create_laser_scan(cliff_ranges))
@@ -119,46 +147,62 @@ def hole_detection(point_cloud):
         positive_pub.publish(create_laser_scan(positive_ranges))
         combined_pub.publish(create_laser_scan(min_ranges))
 
-def to_laser_scan(forward, right):
+def to_laser_scan_data(forward, right):
     # multiply angles by -1 to get counter-clockwise (right to left) ordering
     angles = np.negative(np.arctan2(right, forward))
     steps = np.divide(np.subtract(angles, angle_min), angle_increment).astype(int)
+    # Find the distance each forward, right coordinate from the robot
     dists = np.sqrt(np.add(np.square(forward), np.square(right)))
     return steps, dists
 
+"""Converts PointCloud2 to LaserScan for cliffs"""
 def farthest_point(ranges, pc):
-    forward = pc[:,2]
-    right = pc[:,0]
-    steps, dists = to_laser_scan(forward, right)
+    # Slice forward and right coordinates
+    forward = pc[:,XYZ["FORWARD"]]
+    right = pc[:,XYZ["RIGHT"]]
+    steps, dists = to_laser_scan_data(forward, right)
+
+    # Find the farthest point detected in every direction
     for step, dist in zip(steps, dists):
         if math.isnan(ranges[step]) or dist > ranges[step]:
             ranges[step] = dist
 
+"""Converts PointCloud2 to LaserScan for holes"""
 def floor_projection(ranges, pc):
+    # Hole size threshold
     threshold = floor_height * floor_error + min_hole_height
-    filtered_pc = pc[pc[:,1] > threshold]
+    # Filter out points shallower than threshold (hole points)
+    filtered_pc = pc[pc[:,XYZ["DOWN"]] > threshold]
 
     if filtered_pc.size > 0:
-        forward = filtered_pc[:,2]
-        down = filtered_pc[:,1]
-        right = filtered_pc[:,0]
+        # Slice forward and right coordinates
+        forward = filtered_pc[:,XYZ["FORWARD"]]
+        down = filtered_pc[:,XYZ["DOWN"]]
+        right = filtered_pc[:,XYZ["RIGHT"]]
 
+        # Project the right and forward coordinates upto the ground
         forward_projs = np.divide(np.multiply(forward, floor_height), down)
         right_projs = np.divide(np.multiply(right, forward_projs), forward)
+        steps, dists = to_laser_scan_data(forward_projs, right_projs)
 
-        steps, dists = to_laser_scan(forward_projs, right_projs)
-
+        # Find the shortest distance in every direction before a hole point
         for step, dist in zip(steps, dists):
             if math.isnan(ranges[step]) or dist < ranges[step]:
                 ranges[step] = dist
 
+"""Converts PointCloud2 to LaserScan for above-ground obstacles"""
 def positive_obstacle_detection(ranges, pc):
+    # Obstacle height threshold
     threshold = floor_height * (2 - floor_error) - min_obstacle_height
-    filtered_pc = pc[pc[:,1] < threshold]
+    # Filter out points shorter than threshold (obstacle point)
+    filtered_pc = pc[pc[:,XYZ["DOWN"]] < threshold]
 
-    forward = filtered_pc[:,2]
-    right = filtered_pc[:,0]
-    steps, dists = to_laser_scan(forward, right)
+    # Slice forward and right coordinates
+    forward = filtered_pc[:,XYZ["FORWARD"]]
+    right = filtered_pc[:,XYZ["RIGHT"]]
+    steps, dists = to_laser_scan_data(forward, right)
+
+    # Find the shortest distance in every direction before an obstacle point
     for step, dist in zip(steps, dists):
         if math.isnan(ranges[step]) or dist < ranges[step]:
             ranges[step] = dist
@@ -172,7 +216,7 @@ def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
     globals()['range_max'] = range_max
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
     init_laserscan(camera_info)
-    rospy.Subscriber("depth/points", PointCloud2, hole_detection)
+    rospy.Subscriber("depth/points", PointCloud2, point_cloud_to_laser_scan)
     rospy.spin()
 
 if __name__ == "__main__":
