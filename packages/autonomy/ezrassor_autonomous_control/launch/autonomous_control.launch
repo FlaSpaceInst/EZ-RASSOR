@@ -46,6 +46,7 @@
     <node pkg="image_view" type="stereo_view" name="stereo_view">
       <remap from="stereo" to="/"/>
       <remap from="image" to="/image_rect_color"/>
+      <param name="approximate_sync" value="true"/>
     </node>
 
     <node pkg="ezrassor_autonomous_control"

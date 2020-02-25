@@ -44,13 +44,13 @@
     <!-- Spawn the model. -->
     <include file="$(find ezrassor_sim_description)/launch/model.launch">
       <arg name="model_id" value="$(arg robot_count)"/>
-      <arg name="spawn_x_coord"
+      <arg name="spawn_x_coords"
            value="$(eval str(spawn_x_coords).split()[robot_count - 1])"
            unless="$(eval spawn_x_coords == 'default')"/>
-      <arg name="spawn_y_coord"
+      <arg name="spawn_y_coords"
            value="$(eval str(spawn_y_coords).split()[robot_count - 1])"
            unless="$(eval spawn_y_coords == 'default')"/>
-      <arg name="spawn_z_coord"
+      <arg name="spawn_z_coords"
            value="$(eval str(spawn_z_coords).split()[robot_count - 1])"
            unless="$(eval spawn_z_coords == 'default')"/>
     </include>
