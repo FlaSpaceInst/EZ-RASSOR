@@ -120,7 +120,8 @@ def hole_detection(point_cloud):
         combined_pub.publish(create_laser_scan(min_ranges))
 
 def to_laser_scan(forward, right):
-    angles = np.arctan2(right, forward)
+    # multiply angles by -1 to get counter-clockwise (right to left) ordering
+    angles = np.negative(np.arctan2(right, forward))
     steps = np.divide(np.subtract(angles, angle_min), angle_increment).astype(int)
     dists = np.sqrt(np.add(np.square(forward), np.square(right)))
     return steps, dists
