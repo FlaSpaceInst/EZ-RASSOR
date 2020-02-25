@@ -37,7 +37,7 @@
   </group>
 
   <!-- Recursively spawn remaining rovers -->
-  <include file="$(find ezrassor_launcher)/launch/spawn_rovers.launch"
+  <include file="$(find ezrassor_swarm_control)/launch/spawn_rovers.launch"
            unless="$(eval robot_count == 1)">
     <arg name="robot_count" value="$(eval robot_count - 1)"/>
     <arg name="spawn_x_coords" value="$(arg spawn_x_coords)"/>

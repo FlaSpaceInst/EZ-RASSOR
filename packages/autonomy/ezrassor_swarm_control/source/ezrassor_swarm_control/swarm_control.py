@@ -50,8 +50,8 @@ def on_start_up(robot_count, target_xs, target_ys):
     rospy.init_node('swarm_control')
 
     # Unpack digsite coordinates from string format
-    target_xs = target_xs.split(' ')
-    target_ys = target_ys.split(' ')
+    target_xs = str(target_xs).split(' ')
+    target_ys = str(target_ys).split(' ')
 
     if len(target_xs) != len(target_ys):
         raise ValueError('Number of dig site x coordinates does not match the number of y coordinates')
