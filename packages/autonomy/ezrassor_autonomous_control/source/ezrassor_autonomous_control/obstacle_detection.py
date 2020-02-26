@@ -104,20 +104,15 @@ def create_laser_scan(ranges):
 
 """ Converts PointCloud2 to LaserScan
 
-Given a PointCloud2 message representing the floor, this method uses the 
-Farthest Point and Floor Projection methods proposed by Ghani et al. in 
-"Detecting negative obstacle using Kinect sensor" to create a LaserScan 
-containing the farthest point the robot can see in each direction. This 
-LaserScan is useful for detecting cliffs or deep holes that the robot 
-cannot see past.
-
-Using a hybrid of the prior two methods, the same PointCloud2 is used to
-create a LaserScan containing the the farthest distance the robot can 
-travel in each direction before encountering an obstacle above the ground.
-
-A final LaserScan is determined by using data from both the detected 
-negative and positive obstacles. This LaserScan is useful for detecting
-any obstacle (above or below the ground) the robot may not traverse over.
+Given a PointCloud2 message representing the area in front of the robot,
+this method uses the Farthest Point and Floor Projection methods
+proposed by Ghani et al. in "Detecting negative obstacle using Kinect
+sensor" to create LaserScans containing the farthest point the robot
+can see in each direction (to detect cliffs) and the closest holes
+to the robot in each direction. These LaserScans are combined with a
+LaserScan containing the closest above-ground obstacles in each
+direction to form a LaserScan that contains the closest cliff, hole,
+or above-ground obstacle in each direction.
 """
 def point_cloud_to_laser_scan(point_cloud):
     # Initial LaserScans assume infinite travel in every direction
