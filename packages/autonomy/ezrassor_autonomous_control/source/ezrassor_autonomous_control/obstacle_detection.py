@@ -134,8 +134,10 @@ def point_cloud_to_laser_scan(point_cloud):
         floor_projection(hole_ranges, pc)
         positive_obstacle_detection(positive_ranges, pc)
 
-        # Combine the LaserScans to find the shortest distance until an obstacle in every direction
-        min_ranges = [np.nanmin((a, b, c)) for (a, b, c) in zip(cliff_ranges, hole_ranges, positive_ranges)]
+        # Combine the LaserScans to find the shortest distance until an
+        # obstacle in every direction
+        min_ranges = [np.nanmin((a, b, c)) for (a, b, c) in zip(
+            cliff_ranges, hole_ranges, positive_ranges)]
 
         cliffs_pub.publish(create_laser_scan(cliff_ranges))
         holes_pub.publish(create_laser_scan(hole_ranges))
@@ -145,7 +147,7 @@ def point_cloud_to_laser_scan(point_cloud):
 def to_laser_scan_data(forward, right):
     # multiply angles by -1 to get counter-clockwise (right to left) ordering
     angles = np.negative(np.arctan2(right, forward))
-    steps = np.divide(np.subtract(angles, angle_min), angle_increment).astype(int)
+    steps = np.divide(np.subtract(angles,angle_min),angle_increment).astype(int)
     # Find the distance each forward, right coordinate from the robot
     dists = np.sqrt(np.add(np.square(forward), np.square(right)))
     return steps, dists
