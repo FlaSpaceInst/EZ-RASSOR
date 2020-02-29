@@ -13,6 +13,7 @@ catkin_install_python(
     PROGRAMS
         nodes/depth_estimator
         nodes/autonomous_control
+        nodes/park_ranger
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

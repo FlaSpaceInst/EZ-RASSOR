@@ -66,6 +66,10 @@
 	</node>
 
     <node pkg="ezrassor_autonomous_control"
+          type="park_ranger"
+          name="park_ranger"/>
+
+    <node pkg="ezrassor_autonomous_control"
           type="depth_estimator"
           name="depth_estimator"/>
   </group>
