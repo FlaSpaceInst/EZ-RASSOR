@@ -47,6 +47,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
 
     # Setup Subscriber Callbacks
     if real_odometry:
+        path = world_state.path_dem()
+        world_state.get_origin_dem_data(path)
         rospy.Subscriber('odometry/filtered',
                          Odometry,
                          world_state.odometryCallBack)
