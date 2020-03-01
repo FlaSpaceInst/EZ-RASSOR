@@ -2,21 +2,18 @@ import rospy
 import sys
 
 from std_msgs.msg import Int8, Int16, String
-from geometry_msgs.msg import Point, Pose
+from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
 
 import actionlib
-from ezrassor_swarm_control.msg import *
-
-from numpy import random as r
+from ezrassor_swarm_control.msg import waypointAction, waypointResult
 
 import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
-import nav_functions as nf
 
 
 class RoverController:
@@ -62,13 +59,12 @@ class RoverController:
                          Int8,
                          self.ros_util.autoCommandCallBack)
 
-
         if swarm_control:
-            # Create action server used to control the rover via the swarm_controller
-            self.action_name = 'waypoint'
-            self.action_server = actionlib.SimpleActionServer(self.action_name, waypointAction,
+            # Create waypoint action server used to control the rover via the swarm_controller
+            self.server_name = 'waypoint'
+            self.waypoint_server = actionlib.SimpleActionServer(self.server_name, waypointAction,
                                                               execute_cb=self.move_rover, auto_start=False)
-            self.action_server.start()
+            self.waypoint_server.start()
 
             rospy.loginfo('Rover waypoint action server initialized.')
 
@@ -86,89 +82,30 @@ class RoverController:
             self.world_state.target_location = target_location
             self.world_state.dig_site = temp
 
-
-    def preempt_check(self):
-        if self.action_server.is_preempt_requested():
-            rospy.loginfo('%s: Preempted' % self.action_name)
-            self.action_server.set_preempted()
-            return True
-
-    def send_feedback(self):
-        # Get rover's current pose
-        current_pose = Pose()
-        current_pose.position.x = self.world_state.positionX
-        current_pose.position.y = self.world_state.positionY
-        current_pose.position.z = self.world_state.positionZ
-        current_pose.orientation = self.world_state.orientation
-
-        feedback = waypointFeedback(current_pose=current_pose)
-
-        # Publish feedback (current pose)
-        self.action_server.publish_feedback(feedback)
-        return feedback
-
     def move_rover(self, goal):
         """
-        Callback executed when the swarm controller sends a goal to a rover via the rover's action server
+        Callback executed when the swarm controller sends a goal to a rover via the
+        rover's action client-server API
         """
-        rate = rospy.Rate(10)
 
-        rospy.loginfo('Action server {} moving rover to {}'.format(
-            self.namespace + self.action_name, (goal.target.x, goal.target.y)))
-
-        # Check that preempt has not been requested by the client
-        if self.preempt_check():
+        # Check that goal has not been preempted by the client
+        if uf.preempt_check(self.waypoint_server):
             return
 
         self.world_state.target_location = goal.target
-        feedback = waypointFeedback()
 
-        # Set arms up for travel
-        uf.set_front_arm_angle(self.world_state, self.ros_util, 1.3)
-        uf.set_back_arm_angle(self.world_state, self.ros_util, 1.3)
+        rospy.loginfo('Action server {} moving rover to {}'.format(
+            self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
-        # Loop until location is reached
-        while af.at_target(self.world_state, self.ros_util):
-
-            if uf.self_check(self.world_state, self.ros_util) != 1:
-                rospy.logdebug('Status check failed.')
-                self.action_server.set_preempted()
-                return
-
-            # Get new heading angle relative to current heading as (0,0)
-            new_heading = nf.calculate_heading(self.world_state, self.ros_util)
-            angle_difference = nf.adjust_angle(self.world_state.heading, new_heading)
-
-            direction = 'right' if angle_difference < 0 else 'left'
-
-            # Adjust heading until it matches new heading
-            while not ((new_heading - 5) < self.world_state.heading < (new_heading + 5)):
-                self.ros_util.publish_actions(direction, 0, 0, 0, 0)
-                self.ros_util.rate.sleep()
-
-            # Avoid obstacles by turning left or right if warning flag is raised
-            if self.world_state.warning_flag == 1:
-                uf.dodge_right(self.world_state, self.ros_util)
-            if self.world_state.warning_flag == 2:
-                uf.dodge_left(self.world_state, self.ros_util)
-            if self.world_state.warning_flag == 3:
-                uf.reverse_turn(self.world_state, self.ros_util)
-                rospy.loginfo('Avoiding detected obstacle...')
-
-            # Otherwise go forward
-            self.ros_util.publish_actions('forward', 0, 0, 0, 0)
-            self.ros_util.rate.sleep()
-            feedback = self.send_feedback()
-
-        # Stop the rover
-        self.ros_util.publish_actions('stop', 0, 0, 0, 0)
+        # Set rover to autonomously navigate to target
+        feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
 
         # Publish result
         result = waypointResult()
         result.final_pose = feedback.current_pose
-        rospy.loginfo('Action server {} succeeded. Destination reached!'.format(self.namespace + self.action_name))
 
-        self.action_server.set_succeeded(result)
+        # Send resulting rover pose
+        self.waypoint_server.set_succeeded(result)
 
     def full_autonomy(self, world_state, ros_util):
         """ Full Autonomy Loop Function """
@@ -235,6 +172,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                                        max_linear_velocity, max_angular_velocity,
                                        real_odometry, swarm_control)
 
+    # Start autonomous control loop if rover isn't being controlled by a swarm controller
     if not swarm_control:
         rover_controller.autonomous_control_loop(rover_controller.world_state,
                                                  rover_controller.ros_util)

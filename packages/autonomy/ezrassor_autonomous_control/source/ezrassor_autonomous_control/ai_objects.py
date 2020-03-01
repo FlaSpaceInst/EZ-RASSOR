@@ -9,6 +9,7 @@ import math
 
 from random import uniform
 
+
 class WorldState():
     """ World State Object Representing 
         All Sensor Data 
@@ -32,10 +33,9 @@ class WorldState():
         self.battery = 100
         self.hardware_status = True
 
-
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
-        #print(data.position[0], data.position[1])
+        # print(data.position[0], data.position[1])
 
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
@@ -55,30 +55,28 @@ class WorldState():
         index = 0
 
         namespace = rospy.get_namespace()
-        namespace = namespace[1:-1]+"::base_link"
+        namespace = namespace[1:-1] + "::base_link"
         try:
             index = data.name.index(namespace)
         except Exception:
             rospy.logdebug("Failed to get index. Skipping...")
 
             return
-            
 
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
-        
+
         self.positionX = data.pose[index].position.x
         self.positionY = data.pose[index].position.y
 
         self.orientation = data.pose[index].orientation
-        
-        heading = nf.quaternion_to_yaw(data.pose[index]) * 180/math.pi
+
+        heading = nf.quaternion_to_yaw(data.pose[index]) * 180 / math.pi
 
         if heading > 0:
             self.heading = heading
         else:
             self.heading = 360 + heading
-
 
     def imuCallBack(self, data):
         " Heading data collected from orientation IMU data. "
@@ -105,31 +103,31 @@ class ROSUtility():
     """
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
-                 front_drum_topic, back_drum_topic, 
+                 front_drum_topic, back_drum_topic,
                  max_linear_velocity, max_angular_velocity):
         """ Initialize the ROS Utility Object. """
-        
-        self.movement_pub = rospy.Publisher(movement_topic, 
-                                            Twist, 
-                                            queue_size=10)
-        self.front_arm_pub = rospy.Publisher(front_arm_topic, 
-                                             Float32, 
-                                             queue_size=10)
-        self.back_arm_pub = rospy.Publisher(back_arm_topic, 
-                                            Float32, 
-                                            queue_size=10)
-        self.front_drum_pub = rospy.Publisher(front_drum_topic, 
-                                              Float32, 
-                                              queue_size=10)
-        self.back_drum_pub = rospy.Publisher(back_drum_topic, 
-                                             Float32, 
-                                             queue_size=10)
-        self.control_pub = rospy.Publisher('secondary_override_toggle', 
-                                           Bool, 
-                                           queue_size=10)
-        self.rate = rospy.Rate(45) # 10hz
 
-        #self.max_linear_velocity = max_linear_velocity
+        self.movement_pub = rospy.Publisher(movement_topic,
+                                            Twist,
+                                            queue_size=10)
+        self.front_arm_pub = rospy.Publisher(front_arm_topic,
+                                             Float32,
+                                             queue_size=10)
+        self.back_arm_pub = rospy.Publisher(back_arm_topic,
+                                            Float32,
+                                            queue_size=10)
+        self.front_drum_pub = rospy.Publisher(front_drum_topic,
+                                              Float32,
+                                              queue_size=10)
+        self.back_drum_pub = rospy.Publisher(back_drum_topic,
+                                             Float32,
+                                             queue_size=10)
+        self.control_pub = rospy.Publisher('secondary_override_toggle',
+                                           Bool,
+                                           queue_size=10)
+        self.rate = rospy.Rate(45)  # 10hz
+
+        # self.max_linear_velocity = max_linear_velocity
         self.max_linear_velocity = 0.5
         self.max_angular_velocity = max_angular_velocity
 
@@ -137,7 +135,7 @@ class ROSUtility():
 
         self.threshold = .5
 
-    def publish_actions(self, movement, front_arm, back_arm, 
+    def publish_actions(self, movement, front_arm, back_arm,
                         front_drum, back_drum):
         """ Publishes actions for all joints and motors """
 

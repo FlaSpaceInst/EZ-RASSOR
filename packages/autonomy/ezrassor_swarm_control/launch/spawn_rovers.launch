@@ -9,7 +9,7 @@
   <arg name="spawn_z_coords" default="default"/>
   <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
-  <arg name="swarm_control" value="true"/>
+  <arg name="swarm_control" default="default"/>
 
   <!-- Launch a rover's communication system -->
   <group ns="ezrassor$(arg robot_count)">
@@ -21,7 +21,9 @@
       <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
-      <arg name="swarm_control" value="$(arg swarm_control)"/>
+      <arg name="swarm_control"
+            value="$(arg swarm_control)"
+            unless="$(eval swarm_control == 'default')"/>
     </include>
 
      <!-- Launch the rover's control nodes. -->

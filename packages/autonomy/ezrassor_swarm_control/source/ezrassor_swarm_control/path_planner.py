@@ -19,7 +19,7 @@ class PathPlanner:
     Global A* path planner which runs on the gazebo world's height-map
     """
 
-    def __init__(self, map_path):
+    def __init__(self, map_path, rover_max_climb_slope):
 
         # Read and store height-map
         self.map = np.array(Image.open(map_path), dtype=int)
@@ -33,7 +33,7 @@ class PathPlanner:
         # self.neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
 
         # Maximum slope a rover can climb
-        self.max_slope = 1
+        self.max_slope = rover_max_climb_slope
 
     def find_path(self, start, goal):
         """

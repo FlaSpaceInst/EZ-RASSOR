@@ -19,6 +19,9 @@
   <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
+  <!-- Will always use swarm control software -->
+  <arg name="swarm_control" value="true"/>
+
 <!-- Spawn each of the rovers -->
   <include file="$(find ezrassor_swarm_control)/launch/spawn_rovers.launch">
     <arg name="robot_count"
@@ -39,6 +42,8 @@
     <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
+    <arg name="swarm_control"
+            value="$(arg swarm_control)"/>
   </include>
 
   <!-- Launch the swarm management system -->
