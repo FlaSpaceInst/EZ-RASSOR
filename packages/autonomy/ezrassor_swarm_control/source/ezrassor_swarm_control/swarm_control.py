@@ -1,10 +1,11 @@
 import rospy
 from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
+
 from ezrassor_swarm_control.msg import Path
 
 from path_planner import PathPlanner
-
+from swarm_utils import get_rover_status
 
 class SwarmController:
     def __init__(self, robot_count, dig_sites):
@@ -22,21 +23,22 @@ class SwarmController:
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
 
         # wait for rovers to spawn
-        rospy.sleep(4.)
+        rospy.sleep(5.)
 
         height_map = '/home/danielzgsilva/.gazebo/models/random/materials/textures/random_map.jpg'
         path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
 
-        start = Point()
-        start.x = 0
-        start.y = 0
+        # Get status (battery and pose) of rover 1 using status service
+        status = get_rover_status(1)
 
-        # Find path
-        path = path_planner.find_path(start, self.dig_sites[0])
+        if status is not None:
+            # Find path
 
-        # Send rover 1 along path
-        if path is not None:
-            self.waypoint_pubs[0].publish(path)
+            path = path_planner.find_path(status.pose.position, self.dig_sites[0])
+
+            # Send rover 1 along path
+            if path is not None:
+                self.waypoint_pubs[0].publish(path)
 
 def on_start_up(robot_count, target_xs, target_ys):
     """ Initialization Function  """
