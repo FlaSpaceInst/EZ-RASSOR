@@ -16,7 +16,13 @@ add_action_files(
 )
 
 add_message_files(
-    FILES Path.msg)
+    FILES Path.msg
+)
+
+add_service_files(
+  DIRECTORY srv
+  FILES GetRoverStatus.srv
+)
 
 generate_messages(DEPENDENCIES
   actionlib_msgs

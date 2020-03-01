@@ -7,9 +7,10 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
-
 import actionlib
+
 from ezrassor_swarm_control.msg import waypointAction, waypointResult
+from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
 
 import ai_objects as obj
 import auto_functions as af
@@ -66,7 +67,10 @@ class RoverController:
                                                               execute_cb=self.move_rover, auto_start=False)
             self.waypoint_server.start()
 
-            rospy.loginfo('Rover waypoint action server initialized.')
+            rospy.loginfo('Rover waypoint server initialized.')
+
+            self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
+            rospy.loginfo('Rover status service initialized.')
 
         else:
             # Basic autonomous control using the autonomous control loop
@@ -85,7 +89,7 @@ class RoverController:
     def move_rover(self, goal):
         """
         Callback executed when the swarm controller sends a goal to a rover via the
-        rover's action client-server API
+        rover's waypoint client-server API
         """
 
         # Check that goal has not been preempted by the client
@@ -94,7 +98,7 @@ class RoverController:
 
         self.world_state.target_location = goal.target
 
-        rospy.loginfo('Action server {} moving rover to {}'.format(
+        rospy.loginfo('Waypoint server {} moving rover to {}'.format(
             self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
         # Set rover to autonomously navigate to target
@@ -106,6 +110,23 @@ class RoverController:
 
         # Send resulting rover pose
         self.waypoint_server.set_succeeded(result)
+
+    def send_status(self, request):
+        """
+        Sends the rover's current battery and pose to the swarm controller
+        """
+
+        status = GetRoverStatusResponse()
+        status.pose.position.x = self.world_state.positionX
+        status.pose.position.y = self.world_state.positionY
+        status.pose.position.z = self.world_state.positionZ
+        status.pose.orientation = self.world_state.orientation
+        status.battery = self.world_state.battery
+
+        rospy.loginfo('Service {} sending current status'.format(
+                        self.status_service.resolved_name))
+
+        return status
 
     def full_autonomy(self, world_state, ros_util):
         """ Full Autonomy Loop Function """
