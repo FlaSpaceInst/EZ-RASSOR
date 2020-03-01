@@ -9,7 +9,7 @@
   <arg name="spawn_z_coords" default="default"/>
   <arg name="digsite_x_coords" default="default"/>
   <arg name="digsite_y_coords" default="default"/>
-  <arg name="world" default="default"/>
+  <arg name="world" default="random"/>
   <arg name="debug" default="default"/>
   <arg name="paused" default="default"/>
   <arg name="verbose" default="default"/>

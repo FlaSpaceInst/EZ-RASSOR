@@ -1,0 +1,11 @@
+# Action specification file allowing the swarm controller to communicate with
+# and send goals to each EZ-RASSOR
+
+# Goal is a point in space
+geometry_msgs/Point target
+---
+# Result is the rover's final pose after executing the action
+geometry_msgs/Pose final_pose
+---
+# Feedback message provides the rover's current pose while executing the action
+geometry_msgs/Pose current_pose
