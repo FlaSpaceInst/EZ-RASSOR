@@ -21,6 +21,7 @@
   <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
+
   <!-- Launch the communication system for a simulated robot. -->
   <group ns="ezrassor$(arg robot_count)">
     <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
@@ -39,6 +40,7 @@
            unless="$(eval digsite_y_coords == 'default')"/>
       <arg name="enable_cameras" value="$(arg enable_cameras)"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+      <arg name="swarm_control" value="false"/>
     </include>
 
     <!-- Spawn the model. -->

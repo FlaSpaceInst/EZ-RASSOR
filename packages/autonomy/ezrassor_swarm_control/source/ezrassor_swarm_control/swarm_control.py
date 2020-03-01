@@ -1,8 +1,9 @@
 import rospy
-import sys
-
 from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
+from ezrassor_swarm_control.msg import Path
+
+from path_planner import PathPlanner
 
 
 class SwarmController:
@@ -10,15 +11,10 @@ class SwarmController:
         self.robot_count = robot_count
         self.dig_sites = dig_sites
 
-        self.rover_control_pubs = [rospy.Publisher('ezrassor{}/autonomous_toggles'.format(i),
-                                                   Int8,
-                                                   queue_size=10)
-                                   for i in range(1, self.robot_count + 1)]
-
-        self.rover_target_pubs = [rospy.Publisher('ezrassor{}/rover_target'.format(i),
-                                                  Point,
-                                                  queue_size=10)
-                                  for i in range(1, self.robot_count + 1)]
+        self.waypoint_pubs = [rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
+                                                 Path,
+                                                 queue_size=10)
+                              for i in range(1, robot_count+1)]
 
     def run(self):
         rospy.loginfo('Running the swarm controller for {} rover(s)'.format(self.robot_count))
@@ -26,21 +22,25 @@ class SwarmController:
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
 
         # wait for rovers to spawn
-        rospy.sleep(8.)
+        rospy.sleep(4.)
 
-        # Simply testing out publishing rover target topic
-        self.rover_target_pubs[0].publish(self.dig_sites[0])
-        self.rover_control_pubs[0].publish(1)
-        rospy.sleep(17.)
-        # Dig
-        self.rover_control_pubs[0].publish(2)
-        rospy.sleep(12.)
-        # Return to 0,0
-        home = Point()
-        home.x = 5.
-        home.y = 0.
-        self.rover_target_pubs[0].publish(home)
-        self.rover_control_pubs[0].publish(1)
+        height_map = '/home/danielzgsilva/.gazebo/models/random/materials/textures/random_map.jpg'
+        path_planner = PathPlanner(height_map)
+
+        start = Point()
+        start.x = -20
+        start.y = 5
+
+        # Find path
+        path = path_planner.find_path(start, self.dig_sites[0])
+
+        # Send rover 1 along path
+        if path is not None:
+            self.waypoint_pubs[0].publish(path)
+
+        # Test sending goal from client to server
+        # result = self.waypoint_client.send_waypoint(path[1])
+        # rospy.loginfo('Resulting pose: {}'.format(result.final_pose))
 
 
 def on_start_up(robot_count, target_xs, target_ys):
@@ -61,8 +61,8 @@ def on_start_up(robot_count, target_xs, target_ys):
 
     for i in range(len(target_xs)):
         coord = Point()
-        coord.x = float(target_xs[i])
-        coord.y = float(target_ys[i])
+        coord.x = int(target_xs[i])
+        coord.y = int(target_ys[i])
 
         dig_sites.append(coord)
 

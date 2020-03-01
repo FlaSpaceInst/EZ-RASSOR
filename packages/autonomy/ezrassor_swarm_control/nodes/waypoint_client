@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+import rospy
+from ezrassor_swarm_control import waypoint_client
+
+robot_num = rospy.get_param('waypoint_client/robot_num')
+
+waypoint_client.on_start_up(robot_num)
