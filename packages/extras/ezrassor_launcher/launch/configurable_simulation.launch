@@ -40,7 +40,6 @@
            unless="$(eval digsite_y_coords == 'default')"/>
       <arg name="enable_cameras" value="$(arg enable_cameras)"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
-      <arg name="swarm_control" value="false"/>
     </include>
 
     <!-- Spawn the model. -->

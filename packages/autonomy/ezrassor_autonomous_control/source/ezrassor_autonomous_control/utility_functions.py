@@ -2,6 +2,10 @@ import rospy
 import time
 import nav_functions as nf
 
+from geometry_msgs.msg import Pose
+from ezrassor_swarm_control.msg import waypointFeedback
+
+
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
     rospy.loginfo('Setting front arm angle to %s radian%s...',
@@ -19,6 +23,7 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
+
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
     rospy.loginfo('Setting back arm angle to %s radian%s...',
@@ -35,6 +40,7 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
             ros_util.rate.sleep()
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
+
 
 def self_check(world_state, ros_util):
     """ Check for unfavorable states in the system 
@@ -62,6 +68,7 @@ def self_check(world_state, ros_util):
     '''
     return 1
 
+
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
@@ -76,6 +83,8 @@ def reverse_turn(world_state, ros_util):
 
 
 def dodge_left(world_state, ros_util):
+    rospy.loginfo('Dodging left...')
+
     start_x = world_state.positionX
     start_y = world_state.positionY
 
@@ -83,17 +92,19 @@ def dodge_left(world_state, ros_util):
 
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
-            threshold+=1
+            threshold += 1
         ros_util.publish_actions('left', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.positionX, 
+    while nf.euclidean_distance(start_x, world_state.positionX,
                                 start_y, world_state.positionY) < 2:
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
 
 def dodge_right(world_state, ros_util):
+    rospy.loginfo('Dodging right...')
+
     start_x = world_state.positionX
     start_y = world_state.positionY
 
@@ -101,23 +112,65 @@ def dodge_right(world_state, ros_util):
 
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
-            threshold+=1
+            threshold += 1
         ros_util.publish_actions('right', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.positionX, 
+    while nf.euclidean_distance(start_x, world_state.positionX,
                                 start_y, world_state.positionY) < 2:
-        
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
+
 
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
     rospy.loginfo("Starting auto self-right...")
-    while(world_state.on_side != False):
+    while (world_state.on_side != False):
         ros_util.publish_actions('stop', 0, 1, 0, 0)
         ros_util.publish_actions('stop', 1, 0, 0, 0)
-            
+
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
+
+##################################################################
+#  THE BELOW FUNCTIONS ARE UTILIZED BY THE WAYPOINT ACTION       #
+#  CLIENT-SERVER API WHICH IS ONLY USED IN SWARM CONTROL MODE     #
+##################################################################
+
+def send_feedback(world_state, waypoint_server):
+    """
+    Send feedback (rover current pose) from a rover's action server back to the
+    action client
+    """
+
+    if waypoint_server is None:
+        return None
+
+    current_pose = Pose()
+    current_pose.position.x = world_state.positionX
+    current_pose.position.y = world_state.positionY
+    current_pose.position.z = world_state.positionZ
+    current_pose.orientation = world_state.orientation
+
+    feedback = waypointFeedback(current_pose=current_pose)
+
+    # Publish feedback (current pose)
+    waypoint_server.publish_feedback(feedback)
+    return feedback
+
+
+def preempt_check(waypoint_server):
+    """
+    Returns true if an action request has been canceled
+    """
+
+    if waypoint_server is None:
+        return False
+
+    if waypoint_server.is_preempt_requested():
+        rospy.loginfo('%s: Preempted' % (rospy.get_namespace() + waypoint_server.action_server.ns))
+        waypoint_server.set_preempted()
+        return True
+
+    return False
