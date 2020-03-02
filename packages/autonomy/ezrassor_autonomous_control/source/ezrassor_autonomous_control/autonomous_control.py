@@ -46,15 +46,28 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     world_state.dig_site = temp
 
     # Setup Subscriber Callbacks
+
+    # If enable_real_odometry flag is true, use odometry for position
     if real_odometry:
+
+        # Get path to dem_data/
         path = world_state.path_dem()
+
+        # Offset the z value in world state according to expected elevation at
+        # Gazebo's origin (0, 0) -> dem (size / 2, size / 2)
         world_state.get_origin_dem_data(path)
+
+        # Get x and y from filtered odometry readings
         rospy.Subscriber('odometry/filtered',
                          Odometry,
                          world_state.odometryCallBack)
+
+        # Simulates "altimeter" data
         rospy.Subscriber('/gazebo/link_states',
                           LinkStates,
                           world_state.simStateZPositionCallBack)
+
+    # If enable_real_odometry flag is false, just use Gazebo's position
     else:
         rospy.Subscriber('/gazebo/link_states',
                          LinkStates,
