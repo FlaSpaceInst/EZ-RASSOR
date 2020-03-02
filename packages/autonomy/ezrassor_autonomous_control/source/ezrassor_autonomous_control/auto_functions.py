@@ -31,6 +31,7 @@ def auto_drive_location(world_state, ros_util):
     # Main loop until location is reached
     while at_target(world_state, ros_util):
 
+        # Gives current location coordinates
         rospy.loginfo("current: [ %s, %s, %s ]", str(world_state.positionX), str(world_state.positionY), str(world_state.positionZ))
 
         if uf.self_check(world_state, ros_util) != 1:
