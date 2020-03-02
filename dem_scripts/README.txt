@@ -37,9 +37,6 @@ Note about Docker:
 
 ***************************** Running the programs *************************************
 
-NOTE: Please run the reset, queue_reset, and results_reset command first since
-there is just a placeholder file in the otherwise empty folders
-
 To run the script:
     sudo bash run_programs.sh WHATEVER_COMMAND
 
@@ -96,8 +93,10 @@ Running the programs:
             This functionality is included to keep the right scaling factor when
             trying to create a gazebo world from a DEM. DEMs are quite large and
             represent quite large areas, so to get it into the right format for
-            gazebo, we have to downsize or compress it, which can make quite
-            exaggerated and unrealistic terrain.
+            gazebo, we have to downsize or compress it. The available tile sizes
+            are: 513x513, 257x257, or 129x129. You could modify this code to support
+            other sizes but these are the known sizes that gazebo can recognize for
+            a heightmap object.
 
       4 - convert2tif:
               Given a PDS (.lbl + ((aux.xml + .jp2) or (.img))), converts to a
@@ -126,8 +125,15 @@ Output:
 
 ****************************** Making a Gazebo World ***********************************
 
-After executing the mk_gaz_wrld, you can use the outputted jpg file to create
-a gazebo world. Unfortunately, we don't have functionality to automate this
+After executing the mk_gaz_wrld, you can use the outputted .jpg or downsized .tif or, if you
+used the extract_tile program, you can use a tile .tif to create a gazebo world.
+
+NOTE: Using a .tif file might be a bit buggy, mostly the ones that have elevation
+values on the extreme ends i.e z = 3000 or z = -4927. To reduce uncertainty, the code
+is reflected to expect .jpgs along with the extracted elevation data, which is outputted
+by get_elev. For more information about this, see the Park Ranger section.
+
+Unfortunately, we don't have functionality to automate the creation of a world
 for you but it is possible for to create a script that does since world files
 are essential xml.
 
@@ -178,15 +184,52 @@ Quick and Dirty Setup:
     8. You can now use this world by adding the flag "world:=whatever_you_named_the_world_without_the_extension"
     when launching the simulation
 
+***************************** Park Ranger **************************************************
+
+Although you can use either a .jpg or .tif, we've opted to use .jpg s so the autonomy
+code reflects this decision. This is primarily due to one of our localization estimation
+methods called park ranger. It depends upon knowing your elevation and a DEM of the area,
+so in order to get them in the same frame, we place the heightmap to make the z
+at the gazebo origin's start at zero and then offset it with the actual expected elevation
+so that park ranger can receive "altimeter" data without the weirdness of a .tif heightmap.
+
+NOTE: If you do use the .tif file with the enable_true_odometry flag to true,
+the world state object in the autonomy package will have an incorrect z value
+since it derives the elevation as gazebo position z + dem middle point elevation.
+
+To ensure park ranger functionality works, you must do the following things:
+
+  - The dem_data/ in autonomy must have a single ....DEM_FILE_NAME_extr_out.txt
+    for the .jpg used in the .world and .sdf in the model
+
+  - The <heightmap><size> tag must consist of <size> m m range </size>,
+    where range = max_elev - min_elev and m == m == jpg_dem_width == jpg_dem_length
+
+  - The <heightmap><pos> tag must consist of <pos> 0 0 middle_dem_elevation - range </pos>
+
+If you load up the simulation and the terrain has extreme slopes, that means it could
+be one of two things: the ratio of range to the mxm of the heightmap is too large or
+there is a high density of local max and local mins. To mitigate the first case,
+try to choose dems with a range < 60 as they seem to work the best to simulate realistic
+moon terrain. For the second case, it's best to look at the .jpgs and look for
+relatively flat terrain. Flat terrain represents the majority of the moon and EZ-RASSOR
+would not be expected to operate optimally in the other situations such as extremely mountainous.
+
 ***************************** Docker: Isolation *********************************************
+
+Why Docker:
 
 Because DEM readers aren't built into Ubuntu, we need to use either an application,
 driver, or a library that can be used to read them in. In most applications and libraries,
 they use a library called GDAL (https://gdal.org/) as the base for all their functionality.
 GDAL is "a translator library for raster and vector geospatial data formats" of which
-includes support for PDS (Nasa's Planetary Data System format) and GeoTiff (.tiff). The
-problem is that GDAL conflicts with the dependencies for Gazebo so in order to do read DEMs
-without breaking the environment to run the EZ-RASSOR simulation, we have to isolate it.
+includes support for PDS (Nasa's Planetary Data System format) and GeoTiff (.tiff). Although
+Gazebo depends on a GDAL library, those dependancies only let Gazebo read dems and are not
+persistent outside of Gazebo. If you search your system for those GDAL libraries they will show up,
+but they don't recognize operations such as gdal_translate. Because of this, when you try to install
+additional libraries for development with GDAL, there are dependency conflicts between Gazebo and
+GDAL development libraries. So in order to do read DEMs without breaking the environment to run
+the EZ-RASSOR simulation, we have to isolate it.
 
 We have 3 options: VirtualMachine, Docker, or Anaconda. VMs are quite heavy since
 we don't need a whole operating system, just a terminal. Anaconda is popular package
@@ -198,6 +241,31 @@ for data science stuff but in our case, it's only for EZ-RASSOR. In hindsight,
 there is the lighter version of Anaconda called Miniconda that you could use but
 learning docker can be applied to more fields so using docker for only this application
 isn't as bloatware-y as -conda stuff is to non-data scientists.
+
+
+
+A Note About Python Virtual Environments:
+
+Above were the known options when the script was made. If you wish to recreate the functionality
+without docker, I recommend python virtual environments. Below are links that explain it better than me
+why and when to use python virtual environment. I attempted to see if you can install GDAL but I ran into
+problems with it. I included a link that may fix it but Docker implementation is good enough for our iteration.
+
+pip vs pyenv vs virtualenv vs anconda:
+https://stackoverflow.com/questions/38217545/what-is-the-difference-between-pyenv-virtualenv-anaconda
+
+Python virtual environment:
+https://towardsdatascience.com/virtual-environments-104c62d48c54
+
+Installing GDAL in virtual environment (the text is weird on the page):
+https://pypi.org/project/pygdal/
+
+Docker vs python virtual environment:
+https://coderbook.com/@marcus/should-i-use-virtualenv-or-docker-containers-with-python/
+
+
+
+Docker Implementation:
 
 In terms of docker implementation, each program has there own docker image associated
 with it. If you notice, there is a Dockerfile.base and a Dockerfile.child file rather

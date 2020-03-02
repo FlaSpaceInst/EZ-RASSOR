@@ -6,6 +6,10 @@ from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
 import nav_functions as nf
 import math
+import rospkg
+from os import listdir
+from os.path import isfile, join
+import re
 
 from random import uniform
 
@@ -18,6 +22,7 @@ class WorldState():
         self.positionX = 0
         self.positionY = 0
         self.positionZ = 0
+        self.originZ = 0
         self.front_arm_angle = 0
         self.back_arm_angle = 0
         self.front_arm_angle = 0
@@ -50,6 +55,22 @@ class WorldState():
             self.heading = heading
         else:
             self.heading = 360 + heading
+
+    def simStateZPositionCallBack(self, data):
+        """ More accurate position data to use for
+            testing and experimentation.
+        """
+        index = 0
+
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+        try:
+            index = data.name.index(namespace)
+        except Exception:
+            rospy.logdebug("Failed to get index. Skipping...")
+            return
+
+        self.positionZ = data.pose[index].position.z + self.originZ
 
     def simStateCallBack(self, data):
         """ More accurate position data to use for
@@ -93,6 +114,61 @@ class WorldState():
         back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
         return front_arm_force, back_arm_force
 
+    # Attempts to get initial elevation from file in dem_data/
+    def get_origin_dem_data(self, directory):
+
+        # Use list comprehension to get only files in directory as opposed to files and subdirectories
+        onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
+
+        # User hasn't put file in dem_data
+        if not onlyfiles:
+            rospy.logerr("No elevation file, initial z defaulting to 0")
+        else:
+            rospy.loginfo("Reading %s", onlyfiles[0])
+            file = open(directory + onlyfiles[0], "r")
+            middle = -1
+
+            # Reads file line by line, line number starts at 0
+            for i, line in enumerate(file):
+
+                # 3rd line of file contains "(rows, cols)"
+                if i == 2:
+
+                    # Use regex to obtain dimmensions
+                    dem_size = map(int,re.findall(r'-?(\d+)',line))
+                    rospy.loginfo(dem_size)
+
+                    # File doesn't have dimmensions at line 3
+                    if not dem_size:
+                        rospy.logerr("Couldn't find dem size")
+                        break
+                    else:
+
+                        # Give warning if not square
+                        if dem_size[0] != dem_size[1]:
+                            rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
+
+                        # Get the indices for the origin (gazebo's origin is in the middle)
+                        middle = int(dem_size[0] / 2)
+                        rospy.loginfo("Dem size: {}, middle: {}".format(dem_size[0], middle))
+
+                # If we have a middle index and on the expected line, the "+ 3" is to offset
+                # The first three lines are: title, corner (lat, long) coordinates, and size
+                if middle != -1 and i == middle + 3:
+
+                    #  Split by white space, then find the middle value on the level
+                    temp = line.split()
+                    rospy.loginfo("Dem center value: %s", temp[middle])
+                    self.originZ = float(temp[middle])
+
+                    # We found what we're looking for so we stop
+                    break
+
+    # Find the path to dem_data/
+    def path_dem(self):
+        rospack = rospkg.RosPack()
+        base = rospack.get_path("ezrassor_autonomous_control")
+        return base + "/dem_data/"
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
