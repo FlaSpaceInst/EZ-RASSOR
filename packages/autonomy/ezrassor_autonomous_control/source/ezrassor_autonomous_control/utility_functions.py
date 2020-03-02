@@ -62,11 +62,15 @@ def self_check(world_state, ros_util):
     '''
     return 1
 
+# This is the function controls EZ-RASSORS ability to turn.
 def turn(new_heading, direction, world_state, ros_util):
     rospy.loginfo("initial heading: {}".format(world_state.heading))
+
+    # Calculate how many degrees that we need to turn.
     angle_dist = abs((new_heading - world_state.heading + 180) % 360 - 180)
     angle_traveled = 0
 
+    # Turn the number of degrees towards your new heading.
     while angle_traveled < angle_dist - 2:
         old_heading = world_state.heading
         ros_util.publish_actions(direction, 0, 0, 0, 0)
@@ -84,7 +88,6 @@ def reverse_turn(world_state, ros_util):
 
     while (new_heading - 1) < world_state.heading < (new_heading + 1):
         ros_util.publish_actions('left', 0, 0, 0, 0)
-
 
 def dodge_left(world_state, ros_util):
     start_x = world_state.positionX

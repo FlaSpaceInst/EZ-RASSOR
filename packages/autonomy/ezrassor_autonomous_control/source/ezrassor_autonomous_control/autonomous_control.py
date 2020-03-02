@@ -63,7 +63,8 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                      ros_util.autoCommandCallBack)
     rospy.Subscriber('scan',
                      LaserScan,
-                     af.on_scan_update)
+                     af.on_scan_update,
+                     queue_size=1)
 
     rospy.loginfo('Autonomous control initialized.')
 
