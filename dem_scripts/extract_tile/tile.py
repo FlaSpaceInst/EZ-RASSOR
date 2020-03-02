@@ -15,9 +15,6 @@ ysize = band.YSize
 # Moves a kernel across the DEM to create smaller DEM tiles
 for i in range(0, xsize, input_desire_size):
     for j in range(0, ysize, input_desire_size):
-        com_string = "gdal_translate -of GTIFF -srcwin " + str(i)+ ", " + str(j)
-                     + ", " + str(input_desire_size) + ", " + str(input_desire_size)
-                     + " " + str(input_filename) + " /tmp/results/" + str(output_filename)
-                     + str(i) + "_" + str(j) + ".tif"
+        com_string = "gdal_translate -of GTIFF -srcwin " + str(i)+ ", " + str(j) + ", " + str(input_desire_size) + ", " + str(input_desire_size) + " " + str(input_filename) + " /tmp/results/" + str(output_filename) + str(i) + "_" + str(j) + ".tif"
         # Executes the command
         os.system(com_string)
