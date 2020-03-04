@@ -24,11 +24,9 @@ scan_time = None
 range_min = None
 range_max = None
 
-floor_height = 0.08
-min_hole_height = 0.05
-floor_error = 1.05
-
-min_obstacle_height = 0.07
+camera_height = None
+min_hole_depth = None
+min_obstacle_height = None
 
 # Publishers
 cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
@@ -115,6 +113,10 @@ direction to form a LaserScan that contains the closest cliff, hole,
 or above-ground obstacle in each direction.
 """
 def point_cloud_to_laser_scan(point_cloud):
+    rospy.loginfo("Camera height: {}".format(str(globals()['camera_height'])))
+    rospy.loginfo("Min hole depth: {}".format(str(globals()['min_hole_depth'])))
+    rospy.loginfo("Min obstacle height: {}".format(str(globals()['min_obstacle_height'])))
+
     # Initial LaserScans assume infinite travel in every direction
     cliff_ranges = [float("nan")] * ranges_size
     hole_ranges = [float("nan")] * ranges_size
@@ -167,7 +169,7 @@ def farthest_point(ranges, pc):
 """Converts PointCloud2 to LaserScan for holes"""
 def floor_projection(ranges, pc):
     # Hole size threshold
-    threshold = floor_height * floor_error + min_hole_height
+    threshold = camera_height + min_hole_depth
     # Filter out points shallower than threshold (hole points)
     filtered_pc = pc[pc[:,XYZ["DOWN"]] > threshold]
 
@@ -178,7 +180,7 @@ def floor_projection(ranges, pc):
         right = filtered_pc[:,XYZ["RIGHT"]]
 
         # Project the right and forward coordinates upto the ground
-        forward_projs = np.divide(np.multiply(forward, floor_height), down)
+        forward_projs = np.divide(np.multiply(forward, camera_height), down)
         right_projs = np.divide(np.multiply(right, forward_projs), forward)
         steps, dists = to_laser_scan_data(forward_projs, right_projs)
 
@@ -190,7 +192,7 @@ def floor_projection(ranges, pc):
 """Converts PointCloud2 to LaserScan for above-ground obstacles"""
 def positive_obstacle_detection(ranges, pc):
     # Obstacle height threshold
-    threshold = floor_height * (2 - floor_error) - min_obstacle_height
+    threshold = camera_height - min_obstacle_height
     # Filter out points shorter than threshold (obstacle point)
     filtered_pc = pc[pc[:,XYZ["DOWN"]] < threshold]
 
@@ -205,15 +207,28 @@ def positive_obstacle_detection(ranges, pc):
             ranges[step] = dist
 
 """Initializes obstacle detection."""
-def obstacle_detection(scan_time=1./30, range_min=0.105, range_max=10.):
+def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None, 
+                       min_obstacle_height_yaml=None,  scan_time=1./30, 
+                       range_min=0.105, range_max=10.):
+
     rospy.init_node('obstacle_detection')
+
     rospy.loginfo("Obstacle Detection initialized.")
+
     globals()['scan_time'] = scan_time
     globals()['range_min'] = range_min
     globals()['range_max'] = range_max
+
+    globals()['camera_height'] = camera_height_yaml
+    globals()['min_hole_depth'] = min_hole_depth_yaml
+    globals()['min_obstacle_height'] = min_obstacle_height_yaml
+    
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
+    
     init_laserscan(camera_info)
+    
     rospy.Subscriber("depth/points", PointCloud2, point_cloud_to_laser_scan)
+    
     rospy.spin()
 
 if __name__ == "__main__":

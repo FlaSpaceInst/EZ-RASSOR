@@ -37,13 +37,13 @@
   </node>
 
   <group if="$(arg enable_cameras)">
-    <node pkg="image_view" type="image_view" name="image_view">
-      <remap from="image" to="depth/image_raw"/>
-    </node>
+       <node pkg="image_view" type="image_view" name="image_view">
+              <remap from="image" to="depth/image_raw"/>
+       </node>
 
-    <node pkg="ezrassor_autonomous_control"
-          type="obstacle_detection"
-          name="obstacle_detection"/>
+       <node pkg="ezrassor_autonomous_control" type="obstacle_detection" name="obstacle_detection">
+              <rosparam command="load" file="$(find ezrassor_autonomous_control)/config/obstacle_detection.yaml" />
+       </node>
 
 	<node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
 		<param name="frame_id" value="depth_camera_optical_frame"/>
