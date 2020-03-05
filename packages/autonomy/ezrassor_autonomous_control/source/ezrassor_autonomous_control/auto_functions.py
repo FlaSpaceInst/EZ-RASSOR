@@ -7,6 +7,7 @@ import numpy as np
 scan = None
 threshold = 4.0
 buffer = 1.5
+move_dist = 0.5
 
 def on_scan_update(new_scan):
     global scan
@@ -30,9 +31,8 @@ def auto_drive_location(world_state, ros_util):
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
     
     # Main loop until location is reached
-    while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x,world_state.target_location.y, ros_util.threshold):
+    while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x, world_state.target_location.y, ros_util.threshold):
 
-        # TODO: In any loop that we move or turn, we need to make sure that we dont hit an obstacle!!!!!
         rospy.loginfo("Starting nav loop!")
 
         if uf.self_check(world_state, ros_util) != 1:
@@ -40,9 +40,9 @@ def auto_drive_location(world_state, ros_util):
             return
 
         # Iterate over all of the laser beams in our scan wedge and determine the best angle to turn and x,y point.
-        best_angle = get_best_angle(world_state, ros_util)
+        best_angle = get_best_angle(world_state)
 
-        #TODO: If the best angle is None, we need to look at an adjacent wedge that we have not already seen!
+        # If the best angle is None, we need to look at an adjacent wedge that we have not already seen
         if best_angle is None:
 
             # These variables are used to oscillate between wedges if we enter visual boundary following mode below.
@@ -68,7 +68,7 @@ def auto_drive_location(world_state, ros_util):
                 rospy.sleep(0.1)
 
                 rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
-                best_angle = get_best_angle(world_state, ros_util)
+                best_angle = get_best_angle(world_state)
 
         # If our angle is less than zero, then we would expect a right turn otherwise turn left.
         if best_angle < 0:
@@ -88,7 +88,7 @@ def auto_drive_location(world_state, ros_util):
         distance_traveled = 0
 
         # Drive towards the best point while there is no obstacle in your way.
-        while distance_traveled < 0.5:
+        while distance_traveled < move_dist:
 
             if uf.self_check(world_state, ros_util) != 1:
                 rospy.logdebug('Status check failed.')
@@ -142,8 +142,7 @@ def angle_is_safe(angle, dist):
     return True
 
 # Iterate through the laser scan in our current view (wedge) and determine our best move towards the goal.
-# TODO: The min and max values of our scan.ranges array are always nan even when there is nothing there.
-def get_best_angle(world_state, ros_util):
+def get_best_angle(world_state):
 
     best_score = None
     best_angle = None
@@ -151,21 +150,21 @@ def get_best_angle(world_state, ros_util):
     rospy.loginfo("currently in the get best angle function.")
     rospy.loginfo(scan.ranges)
 
-    for i in range(0, len(scan.ranges)): # TODO: Should we ignore these values? Looping from 2 to (scan.ranges - 1)
-        d_angle = scan.angle_min + i * scan.angle_increment
+    for i in range(0, len(scan.ranges)):
+        angle = scan.angle_min + i * scan.angle_increment
 
         # We only enter this code if we have found a discontinuity or obstacle edge that we cannot use.
-        if not angle_is_safe(d_angle, threshold):  # TODO: Should this be dist or a slightly greater value????
+        if not angle_is_safe(angle, threshold):
             continue
 
         new_heading_degrees = nf.calculate_heading(world_state)
         angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
 
-        score = abs(angle2goal_radians - d_angle)
+        score = abs(angle2goal_radians - angle)
 
         if best_score is None or score < best_score:
             best_score = score
-            best_angle = d_angle
+            best_angle = angle
 
     return best_angle
 
