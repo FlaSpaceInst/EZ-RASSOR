@@ -37,15 +37,13 @@
   </node>
 
   <group if="$(arg enable_cameras)">
-    <node pkg="image_view" type="image_view" name="image_view">
-      <remap from="image" to="depth/image_raw"/>
-    </node>
+       <node pkg="image_view" type="image_view" name="image_view">
+              <remap from="image" to="depth/image_raw"/>
+       </node>
 
-    <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan"
-          name="depthimage_to_laserscan">
-      <remap from="image" to="depth/image_raw"/>
-      <remap from="camera_info" to="depth/camera_info"/>
-    </node>
+       <node pkg="ezrassor_autonomous_control" type="obstacle_detection" name="obstacle_detection">
+              <rosparam command="load" file="$(find ezrassor_autonomous_control)/config/obstacle_detection.yaml" />
+       </node>
 
 	<node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
 		<param name="frame_id" value="depth_camera_optical_frame"/>
@@ -64,9 +62,5 @@
 	<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		<rosparam command="load" file="$(find ezrassor_autonomous_control)/config/ekf_template.yaml" />
 	</node>
-
-    <node pkg="ezrassor_autonomous_control"
-          type="depth_estimator"
-          name="depth_estimator"/>
   </group>
 </launch>
