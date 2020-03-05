@@ -7,7 +7,6 @@
   <arg name="joystick" default="default"/>
   <arg name="digsite_x_coord" default="default"/>
   <arg name="digsite_y_coord" default="default"/>
-  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
   <!-- A large collection of constants that this launch file needs. -->
@@ -93,9 +92,6 @@
         <arg name="digsite_y_coord"
              value="$(arg digsite_y_coord)"
              unless="$(eval digsite_y_coord == 'default')"/>
-        <arg name="enable_cameras"
-             value="$(arg enable_cameras)"
-             unless="$(eval enable_cameras == 'default')"/>
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
@@ -163,9 +159,6 @@
         <arg name="digsite_y_coord"
              value="$(arg digsite_y_coord)"
              unless="$(eval digsite_y_coord == 'default')"/>
-        <arg name="enable_cameras"
-             value="$(arg enable_cameras)"
-             unless="$(eval enable_cameras == 'default')"/>
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
