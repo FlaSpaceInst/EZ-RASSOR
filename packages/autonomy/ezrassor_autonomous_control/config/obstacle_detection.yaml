@@ -1,0 +1,8 @@
+# Height of the center of the camera lens over the ground in meters
+camera_height : 0.08
+
+# Minimum depth below ground of holes to avoid (always positive)
+min_hole_depth : 0.05
+
+# Minimum height above ground of obstacles to avoid (always positive)
+min_obstacle_height : 0.07

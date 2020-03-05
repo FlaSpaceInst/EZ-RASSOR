@@ -5,9 +5,8 @@ RUN apt-get update && apt-get -y --no-install-recommends install \
     curl
 
 RUN apt-get update && apt-get install -y \
-    gnupg dirmngr \
-    sudo
-    
+    gnupg dirmngr 
+
 RUN mkdir ~/.gnupg
 RUN echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
 
