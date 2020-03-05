@@ -18,7 +18,6 @@
   <arg name="show_gui" default="default"/>
   <arg name="recording" default="default"/>
   <arg name="use_sim_time" default="default"/>
-  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
   <!-- Launch the communication system for a simulated robot. -->
@@ -37,7 +36,6 @@
       <arg name="digsite_y_coord"
            value="$(eval str(digsite_y_coords).split()[robot_count - 1])"
            unless="$(eval digsite_y_coords == 'default')"/>
-      <arg name="enable_cameras" value="$(arg enable_cameras)"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
     </include>
 
@@ -106,7 +104,6 @@
     <arg name="show_gui" value="$(arg show_gui)"/>
     <arg name="recording" value="$(arg recording)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="enable_cameras" value="$(arg enable_cameras)"/>
     <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
   </include>
 </launch>
