@@ -9,6 +9,11 @@ import image_geometry
 # **Remove later (used for visualization of local DEM only)
 import matplotlib.pyplot as plt
 
+import rospkg
+from os import listdir
+from os.path import isfile, join
+import re
+
 # Coordinate system
 XYZ = {
     "RIGHT": 0,
@@ -32,6 +37,8 @@ num_rows = None
 num_columns = None
 min_row = None
 min_column = None
+
+global_dem = None
 
 """Stores the most recent PointCloud2 message received"""
 def on_pc_update(pc):
@@ -107,7 +114,7 @@ def compare_dem_to_point_cloud(period, local_dem_comparison_type):
         if pc is not None:
             local_dem = point_cloud_to_local_dem(pc, local_dem_comparison_type)
             # Visualize local DEM (remove later)
-            plt.imshow(local_dem);
+            plt.imshow(global_dem);
             plt.colorbar()
             plt.show()
             plt.pause(4.)
@@ -184,11 +191,60 @@ def init_local_dem(camera_info, range_min, range_max):
     min_row = range_min
     min_column = range_max * np.tan(angle_min)
 
+# Attempts to get initial elevation from file in dem_data/
+def create_array_global_dem(directory):
+
+    # Use list comprehension to get only files in directory as opposed to files and subdirectories
+    onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
+
+    # User hasn't put file in dem_data
+    if not onlyfiles:
+        rospy.logerr("Couldn't read dem data")
+    else:
+        rospy.loginfo("Reading %s", onlyfiles[0])
+        file = open(directory + onlyfiles[0], "r")
+
+        # Reads file line by line, line number starts at 0
+        for i, line in enumerate(file):
+
+            # 3rd line of file contains "(rows, cols)"
+            if i == 2:
+
+                # Use regex to obtain dimmensions
+                dem_size = map(int,re.findall(r'-?(\d+)',line))
+                rospy.loginfo(dem_size)
+
+                # File doesn't have dimmensions at line 3
+                if not dem_size:
+                    rospy.logerr("Couldn't find dem size")
+                    break
+                else:
+
+                    # Give warning if not square
+                    if dem_size[0] != dem_size[1]:
+                        rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
+
+                    global global_dem
+                    global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
+
+            elif i > 2:
+                global_dem[i - 3] = line.split()
+
+
+
+# Find the path to dem_data/
+def path_dem():
+    rospack = rospkg.RosPack()
+    base = rospack.get_path("ezrassor_autonomous_control")
+    return base + "/dem_data/"
+
 """Initializes park ranger"""
 def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5, range_min=0.105, range_max=10.):
     rospy.init_node('park_ranger')
     rospy.loginfo("Park Ranger initialized")
     globals()['resolution'] = resolution
+    path = path_dem()
+    create_array_global_dem(path)
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
     init_local_dem(camera_info, range_min, range_max)
     rospy.Subscriber("depth/points", PointCloud2, on_pc_update, queue_size=1)
