@@ -14,7 +14,7 @@ import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
 
-def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
+def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
                 back_arm_topic, front_drum_topic, back_drum_topic,
                 max_linear_velocity=1, max_angular_velocity=1,
                 real_odometry=False):
@@ -56,6 +56,9 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
         # Offset the z value in world state according to expected elevation at
         # Gazebo's origin (0, 0) -> dem (size / 2, size / 2)
         world_state.get_origin_dem_data(path)
+
+        # Get initial spawn coords
+        world_state.initial_spawn(start_x, start_y)
 
         # Get x and y from filtered odometry readings
         rospy.Subscriber('odometry/filtered',
