@@ -4,6 +4,8 @@ from ezrassor_autonomous_control import autonomous_control
 
 target_x = rospy.get_param('autonomous_control/digsite_x_coord')
 target_y = rospy.get_param('autonomous_control/digsite_y_coord')
+start_x = rospy.get_param('autonomous_control/spawn_x_coord')
+start_y = rospy.get_param('autonomous_control/spawn_y_coord')
 movement_topic = rospy.get_param('autonomous_control/wheel_instructions_topic')
 front_arm_topic = rospy.get_param('autonomous_control/front_arm_instructions_topic')
 back_arm_topic = rospy.get_param('autonomous_control/back_arm_instructions_topic')
@@ -15,6 +17,8 @@ real_odometry = rospy.get_param('autonomous_control/enable_real_odometry')
 
 autonomous_control.on_start_up(target_x,
                                target_y,
+                               start_x,
+                               start_y,
                                movement_topic,
                                front_arm_topic,
                                back_arm_topic,
