@@ -7,7 +7,7 @@ import numpy as np
 scan = None
 threshold = 4.0
 buffer = 1.5
-move_dist = 0.5
+move_dist = 3.0
 
 def on_scan_update(new_scan):
     global scan
@@ -29,7 +29,21 @@ def auto_drive_location(world_state, ros_util):
     # Set arms up for travel
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
-    
+
+    # Before we head towards our goal, turn to face it.
+    # Get new heading angle relative to current heading
+    new_heading_degrees = nf.calculate_heading(world_state)
+    angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
+
+    # If our angle is less than zero, then we would expect a right turn otherwise turn left.
+    if angle2goal_radians < 0:
+        direction = 'right'
+    else:
+        direction = 'left'
+
+    uf.turn(new_heading_degrees, direction, world_state, ros_util)
+    ros_util.publish_actions('stop', 0, 0, 0, 0)
+
     # Main loop until location is reached
     while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x, world_state.target_location.y, ros_util.threshold):
 
@@ -41,6 +55,31 @@ def auto_drive_location(world_state, ros_util):
 
         # Iterate over all of the laser beams in our scan wedge and determine the best angle to turn and x,y point.
         best_angle = get_best_angle(world_state)
+
+        if best_angle is not None:
+            wedgeSize = (scan.angle_max - scan.angle_min) / 10
+
+            buffer_angle = math.atan(buffer / threshold)
+            min_angle = scan.angle_min + buffer_angle
+            max_angle = scan.angle_max - buffer_angle
+
+            best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
+            min_index = int((min_angle - scan.angle_min) / scan.angle_increment)
+            max_index = int((max_angle - scan.angle_min) / scan.angle_increment)
+            rospy.loginfo("best index: {}, min index: {}, max index: {}".format(best_index, min_index, max_index))
+
+            while best_index <= min_index or best_index >= max_index:
+                rospy.loginfo("Turning more because we can")
+                if best_angle < 0:
+                    direction = 'right'
+                else:
+                    direction = 'left'
+                uf.turn(rel_to_abs(world_state.heading, wedgeSize), direction, world_state, ros_util)
+                ros_util.publish_actions('stop', 0, 0, 0, 0)
+                ros_util.rate.sleep()
+                rospy.sleep(0.1)
+                best_angle = get_best_angle(world_state)
+                best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
 
         # If the best angle is None, we need to look at an adjacent wedge that we have not already seen
         if best_angle is None:
@@ -86,9 +125,11 @@ def auto_drive_location(world_state, ros_util):
         old_x = world_state.positionX
         old_y = world_state.positionY
         distance_traveled = 0
+        distance_to_goal = math.sqrt((world_state.target_location.x - old_x) **2 + (world_state.target_location.y - old_y) **2)
 
+        #Move either the move_dist or the distance to the goal (if we are too close).
         # Drive towards the best point while there is no obstacle in your way.
-        while distance_traveled < move_dist:
+        while distance_traveled < min(move_dist, distance_to_goal):
 
             if uf.self_check(world_state, ros_util) != 1:
                 rospy.logdebug('Status check failed.')
@@ -148,7 +189,7 @@ def get_best_angle(world_state):
     best_angle = None
 
     rospy.loginfo("currently in the get best angle function.")
-    rospy.loginfo(scan.ranges)
+    # rospy.loginfo(scan.ranges)
 
     for i in range(0, len(scan.ranges)):
         angle = scan.angle_min + i * scan.angle_increment
