@@ -40,10 +40,116 @@ min_column = None
 
 global_dem = None
 
+
+"""Represents a single particle in the particle filter"""
+class Particle:
+    def __init__(self, row, col, heading):
+        self.row = row
+        self.col = col
+        self.heading = heading
+
 """Stores the most recent PointCloud2 message received"""
 def on_pc_update(pc):
     global point_cloud
     point_cloud = pc
+
+"""Gets the predicted local DEM for a given particle
+
+Given a particle, this method picks out and returns the portion of the global
+DEM that represents what the robot would see if it were in the state described
+by the particle.
+"""
+def get_predicted_local_dem(particle):
+    # Get angle perpendicular to heading
+    angle_perp = (particle.heading + 90) % 360
+
+    predicted_local_dem = np.empty((num_rows, num_columns), np.float32)
+
+    # To have the predicted local DEM centered around the particle, we need to
+    # to determine the number of columns on each side of the particle
+    num_cols_left = num_columns/2 + 1
+    num_cols_right = num_columns/2 + 1
+    if num_columns % 2 == 0:
+        num_cols_right -= 1
+
+    # Get line to the left of the particle
+    row_coords = get_line(particle.row, particle.col, num_cols_left, -angle_perp, 'left')
+    # Fill up columns to the left of the particle
+    for i, coord in enumerate(reversed(row_coords)):
+        col_coords = get_line(coord[0], coord[1], num_rows, particle.heading, 'right')
+        try:
+            predicted_local_dem[:, i] = global_dem[col_coords[:,0], col_coords[:,1]]
+        except IndexError:
+            return None
+
+    # Get line to the right of the particle
+    row_coords = get_line(particle.row, particle.col, num_cols_right, angle_perp, 'right')
+    # Fill up columns to the right of the particle
+    for i, coord in enumerate(row_coords):
+        col_coords = get_line(coord[0], coord[1], num_rows, particle.heading, 'right')
+        try:
+            predicted_local_dem[:, num_cols_left-1+i] = global_dem[col_coords[:,0], col_coords[:,1]]
+        except IndexError:
+            return None
+
+    # Flip predicted local DEM so that it's in the expected orientation
+    return np.fliplr(np.flipud(predicted_local_dem))
+
+"""Returns a list of indexes along a 2D array to represent a given angle
+
+Given a center coordinate for the line, the number of cells we're allowed to
+use to draw the line, and the angle and direction of the line, this method
+calculates and returns the list of indexes that closely approximates the line
+described. This is done using a modified version of Bresenham's line algorithm.
+"""
+def get_line(center_row, center_col, num_cells, angle, direction):
+    # Make sure angle is non-negative
+    if angle < 0:
+        angle += 360
+
+    # Handles cases where tangent returns the same value for different angles
+    # and messes up the rest of the calculations
+    if direction is 'right' and 135 < angle <= 315:
+        direction = 'left'
+        angle = 180 - angle
+    if direction is 'left' and 45 < angle <= 225:
+        direction = 'right'
+        angle = 180 - angle
+
+    slope = np.tan(angle / 180. * np.pi)
+
+    # The below algorithm only works for slope <= 1, so if slope > 1, invert
+    # the slope and set a flag so we know to swap the way we treat the axes
+    if abs(slope) > 1:
+        slope = 1. / slope
+        line_high = True
+    else:
+        line_high = False
+
+    # Bresenham's algorithm:
+    D = 2*abs(slope) - 1
+    row = center_row
+    col = center_col
+    indexes = []
+    for i in range(num_cells):
+        indexes.append([row, col])
+        if D > 0:
+            if line_high:
+                col += 1 if slope > 0 else -1
+            else:
+                row += -1 if slope > 0 else 1
+            D -= 2
+        D += 2*abs(slope)
+        if line_high:
+            row += -1 if direction is 'right' else 1
+        else:
+            col += 1 if direction is 'right' else -1
+
+    return np.array(indexes)
+
+"""Returns the sum of absolute differences (SAD) of two arrays"""
+def sad(a, b):
+    return np.nansum(np.absolute(np.subtract(a, b)))
 
 """Converts Point Cloud to Local DEM
 
@@ -104,7 +210,6 @@ def get_local_dem_info(pc):
 """Compares global DEM to point clouds to localize the robot
 
 TODO:
-- Create global DEM array based on world
 - Implement particle filter for localizing
 """
 def compare_dem_to_point_cloud(period, local_dem_comparison_type):
@@ -113,11 +218,17 @@ def compare_dem_to_point_cloud(period, local_dem_comparison_type):
         pc = get_points()
         if pc is not None:
             local_dem = point_cloud_to_local_dem(pc, local_dem_comparison_type)
-            # Visualize local DEM (remove later)
-            plt.imshow(global_dem);
-            plt.colorbar()
-            plt.show()
-            plt.pause(4.)
+            particle = Particle(370, 160, 36)
+            predicted_dem = get_predicted_local_dem(particle)
+            if predicted_dem is not None:
+                score = sad(local_dem, predicted_dem)
+                rospy.loginfo("Predicted local DEM score: {}".format(score))
+                # Visualize DEM (remove later)
+                plt.imshow(predicted_dem);
+                plt.colorbar()
+                plt.show(block=False)
+                plt.pause(4.)
+                plt.close()
         r.sleep()
 
 """Converts PointCloud2 to numpy array
