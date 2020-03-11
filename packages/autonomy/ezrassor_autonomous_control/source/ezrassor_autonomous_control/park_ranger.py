@@ -14,6 +14,12 @@ from os import listdir
 from os.path import isfile, join
 import re
 
+import random
+from scipy.stats import truncnorm
+import gvar as gv
+# for residual_resample
+import filterpy.monte_carlo as mc
+
 # Coordinate system
 XYZ = {
     "RIGHT": 0,
@@ -206,6 +212,146 @@ def get_local_dem_info(pc):
     heights = np.negative(down)
 
     return row_indexes, column_indexes, heights
+
+# Auxilary functions
+def neff(weights):
+    norm = [float(i)/sum(weights) for i in weights]
+    return 1.0 / np.sum(np.square(norm))
+
+def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
+    return truncnorm(
+        (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
+# TODO: Update particle class/my code to match
+
+# Background:
+# The main steps of "simple" particle filter are:
+    # Predict: using odometry to "predict" the position of a particle after one pass
+    # Update: compare data from, usually using a laser scan, to a "predicted" laser scan for each
+        # particle, and then they are scored. This score is then used to weight the particle
+    # Resample: looking at the weights, use neff  or some other function to find an overall score
+        # for the set of particles. If below a threshold, they usually just replace the particles with
+        # a fresh batch, probably with some of the previous weighted values. This is done to get rid of incorrect particles
+# There are 2 additional steps the paper adds
+    # Initialization: obvi you need initialzation but this one basically supposed if there are particles at every
+    # position and then only uses the highest likelihood ones 
+    # Sampling: this is generating more particles to account for uncertainty
+# Other unconventional stuff:
+    # Instead of keeping a global standard deviations for like x, y, theta, they add an error function to each particle.
+    # With global standard deviations, they would normally use it to essential inject noise into calculations. With an error
+    # function, it seems like they are putting an error radius around a particle.
+
+# Steps
+# 1 Initialize
+    # a) use likelihood (local to global compare) to initially score positions (essential evaluate as if particle at every position in global dem)
+    # b) place the highest likelihood particles
+    # c) for each particle, give it a weight and an error distribution
+
+    # Buggy when updating ids, possibly just ditch index id and use unique ids
+    # Does intialization particles but only parts will be used in the final integration of this step
+    # This is also used by the sampling step; need to clean up or do psuedo method overloading
+def particles_w_distra(particles, N, dem_size, index, diff_theta, samp_part, samp_std_x, samp_std_y, samp_std_theta):
+    mean_x = int(dem_size / 2)
+    mean_y = mean_x
+    mean_theta = 74 / 2
+    std_x = int(dem_size / 2)
+    std_y = std_x
+    std_theta = 74 / 2
+    bound_x = dem_size
+    bound_y = bound_x
+    bound_theta = 359
+    low_x = 0
+    low_y = low_x
+    low_theta = 0
+    start = 0
+    end = N
+    if index == -1:
+        index = 0
+    elif(diff_theta != -1 and samp_part != None and index != -1):
+        for i in range(end, len(particles)):
+            particles[i].id = i + N
+        start = 1 + index
+        end = N + 1 + index
+        bound_x = samp_part.x + end
+        bound_y = samp_part.y + end
+        bound_theta = samp_part.theta + diff_theta
+        low_x = abs(samp_part.x - N)
+        low_y = abs(samp_part.y - N)
+        low_theta = samp_part.theta - diff_theta
+        mean_x = samp_part.x
+        mean_y = samp_part.y
+        mean_theta = samp_part.theta
+        std_x = samp_std_x
+        std_y = samp_std_y
+        std_theta = samp_std_theta
+    x_func = get_truncated_normal(mean_x, std_x, low_x, bound_x)
+    y_func = get_truncated_normal(mean_y, std_y, low_y, bound_y)
+    theta_func = get_truncated_normal(mean_theta, std_theta, low_theta, bound_theta)
+    i = start
+    while i < end:
+        x = int(x_func.rvs())
+        y = int(y_func.rvs())
+        theta = theta_func.rvs()
+        particles.insert(i, Particle(i, x, y, theta, 1 / N, std_x, std_y, std_theta))
+        i = i + 1
+# 2 Predict (position)
+    # a) for each particle, use motion vector to predict new position
+        # - May be easier to just use the pose value rather than motion because error distribution
+    # b) update gaussian distribution (error distribution function) by replacing it
+    # with a new distribution but using the sum of the current one's variance and one found from odometry
+        # - variance = standard deviation^2 -> just sum the standard deviations, only need more than one odom object
+        # - could use the covariance matrix possibly to find the standard deviation (see gvar library for python)
+
+# 3 Sample
+    # a) for each particle or some particle? wasn't sure which one but in this case, i do it for a random particle
+    # b) Compare x, y, and z, to their error distribution's standard deviation and see how much off
+    # c) if the either of the differences is above the threshold, generate particles around it
+    # d) update the standard deviation for the particle from a) and the newly generate particles to dem_size/2 or 74/2 (74 is intel fov yaw)
+
+    # My uncertainty on this implementation comes from this:
+        # "Given a particle i, its gaussian distribution standard deviation are compared with the coordinate resolution and with the angular resolution"
+        # - I'm unsure about the "resolution" values, not sure if it's like the size of the local dem but in this case, i went with using the coordinates of
+        # the particle since the goal of the function is to gen particles around some particle i to account for error
+def sampling(particles, num_particles, threshold_point, threshold_theta, dem_size, samp_std_x, samp_std_y, samp_std_theta):
+    std_coord = int(dem_size / 2)
+    std_theta = (74 / 2)
+    rand_func = get_truncated_normal(int(num_particles) / 2, 10, 1, num_particles)
+    rand_id = int(rand_func.rvs())
+    x_comp = abs(particles[rand_id].distra_x.sdev - particles[rand_id].x)
+    y_comp = abs(particles[rand_id].distra_y.sdev - particles[rand_id].y)
+    theta_comp = abs(particles[rand_id].distra_theta.sdev - particles[rand_id].theta)
+    if x_comp > threshold_point or y_comp > threshold_point or theta > threshold_theta:
+        particles_w_distra(particles, 25, dem_size, rand_id, theta_comp, particles[rand_id], samp_std_x, samp_std_y, samp_std_theta)
+        for i in range(rand_id + 1, rand_id + 26):
+            particles[i].distra_x = gv.gvar(particles[i].distra_x.mean, std_coord)
+            particles[i].distra_y = gv.gvar(particles[i].distra_y.mean, std_coord)
+            particles[i].distra_theta = gv.gvar(particles[i].distra_theta.mean, std_theta)
+        particles[rand_id].distra_x = gv.gvar(particles[rand_id].distra_x.mean, std_coord)
+        particles[rand_id].distra_y = gv.gvar(particles[rand_id].distra_y.mean, std_coord)
+        particles[rand_id].distra_theta = gv.gvar(particles[rand_id].distra_theta.mean, std_theta)
+# 4 Update
+    # for each particle
+    # a) score the particle
+    # b) update weight of particle
+    #TODO: Modify compare_dem_to_point_cloud to take into account weights
+# 5 Resample
+    # a) check the equation is below the threshold
+    # b) if true, resample particles with probabilities given by there weights ?????
+    # c) weights are then reinitialized to 1/N
+def resample(particles, N):
+    weights = []
+    for i in particles:
+        weights.append(i.weight)
+
+    if neff(weights) < N / 2:
+        indexes = mc.residual_resample(weights)
+
+# These are calls that i used to test stuff,
+
+#num_particles = 50
+#particles = []
+#particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
+#sampling(particles, num_particles, 15, 25, 513, 1, 1, 5)
+#resample(particles, num_particles)
 
 """Compares global DEM to point clouds to localize the robot
 
