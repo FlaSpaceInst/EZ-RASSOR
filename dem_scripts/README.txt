@@ -193,7 +193,7 @@ so in order to get them in the same frame, we place the heightmap to make the z
 at the gazebo origin's start at zero and then offset it with the actual expected elevation
 so that park ranger can receive "altimeter" data without the weirdness of a .tif heightmap.
 
-NOTE: If you do use the .tif file with the enable_true_odometry flag to true,
+NOTE: If you do use the .tif file with the enable_real_odometry flag to true,
 the world state object in the autonomy package will have an incorrect z value
 since it derives the elevation as gazebo position z + dem middle point elevation.
 
