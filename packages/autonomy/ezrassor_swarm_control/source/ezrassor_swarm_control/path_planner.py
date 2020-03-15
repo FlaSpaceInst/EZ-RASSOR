@@ -35,25 +35,25 @@ class PathPlanner:
         # Maximum slope a rover can climb
         self.max_slope = rover_max_climb_slope
 
-    def find_path(self, start, goal):
+    def find_path(self, start_, goal_):
         """
         Leverages A* algorithm to find cost effective path from start to goal
         """
 
-        if not self.check_bounds(start):
-            rospy.loginfo('Start coordinate {} is out of bounds'.format((start.x, start.y)))
-        if not self.check_bounds(goal):
-            rospy.loginfo('Goal coordinate {} is out of bounds'.format((goal.x, goal.y)))
+        if not self.check_bounds(start_):
+            rospy.loginfo('Start coordinate {} is out of bounds'.format((start_.x, start_.y)))
+            return
+        if not self.check_bounds(goal_):
+            rospy.loginfo('Goal coordinate {} is out of bounds'.format((goal_.x, goal_.y)))
+            return
 
-        rospy.loginfo('Searching for path from {} to {}'.format((start.x, start.y), (goal.x, goal.y)))
+        rospy.loginfo('Searching for path from {} to {}'.format((start_.x, start_.y), (goal_.x, goal_.y)))
         start_time = timer()
 
         # Convert simulation coordinates, whose origin are in the center of the map,
         # to image coordinates with origin in the bottom-left corner
-        start.x += self.width // 2
-        start.y += self.height // 2
-        goal.x += self.width // 2
-        goal.y += self.height // 2
+        start = Point(start_.x + self.width // 2, start_.y + self.height // 2, 0)
+        goal = Point(goal_.x + self.width // 2, goal_.y + self.height // 2, 0)
 
         # Initialize open and closed
         open = []
@@ -113,7 +113,7 @@ class PathPlanner:
                     heapq.heappush(open, (f_scores[neighbor], neighbor))
 
         print('No path found in {}'.format(timer() - start_time))
-        return None
+        return
 
     def get_valid_neighbors(self, cur):
         '''

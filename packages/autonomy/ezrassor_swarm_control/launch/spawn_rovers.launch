@@ -67,5 +67,8 @@
     <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
+    <arg name="swarm_control"
+            value="$(arg swarm_control)"
+            unless="$(eval swarm_control == 'default')"/>
   </include>
 </launch>
