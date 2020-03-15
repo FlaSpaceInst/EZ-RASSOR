@@ -16,6 +16,8 @@ import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
 
+import re
+
 
 class RoverController:
     def __init__(self, target_x, target_y, movement_topic, front_arm_topic,
@@ -65,6 +67,7 @@ class RoverController:
             self.server_name = 'waypoint'
             self.waypoint_server = actionlib.SimpleActionServer(self.server_name, waypointAction,
                                                               execute_cb=self.move_rover, auto_start=False)
+
             self.waypoint_server.start()
 
             rospy.loginfo('Rover waypoint server initialized.')
@@ -186,7 +189,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     """ Initialization Function  """
 
     # ROS Node Init Parameters 
-    rospy.init_node('autonomous_control')
+    rospy.init_node('autonomous_control', anonymous=True)
 
     rover_controller = RoverController(target_x, target_y, movement_topic, front_arm_topic,
                                        back_arm_topic, front_drum_topic, back_drum_topic,

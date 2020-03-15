@@ -8,9 +8,9 @@ from ezrassor_swarm_control.msg import waypointFeedback
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
-    rospy.loginfo('Setting front arm angle to %s radian%s...',
+    '''rospy.loginfo('Setting front arm angle to %s radian%s...',
                   str(target_angle),
-                  "" if target_angle == 1 else "s")
+                  "" if target_angle == 1 else "s")'''
 
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
@@ -26,9 +26,9 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
-    rospy.loginfo('Setting back arm angle to %s radian%s...',
+    '''rospy.loginfo('Setting back arm angle to %s radian%s...',
                   str(target_angle),
-                  "" if target_angle == 1 else "s")
+                  "" if target_angle == 1 else "s")'''
 
     if target_angle > world_state.back_arm_angle:
         while target_angle > world_state.back_arm_angle:

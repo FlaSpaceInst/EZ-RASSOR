@@ -12,10 +12,10 @@ class SwarmController:
         self.robot_count = robot_count
         self.dig_sites = dig_sites
 
-        self.waypoint_pubs = [rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
+        self.waypoint_pubs = {i: rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
                                                  Path,
                                                  queue_size=10)
-                              for i in range(1, robot_count+1)]
+                              for i in range(1, robot_count+1)}
 
     def run(self):
         rospy.loginfo('Running the swarm controller for {} rover(s)'.format(self.robot_count))
@@ -28,17 +28,18 @@ class SwarmController:
         height_map = '/home/danielzgsilva/.gazebo/models/random/materials/textures/random_map.jpg'
         path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
 
-        # Get status (battery and pose) of rover 1 using status service
-        status = get_rover_status(1)
+        for i in range(1, self.robot_count + 1):
+            # Get status (battery and pose) of rover using status service
+            status = get_rover_status(i)
 
-        if status is not None:
-            # Find path
+            if status is not None:
+                # Find path
+                path = path_planner.find_path(status.pose.position, self.dig_sites[0])
 
-            path = path_planner.find_path(status.pose.position, self.dig_sites[0])
+                # Send rover along path
+                if path is not None:
+                    self.waypoint_pubs[i].publish(path)
 
-            # Send rover 1 along path
-            if path is not None:
-                self.waypoint_pubs[0].publish(path)
 
 def on_start_up(robot_count, target_xs, target_ys):
     """ Initialization Function  """
