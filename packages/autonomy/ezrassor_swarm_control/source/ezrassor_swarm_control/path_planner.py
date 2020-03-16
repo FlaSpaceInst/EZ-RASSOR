@@ -11,8 +11,6 @@ from timeit import default_timer as timer
 from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
-import matplotlib.pyplot as plt
-
 
 class PathPlanner:
     """
@@ -82,7 +80,6 @@ class PathPlanner:
                 # Build path by backtracking from current node to the start node
                 path = self.backtrack_path(cur, start, previous)
                 rospy.loginfo('Path found in {}'.format(timer() - start_time))
-                plt.imshow(self.map)
                 return path
 
             closed.add(cur)

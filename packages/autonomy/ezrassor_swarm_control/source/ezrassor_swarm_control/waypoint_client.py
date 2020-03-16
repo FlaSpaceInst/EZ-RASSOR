@@ -6,6 +6,7 @@ from ezrassor_swarm_control.msg import *
 from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
+
 class WaypointClient:
     def __init__(self, robot_num):
         self.client_name = 'waypoint'
@@ -21,7 +22,6 @@ class WaypointClient:
                          self.send_path)
 
     def send_waypoint(self, waypoint):
-        #self.client.wait_for_server()
 
         # Create the goal to send to server
         goal = waypointGoal(target=waypoint)
