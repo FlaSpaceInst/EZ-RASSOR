@@ -7,6 +7,8 @@ from ezrassor_swarm_control.msg import Path
 from path_planner import PathPlanner
 from swarm_utils import get_rover_status
 
+import os
+
 
 class SwarmController:
     def __init__(self, robot_count, dig_sites):
@@ -26,7 +28,9 @@ class SwarmController:
         # wait for rovers to spawn
         rospy.sleep(5.)
 
-        height_map = '/home/danielzgsilva/.gazebo/models/random/materials/textures/random_map.jpg'
+        height_map = os.path.join(os.path.expanduser('~'),
+                                  '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
+
         path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
 
         for i in range(1, self.robot_count + 1):
