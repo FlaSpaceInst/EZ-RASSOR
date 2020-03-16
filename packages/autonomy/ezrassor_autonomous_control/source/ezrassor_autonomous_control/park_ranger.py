@@ -49,10 +49,21 @@ global_dem = None
 
 """Represents a single particle in the particle filter"""
 class Particle:
-    def __init__(self, row, col, heading):
-        self.row = row
-        self.col = col
-        self.heading = heading
+    def __init__(self, id, row, col, heading, weight=0, std_x=0, std_y=0, std_theta=0):
+        self.id = id
+        self.x = row
+        self.y = col
+        self.theta = heading
+        self.weight = weight
+        # Error function
+        if std_x != 0 or std_y != 0 or std_theta != 0:
+            self.distra_x = gv.gvar(row, std_x)
+            self.distra_y = gv.gvar(col, std_y)
+            self.distra_theta = gv.gvar(heading, std_theta)
+        else:
+            self.distra_x = None
+            self.distra_y = None
+            self.distra_theta = None
 
 """Stores the most recent PointCloud2 message received"""
 def on_pc_update(pc):
@@ -67,7 +78,7 @@ by the particle.
 """
 def get_predicted_local_dem(particle):
     # Get angle perpendicular to heading
-    angle_perp = (particle.heading + 90) % 360
+    angle_perp = (particle.theta + 90) % 360
 
     predicted_local_dem = np.empty((num_rows, num_columns), np.float32)
 
@@ -79,20 +90,20 @@ def get_predicted_local_dem(particle):
         num_cols_right -= 1
 
     # Get line to the left of the particle
-    row_coords = get_line(particle.row, particle.col, num_cols_left, -angle_perp, 'left')
+    row_coords = get_line(particle.x, particle.y, num_cols_left, -angle_perp, 'left')
     # Fill up columns to the left of the particle
     for i, coord in enumerate(reversed(row_coords)):
-        col_coords = get_line(coord[0], coord[1], num_rows, particle.heading, 'right')
+        col_coords = get_line(coord[0], coord[1], num_rows, particle.theta, 'right')
         try:
             predicted_local_dem[:, i] = global_dem[col_coords[:,0], col_coords[:,1]]
         except IndexError:
             return None
 
     # Get line to the right of the particle
-    row_coords = get_line(particle.row, particle.col, num_cols_right, angle_perp, 'right')
+    row_coords = get_line(particle.x, particle.y, num_cols_right, angle_perp, 'right')
     # Fill up columns to the right of the particle
     for i, coord in enumerate(row_coords):
-        col_coords = get_line(coord[0], coord[1], num_rows, particle.heading, 'right')
+        col_coords = get_line(coord[0], coord[1], num_rows, particle.theta, 'right')
         try:
             predicted_local_dem[:, num_cols_left-1+i] = global_dem[col_coords[:,0], col_coords[:,1]]
         except IndexError:
@@ -233,7 +244,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         # a fresh batch, probably with some of the previous weighted values. This is done to get rid of incorrect particles
 # There are 2 additional steps the paper adds
     # Initialization: obvi you need initialzation but this one basically supposed if there are particles at every
-    # position and then only uses the highest likelihood ones 
+    # position and then only uses the highest likelihood ones
     # Sampling: this is generating more particles to account for uncertainty
 # Other unconventional stuff:
     # Instead of keeping a global standard deviations for like x, y, theta, they add an error function to each particle.
@@ -291,7 +302,7 @@ def particles_w_distra(particles, N, dem_size, index, diff_theta, samp_part, sam
         x = int(x_func.rvs())
         y = int(y_func.rvs())
         theta = theta_func.rvs()
-        particles.insert(i, Particle(i, x, y, theta, 1 / N, std_x, std_y, std_theta))
+        particles.insert(i, Particle(i, x, y, theta, 1.0 / N, std_x, std_y, std_theta))
         i = i + 1
 # 2 Predict (position)
     # a) for each particle, use motion vector to predict new position
@@ -343,6 +354,7 @@ def resample(particles, N):
         weights.append(i.weight)
 
     if neff(weights) < N / 2:
+        rospy.logwarn("Resample")
         indexes = mc.residual_resample(weights)
 
 # These are calls that i used to test stuff,
@@ -358,23 +370,34 @@ def resample(particles, N):
 TODO:
 - Implement particle filter for localizing
 """
-def compare_dem_to_point_cloud(period, local_dem_comparison_type):
+def compare_dem_to_point_cloud(period, local_dem_comparison_type, particles):
     r = rospy.Rate(1./period)
     while not rospy.is_shutdown():
         pc = get_points()
         if pc is not None:
             local_dem = point_cloud_to_local_dem(pc, local_dem_comparison_type)
-            particle = Particle(370, 160, 36)
-            predicted_dem = get_predicted_local_dem(particle)
-            if predicted_dem is not None:
-                score = sad(local_dem, predicted_dem)
-                rospy.loginfo("Predicted local DEM score: {}".format(score))
+            # 3 Sampling
+            sampling(particles, len(particles), 15, 25, 513, 1, 1, 5)
+            # 4 Update
+            for p in particles:
+                #particle = Particle(370, 160, 36)
+                predicted_dem = get_predicted_local_dem(p)
+                if predicted_dem is not None:
+                    score = sad(local_dem, predicted_dem)
+                    p.weight = p.weight * score
+                    rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
                 # Visualize DEM (remove later)
-                plt.imshow(predicted_dem);
-                plt.colorbar()
-                plt.show(block=False)
-                plt.pause(4.)
-                plt.close()
+                #plt.imshow(predicted_dem);
+                #plt.colorbar()
+                #plt.show(block=False)
+                #plt.pause(4.)
+                #plt.close()
+                plt.plot([p.x], [p.y], marker='o', markersize=3, color="red")
+            plt.show()
+            plt.pause(4.)
+            plt.close()
+        # 5 Resample
+        resample(particles, len(particles))
         r.sleep()
 
 """Converts PointCloud2 to numpy array
@@ -497,6 +520,8 @@ def path_dem():
 
 """Initializes park ranger"""
 def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5, range_min=0.105, range_max=10.):
+    num_particles = 50
+    particles = []
     rospy.init_node('park_ranger')
     rospy.loginfo("Park Ranger initialized")
     globals()['resolution'] = resolution
@@ -505,7 +530,11 @@ def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5, range
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
     init_local_dem(camera_info, range_min, range_max)
     rospy.Subscriber("depth/points", PointCloud2, on_pc_update, queue_size=1)
-    compare_dem_to_point_cloud(period, local_dem_comparison_type)
+    particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
+    #for i in range(0, 10):
+    compare_dem_to_point_cloud(period, local_dem_comparison_type, particles)
+    #new_num_part = len(particles)
+    #resample(particles, new_num_part)
 
 if __name__ == "__main__":
     try:
