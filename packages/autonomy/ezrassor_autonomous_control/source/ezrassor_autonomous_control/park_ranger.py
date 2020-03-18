@@ -5,6 +5,7 @@ from sensor_msgs.msg import PointCloud2, CameraInfo
 import numpy as np
 import math
 import image_geometry
+import nav_functions as nf
 
 # **Remove later (used for visualization of local DEM only)
 import matplotlib.pyplot as plt
@@ -64,6 +65,11 @@ class Particle:
             self.distra_x = None
             self.distra_y = None
             self.distra_theta = None
+
+    def set_distras(self, std_x, std_y, std_theta):
+        self.distra_x = gv.gvar(int(self.x), std_x)
+        self.distra_y = gv.gvar(int(self.y), std_y)
+        self.distra_theta = gv.gvar(float(self.theta), std_theta)
 
 """Stores the most recent PointCloud2 message received"""
 def on_pc_update(pc):
@@ -232,34 +238,9 @@ def neff(weights):
 def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm(
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
-# TODO: Update particle class/my code to match
 
-# Background:
-# The main steps of "simple" particle filter are:
-    # Predict: using odometry to "predict" the position of a particle after one pass
-    # Update: compare data from, usually using a laser scan, to a "predicted" laser scan for each
-        # particle, and then they are scored. This score is then used to weight the particle
-    # Resample: looking at the weights, use neff  or some other function to find an overall score
-        # for the set of particles. If below a threshold, they usually just replace the particles with
-        # a fresh batch, probably with some of the previous weighted values. This is done to get rid of incorrect particles
-# There are 2 additional steps the paper adds
-    # Initialization: obvi you need initialzation but this one basically supposed if there are particles at every
-    # position and then only uses the highest likelihood ones
-    # Sampling: this is generating more particles to account for uncertainty
-# Other unconventional stuff:
-    # Instead of keeping a global standard deviations for like x, y, theta, they add an error function to each particle.
-    # With global standard deviations, they would normally use it to essential inject noise into calculations. With an error
-    # function, it seems like they are putting an error radius around a particle.
-
-# Steps
-# 1 Initialize
-    # a) use likelihood (local to global compare) to initially score positions (essential evaluate as if particle at every position in global dem)
-    # b) place the highest likelihood particles
-    # c) for each particle, give it a weight and an error distribution
-
-    # Buggy when updating ids, possibly just ditch index id and use unique ids
-    # Does intialization particles but only parts will be used in the final integration of this step
-    # This is also used by the sampling step; need to clean up or do psuedo method overloading
+# Buggy when updating ids, possibly just ditch index id and use unique ids
+# Helper function for sampling step, originally used for psuedo initialzation, need to clean this up
 def particles_w_distra(particles, N, dem_size, index, diff_theta, samp_part, samp_std_x, samp_std_y, samp_std_theta):
     mean_x = int(dem_size / 2)
     mean_y = mean_x
@@ -304,24 +285,7 @@ def particles_w_distra(particles, N, dem_size, index, diff_theta, samp_part, sam
         theta = theta_func.rvs()
         particles.insert(i, Particle(i, x, y, theta, 1.0 / N, std_x, std_y, std_theta))
         i = i + 1
-# 2 Predict (position)
-    # a) for each particle, use motion vector to predict new position
-        # - May be easier to just use the pose value rather than motion because error distribution
-    # b) update gaussian distribution (error distribution function) by replacing it
-    # with a new distribution but using the sum of the current one's variance and one found from odometry
-        # - variance = standard deviation^2 -> just sum the standard deviations, only need more than one odom object
-        # - could use the covariance matrix possibly to find the standard deviation (see gvar library for python)
 
-# 3 Sample
-    # a) for each particle or some particle? wasn't sure which one but in this case, i do it for a random particle
-    # b) Compare x, y, and z, to their error distribution's standard deviation and see how much off
-    # c) if the either of the differences is above the threshold, generate particles around it
-    # d) update the standard deviation for the particle from a) and the newly generate particles to dem_size/2 or 74/2 (74 is intel fov yaw)
-
-    # My uncertainty on this implementation comes from this:
-        # "Given a particle i, its gaussian distribution standard deviation are compared with the coordinate resolution and with the angular resolution"
-        # - I'm unsure about the "resolution" values, not sure if it's like the size of the local dem but in this case, i went with using the coordinates of
-        # the particle since the goal of the function is to gen particles around some particle i to account for error
 def sampling(particles, num_particles, threshold_point, threshold_theta, dem_size, samp_std_x, samp_std_y, samp_std_theta):
     std_coord = int(dem_size / 2)
     std_theta = (74 / 2)
@@ -339,15 +303,7 @@ def sampling(particles, num_particles, threshold_point, threshold_theta, dem_siz
         particles[rand_id].distra_x = gv.gvar(particles[rand_id].distra_x.mean, std_coord)
         particles[rand_id].distra_y = gv.gvar(particles[rand_id].distra_y.mean, std_coord)
         particles[rand_id].distra_theta = gv.gvar(particles[rand_id].distra_theta.mean, std_theta)
-# 4 Update
-    # for each particle
-    # a) score the particle
-    # b) update weight of particle
-    #TODO: Modify compare_dem_to_point_cloud to take into account weights
-# 5 Resample
-    # a) check the equation is below the threshold
-    # b) if true, resample particles with probabilities given by there weights ?????
-    # c) weights are then reinitialized to 1/N
+
 def resample(particles, N):
     weights = []
     for i in particles:
@@ -357,47 +313,157 @@ def resample(particles, N):
         rospy.logwarn("Resample")
         indexes = mc.residual_resample(weights)
 
-# These are calls that i used to test stuff,
 
-#num_particles = 50
-#particles = []
-#particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
-#sampling(particles, num_particles, 15, 25, 513, 1, 1, 5)
-#resample(particles, num_particles)
+def init_check(particles, N):
+    rand_theta = get_truncated_normal(int(74/2),5,0,359)
+    for i in range(0, N):
+        for j in range(0, N):
+            rospy.logwarn("Gen at: {}, {}".format(i, j))
+            particles.append(Particle(-1, i, j, float(rand_theta.rvs()), 1.0 / N, -1, -1, -1))
+
+def likelihood(particles, local_dem):
+    for p in particles:
+        #particle = Particle(370, 160, 36)
+        predicted_dem = get_predicted_local_dem(p)
+        if predicted_dem is not None:
+            score = sad(local_dem, predicted_dem)
+            p.weight = p.weight * score
+            rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
+        # Visualize DEM (remove later)
+        #plt.imshow(predicted_dem);
+        #plt.colorbar()
+        #plt.show(block=False)
+        #plt.pause(4.)
+        #plt.close()
+        #plt.plot([p.x], [p.y], marker='o', markersize=3, color="red")
+    #plt.show()
+    #plt.pause(4.)
+    #plt.close()
+
+def place_high_like_parts(particles, N):
+    # Sort particles by weight in descending order
+    place = sorted(particles, key=lambda x: x.weight, reverse=True)
+    particles = []
+
+    # Get and "place" the N highest weighted particles and reset weights and gaussian
+    for i in range(0, N):
+        p = place.pop(0)
+        p.weight = 1.0 / N
+        p.set_distras(N / 2, N / 2, int(74 / 2))
+        particles.append(p)
+    return particles
+
+def get_odom_covar_n_diplace(prev_odom_msg, curr_odom_msg):
+    covar = curr_odom_msg.pose.covariance
+    # Absolute
+    heading = nf.quaternion_to_yaw(curr_odom_msg.pose.orientation - prev_odom_msg.pose.orientation)
+    x_diff = (curr_odom_msg.pose.position.x - prev_odom_msg.pose.position.x)
+    y_diff = (curr_odom_msg.pose.position.y - prev_odom_msg.pose.position.y)
+    return covar, heading, x_diff, y_diff, theta_diff
+
+def predict_particle_movement(particle, dem_bound):
+    # Compare odometry messages and adjust particle physically and probability
+    get_odom_covar_n_diplace(prev_odom, curr_odom)
+    particle.x = particle.x + x_diff
+    particle.y = particle.y + y_diff
+    particle.theta = (particle.theta + theta_diff) % 360
+    if particle.x > dem_bound or particle.y > dem_bound:
+        rospy.logwarn("Out of DEM bounds at: {}, {}".format(particle.x, particle.y))
+    # TODO: adjust gaussians
+
+# Background:
+# The main steps of "simple" particle filter are:
+    # Predict: using odometry to "predict" the position of a particle after one pass
+    # Update: compare data from, usually using a laser scan, to a "predicted" laser scan for each
+        # particle, and then they are scored. This score is then used to weight the particle
+    # Resample: looking at the weights, use neff  or some other function to find an overall score
+        # for the set of particles. If below a threshold, they usually just replace the particles with
+        # a fresh batch, probably with some of the previous weighted values. This is done to get rid of incorrect particles
+# There are 2 additional steps the paper adds
+    # Initialization: obvi you need initialzation but this one basically supposed if there are particles at every
+    # position and then only uses the highest likelihood ones
+    # Sampling: this is generating more particles to account for uncertainty
+# Other unconventional stuff:
+    # Instead of keeping a global standard deviations for like x, y, theta, they add an error function to each particle.
+    # With global standard deviations, they would normally use it to essential inject noise into calculations. With an error
+    # function, it seems like they are putting an error radius around a particle.
+
+# The Paper's Particle Filter Steps
+
+# 1 Initialize
+    # a) use likelihood (local to global compare) to initially score positions (essential evaluate as if particle at every position in global dem)
+    # b) place the highest likelihood particles
+    # c) for each particle, give it a weight and an error distribution
+
+# 2 Predict (aka predict movement of particle)
+    # a) for each particle, use motion vector to predict new position
+        # - Use odometry message(s) (pose don't use twist, i'm avoiding physics math) to predict a position + orientation
+        # - Thinking about keeping track of previous odometry message and compare current one to
+        #   predict position but subscribers are async so to do this, need global variables
+        # - Could also try to get the world_state pose published but might need to completely change the architecture for that
+        #   cuz of how ros nodes do progress guarantee or whatever it's called in concurrency
+    # b) update gaussian distribution (error distribution function) by replacing it
+    # with a new distribution but using the sum of the current one's variance and one found from odometry
+        # - variance = standard deviation^2 -> just sum the standard deviations, only need more than one odom object
+        # - could use the covariance matrix possibly to find the standard deviation (see gvar library for python)
+
+# 3 Sample
+    # a) for each particle or some particle? wasn't sure which one but in this case, i do it for a random particle
+    # b) Compare x, y, and z, to their error distribution's standard deviation and see how much off
+    # c) if the either of the differences is above the threshold, generate particles around it
+    # d) update the standard deviation for the particle from a) and the newly generate particles to dem_size/2 or 74/2 (74 is intel fov yaw)
+
+    # My uncertainty on this implementation comes from this:
+        # "Given a particle i, its gaussian distribution standard deviation are compared with the coordinate resolution and with the angular resolution"
+        # - I'm unsure about the "resolution" values, not sure if it's like the size of the local dem but in this case, i went with using the coordinates of
+        # the particle since the goal of the function is to gen particles around some particle i to account for error
+
+# 4 Update
+    # for each particle
+    # a) score the particle (compare local_dem to predicted_dem)
+    # b) update weight of particle
+
+# 5 Resample
+    # a) check the equation is below the threshold
+    # b) if true, resample particles with probabilities given by there weights ?????
+    # c) weights are then reinitialized to 1/N
+
 
 """Compares global DEM to point clouds to localize the robot
 
 TODO:
-- Implement particle filter for localizing
+- Rename this to particle filter
 """
-def compare_dem_to_point_cloud(period, local_dem_comparison_type, particles):
+
+def compare_dem_to_point_cloud(period, local_dem_comparison_type, particles, N):
     r = rospy.Rate(1./period)
+    init_flag = True
     while not rospy.is_shutdown():
         pc = get_points()
         if pc is not None:
             local_dem = point_cloud_to_local_dem(pc, local_dem_comparison_type)
-            # 3 Sampling
-            sampling(particles, len(particles), 15, 25, 513, 1, 1, 5)
-            # 4 Update
-            for p in particles:
-                #particle = Particle(370, 160, 36)
-                predicted_dem = get_predicted_local_dem(p)
-                if predicted_dem is not None:
-                    score = sad(local_dem, predicted_dem)
-                    p.weight = p.weight * score
-                    rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
-                # Visualize DEM (remove later)
-                #plt.imshow(predicted_dem);
-                #plt.colorbar()
-                #plt.show(block=False)
-                #plt.pause(4.)
-                #plt.close()
-                plt.plot([p.x], [p.y], marker='o', markersize=3, color="red")
-            plt.show()
-            plt.pause(4.)
-            plt.close()
-        # 5 Resample
-        resample(particles, len(particles))
+            if init_flag == False:
+                # 3 Sampling
+                rospy.logwarn("Sampling")
+                sampling(particles, len(particles), 15, 25, 513, 1, 1, 5)
+                # 4 Update
+                rospy.logwarn("Update")
+                likelihood(particles, local_dem)
+                # 5 Resample
+                rospy.logwarn("Resample")
+                resample(particles, len(particles))
+            else:
+                # 1 Initialization
+                rospy.logwarn("Initialize")
+                # According to the paper, this would generate a particle at every possible dem
+                # For the sake of not taking forever, just set this to 50
+                init_check(particles, 50)
+                likelihood(particles, local_dem)
+                # rather than a NxN operation like previous two right above,
+                # for the sorting, lambda function is used so fast af and N is used to
+                # pop the list of N highest scored particles
+                particles = place_high_like_parts(particles, N)
+                init_flag = False
         r.sleep()
 
 """Converts PointCloud2 to numpy array
@@ -530,9 +596,9 @@ def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5, range
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
     init_local_dem(camera_info, range_min, range_max)
     rospy.Subscriber("depth/points", PointCloud2, on_pc_update, queue_size=1)
-    particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
+    #particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
     #for i in range(0, 10):
-    compare_dem_to_point_cloud(period, local_dem_comparison_type, particles)
+    compare_dem_to_point_cloud(period, local_dem_comparison_type, particles, 513)
     #new_num_part = len(particles)
     #resample(particles, new_num_part)
 
