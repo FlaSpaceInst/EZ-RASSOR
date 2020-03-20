@@ -7,6 +7,8 @@ import math
 import image_geometry
 import nav_functions as nf
 
+from sklearn.preprocessing import normalize
+
 # **Remove later (used for visualization of local DEM only)
 import matplotlib.pyplot as plt
 
@@ -304,14 +306,23 @@ def sampling(particles, num_particles, threshold_point, threshold_theta, dem_siz
         particles[rand_id].distra_y = gv.gvar(particles[rand_id].distra_y.mean, std_coord)
         particles[rand_id].distra_theta = gv.gvar(particles[rand_id].distra_theta.mean, std_theta)
 
+def resample_from_index(particles, weights, indexes):
+    particles[:] = particles[indexes]
+    rospy.logwarn("Before: {}".format(weights))
+    weights[:] = weights[indexes]
+    rospy.logwarn("After: {}".format(weights))
+    weights.fill(1.0 / len(weights))
+
 def resample(particles, N):
     weights = []
     for i in particles:
         weights.append(i.weight)
-
-    if neff(weights) < N / 2:
+    norm = weights / np.linalg.norm(weights)
+    if neff(norm) < N / 2:
         rospy.logwarn("Resample")
-        indexes = mc.residual_resample(weights)
+        indexes = mc.systematic_resample(norm)
+        rospy.logwarn("indexes {}".format(indexes))
+        #resample_from_index(particles, weights, indexes)
 
 
 def init_check(particles, N):
