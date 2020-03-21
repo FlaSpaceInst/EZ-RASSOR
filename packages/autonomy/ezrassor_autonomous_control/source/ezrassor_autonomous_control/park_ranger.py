@@ -308,9 +308,9 @@ def sampling(particles, num_particles, threshold_point, threshold_theta, dem_siz
 
 def resample_from_index(particles, weights, indexes):
     particles[:] = particles[indexes]
-    rospy.logwarn("Before: {}".format(weights))
+    # rospy.logwarn("Before: {}".format(weights))
     weights[:] = weights[indexes]
-    rospy.logwarn("After: {}".format(weights))
+    # rospy.logwarn("After: {}".format(weights))
     weights.fill(1.0 / len(weights))
 
 def resample(particles, N):
@@ -319,9 +319,9 @@ def resample(particles, N):
         weights.append(i.weight)
     norm = weights / np.linalg.norm(weights)
     if neff(norm) < N / 2:
-        rospy.logwarn("Resample")
+        # rospy.logwarn("Resample")
         indexes = mc.systematic_resample(norm)
-        rospy.logwarn("indexes {}".format(indexes))
+        # rospy.logwarn("indexes {}".format(indexes))
         #resample_from_index(particles, weights, indexes)
 
 
@@ -329,7 +329,7 @@ def init_check(particles, N):
     rand_theta = get_truncated_normal(int(74/2),5,0,359)
     for i in range(0, N):
         for j in range(0, N):
-            rospy.logwarn("Gen at: {}, {}".format(i, j))
+            # rospy.logwarn("Gen at: {}, {}".format(i, j))
             particles.append(Particle(-1, i, j, float(rand_theta.rvs()), 1.0 / N, -1, -1, -1))
 
 def likelihood(particles, local_dem):
@@ -339,7 +339,7 @@ def likelihood(particles, local_dem):
         if predicted_dem is not None:
             score = sad(local_dem, predicted_dem)
             p.weight = p.weight * score
-            rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
+            # rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
         # Visualize DEM (remove later)
         #plt.imshow(predicted_dem);
         #plt.colorbar()
@@ -379,7 +379,8 @@ def predict_particle_movement(particle, dem_bound):
     particle.y = particle.y + y_diff
     particle.theta = (particle.theta + theta_diff) % 360
     if particle.x > dem_bound or particle.y > dem_bound:
-        rospy.logwarn("Out of DEM bounds at: {}, {}".format(particle.x, particle.y))
+        pass
+        # rospy.logwarn("Out of DEM bounds at: {}, {}".format(particle.x, particle.y))
     # TODO: adjust gaussians
 
 # Background:
@@ -455,17 +456,17 @@ def compare_dem_to_point_cloud(period, local_dem_comparison_type, particles, N):
             local_dem = point_cloud_to_local_dem(pc, local_dem_comparison_type)
             if init_flag == False:
                 # 3 Sampling
-                rospy.logwarn("Sampling")
+                # rospy.logwarn("Sampling")
                 sampling(particles, len(particles), 15, 25, 513, 1, 1, 5)
                 # 4 Update
-                rospy.logwarn("Update")
+                # rospy.logwarn("Update")
                 likelihood(particles, local_dem)
                 # 5 Resample
-                rospy.logwarn("Resample")
+                # rospy.logwarn("Resample")
                 resample(particles, len(particles))
             else:
                 # 1 Initialization
-                rospy.logwarn("Initialize")
+                # rospy.logwarn("Initialize")
                 # According to the paper, this would generate a particle at every possible dem
                 # For the sake of not taking forever, just set this to 50
                 init_check(particles, 50)
@@ -579,7 +580,8 @@ def create_array_global_dem(directory):
 
                     # Give warning if not square
                     if dem_size[0] != dem_size[1]:
-                        rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
+                        pass
+                        # rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
 
                     global global_dem
                     global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
