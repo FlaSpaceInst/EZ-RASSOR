@@ -4,6 +4,7 @@ import rospy
 import numpy as np
 import nav_functions as nf
 from pointcloud_processor import PointCloudProcessor
+from gazebo_msgs.msg import LinkStates
 
 from sklearn.preprocessing import normalize
 
@@ -54,21 +55,47 @@ class ParkRanger(PointCloudProcessor):
         "min": np.nanmin
     }
 
+    debug = True
+
     def __init__(self, resolution, local_dem_comparison_type, period,
-                 range_min, range_max):
+                 range_min, range_max, camera_height):
         super(ParkRanger, self).__init__('park_ranger')
         self.resolution = resolution
+        self.camera_height = camera_height
+
         num_particles = 50
         particles = []
+
         path = ParkRanger.path_dem()
+
         self.create_array_global_dem(path)
         self.init_local_dem_info(range_min, range_max)
+
+        # Subscribe to "altimeter" data, waiting for at least one message
+        # moving on
+        link_states = rospy.wait_for_message("/gazebo/link_states", LinkStates)
+        self.simStateZPositionCallBack(link_states)
+        rospy.Subscriber('/gazebo/link_states', LinkStates,
+                         self.simStateZPositionCallBack)
+
         #ParkRanger.particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
         #for i in range(0, 10):
         self.compare_dem_to_point_cloud(period, local_dem_comparison_type, particles, 513)
         #new_num_part = len(particles)
         #ParkRanger.resample(particles, new_num_part)
+
         rospy.loginfo("Park Ranger initialized")
+
+    """Stores most recent Z position of robot"""
+    def simStateZPositionCallBack(self, data):
+        namespace = rospy.get_namespace()
+        namespace = namespace[1:-1]+"::base_link"
+        try:
+            index = data.name.index(namespace)
+        except:
+            rospy.logdebug("Failed to get index. Skipping...")
+
+        self.positionZ = data.pose[index].position.z + self.originZ
 
     """Returns the path to dem_data/"""
     @staticmethod
@@ -108,10 +135,17 @@ class ParkRanger(PointCloudProcessor):
                         if dem_size[0] != dem_size[1]:
                             rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
 
+                        middle = int(dem_size[0] / 2)
+
                         self.global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
 
                 elif i > 2:
                     self.global_dem[i - 3] = line.split()
+
+                    if (i-3) == middle:
+                        # Split by white space, then find the middle value on the level
+                        temp = line.split()
+                        self.originZ = float(temp[middle])
 
     """Initializes data for creating local DEM
 
@@ -282,7 +316,7 @@ class ParkRanger(PointCloudProcessor):
 
         row_indexes = np.subtract(self.num_rows-1, np.divide(np.subtract(forward, self.min_row), self.resolution).astype(int))
         column_indexes = np.divide(np.subtract(right, self.min_column), self.resolution).astype(int)
-        heights = np.negative(down)
+        heights = np.add(np.add(self.positionZ, self.camera_height), down)
 
         return row_indexes, column_indexes, heights
 
@@ -367,9 +401,11 @@ class ParkRanger(PointCloudProcessor):
     @staticmethod
     def resample_from_index(particles, weights, indexes):
         particles[:] = particles[indexes]
-        rospy.logwarn("Before: {}".format(weights))
+        if ParkRanger.debug:
+            rospy.logwarn("Before: {}".format(weights))
         weights[:] = weights[indexes]
-        rospy.logwarn("After: {}".format(weights))
+        if ParkRanger.debug:
+            rospy.logwarn("After: {}".format(weights))
         weights.fill(1.0 / len(weights))
 
     @staticmethod
@@ -379,9 +415,11 @@ class ParkRanger(PointCloudProcessor):
             weights.append(i.weight)
         norm = weights / np.linalg.norm(weights)
         if ParkRanger.neff(norm) < N / 2:
-            rospy.logwarn("Resample")
+            if ParkRanger.debug:
+                rospy.logwarn("Resample")
             indexes = mc.systematic_resample(norm)
-            rospy.logwarn("indexes {}".format(indexes))
+            if ParkRanger.debug:
+                rospy.logwarn("indexes {}".format(indexes))
             #ParkRanger.resample_from_index(particles, weights, indexes)
 
     @staticmethod
@@ -389,7 +427,8 @@ class ParkRanger(PointCloudProcessor):
         rand_theta = ParkRanger.get_truncated_normal(int(74/2),5,0,359)
         for i in range(0, N):
             for j in range(0, N):
-                rospy.logwarn("Gen at: {}, {}".format(i, j))
+                if ParkRanger.debug:
+                    rospy.logwarn("Gen at: {}, {}".format(i, j))
                 particles.append(Particle(-1, i, j, float(rand_theta.rvs()), 1.0 / N, -1, -1, -1))
 
     def likelihood(self, particles, local_dem):
@@ -399,7 +438,8 @@ class ParkRanger(PointCloudProcessor):
             if predicted_dem is not None:
                 score = ParkRanger.sad(local_dem, predicted_dem)
                 p.weight = p.weight * score
-                rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
+                if ParkRanger.debug:
+                    rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
             # Visualize DEM (remove later)
             #plt.imshow(predicted_dem);
             #plt.colorbar()
@@ -517,17 +557,21 @@ class ParkRanger(PointCloudProcessor):
                 local_dem = self.point_cloud_to_local_dem(pc, local_dem_comparison_type)
                 if init_flag == False:
                     # 3 Sampling
-                    rospy.logwarn("Sampling")
+                    if ParkRanger.debug:
+                        rospy.logwarn("Sampling")
                     ParkRanger.sampling(particles, len(particles), 15, 25, 513, 1, 1, 5)
                     # 4 Update
-                    rospy.logwarn("Update")
+                    if ParkRanger.debug:
+                        rospy.logwarn("Update")
                     self.likelihood(particles, local_dem)
                     # 5 Resample
-                    rospy.logwarn("Resample")
+                    if ParkRanger.debug:
+                        rospy.logwarn("Resample")
                     ParkRanger.resample(particles, len(particles))
                 else:
                     # 1 Initialization
-                    rospy.logwarn("Initialize")
+                    if ParkRanger.debug:
+                        rospy.logwarn("Initialize")
                     # According to the paper, this would generate a particle at every possible dem
                     # For the sake of not taking forever, just set this to 50
                     ParkRanger.init_check(particles, 50)
@@ -540,8 +584,10 @@ class ParkRanger(PointCloudProcessor):
             r.sleep()
 
 """Initializes park ranger"""
-def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5, range_min=0.105, range_max=10.):
-    pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min, range_max)
+def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5,
+                range_min=0.105, range_max=10., camera_height=0.08):
+    pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min,
+                    range_max, camera_height)
 
 if __name__ == "__main__":
     try:
