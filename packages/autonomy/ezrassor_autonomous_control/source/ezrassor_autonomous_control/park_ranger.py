@@ -5,6 +5,7 @@ import numpy as np
 import nav_functions as nf
 from pointcloud_processor import PointCloudProcessor
 from gazebo_msgs.msg import LinkStates
+from nav_msgs.msg import Odometry
 
 from sklearn.preprocessing import normalize
 
@@ -63,6 +64,14 @@ class ParkRanger(PointCloudProcessor):
         self.resolution = resolution
         self.camera_height = camera_height
 
+        # Get spawn x and y coordinates for offsetting odometry messages
+        self.start_x = rospy.get_param('autonomous_control/spawn_x_coord')
+        self.start_y = rospy.get_param('autonomous_control/spawn_y_coord')
+
+        self.last_x = self.start_x
+        self.last_y = self.start_y
+        self.last_heading = 0.0
+
         num_particles = 50
         particles = []
 
@@ -74,9 +83,11 @@ class ParkRanger(PointCloudProcessor):
         # Subscribe to "altimeter" data, waiting for at least one message
         # moving on
         link_states = rospy.wait_for_message("/gazebo/link_states", LinkStates)
-        self.simStateZPositionCallBack(link_states)
+        self.sim_state_z_position_callback(link_states)
         rospy.Subscriber('/gazebo/link_states', LinkStates,
-                         self.simStateZPositionCallBack)
+                         self.sim_state_z_position_callback)
+
+        rospy.Subscriber('odometry/filtered', Odometry, self.odometry_callback)
 
         #ParkRanger.particles_w_distra(particles, num_particles, 513, -1, -1, None, -1, -1, -1)
         #for i in range(0, 10):
@@ -87,7 +98,7 @@ class ParkRanger(PointCloudProcessor):
         rospy.loginfo("Park Ranger initialized")
 
     """Stores most recent Z position of robot"""
-    def simStateZPositionCallBack(self, data):
+    def sim_state_z_position_callback(self, data):
         namespace = rospy.get_namespace()
         namespace = namespace[1:-1]+"::base_link"
         try:
@@ -95,7 +106,16 @@ class ParkRanger(PointCloudProcessor):
         except:
             rospy.logdebug("Failed to get index. Skipping...")
 
-        self.positionZ = data.pose[index].position.z + self.originZ
+        self.position_z = data.pose[index].position.z + self.origin_z
+
+    def odometry_callback(self, data):
+        self.covar = data.pose.covariance
+        self.position_x = data.pose.pose.position.x + self.start_x
+        self.position_y = data.pose.pose.position.y + self.start_y
+
+        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/np.pi
+
+        self.heading = heading % 360
 
     """Returns the path to dem_data/"""
     @staticmethod
@@ -145,7 +165,7 @@ class ParkRanger(PointCloudProcessor):
                     if (i-3) == middle:
                         # Split by white space, then find the middle value on the level
                         temp = line.split()
-                        self.originZ = float(temp[middle])
+                        self.origin_z = float(temp[middle])
 
     """Initializes data for creating local DEM
 
@@ -316,7 +336,7 @@ class ParkRanger(PointCloudProcessor):
 
         row_indexes = np.subtract(self.num_rows-1, np.divide(np.subtract(forward, self.min_row), self.resolution).astype(int))
         column_indexes = np.divide(np.subtract(right, self.min_column), self.resolution).astype(int)
-        heights = np.add(np.add(self.positionZ, self.camera_height), down)
+        heights = np.add(np.add(self.position_z, self.camera_height), down)
 
         return row_indexes, column_indexes, heights
 
@@ -465,25 +485,27 @@ class ParkRanger(PointCloudProcessor):
             particles.append(p)
         return particles
 
-    @staticmethod
-    def get_odom_covar_n_diplace(prev_odom_msg, curr_odom_msg):
-        covar = curr_odom_msg.pose.covariance
-        # Absolute
-        heading = nf.quaternion_to_yaw(curr_odom_msg.pose.orientation - prev_odom_msg.pose.orientation)
-        x_diff = (curr_odom_msg.pose.position.x - prev_odom_msg.pose.position.x)
-        y_diff = (curr_odom_msg.pose.position.y - prev_odom_msg.pose.position.y)
-        return covar, heading, x_diff, y_diff, theta_diff
-
-    @staticmethod
-    def predict_particle_movement(particle, dem_bound):
+    def predict_particle_movement(self, particle, dem_bound):
         # Compare odometry messages and adjust particle physically and probability
-        ParkRanger.get_odom_covar_n_diplace(prev_odom, curr_odom)
+        current_x = self.position_x
+        current_y = self.position_y
+        current_heading = self.heading
+        x_diff = (current_x - self.last_x) / self.resolution
+        y_diff = (current_y - self.last_y) / self.resolution
+        heading_diff = current_heading - self.last_heading
+        covar = self.covar
+
         particle.x = particle.x + x_diff
         particle.y = particle.y + y_diff
         particle.theta = (particle.theta + theta_diff) % 360
+
         if particle.x > dem_bound or particle.y > dem_bound:
             rospy.logwarn("Out of DEM bounds at: {}, {}".format(particle.x, particle.y))
         # TODO: adjust gaussians
+
+        self.last_x = current_x
+        self.last_y = current_y
+        self.last_heading = current_heading
 
     # Background:
     # The main steps of "simple" particle filter are:
