@@ -47,10 +47,6 @@
 	  <rosparam command="load" file="$(find ezrassor_autonomous_control)/config/obstacle_detection.yaml" />
   </node>
 
-  <node pkg="ezrassor_autonomous_control"
-	  type="park_ranger"
-	  name="park_ranger"/>
-
   <group if="$(arg enable_real_odometry)">
 	  <node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
 		  <param name="frame_id" value="depth_camera_optical_frame"/>
@@ -69,5 +65,9 @@
 	  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
 		  <rosparam command="load" file="$(find ezrassor_autonomous_control)/config/ekf_template.yaml" />
 	  </node>
+
+	  <node pkg="ezrassor_autonomous_control"
+		  type="park_ranger"
+		  name="park_ranger"/>
   </group>
 </launch>
