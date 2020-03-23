@@ -419,14 +419,25 @@ class ParkRanger(PointCloudProcessor):
             particles[rand_id].distra_theta = gv.gvar(particles[rand_id].distra_theta.mean, std_theta)
 
     @staticmethod
-    def resample_from_index(particles, weights, indexes):
-        particles[:] = particles[indexes]
-        if ParkRanger.debug:
-            rospy.logwarn("Before: {}".format(weights))
-        weights[:] = weights[indexes]
-        if ParkRanger.debug:
-            rospy.logwarn("After: {}".format(weights))
-        weights.fill(1.0 / len(weights))
+    def estimate(particles):
+        sum_x = 0
+        sum_y = 0
+        num = len(particles)
+        for p in particles:
+            sum_x = sum_x + (p.x * p.weight)
+            sum_y = sum_y + (p.y * p.weight)
+        return int(sum_x / num), int(sum_y / num)
+
+    @staticmethod
+    def resample_from_index(particles, weights, indexes, N):
+        uniques = np.unique(indexes)
+        resampled = []
+        for i in uniques:
+            samp = particles[i]
+            #rospy.logwarn("resampled {} {} {} {}".format(samp.x, samp.y, samp.theta, samp.weight))
+            resampled.append(Particle(samp.id, samp.x, samp.y, samp.theta, 1.0 / N))
+        particles = []
+        return resampled
 
     @staticmethod
     def resample(particles, N):
@@ -435,12 +446,12 @@ class ParkRanger(PointCloudProcessor):
             weights.append(i.weight)
         norm = weights / np.linalg.norm(weights)
         if ParkRanger.neff(norm) < N / 2:
-            if ParkRanger.debug:
-                rospy.logwarn("Resample")
+            #if ParkRanger.debug:
+                #rospy.logwarn("Resample")
             indexes = mc.systematic_resample(norm)
-            if ParkRanger.debug:
-                rospy.logwarn("indexes {}".format(indexes))
-            #ParkRanger.resample_from_index(particles, weights, indexes)
+            #if ParkRanger.debug:
+                #rospy.logwarn("indexes {}".format(indexes))
+            particles = ParkRanger.resample_from_index(particles, weights, indexes, N)
 
     @staticmethod
     def init_check(particles, N):
@@ -451,13 +462,13 @@ class ParkRanger(PointCloudProcessor):
                     rospy.logwarn("Gen at: {}, {}".format(i, j))
                 particles.append(Particle(-1, i, j, float(rand_theta.rvs()), 1.0 / N, -1, -1, -1))
 
-    def likelihood(self, particles, local_dem):
+    def likelihood(self, particles, local_dem, N):
         for p in particles:
             #particle = Particle(370, 160, 36)
             predicted_dem = self.get_predicted_local_dem(p)
             if predicted_dem is not None:
                 score = ParkRanger.sad(local_dem, predicted_dem)
-                p.weight = p.weight * score
+                p.weight = p.weight * ( score / N )
                 if ParkRanger.debug:
                     rospy.logwarn("Predicted local DEM score: {}".format(p.weight))
             # Visualize DEM (remove later)
@@ -585,7 +596,13 @@ class ParkRanger(PointCloudProcessor):
                     # 4 Update
                     if ParkRanger.debug:
                         rospy.logwarn("Update")
-                    self.likelihood(particles, local_dem)
+                    self.likelihood(particles, local_dem, N)
+                    # estimate
+                    if ParkRanger.debug:
+                        rospy.logwarn("Estimate")
+                    est_x, est_y = ParkRanger.estimate(particles)
+                    if ParkRanger.debug:
+                        rospy.logwarn("Current Estimate {} {}".format(est_x, est_y))
                     # 5 Resample
                     if ParkRanger.debug:
                         rospy.logwarn("Resample")
@@ -597,7 +614,7 @@ class ParkRanger(PointCloudProcessor):
                     # According to the paper, this would generate a particle at every possible dem
                     # For the sake of not taking forever, just set this to 50
                     ParkRanger.init_check(particles, 50)
-                    self.likelihood(particles, local_dem)
+                    self.likelihood(particles, local_dem, N)
                     # rather than a NxN operation like previous two right above,
                     # for the sorting, lambda function is used so fast af and N is used to
                     # pop the list of N highest scored particles
