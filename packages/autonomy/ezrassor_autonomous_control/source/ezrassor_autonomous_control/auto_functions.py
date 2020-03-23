@@ -56,7 +56,35 @@ def auto_drive_location(world_state, ros_util):
         # Iterate over all of the laser beams in our scan wedge and determine the best angle to turn and x,y point.
         best_angle = get_best_angle(world_state)
 
-        if best_angle is not None:
+        while True:
+            # If the best angle is None, we need to look at an adjacent wedge that we have not already seen
+            if best_angle is None:
+
+                # These variables are used to oscillate between wedges if we enter visual boundary following mode below.
+                switchDirection = -1
+                wedgeDist = 0
+                wedgeSize = (scan.angle_max - scan.angle_min)
+                rospy.loginfo("There is nowhere to go in the current wedge. Turning to an adjacent wedge.")
+
+                while best_angle is None:
+
+                    switchDirection *= -1
+                    wedgeDist += 1
+
+                    if switchDirection < 0:
+                        direction = 'left'
+                    else:
+                        direction = 'right'
+
+                    # Turn to an adjacent wedge and check if we can see some way to progress towards the goal.
+                    uf.turn(rel_to_abs(world_state.heading, (wedgeSize) * wedgeDist), direction, world_state, ros_util)
+                    ros_util.publish_actions('stop', 0, 0, 0, 0)
+                    ros_util.rate.sleep()
+                    rospy.sleep(0.1)
+
+                    rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
+                    best_angle = get_best_angle(world_state)
+                
             wedgeSize = (scan.angle_max - scan.angle_min) / 10
 
             buffer_angle = math.atan(buffer / threshold)
@@ -79,35 +107,12 @@ def auto_drive_location(world_state, ros_util):
                 ros_util.rate.sleep()
                 rospy.sleep(0.1)
                 best_angle = get_best_angle(world_state)
+                if best_angle is None:
+                    break
                 best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
 
-        # If the best angle is None, we need to look at an adjacent wedge that we have not already seen
-        if best_angle is None:
-
-            # These variables are used to oscillate between wedges if we enter visual boundary following mode below.
-            switchDirection = -1
-            wedgeDist = 0
-            wedgeSize = (scan.angle_max - scan.angle_min)
-            rospy.loginfo("There is nowhere to go in the current wedge. Turning to an adjacent wedge.")
-
-            while best_angle is None:
-
-                switchDirection *= -1
-                wedgeDist += 1
-
-                if switchDirection < 0:
-                    direction = 'left'
-                else:
-                    direction = 'right'
-
-                # Turn to an adjacent wedge and check if we can see some way to progress towards the goal.
-                uf.turn(rel_to_abs(world_state.heading, (wedgeSize) * wedgeDist), direction, world_state, ros_util)
-                ros_util.publish_actions('stop', 0, 0, 0, 0)
-                ros_util.rate.sleep()
-                rospy.sleep(0.1)
-
-                rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
-                best_angle = get_best_angle(world_state)
+            if best_angle is not None:
+                break
 
         # If our angle is less than zero, then we would expect a right turn otherwise turn left.
         if best_angle < 0:
