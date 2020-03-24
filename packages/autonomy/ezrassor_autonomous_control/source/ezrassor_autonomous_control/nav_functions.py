@@ -45,7 +45,7 @@ def quaternion_to_yaw(pose):
 # Angle is in radians and dist is the distance to an object or threshold value passed in.
 def angle_is_safe(angle, dist, buffer, scan):
     # Calculate how much to change angle in order for robot to clear obstacle.
-    buffer_angle = math.atan(buffer / dist)
+    buffer_angle = math.atan(buffer / 4.0)
 
     # These are in radians.
     angle1 = angle - buffer_angle
