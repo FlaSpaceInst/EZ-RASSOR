@@ -70,7 +70,7 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
                      ros_util.autoCommandCallBack)
     rospy.Subscriber('obstacle_detection/combined',
                      LaserScan,
-                     af.on_scan_update,
+                     uf.on_scan_update,
                      queue_size=1)
 
     rospy.loginfo('Autonomous control initialized.')
