@@ -94,7 +94,6 @@ def turn(new_heading, direction, world_state, ros_util):
         twist_message = Twist()
         twist_message.angular.z = turn_velocity
         ros_util.movement_pub.publish(twist_message)
-        rospy.loginfo("turn speed: {}".format(turn_velocity))
 
         ros_util.rate.sleep()
 
@@ -116,7 +115,7 @@ def move(dist, world_state, ros_util, threshold, buffer, direction='forward'):
             return
 
         # If obstacles are too close, figure out how to get around them.
-        if not nf.angle_is_safe(0, threshold, buffer, scan):
+        if not nf.angle_is_safe(0, threshold / 2.0, buffer, scan):
             rospy.loginfo("Obstacle too close! Stopping!")
             ros_util.publish_actions("stop", 0, 0, 0, 0)
             break
@@ -130,7 +129,6 @@ def move(dist, world_state, ros_util, threshold, buffer, direction='forward'):
         twist_message = Twist()
         twist_message.linear.x = move_velocity
         ros_util.movement_pub.publish(twist_message)
-        rospy.loginfo("move speed: {}".format(move_velocity))
 
         ros_util.rate.sleep()
 
@@ -204,7 +202,7 @@ def get_turn_angle(world_state, ros_util, buffer, threshold):
             # These variables are used to oscillate between wedges if we enter visual boundary following mode below.
             switchDirection = -1
             wedgeDist = 0
-            wedgeSize = (scan.angle_max - scan.angle_min)
+            wedgeSize = (scan.angle_max - scan.angle_min) / 2
             rospy.loginfo("There is nowhere to go in the current wedge. Turning to an adjacent wedge.")
 
             while best_angle is None:
@@ -226,7 +224,7 @@ def get_turn_angle(world_state, ros_util, buffer, threshold):
                 rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
                 best_angle = nf.get_best_angle(world_state, buffer, scan, threshold)
 
-        wedgeSize = (scan.angle_max - scan.angle_min) / 10
+        wedgeSize = (scan.angle_max - scan.angle_min) / 20
 
         buffer_angle = math.atan(buffer / threshold)
         min_angle = scan.angle_min + buffer_angle
