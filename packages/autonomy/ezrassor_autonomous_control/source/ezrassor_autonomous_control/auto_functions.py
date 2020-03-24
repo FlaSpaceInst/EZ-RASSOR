@@ -4,14 +4,9 @@ import utility_functions as uf
 import nav_functions as nf
 import numpy as np
 
-scan = None
 threshold = 4.0
 buffer = 1.5
 move_dist = 3.0
-
-def on_scan_update(new_scan):
-    global scan
-    scan = new_scan
 
 def at_target(positionX, positionY, targetX, targetY, threshold):
     """ Determine if the current position is within 
@@ -52,7 +47,7 @@ def auto_drive_location(world_state, ros_util):
             rospy.logdebug('Status check failed.')
             return
 
-        angle = uf.get_turn_angle(world_state, buffer, scan, threshold)
+        angle = uf.get_turn_angle(world_state, ros_util, buffer, threshold)
 
         # If our angle is less than zero, then we would expect a right turn otherwise turn left.
         direction = 'right' if angle < 0 else 'left'
@@ -61,7 +56,7 @@ def auto_drive_location(world_state, ros_util):
         uf.turn(nf.rel_to_abs(world_state.heading, angle), direction, world_state, ros_util)
 
         # Move towards the direction chosen.
-        uf.move(move_dist, world_state, ros_util, threshold, buffer, scan)
+        uf.move(move_dist, world_state, ros_util, threshold, buffer)
 
     rospy.loginfo('Destination reached!')
     ros_util.publish_actions('stop', 0, 0, 0, 0)

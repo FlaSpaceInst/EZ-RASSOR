@@ -4,6 +4,12 @@ import nav_functions as nf
 import math
 from geometry_msgs.msg import Twist
 
+scan = None
+
+def on_scan_update(new_scan):
+    global scan
+    scan = new_scan
+
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
     rospy.loginfo('Setting front arm angle to %s radian%s...',
@@ -94,7 +100,7 @@ def turn(new_heading, direction, world_state, ros_util):
 
         angle_traveled += abs((world_state.heading - old_heading + 180) % 360 - 180)
 
-def move(dist, world_state, ros_util, threshold, buffer, scan, direction='forward'):
+def move(dist, world_state, ros_util, threshold, buffer, direction='forward'):
     # This is the current distance from EZ-RASSOR to our current best target location.
     old_x = world_state.positionX
     old_y = world_state.positionY
@@ -188,7 +194,7 @@ def self_right_from_side(world_state, ros_util):
             
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
-def get_turn_angle(world_state, buffer, scan, threshold):
+def get_turn_angle(world_state, ros_util, buffer, threshold):
     # Iterate over all of the laser beams in our scan wedge and determine the best angle to turn and x,y point.
     best_angle = nf.get_best_angle(world_state, buffer, scan, threshold)
 
