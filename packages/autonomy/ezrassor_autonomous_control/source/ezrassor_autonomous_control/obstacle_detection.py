@@ -32,8 +32,6 @@ min_obstacle_height = None
 # Publishers
 cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                         LaserScan, queue_size = 10)
-holes_pub = rospy.Publisher('obstacle_detection/holes',
-                                        LaserScan, queue_size = 10)
 positive_pub = rospy.Publisher('obstacle_detection/positive',
                                         LaserScan, queue_size = 10)
 combined_pub = rospy.Publisher('obstacle_detection/combined',
@@ -117,6 +115,7 @@ def point_cloud_to_laser_scan(point_cloud):
     # Initial LaserScans assume infinite travel in every direction
     cliff_ranges = [float("nan")] * ranges_size
     positive_ranges = [float("nan")] * ranges_size
+    min_ranges = [float("nan")] * ranges_size
 
     # Read points directly from point cloud message
     pc = np.frombuffer(point_cloud.data, np.float32)
@@ -165,11 +164,9 @@ def point_cloud_to_laser_scan(point_cloud):
 
             if index is not None:
                 positive_ranges[step] = direction[index, 1]
-
-        # Combine the LaserScans to find the shortest distance until an
-        # obstacle in every direction
-        min_ranges = [np.nanmin((a, b)) for (a, b) in zip(
-            cliff_ranges, positive_ranges)]
+                min_ranges[step] = min(positive_ranges[step], cliff_ranges[step])
+            else:
+                min_ranges[step] = cliff_ranges[step]
 
         cliffs_pub.publish(create_laser_scan(cliff_ranges))
         positive_pub.publish(create_laser_scan(positive_ranges))
@@ -199,22 +196,14 @@ def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None,
     globals()['camera_height'] = camera_height_yaml
     globals()['min_hole_depth'] = min_hole_depth_yaml
     globals()['min_obstacle_height'] = min_obstacle_height_yaml
-    
-    camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
-    
-    init_laserscan(camera_info)
-    
-    rospy.Subscriber("depth/points", PointCloud2, point_cloud_to_laser_scan)
-    
-    rospy.spin()
 
-def my_array_equal(l1, l2):
-    for a, b in zip(l1, l2):
-        if np.isnan(a) and np.isnan(b):
-            continue
-        if a != b:
-            return False
-    return True
+    camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
+
+    init_laserscan(camera_info)
+
+    rospy.Subscriber("depth/points", PointCloud2, point_cloud_to_laser_scan)
+
+    rospy.spin()
 
 if __name__ == "__main__":
     try:
