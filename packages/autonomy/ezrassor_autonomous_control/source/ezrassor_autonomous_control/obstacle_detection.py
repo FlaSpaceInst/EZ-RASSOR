@@ -24,6 +24,7 @@ scan_time = None
 range_min = None
 range_max = None
 
+threshold = 1.0
 camera_height = None
 min_hole_depth = None
 min_obstacle_height = None
@@ -113,13 +114,8 @@ direction to form a LaserScan that contains the closest cliff, hole,
 or above-ground obstacle in each direction.
 """
 def point_cloud_to_laser_scan(point_cloud):
-    rospy.loginfo("Camera height: {}".format(str(globals()['camera_height'])))
-    rospy.loginfo("Min hole depth: {}".format(str(globals()['min_hole_depth'])))
-    rospy.loginfo("Min obstacle height: {}".format(str(globals()['min_obstacle_height'])))
-
     # Initial LaserScans assume infinite travel in every direction
     cliff_ranges = [float("nan")] * ranges_size
-    # hole_ranges = [float("nan")] * ranges_size
     positive_ranges = [float("nan")] * ranges_size
 
     # Read points directly from point cloud message
@@ -131,10 +127,46 @@ def point_cloud_to_laser_scan(point_cloud):
 
     # Check if the PointCloud2 has non-nan points
     if pc.size > 0:
+        forward = pc[:,XYZ["FORWARD"]]
+        right = pc[:,XYZ["RIGHT"]]
+        down = pc[:,XYZ["DOWN"]]
+        steps, dists = to_laser_scan_data(forward, right)
+
+        directions = np.column_stack((steps, dists, down))
+        directions = directions[directions[:,0].argsort()]
+        directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
+
+        for direction in directions:
+            direction = direction[direction[:,1].argsort()]
+
+            step = int(direction[0, 0])
+
+            cliff_ranges[step] = direction[-1, 1]
+
+            down1 = direction[:-1, 2]
+            down2 = direction[1:, 2]
+
+            dist1 = direction[:-1, 1]
+            dist2 = direction[1:, 1]
+
+            slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
+
+            condition = (slope > threshold)
+            index = condition.argmax() if condition.any() else None
+
+            if index is not None:
+                positive_ranges[step] = direction[index, 1]
+
         # Find LaserScans which detect cliffs, holes, and regular obstacles
-        farthest_point(cliff_ranges, pc)
-        # floor_projection(hole_ranges, pc)
-        positive_obstacle_detection(positive_ranges, pc)
+        cliff_test = [float("nan")] * ranges_size
+        farthest_point(cliff_test, steps, dists)
+        rospy.loginfo("cliffs test: {}".format(my_array_equal(cliff_ranges, cliff_test)))
+        positive_test1 = [float("nan")] * ranges_size
+        unopt_obstacle_detection(positive_test1, steps, dists, down)
+        rospy.loginfo("positive test 1: {}".format(my_array_equal(positive_test1, positive_ranges)))
+        positive_test2 = [float("nan")] * ranges_size
+        opt_obstacle_detection(positive_test2, steps, dists, down)
+        rospy.loginfo("positive test 2: {}".format(my_array_equal(positive_test2, positive_ranges)))
 
         # Combine the LaserScans to find the shortest distance until an
         # obstacle in every direction
@@ -142,7 +174,6 @@ def point_cloud_to_laser_scan(point_cloud):
             cliff_ranges, positive_ranges)]
 
         cliffs_pub.publish(create_laser_scan(cliff_ranges))
-        # holes_pub.publish(create_laser_scan(hole_ranges))
         positive_pub.publish(create_laser_scan(positive_ranges))
         combined_pub.publish(create_laser_scan(min_ranges))
 
@@ -155,74 +186,76 @@ def to_laser_scan_data(forward, right):
     return steps, dists
 
 """Converts PointCloud2 to LaserScan for cliffs"""
-def farthest_point(ranges, pc):
-    # Slice forward and right coordinates
-    forward = pc[:,XYZ["FORWARD"]]
-    right = pc[:,XYZ["RIGHT"]]
-    steps, dists = to_laser_scan_data(forward, right)
-
+def farthest_point(ranges, steps, dists):
     # Find the farthest point detected in every direction
     for step, dist in zip(steps, dists):
         if math.isnan(ranges[step]) or dist > ranges[step]:
             ranges[step] = dist
 
-"""Converts PointCloud2 to LaserScan for holes"""
-def floor_projection(ranges, pc):
-    # Hole size threshold
-    threshold = camera_height + min_hole_depth
-    # Filter out points shallower than threshold (hole points)
-    filtered_pc = pc[pc[:,XYZ["DOWN"]] > threshold]
-
-    if filtered_pc.size > 0:
-        # Slice forward and right coordinates
-        forward = filtered_pc[:,XYZ["FORWARD"]]
-        down = filtered_pc[:,XYZ["DOWN"]]
-        right = filtered_pc[:,XYZ["RIGHT"]]
-
-        # Project the right and forward coordinates upto the ground
-        forward_projs = np.divide(np.multiply(forward, camera_height), down)
-        right_projs = np.divide(np.multiply(right, forward_projs), forward)
-        steps, dists = to_laser_scan_data(forward_projs, right_projs)
-
-        # Find the shortest distance in every direction before a hole point
-        for step, dist in zip(steps, dists):
-            if math.isnan(ranges[step]) or dist < ranges[step]:
-                ranges[step] = dist
-
 """Converts PointCloud2 to LaserScan for above-ground obstacles"""
-def positive_obstacle_detection(ranges, pc):
-    # Obstacle height threshold
-    # threshold = camera_height - min_obstacle_height
-    # Filter out points shorter than threshold (obstacle point)
-    # filtered_pc = pc[pc[:,XYZ["DOWN"]] < threshold(pc[:,])]
-
+def positive_obstacle_detection(ranges, steps, dists, down):
     threshold = 1.0
-    
-    # Slice forward and right coordinates
-    forward = pc[:,XYZ["FORWARD"]]
-    right = pc[:,XYZ["RIGHT"]]
-    down = pc[:,XYZ["DOWN"]]
-    steps, dists = to_laser_scan_data(forward, right)
 
+    directions = np.column_stack((steps, dists, down))
+    directions = directions[directions[:,0].argsort()]
+    directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
+
+    for direction in directions:
+        direction = direction[direction[:,1].argsort()]
+
+        step = int(direction[0, 0])
+
+        down1 = direction[:-1, 2]
+        down2 = direction[1:, 2]
+
+        dist1 = direction[:-1, 1]
+        dist2 = direction[1:, 1]
+
+        slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
+
+        condition = (slope > threshold)
+        index = condition.argmax() if condition.any() else None
+
+        if index is not None:
+            ranges[step] = direction[index, 1]
+
+def unopt_obstacle_detection(ranges, steps, dists, down):
+    steps_dict = {}
+    for step, dist, height in zip(steps, dists, down):
+        if step in steps_dict:
+            steps_dict[step].append((dist, height))
+        else:
+            steps_dict[step] = [(dist, height)]
+
+    for step, steps_list in steps_dict.items():
+        steps_list.sort(key=lambda x: x[0])
+
+        for i in range(1, len(steps_list)):
+            dist1 = steps_list[i-1][0]
+            dist2 = steps_list[i][0]
+            down1 = steps_list[i-1][1]
+            down2 = steps_list[i][1]
+
+            slope = (down2 - down1) / (dist2 - dist1)
+
+            if abs(slope) > threshold:
+                ranges[step] = dist1
+                break
+
+def opt_obstacle_detection(ranges, steps, dists, down):
     steps_dict = {}
     unique_steps = np.unique(steps)
 
     for step in unique_steps:
         cur_steps = np.where(steps == step)
+
         cur_dists = dists[cur_steps]
         cur_down = down[cur_steps]
+
         steps_dict[step] = np.column_stack((cur_dists, cur_down))
-        # steps_dict[step] = np.array([np.where(steps == step)], down[indexes])
-    # for step, dist, height in zip(steps, dists, down):
-    #     if step in steps_dict:
-    #         steps_dict[step].append((dist, height))
-    #     else:
-    #         steps_dict[step] = [(dist, height)]
 
     for step, steps_array in steps_dict.items():
         steps_array = steps_array[steps_array[:,0].argsort()]
-
-        # steps_array.sort(key=lambda x: x[0])
 
         down1 = steps_array[:len(steps_array)-1, 1]
         down2 = steps_array[1:, 1]
@@ -236,32 +269,6 @@ def positive_obstacle_detection(ranges, pc):
 
         if index is not None:
             ranges[step] = steps_array[index, 0]
-
-        # for i in range(1, len(steps_array)):
-        #     # dist1 = steps_array[i-1][0]
-        #     # dist2 = steps_array[i][0]
-        #     # down1 = steps_array[i-1][1]
-        #     # down2 = steps_array[i][1]
-
-        #     # slope = (down2 - down1) / (dist2 - dist1)
-
-        #     if abs(slope) > threshold:
-        #         ranges[step] = dist1
-        #         break
-    
-    return
-
-    '''
-    get steps, dists, downs
-    group by step
-    sort groups by dists
-    find differences in down for neighboring points
-    '''
-
-    # Find the shortest distance in every direction before an obstacle point
-    for step, dist in zip(steps, dists):
-        if math.isnan(ranges[step]) or dist < ranges[step]:
-            ranges[step] = dist
 
 """Initializes obstacle detection."""
 def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None, 
@@ -287,6 +294,14 @@ def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None,
     rospy.Subscriber("depth/points", PointCloud2, point_cloud_to_laser_scan)
     
     rospy.spin()
+
+def my_array_equal(l1, l2):
+    for a, b in zip(l1, l2):
+        if np.isnan(a) and np.isnan(b):
+            continue
+        if a != b:
+            return False
+    return True
 
 if __name__ == "__main__":
     try:
