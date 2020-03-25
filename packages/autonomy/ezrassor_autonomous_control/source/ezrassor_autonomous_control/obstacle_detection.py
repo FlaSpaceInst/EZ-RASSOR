@@ -157,17 +157,6 @@ def point_cloud_to_laser_scan(point_cloud):
             if index is not None:
                 positive_ranges[step] = direction[index, 1]
 
-        # Find LaserScans which detect cliffs, holes, and regular obstacles
-        cliff_test = [float("nan")] * ranges_size
-        farthest_point(cliff_test, steps, dists)
-        rospy.loginfo("cliffs test: {}".format(my_array_equal(cliff_ranges, cliff_test)))
-        positive_test1 = [float("nan")] * ranges_size
-        unopt_obstacle_detection(positive_test1, steps, dists, down)
-        rospy.loginfo("positive test 1: {}".format(my_array_equal(positive_test1, positive_ranges)))
-        positive_test2 = [float("nan")] * ranges_size
-        opt_obstacle_detection(positive_test2, steps, dists, down)
-        rospy.loginfo("positive test 2: {}".format(my_array_equal(positive_test2, positive_ranges)))
-
         # Combine the LaserScans to find the shortest distance until an
         # obstacle in every direction
         min_ranges = [np.nanmin((a, b)) for (a, b) in zip(
@@ -184,91 +173,6 @@ def to_laser_scan_data(forward, right):
     # Find the distance each forward, right coordinate from the robot
     dists = np.sqrt(np.add(np.square(forward), np.square(right)))
     return steps, dists
-
-"""Converts PointCloud2 to LaserScan for cliffs"""
-def farthest_point(ranges, steps, dists):
-    # Find the farthest point detected in every direction
-    for step, dist in zip(steps, dists):
-        if math.isnan(ranges[step]) or dist > ranges[step]:
-            ranges[step] = dist
-
-"""Converts PointCloud2 to LaserScan for above-ground obstacles"""
-def positive_obstacle_detection(ranges, steps, dists, down):
-    threshold = 1.0
-
-    directions = np.column_stack((steps, dists, down))
-    directions = directions[directions[:,0].argsort()]
-    directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
-
-    for direction in directions:
-        direction = direction[direction[:,1].argsort()]
-
-        step = int(direction[0, 0])
-
-        down1 = direction[:-1, 2]
-        down2 = direction[1:, 2]
-
-        dist1 = direction[:-1, 1]
-        dist2 = direction[1:, 1]
-
-        slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
-
-        condition = (slope > threshold)
-        index = condition.argmax() if condition.any() else None
-
-        if index is not None:
-            ranges[step] = direction[index, 1]
-
-def unopt_obstacle_detection(ranges, steps, dists, down):
-    steps_dict = {}
-    for step, dist, height in zip(steps, dists, down):
-        if step in steps_dict:
-            steps_dict[step].append((dist, height))
-        else:
-            steps_dict[step] = [(dist, height)]
-
-    for step, steps_list in steps_dict.items():
-        steps_list.sort(key=lambda x: x[0])
-
-        for i in range(1, len(steps_list)):
-            dist1 = steps_list[i-1][0]
-            dist2 = steps_list[i][0]
-            down1 = steps_list[i-1][1]
-            down2 = steps_list[i][1]
-
-            slope = (down2 - down1) / (dist2 - dist1)
-
-            if abs(slope) > threshold:
-                ranges[step] = dist1
-                break
-
-def opt_obstacle_detection(ranges, steps, dists, down):
-    steps_dict = {}
-    unique_steps = np.unique(steps)
-
-    for step in unique_steps:
-        cur_steps = np.where(steps == step)
-
-        cur_dists = dists[cur_steps]
-        cur_down = down[cur_steps]
-
-        steps_dict[step] = np.column_stack((cur_dists, cur_down))
-
-    for step, steps_array in steps_dict.items():
-        steps_array = steps_array[steps_array[:,0].argsort()]
-
-        down1 = steps_array[:len(steps_array)-1, 1]
-        down2 = steps_array[1:, 1]
-
-        dist1 = steps_array[:len(steps_array)-1, 0]
-        dist2 = steps_array[1:, 0]
-
-        slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
-
-        index = (slope > threshold).argmax() if (slope > threshold).any() else None
-
-        if index is not None:
-            ranges[step] = steps_array[index, 0]
 
 """Initializes obstacle detection."""
 def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None, 
