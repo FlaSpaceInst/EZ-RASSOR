@@ -132,15 +132,22 @@ def point_cloud_to_laser_scan(point_cloud):
         down = pc[:,XYZ["DOWN"]]
         steps, dists = to_laser_scan_data(forward, right)
 
+        # Create matrix where the steps, dists, and down arrays are the columns
         directions = np.column_stack((steps, dists, down))
+        # Sort rows by the first column (steps); this is necessary for the next step
         directions = directions[directions[:,0].argsort()]
+        # Group rows by step
         directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
 
+        # Loop through the rows for each step and find obstacles
         for direction in directions:
+            # Sort rows for this step by the second column (dist)
             direction = direction[direction[:,1].argsort()]
 
+            # Step is first column of any row
             step = int(direction[0, 0])
 
+            # Since the rows are sorted by dist, the farthest point for this step is in the last row
             cliff_ranges[step] = direction[-1, 1]
 
             down1 = direction[:-1, 2]
@@ -149,8 +156,10 @@ def point_cloud_to_laser_scan(point_cloud):
             dist1 = direction[:-1, 1]
             dist2 = direction[1:, 1]
 
+            # Calculate slope for each pair of points
             slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
 
+            # Find first index of row where the slope crosses the threshold
             condition = (slope > threshold)
             index = condition.argmax() if condition.any() else None
 
