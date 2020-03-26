@@ -115,7 +115,7 @@ def move(dist, world_state, ros_util, threshold, buffer, direction='forward'):
             return
 
         # If obstacles are too close, figure out how to get around them.
-        if not nf.angle_is_safe(0, threshold / 2.0, buffer, scan):
+        if not nf.angle_is_safe(0, threshold, buffer, scan):
             rospy.loginfo("Obstacle too close! Stopping!")
             ros_util.publish_actions("stop", 0, 0, 0, 0)
             break

@@ -43,6 +43,10 @@ def auto_drive_location(world_state, ros_util):
     while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x, world_state.target_location.y, ros_util.threshold):
         rospy.loginfo("Starting nav loop!")
 
+        # Set arms up for travel
+        uf.set_front_arm_angle(world_state, ros_util, 1.3)
+        uf.set_back_arm_angle(world_state, ros_util, 1.3)
+
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
@@ -56,7 +60,7 @@ def auto_drive_location(world_state, ros_util):
         uf.turn(nf.rel_to_abs(world_state.heading, angle), direction, world_state, ros_util)
 
         # Move towards the direction chosen.
-        uf.move(move_dist, world_state, ros_util, threshold, buffer)
+        uf.move(move_dist, world_state, ros_util, threshold / 2.0, buffer)
 
     rospy.loginfo('Destination reached!')
     ros_util.publish_actions('stop', 0, 0, 0, 0)

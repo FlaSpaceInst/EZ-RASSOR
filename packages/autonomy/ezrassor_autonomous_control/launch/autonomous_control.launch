@@ -9,8 +9,8 @@
   <arg name="back_drum_instructions_topic"/>
   <arg name="digsite_x_coord" default="10"/>
   <arg name="digsite_y_coord" default="10"/>
-  <arg name="max_linear_velocity" default="1"/>
-  <arg name="max_angular_velocity" default="1"/>
+  <arg name="max_linear_velocity" default="0.125"/>
+  <arg name="max_angular_velocity" default="0.3"/>
   <arg name="enable_real_odometry" default="false"/>
 
   <!-- Launch the autonomous control node. -->
