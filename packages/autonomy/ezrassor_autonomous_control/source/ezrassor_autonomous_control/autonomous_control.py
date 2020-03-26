@@ -62,9 +62,6 @@ def on_start_up(target_x, target_y, movement_topic, front_arm_topic,
     rospy.Subscriber('joint_states',
                      JointState,
                      world_state.jointCallBack)
-    rospy.Subscriber('obstacle_detect',
-                     Int8,
-                     world_state.visionCallBack)
     rospy.Subscriber('autonomous_toggles',
                      Int8,
                      ros_util.autoCommandCallBack)
