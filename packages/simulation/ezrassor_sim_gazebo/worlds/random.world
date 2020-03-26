@@ -47,8 +47,8 @@
           <geometry>
             <heightmap>
               <uri>model://random/materials/textures/random_map.jpg</uri>
-              <size>513 513 49</size>
-              <pos>0 0 -45</pos>
+              <size>513 513 20</size>
+              <pos>0 0 -18</pos>
               <texture>
                 <size>10</size>
                 <diffuse>__default__</diffuse>
@@ -80,8 +80,8 @@
                 <fade_dist>5</fade_dist>
               </blend>
               <uri>model://random/materials/textures/random_map.jpg</uri>
-              <size>513 513 49</size>
-              <pos>0 0 -45</pos>
+              <size>513 513 20</size>
+              <pos>0 0 -18</pos>
             </heightmap>
           </geometry>
         </visual>
