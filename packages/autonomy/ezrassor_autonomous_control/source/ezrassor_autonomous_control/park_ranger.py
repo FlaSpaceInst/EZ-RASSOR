@@ -398,6 +398,15 @@ class ParkRanger(PointCloudProcessor):
         return truncnorm(
             (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
+    def plot_points(self):
+        plt.ylim(0, self.particle_filter.dem_max_y)
+        plt.xlim(0, self.particle_filter.dem_max_x)
+        for p in self.particle_filter.particles:
+            plt.plot([p.x], [p.y], marker='o', markersize=3, color="red")
+        plt.show(block=False)
+        plt.pause(3)
+        plt.close()
+
     def __init__(self, resolution, local_dem_comparison_type, period,
                  range_min, range_max, camera_height):
         super(ParkRanger, self).__init__('park_ranger')
@@ -453,6 +462,7 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Update")
                     self.likelihood(local_dem)
+                    self.plot_points()
                     # estimate
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
@@ -494,7 +504,7 @@ class ParkRanger(PointCloudProcessor):
             predicted_dem = self.get_predicted_local_dem(p)
             if predicted_dem is not None:
                 score = ParkRanger.sad(local_dem, predicted_dem)
-                p.weight = p.weight / (score * num_particles)
+                p.weight = p.weight * (score / num_particles)
                 if ParkRanger.debug:
                     rospy.logwarn("Predicted local DEM score: {}".format(score))
             else:
@@ -504,7 +514,7 @@ class ParkRanger(PointCloudProcessor):
 
     def place_high_like_parts(self):
         # Sort particles by weight in descending order
-        place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=True)
+        place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=False)
         particles = []
 
         # Get and "place" the N highest weighted particles and reset weights and gaussian
@@ -523,8 +533,8 @@ class ParkRanger(PointCloudProcessor):
         current_x = self.position_x
         current_y = self.position_y
         current_heading = self.heading
-        col_diff = (current_x - self.last_x) / self.resolution
-        row_diff = (current_y - self.last_y) / self.resolution
+        col_diff = int((current_x - self.last_x) / self.resolution)
+        row_diff = int((current_y - self.last_y) / self.resolution)
 
         std_col = np.sqrt(covar[0])
         std_row = np.sqrt(covar[7])
@@ -539,6 +549,7 @@ class ParkRanger(PointCloudProcessor):
         sum_y = 0
         num_particles = len(self.particle_filter.particles)
         for p in self.particle_filter.particles:
+            #rospy.logwarn("{}".format(p.weight))
             sum_x += (p.x * p.weight)
             sum_y += (p.y * p.weight)
         return int(sum_x / num_particles), int(sum_y / num_particles)
@@ -552,7 +563,7 @@ class ParkRanger(PointCloudProcessor):
             self.particle_filter.resample(indexes)
 
 """Initializes park ranger"""
-def park_ranger(resolution=0.6, local_dem_comparison_type="max", period=5,
+def park_ranger(resolution=10, local_dem_comparison_type="max", period=5,
                 range_min=0.105, range_max=10., camera_height=0.08):
     pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min,
                     range_max, camera_height)
