@@ -205,6 +205,9 @@ class ROSUtility():
         self.control_pub = rospy.Publisher('secondary_override_toggle',
                                            Bool,
                                            queue_size=10)
+        self.arms_up_pub = rospy.Publisher('arms_up',
+                                           Bool,
+                                           queue_size=10)
         self.rate = rospy.Rate(45) # 10hz
 
         self.max_linear_velocity = max_linear_velocity

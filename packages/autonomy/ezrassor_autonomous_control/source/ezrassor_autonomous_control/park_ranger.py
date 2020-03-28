@@ -6,6 +6,7 @@ import nav_functions as nf
 from pointcloud_processor import PointCloudProcessor
 from gazebo_msgs.msg import LinkStates
 from nav_msgs.msg import Odometry
+from std_msgs.msg import Bool
 
 from sklearn.preprocessing import normalize
 
@@ -147,6 +148,9 @@ class ParkRanger(PointCloudProcessor):
     }
 
     debug = True
+
+    def on_arm_movement(self, data):
+        self.arms_up = data
 
     """Stores most recent Z position of robot"""
     def sim_state_z_position_callback(self, data):
@@ -436,6 +440,9 @@ class ParkRanger(PointCloudProcessor):
 
         rospy.Subscriber('odometry/filtered', Odometry, self.odometry_callback)
 
+        self.arms_up = False
+        rospy.Subscriber('arms_up', Bool, self.on_arm_movement)
+
         self.run(period, local_dem_comparison_type)
 
         rospy.loginfo("Park Ranger initialized")
@@ -446,6 +453,9 @@ class ParkRanger(PointCloudProcessor):
         init_flag = True
         self.particle_filter = ParticleFilter(self.resolution, 0, self.dem_size, 0, self.dem_size)
         while not rospy.is_shutdown():
+            if not self.arms_up:
+                continue
+
             pc = self.get_points()
             if pc is not None:
                 local_dem = self.point_cloud_to_local_dem(pc, local_dem_comparison_type)
@@ -462,7 +472,7 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Update")
                     self.likelihood(local_dem)
-                    self.plot_points()
+                    # self.plot_points()
                     # estimate
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
@@ -548,11 +558,12 @@ class ParkRanger(PointCloudProcessor):
         sum_x = 0
         sum_y = 0
         num_particles = len(self.particle_filter.particles)
+        sum_weights = sum([p.weight for p in self.particle_filter.particles])
         for p in self.particle_filter.particles:
             #rospy.logwarn("{}".format(p.weight))
             sum_x += (p.x * p.weight)
             sum_y += (p.y * p.weight)
-        return int(sum_x / num_particles), int(sum_y / num_particles)
+        return int(sum_x / sum_weights), int(sum_y / sum_weights)
 
     def resample(self):
         rospy.logwarn("num particles: {}".format(len(self.particle_filter.particles)))
