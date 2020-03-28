@@ -12,10 +12,12 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
         while target_angle > world_state.front_arm_angle:
             ros_util.publish_actions('stop', 1, 0, 0, 0)
             ros_util.rate.sleep()
+        ros_util.arms_up_pub.publish(True)
     else:
         while target_angle < world_state.front_arm_angle:
             ros_util.publish_actions('stop', -1, 0, 0, 0)
             ros_util.rate.sleep()
+        ros_util.arms_up_pub.publish(False)
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
