@@ -15,9 +15,9 @@ from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
 import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
+import nav_functions as nf
 
 import re
-
 
 class RoverController:
     def __init__(self, target_x, target_y, movement_topic, front_arm_topic,
@@ -112,6 +112,9 @@ class RoverController:
         result.final_pose = feedback.current_pose
 
         # Send resulting rover pose
+        rospy.loginfo("position: ({}, {})".format(self.world_state.positionX, self.world_state.positionY))
+        if nf.euclidean_distance(self.world_state.positionX, 5, self.world_state.positionY, 7) <= 1.0 :
+            rospy.loginfo("WE HERE!!!!!")
         self.waypoint_server.set_succeeded(result)
 
     def send_status(self, request):

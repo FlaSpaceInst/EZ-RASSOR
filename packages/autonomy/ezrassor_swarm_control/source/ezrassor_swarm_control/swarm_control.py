@@ -46,7 +46,7 @@ class SwarmController:
                     self.waypoint_pubs[i].publish(path)
 
 
-def on_start_up(robot_count, target_xs, target_ys):
+def on_start_up(robot_count, target_xs, target_ys, lander_coords):
     """ Initialization Function  """
 
     # ROS Node Init Parameters
@@ -55,6 +55,13 @@ def on_start_up(robot_count, target_xs, target_ys):
     # Unpack digsite coordinates from string format
     target_xs = str(target_xs).split(' ')
     target_ys = str(target_ys).split(' ')
+
+    lander_location = str(lander_coords).split(' ')
+
+    lander_positionX = int(lander_location[0])
+    lander_positionY = int(lander_location[1])
+
+    rospy.loginfo('lander location coordinates: ({}, {})'.format(lander_positionX, lander_positionY))
 
     if len(target_xs) != len(target_ys):
         raise ValueError('Number of dig site x coordinates does not match the number of y coordinates')

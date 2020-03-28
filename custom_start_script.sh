@@ -1,0 +1,1 @@
+roslaunch ezrassor_launcher swarm_simulation.launch enable_cameras:=False robot_count:="1" spawn_x_coords:="3" spawn_y_coords:="0" digsite_x_coords:="5" digsite_y_coords:="7"
