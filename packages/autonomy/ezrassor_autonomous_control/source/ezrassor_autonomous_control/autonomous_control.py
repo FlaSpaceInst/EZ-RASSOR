@@ -7,6 +7,7 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
+from sensor_msgs.msg import LaserScan
 
 from numpy import random as r
 
@@ -82,12 +83,13 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
     rospy.Subscriber('joint_states',
                      JointState,
                      world_state.jointCallBack)
-    rospy.Subscriber('obstacle_detect',
-                     Int8,
-                     world_state.visionCallBack)
     rospy.Subscriber('autonomous_toggles',
                      Int8,
                      ros_util.autoCommandCallBack)
+    rospy.Subscriber('obstacle_detection/positive',
+                     LaserScan,
+                     uf.on_scan_update,
+                     queue_size=1)
 
     rospy.loginfo('Autonomous control initialized.')
 

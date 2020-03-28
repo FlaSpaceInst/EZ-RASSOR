@@ -2,68 +2,65 @@ import rospy
 import math
 import utility_functions as uf
 import nav_functions as nf
-import arm_force as armf
+import numpy as np
 
-def at_target(world_state, ros_util):
-    """ Determine if the current position is within
-        the desired threshold of the target position.
+threshold = 4.0
+buffer = 1.5
+move_dist = 3.0
+
+def at_target(positionX, positionY, targetX, targetY, threshold):
+    """ Determine if the current position is within 
+        the desired threshold of the target position. 
     """
-    positionX = world_state.positionX
-    positionY = world_state.positionY
+    value = ((targetX - threshold) < positionX < (targetX + threshold)
+            and (targetY - threshold) < positionY < (targetY + threshold))
 
-    targetX = world_state.target_location.x
-    targetY = world_state.target_location.y
-
-    value = ((targetX - ros_util.threshold) < positionX < (targetX + ros_util.threshold)
-            and (targetY - ros_util.threshold) < positionY < (targetY + ros_util.threshold))
-
-    return not value
+    return value
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-    rospy.loginfo('Auto-driving to [%s, %s]...',
-                  str(world_state.target_location.x),
-                  str(world_state.target_location.y))
+    rospy.loginfo('Auto-driving to [%s, %s]...',str(world_state.target_location.x),str(world_state.target_location.y))
+    
     # Set arms up for travel
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
-    # Main loop until location is reached
-    while at_target(world_state, ros_util):
+    # Before we head towards our goal, turn to face it.
+    # Get new heading angle relative to current heading
+    new_heading_degrees = nf.calculate_heading(world_state)
+    angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
 
-        # Gives current location coordinates
-        #rospy.loginfo("current: [ %s, %s, %s ]", str(world_state.positionX), str(world_state.positionY), str(world_state.positionZ))
+    # If our angle is less than zero, then we would expect a right turn otherwise turn left.
+    if angle2goal_radians < 0:
+        direction = 'right'
+    else:
+        direction = 'left'
+
+    uf.turn(new_heading_degrees, direction, world_state, ros_util)
+    ros_util.publish_actions('stop', 0, 0, 0, 0)
+
+    # Main loop until location is reached
+    while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x, world_state.target_location.y, ros_util.threshold):
+        rospy.loginfo("Starting nav loop!")
+
+        # Set arms up for travel
+        uf.set_front_arm_angle(world_state, ros_util, 1.3)
+        uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
 
-        # Get new heading angle relative to current heading as (0,0)
-        new_heading = nf.calculate_heading(world_state, ros_util)
-        angle_difference = nf.adjust_angle(world_state.heading, new_heading)
-        if angle_difference < 0:
-            direction = 'right'
-        else:
-            direction = 'left'
+        angle = uf.get_turn_angle(world_state, ros_util, buffer, threshold)
 
-        # Adjust heading until it matches new heading
-        while not ((new_heading - 5) < world_state.heading < (new_heading + 5)):
-            ros_util.publish_actions(direction, 0, 0, 0, 0)
-            ros_util.rate.sleep()
+        # If our angle is less than zero, then we would expect a right turn otherwise turn left.
+        direction = 'right' if angle < 0 else 'left'
 
-        # Avoid obstacles by turning left or right if warning flag is raised
-        if world_state.warning_flag == 1:
-            uf.dodge_right(world_state, ros_util)
-        if world_state.warning_flag == 2:
-            uf.dodge_left(world_state, ros_util)
-        if world_state.warning_flag == 3:
-            uf.reverse_turn(world_state, ros_util)
-            rospy.loginfo('Avoiding detected obstacle...')
+        # Turn towards the direction chosen.
+        uf.turn(nf.rel_to_abs(world_state.heading, angle), direction, world_state, ros_util)
 
-        # Otherwise go forward
-        ros_util.publish_actions('forward', 0, 0, 0, 0)
-
-        ros_util.rate.sleep()
+        # Move towards the direction chosen.
+        uf.move(move_dist, world_state, ros_util, threshold / 2.0, buffer)
 
     rospy.loginfo('Destination reached!')
     ros_util.publish_actions('stop', 0, 0, 0, 0)
