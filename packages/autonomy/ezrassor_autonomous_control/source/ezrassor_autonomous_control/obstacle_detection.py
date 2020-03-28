@@ -16,10 +16,9 @@ class ObstacleDetector(PointCloudProcessor):
         self.camera_height = camera_height
         self.min_hole_depth = min_hole_depth
         self.min_obstacle_height = min_obstacle_height
+        self.threshold = 1.0
 
         self.cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
-                                                LaserScan, queue_size = 10)
-        self.holes_pub = rospy.Publisher('obstacle_detection/holes',
                                                 LaserScan, queue_size = 10)
         self.positive_pub = rospy.Publisher('obstacle_detection/positive',
                                                 LaserScan, queue_size = 10)
@@ -71,24 +70,55 @@ class ObstacleDetector(PointCloudProcessor):
     def point_cloud_to_laser_scan(self):
         # Initial LaserScans assume infinite travel in every direction
         cliff_ranges = [float("nan")] * self.ranges_size
-        hole_ranges = [float("nan")] * self.ranges_size
         positive_ranges = [float("nan")] * self.ranges_size
+        min_ranges = [float("nan")] * self.ranges_size
 
         pc = self.get_points()
 
         if pc is not None:
-            # Find LaserScans which detect cliffs, holes, and regular obstacles
-            self.farthest_point(cliff_ranges, pc)
-            self.floor_projection(hole_ranges, pc)
-            self.positive_obstacle_detection(positive_ranges, pc)
+            forward = pc[:,PointCloudProcessor.XYZ["FORWARD"]]
+            right = pc[:,PointCloudProcessor.XYZ["RIGHT"]]
+            down = pc[:,PointCloudProcessor.XYZ["DOWN"]]
+            steps, dists = self.to_laser_scan_data(forward, right)
 
-            # Combine the LaserScans to find the shortest distance until an
-            # obstacle in every direction
-            min_ranges = [np.nanmin((a, b, c)) for (a, b, c) in zip(
-                cliff_ranges, hole_ranges, positive_ranges)]
+            # Create matrix where the steps, dists, and down arrays are the columns
+            directions = np.column_stack((steps, dists, down))
+            # Sort rows by the first column (steps); this is necessary for the next step
+            directions = directions[directions[:,0].argsort()]
+            # Group rows by step
+            directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
+
+            # Loop through the rows for each step and find obstacles
+            for direction in directions:
+                # Sort rows for this step by the second column (dist)
+                direction = direction[direction[:,1].argsort()]
+
+                # Step is first column of any row
+                step = int(direction[0, 0])
+
+                # Since the rows are sorted by dist, the farthest point for this step is in the last row
+                cliff_ranges[step] = direction[-1, 1]
+
+                down1 = direction[:-1, 2]
+                down2 = direction[1:, 2]
+
+                dist1 = direction[:-1, 1]
+                dist2 = direction[1:, 1]
+
+                # Calculate slope for each pair of points
+                slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
+
+                # Find first index of row where the slope crosses the threshold
+                condition = (slope > self.threshold)
+                index = condition.argmax() if condition.any() else None
+
+                if index is not None:
+                    positive_ranges[step] = direction[index, 1]
+                    min_ranges[step] = min(positive_ranges[step], cliff_ranges[step])
+                else:
+                    min_ranges[step] = cliff_ranges[step]
 
             self.cliffs_pub.publish(self.create_laser_scan(cliff_ranges))
-            self.holes_pub.publish(self.create_laser_scan(hole_ranges))
             self.positive_pub.publish(self.create_laser_scan(positive_ranges))
             self.combined_pub.publish(self.create_laser_scan(min_ranges))
 
@@ -100,61 +130,9 @@ class ObstacleDetector(PointCloudProcessor):
         dists = np.sqrt(np.add(np.square(forward), np.square(right)))
         return steps, dists
 
-    """Converts PointCloud2 to LaserScan for cliffs"""
-    def farthest_point(self, ranges, pc):
-        # Slice forward and right coordinates
-        forward = pc[:,PointCloudProcessor.XYZ["FORWARD"]]
-        right = pc[:,PointCloudProcessor.XYZ["RIGHT"]]
-        steps, dists = self.to_laser_scan_data(forward, right)
-
-        # Find the farthest point detected in every direction
-        for step, dist in zip(steps, dists):
-            if np.isnan(ranges[step]) or dist > ranges[step]:
-                ranges[step] = dist
-
-    """Converts PointCloud2 to LaserScan for holes"""
-    def floor_projection(self, ranges, pc):
-        # Hole size threshold
-        threshold = self.camera_height + self.min_hole_depth
-        # Filter out points shallower than threshold (hole points)
-        filtered_pc = pc[pc[:,PointCloudProcessor.XYZ["DOWN"]] > threshold]
-
-        if filtered_pc.size > 0:
-            # Slice forward and right coordinates
-            forward = filtered_pc[:,PointCloudProcessor.XYZ["FORWARD"]]
-            down = filtered_pc[:,PointCloudProcessor.XYZ["DOWN"]]
-            right = filtered_pc[:,PointCloudProcessor.XYZ["RIGHT"]]
-
-            # Project the right and forward coordinates upto the ground
-            forward_projs = np.divide(np.multiply(forward, self.camera_height), down)
-            right_projs = np.divide(np.multiply(right, forward_projs), forward)
-            steps, dists = self.to_laser_scan_data(forward_projs, right_projs)
-
-            # Find the shortest distance in every direction before a hole point
-            for step, dist in zip(steps, dists):
-                if np.isnan(ranges[step]) or dist < ranges[step]:
-                    ranges[step] = dist
-
-    """Converts PointCloud2 to LaserScan for above-ground obstacles"""
-    def positive_obstacle_detection(self, ranges, pc):
-        # Obstacle height threshold
-        threshold = self.camera_height - self.min_obstacle_height
-        # Filter out points shorter than threshold (obstacle point)
-        filtered_pc = pc[pc[:,PointCloudProcessor.XYZ["DOWN"]] < threshold]
-
-        # Slice forward and right coordinates
-        forward = filtered_pc[:,PointCloudProcessor.XYZ["FORWARD"]]
-        right = filtered_pc[:,PointCloudProcessor.XYZ["RIGHT"]]
-        steps, dists = self.to_laser_scan_data(forward, right)
-
-        # Find the shortest distance in every direction before an obstacle point
-        for step, dist in zip(steps, dists):
-            if np.isnan(ranges[step]) or dist < ranges[step]:
-                ranges[step] = dist
-
 """Initializes obstacle detection."""
 def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None, 
-                       min_obstacle_height_yaml=None,  scan_time=1./30, 
+                       min_obstacle_height_yaml=None, scan_time=1./30, 
                        range_min=0.105, range_max=10.):
     od = ObstacleDetector(camera_height_yaml, min_hole_depth_yaml,
                           min_obstacle_height_yaml, scan_time, range_min,
