@@ -11,6 +11,8 @@ from std_msgs.msg import Bool
 from sklearn.preprocessing import normalize
 
 # **Remove later (used for visualization of local DEM only)
+import matplotlib
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import rospkg
@@ -425,6 +427,7 @@ class ParkRanger(PointCloudProcessor):
         self.last_y = self.start_y
 
         self.num_initial_particles = 50
+        self.max_particles = 1000
 
         path = ParkRanger.path_dem()
 
@@ -468,11 +471,12 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Sampling")
                     self.particle_filter.sample()
+                    self.place_high_like_parts(self.max_particles)
                     # 4 Update
                     if ParkRanger.debug:
                         rospy.logwarn("Update")
                     self.likelihood(local_dem)
-                    # self.plot_points()
+                    self.plot_points()
                     # estimate
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
@@ -494,19 +498,26 @@ class ParkRanger(PointCloudProcessor):
                     # rather than a NxN operation like previous two right above,
                     # for the sorting, lambda function is used so fast af and N is used to
                     # pop the list of N highest scored particles
-                    self.place_high_like_parts()
+                    self.place_high_like_parts(self.num_initial_particles)
                     init_flag = False
             r.sleep()
 
     """TODO: Initialize start_row and start_col from start_x and start_y"""
     def init_particles(self, num_particles):
-        x_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
-        y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
+        x_coords = np.random.randint(self.dem_size, size=num_particles)
+        y_coords = np.random.randint(self.dem_size, size=num_particles)
         weight = 1.0 / num_particles
-        for i in range(num_particles):
-            x = int(x_func.rvs())
-            y = int(y_func.rvs())
+
+        for x, y in zip(x_coords, y_coords):
             self.particle_filter.add_particle(x, y, 0.0, weight)
+
+        # x_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
+        # y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
+        # weight = 1.0 / num_particles
+        # for i in range(num_particles):
+        #     x = int(x_func.rvs())
+        #     y = int(y_func.rvs())
+        #     self.particle_filter.add_particle(x, y, 0.0, weight)
 
     def likelihood(self, local_dem):
         num_particles = len(self.particle_filter.particles)
@@ -520,17 +531,22 @@ class ParkRanger(PointCloudProcessor):
             else:
                 if ParkRanger.debug:
                     rospy.logwarn("Invalid predicted local DEM")
-                p.weight = 0.0
+                p.weight = -1
 
-    def place_high_like_parts(self):
+        self.particle_filter.particles = [p for p in self.particle_filter.particles if p.weight >= 0]
+
+    def place_high_like_parts(self, num_particles):
+        if len(self.particle_filter.particles) <= num_particles:
+            return
+
         # Sort particles by weight in descending order
         place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=False)
         particles = []
 
         # Get and "place" the N highest weighted particles and reset weights and gaussian
-        for i in range(self.num_initial_particles):
+        for i in range(num_particles):
             p = place.pop(0)
-            p.weight = 1.0 / self.num_initial_particles
+            p.weight = 1.0 / num_particles
             p.std_x = self.resolution / 2
             p.std_y = self.resolution / 2
             particles.append(p)
@@ -574,7 +590,7 @@ class ParkRanger(PointCloudProcessor):
             self.particle_filter.resample(indexes)
 
 """Initializes park ranger"""
-def park_ranger(resolution=10, local_dem_comparison_type="max", period=5,
+def park_ranger(resolution=0.5, local_dem_comparison_type="max", period=5,
                 range_min=0.105, range_max=10., camera_height=0.08):
     pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min,
                     range_max, camera_height)
