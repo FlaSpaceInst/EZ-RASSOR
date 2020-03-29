@@ -7,7 +7,6 @@ from pointcloud_processor import PointCloudProcessor
 from gazebo_msgs.msg import LinkStates
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Bool
-import tf
 import cv2
 
 from sklearn.preprocessing import normalize
@@ -440,8 +439,8 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
-        self.num_initial_particles = 100
-        self.max_particles = 500
+        self.num_initial_particles = 200
+        self.max_particles = 1000
 
         path = ParkRanger.path_dem()
 
@@ -495,12 +494,10 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
                     est_x, est_y = self.estimate()
+                    est_x = est_x - (self.dem_size / 2)
+                    est_y = (self.dem_size / 2) - est_y
                     if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate (row, col) {} {}".format(est_x, est_y))
-                    est_y = est_y - (self.dem_size / 2)
-                    est_x = (self.dem_size / 2) - est_x
-                    if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate (X, Y) {} {}".format(est_x, est_y))
+                        rospy.logwarn("Current Estimate: {} {}".format(est_x, est_y))
                     # 5 Resample
                     if ParkRanger.debug:
                         rospy.logwarn("Resample")
@@ -528,68 +525,29 @@ class ParkRanger(PointCloudProcessor):
 
         for x, y in zip(x_coords, y_coords):
             self.particle_filter.add_particle(x, y, 0.0, weight)
-        self.particle_filter.add_particle(int(self.dem_size/2.0), int(self.dem_size/2.0), 0.0, weight)
 
-        # x_func = ParkRanger.get_truncated_normal(self.start_x - self.dem_size/2.0, self.resolution, 0, self.dem_size)
-        # y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0 - self.start_y, self.resolution, 0, self.dem_size)
-        # weight = 1.0 / num_particles
-        # for i in range(num_particles):
-        #     x = int(x_func.rvs())
-        #     y = int(y_func.rvs())
-        #     self.particle_filter.add_particle(x, y, 0.0, weight)
+        x = self.start_x + int(self.dem_size/2.0)
+        y = int(self.dem_size/2.0) - self.start_y
+        rospy.logwarn("Actual: ({}, {})".format(x, y))
+        self.particle_filter.add_particle(int(x), int(y), 0.0, weight)
 
     def likelihood(self, local_dem):
         num_particles = len(self.particle_filter.particles)
-        min_score = None
-
-        test_p = Particle(int(self.dem_size/2), int(self.dem_size/2), 0.0)
-        test_dem = self.get_predicted_local_dem(test_p)
-        test_score = ParkRanger.histogram_match(local_dem, test_dem)
 
         for p in self.particle_filter.particles:
             predicted_dem = self.get_predicted_local_dem(p)
             if predicted_dem is not None:
                 score = ParkRanger.histogram_match(local_dem, predicted_dem)
-
-                if min_score is None or score > min_score:
-                    min_p = p
-                    min_score = score
-                    min_dem = predicted_dem
-
-                p.weight = p.weight * score
+                p.weight *= score
 
                 if ParkRanger.debug:
-                    rospy.logwarn("Predicted local DEM score: {}".format(score))
+                    rospy.logwarn("Predicted local DEM score for ({}, {}): {}".format(p.x, p.y, score))
             else:
                 if ParkRanger.debug:
                     rospy.logwarn("Invalid predicted local DEM")
                 p.weight = None
 
-        rospy.logwarn("({}, {}): {}, test: {}".format(min_p.x, min_p.y, min_score, test_score))
-
         self.particle_filter.particles = [p for p in self.particle_filter.particles if p.weight is not None]
-        return
-
-        plt.imshow(local_dem)
-        plt.title("local DEM")
-        plt.colorbar()
-        plt.show()
-        plt.pause(3.)
-        plt.close()
-
-        plt.imshow(min_dem)
-        plt.title("({}, {}): {}".format(min_p.x, min_p.y, min_score))
-        plt.colorbar()
-        plt.show()
-        plt.pause(3.)
-        plt.close()
-
-        plt.imshow(test_dem)
-        plt.title("test particle: {}".format(test_score))
-        plt.colorbar()
-        plt.show()
-        plt.pause(3.)
-        plt.close()
 
     def place_high_like_parts(self, num_particles):
         if len(self.particle_filter.particles) <= num_particles:
