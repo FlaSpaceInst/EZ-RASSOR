@@ -7,6 +7,8 @@ from pointcloud_processor import PointCloudProcessor
 from gazebo_msgs.msg import LinkStates
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Bool
+import tf
+import cv2
 
 from sklearn.preprocessing import normalize
 
@@ -120,20 +122,17 @@ class ParticleFilter:
         for p in self.particles:
             x_comp = int(p.std_x - self.resolution)
             if x_comp > 0:
-                for i in range(x_comp):
-                    p.std_x = self.resolution / 2.0
-                    self.particles.append(Particle(p.x-i, p.y, p.theta, p.weight, p.std_x, p.std_y))
-                    self.particles.append(Particle(p.x+i, p.y, p.theta, p.weight, p.std_x, p.std_y))
+                p.std_x = self.resolution / 2.0
+                self.particles.append(Particle(p.x-1, p.y, p.theta, p.weight, p.std_x, p.std_y))
+                self.particles.append(Particle(p.x+1, p.y, p.theta, p.weight, p.std_x, p.std_y))
 
             y_comp = int(p.std_y - self.resolution)
             if y_comp > 0:
-                for i in range(y_comp):
-                    p.std_y = self.resolution / 2.0
-                    self.particles.append(Particle(p.x, p.y-i, p.theta, p.weight, p.std_x, p.std_y))
-                    self.particles.append(Particle(p.x, p.y+i, p.theta, p.weight, p.std_x, p.std_y))
+                p.std_y = self.resolution / 2.0
+                self.particles.append(Particle(p.x, p.y-1, p.theta, p.weight, p.std_x, p.std_y))
+                self.particles.append(Particle(p.x, p.y+1, p.theta, p.weight, p.std_x, p.std_y))
 
     def resample(self, indexes):
-        indexes = np.unique(indexes)
         self.particles = [self.particles[i] for i in indexes]
         num_particles = len(self.particles)
         for p in self.particles:
@@ -338,10 +337,25 @@ class ParkRanger(PointCloudProcessor):
 
         return np.array(indexes)
 
-    """Returns the sum of absolute differences (SAD) of two arrays"""
+    """Returns the inverse of the sum of absolute differences (SAD) of two arrays"""
     @staticmethod
-    def sad(a, b):
-        return np.nansum(np.absolute(np.subtract(a, b)))
+    def inverse_sad(a, b):
+        return 1.0 / np.nansum(np.absolute(np.subtract(a, b)))
+
+    @staticmethod
+    def histogram_match(a, b):
+        indexes = ~np.isnan(a)
+        h1 = np.histogram(a[indexes])
+        h2 = np.histogram(b[indexes])
+        correlation = cv2.compareHist(ParkRanger.np_hist_to_cv(h1),
+                                      ParkRanger.np_hist_to_cv(h2),
+                                      cv2.HISTCMP_CORREL)
+        return 1 + correlation
+
+    @staticmethod
+    def np_hist_to_cv(np_hist):
+        counts, bin_edges = np_hist
+        return counts.ravel().astype('float32')
 
     """Converts Point Cloud to Local DEM
 
@@ -390,7 +404,7 @@ class ParkRanger(PointCloudProcessor):
 
         row_indexes = np.subtract(self.num_rows-1, np.subtract(forward, self.min_row)).astype(int)
         column_indexes = np.subtract(right, self.min_column).astype(int)
-        heights = np.add(np.add(self.position_z, self.camera_height), down)
+        heights = np.add(np.add(self.position_z, self.camera_height), np.negative(down))
 
         return row_indexes, column_indexes, heights
 
@@ -426,8 +440,8 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
-        self.num_initial_particles = 500
-        self.max_particles = 1000
+        self.num_initial_particles = 100
+        self.max_particles = 500
 
         path = ParkRanger.path_dem()
 
@@ -476,7 +490,7 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Update")
                     self.likelihood(local_dem)
-                    self.plot_points()
+                    # self.plot_points()
                     # estimate
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
@@ -497,7 +511,7 @@ class ParkRanger(PointCloudProcessor):
                         rospy.logwarn("Initialize")
                     # According to the paper, this would generate a particle at every possible dem
                     # For the sake of not taking forever, just set this to 50
-                    self.init_particles(1000)
+                    self.init_particles(500)
                     self.likelihood(local_dem)
                     # rather than a NxN operation like previous two right above,
                     # for the sorting, lambda function is used so fast af and N is used to
@@ -514,6 +528,7 @@ class ParkRanger(PointCloudProcessor):
 
         for x, y in zip(x_coords, y_coords):
             self.particle_filter.add_particle(x, y, 0.0, weight)
+        self.particle_filter.add_particle(int(self.dem_size/2.0), int(self.dem_size/2.0), 0.0, weight)
 
         # x_func = ParkRanger.get_truncated_normal(self.start_x - self.dem_size/2.0, self.resolution, 0, self.dem_size)
         # y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0 - self.start_y, self.resolution, 0, self.dem_size)
@@ -525,26 +540,63 @@ class ParkRanger(PointCloudProcessor):
 
     def likelihood(self, local_dem):
         num_particles = len(self.particle_filter.particles)
+        min_score = None
+
+        test_p = Particle(int(self.dem_size/2), int(self.dem_size/2), 0.0)
+        test_dem = self.get_predicted_local_dem(test_p)
+        test_score = ParkRanger.histogram_match(local_dem, test_dem)
+
         for p in self.particle_filter.particles:
             predicted_dem = self.get_predicted_local_dem(p)
             if predicted_dem is not None:
-                score = ParkRanger.sad(local_dem, predicted_dem)
-                p.weight = p.weight * (score / num_particles)
+                score = ParkRanger.histogram_match(local_dem, predicted_dem)
+
+                if min_score is None or score > min_score:
+                    min_p = p
+                    min_score = score
+                    min_dem = predicted_dem
+
+                p.weight = p.weight * score
+
                 if ParkRanger.debug:
                     rospy.logwarn("Predicted local DEM score: {}".format(score))
             else:
                 if ParkRanger.debug:
                     rospy.logwarn("Invalid predicted local DEM")
-                p.weight = -1
+                p.weight = None
 
-        self.particle_filter.particles = [p for p in self.particle_filter.particles if p.weight >= 0]
+        rospy.logwarn("({}, {}): {}, test: {}".format(min_p.x, min_p.y, min_score, test_score))
+
+        self.particle_filter.particles = [p for p in self.particle_filter.particles if p.weight is not None]
+        return
+
+        plt.imshow(local_dem)
+        plt.title("local DEM")
+        plt.colorbar()
+        plt.show()
+        plt.pause(3.)
+        plt.close()
+
+        plt.imshow(min_dem)
+        plt.title("({}, {}): {}".format(min_p.x, min_p.y, min_score))
+        plt.colorbar()
+        plt.show()
+        plt.pause(3.)
+        plt.close()
+
+        plt.imshow(test_dem)
+        plt.title("test particle: {}".format(test_score))
+        plt.colorbar()
+        plt.show()
+        plt.pause(3.)
+        plt.close()
 
     def place_high_like_parts(self, num_particles):
         if len(self.particle_filter.particles) <= num_particles:
             return
 
         # Sort particles by weight in descending order
-        place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=False)
+        place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=True)
         particles = []
 
         # Get and "place" the N highest weighted particles and reset weights and gaussian
@@ -595,7 +647,7 @@ class ParkRanger(PointCloudProcessor):
 
 """Initializes park ranger"""
 def park_ranger(resolution=0.5, local_dem_comparison_type="max", period=5,
-                range_min=0.105, range_max=10., camera_height=0.08):
+                range_min=0.105, range_max=10., camera_height=0.34):
     pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min,
                     range_max, camera_height)
 
