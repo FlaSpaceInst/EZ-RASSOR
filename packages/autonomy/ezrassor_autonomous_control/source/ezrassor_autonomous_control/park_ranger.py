@@ -86,9 +86,9 @@ import filterpy.monte_carlo as mc
 
 """Represents a single particle in the particle filter"""
 class Particle:
-    def __init__(self, row, col, heading, weight=0, std_x=0, std_y=0):
-        self.x = row
-        self.y = col
+    def __init__(self, x, y, heading, weight=0, std_x=0, std_y=0):
+        self.x = x
+        self.y = y
         self.theta = heading
         self.weight = weight
         self.std_x = std_x
@@ -103,13 +103,13 @@ class ParticleFilter:
         self.dem_max_y = dem_max_y
         self.particles = []
 
-    def add_particle(self, row, col, heading, weight=0, std_x=0, std_y=0):
-        self.particles.append(Particle(row, col, heading, weight, std_x, std_y))
+    def add_particle(self, x, y, heading, weight=0, std_x=0, std_y=0):
+        self.particles.append(Particle(x, y, heading, weight, std_x, std_y))
 
     def move_particles(self, x_diff, y_diff, theta, std_x, std_y):
         for p in self.particles:
             p.x += x_diff
-            p.y += y_diff
+            p.y += -y_diff
             p.theta = theta
             p.std_x += std_x
             p.std_y += std_y
@@ -238,8 +238,8 @@ class ParkRanger(PointCloudProcessor):
         # Find number of rows and columns and minimum row and column values in the
         # local DEM array based on the angles and range the camera can see and the
         # resolution of the global DEM
-        self.num_rows = int((range_max - range_min) / self.resolution) + 1
-        self.num_columns = int((range_max * (np.tan(self.angle_max) - np.tan(self.angle_min))) / self.resolution) + 1
+        self.num_rows = int(range_max - range_min) + 1
+        self.num_columns = int(range_max * (np.tan(self.angle_max) - np.tan(self.angle_min))) + 1
         self.min_row = range_min
         self.min_column = range_max * np.tan(self.angle_min)
 
@@ -263,7 +263,7 @@ class ParkRanger(PointCloudProcessor):
             num_cols_right -= 1
 
         # Get line to the left of the particle
-        row_coords = ParkRanger.get_line(particle.x, particle.y, num_cols_left, -angle_perp, 'left')
+        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_left, -angle_perp, 'left')
         # Fill up columns to the left of the particle
         for i, coord in enumerate(reversed(row_coords)):
             col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows, particle.theta, 'right')
@@ -273,7 +273,7 @@ class ParkRanger(PointCloudProcessor):
                 return None
 
         # Get line to the right of the particle
-        row_coords = ParkRanger.get_line(particle.x, particle.y, num_cols_right, angle_perp, 'right')
+        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_right, angle_perp, 'right')
         # Fill up columns to the right of the particle
         for i, coord in enumerate(row_coords):
             col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows, particle.theta, 'right')
@@ -388,8 +388,8 @@ class ParkRanger(PointCloudProcessor):
         right = pc[:,PointCloudProcessor.XYZ["RIGHT"]]
         down = pc[:,PointCloudProcessor.XYZ["DOWN"]]
 
-        row_indexes = np.subtract(self.num_rows-1, np.divide(np.subtract(forward, self.min_row), self.resolution).astype(int))
-        column_indexes = np.divide(np.subtract(right, self.min_column), self.resolution).astype(int)
+        row_indexes = np.subtract(self.num_rows-1, np.subtract(forward, self.min_row)).astype(int)
+        column_indexes = np.subtract(right, self.min_column).astype(int)
         heights = np.add(np.add(self.position_z, self.camera_height), down)
 
         return row_indexes, column_indexes, heights
@@ -405,10 +405,10 @@ class ParkRanger(PointCloudProcessor):
             (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
     def plot_points(self):
-        plt.ylim(0, self.particle_filter.dem_max_y)
+        plt.ylim(self.particle_filter.dem_max_y, 0)
         plt.xlim(0, self.particle_filter.dem_max_x)
         for p in self.particle_filter.particles:
-            plt.plot([p.x], [p.y], marker='o', markersize=3, color="red")
+            plt.plot([p.y], [p.x], marker='o', markersize=3, color="red")
         plt.show(block=False)
         plt.pause(3)
         plt.close()
@@ -426,7 +426,7 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
-        self.num_initial_particles = 50
+        self.num_initial_particles = 500
         self.max_particles = 1000
 
         path = ParkRanger.path_dem()
@@ -480,9 +480,13 @@ class ParkRanger(PointCloudProcessor):
                     # estimate
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
-                    est_row, est_col = self.estimate() # TODO: convert to x, y
+                    est_x, est_y = self.estimate()
                     if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate {} {}".format(est_row, est_col))
+                        rospy.logwarn("Current Estimate (row, col) {} {}".format(est_x, est_y))
+                    est_y = est_y - (self.dem_size / 2)
+                    est_x = (self.dem_size / 2) - est_x
+                    if ParkRanger.debug:
+                        rospy.logwarn("Current Estimate (X, Y) {} {}".format(est_x, est_y))
                     # 5 Resample
                     if ParkRanger.debug:
                         rospy.logwarn("Resample")
@@ -493,7 +497,7 @@ class ParkRanger(PointCloudProcessor):
                         rospy.logwarn("Initialize")
                     # According to the paper, this would generate a particle at every possible dem
                     # For the sake of not taking forever, just set this to 50
-                    self.init_particles(500)
+                    self.init_particles(1000)
                     self.likelihood(local_dem)
                     # rather than a NxN operation like previous two right above,
                     # for the sorting, lambda function is used so fast af and N is used to
@@ -511,8 +515,8 @@ class ParkRanger(PointCloudProcessor):
         for x, y in zip(x_coords, y_coords):
             self.particle_filter.add_particle(x, y, 0.0, weight)
 
-        # x_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
-        # y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0, self.resolution, 0, self.dem_size)
+        # x_func = ParkRanger.get_truncated_normal(self.start_x - self.dem_size/2.0, self.resolution, 0, self.dem_size)
+        # y_func = ParkRanger.get_truncated_normal(self.dem_size/2.0 - self.start_y, self.resolution, 0, self.dem_size)
         # weight = 1.0 / num_particles
         # for i in range(num_particles):
         #     x = int(x_func.rvs())
@@ -559,13 +563,13 @@ class ParkRanger(PointCloudProcessor):
         current_x = self.position_x
         current_y = self.position_y
         current_heading = self.heading
-        col_diff = int((current_x - self.last_x) / self.resolution)
-        row_diff = int((current_y - self.last_y) / self.resolution)
+        x_diff = int(current_x - self.last_x)
+        y_diff = int(current_y - self.last_y)
 
-        std_col = np.sqrt(covar[0])
-        std_row = np.sqrt(covar[7])
+        std_x = np.sqrt(covar[0])
+        std_y = np.sqrt(covar[7])
 
-        self.particle_filter.move_particles(row_diff, col_diff, current_heading, std_row, std_col)
+        self.particle_filter.move_particles(x_diff, y_diff, current_heading, std_x, std_y)
 
         self.last_x = current_x
         self.last_y = current_y
