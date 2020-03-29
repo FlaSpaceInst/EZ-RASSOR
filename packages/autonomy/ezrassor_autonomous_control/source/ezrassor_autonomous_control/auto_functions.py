@@ -20,10 +20,11 @@ def at_target(positionX, positionY, targetX, targetY, threshold):
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
     rospy.loginfo('Auto-driving to [%s, %s]...',str(world_state.target_location.x),str(world_state.target_location.y))
-    
+
     # Set arms up for travel
-    uf.set_front_arm_angle(world_state, ros_util, 1.3)
-    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+    arm_angle = np.pi / 2.0
+    uf.set_front_arm_angle(world_state, ros_util, arm_angle)
+    uf.set_back_arm_angle(world_state, ros_util, arm_angle)
 
     # Before we head towards our goal, turn to face it.
     # Get new heading angle relative to current heading
@@ -44,8 +45,8 @@ def auto_drive_location(world_state, ros_util):
         rospy.loginfo("Starting nav loop!")
 
         # Set arms up for travel
-        uf.set_front_arm_angle(world_state, ros_util, 1.3)
-        uf.set_back_arm_angle(world_state, ros_util, 1.3)
+        uf.set_front_arm_angle(world_state, ros_util, arm_angle)
+        uf.set_back_arm_angle(world_state, ros_util, arm_angle)
 
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
