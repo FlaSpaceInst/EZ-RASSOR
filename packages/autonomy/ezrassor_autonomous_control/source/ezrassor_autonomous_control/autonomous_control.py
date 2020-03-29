@@ -75,6 +75,8 @@ class RoverController:
             self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
             rospy.loginfo('Rover status service initialized.')
 
+            rospy.loginfo("TARGET X AND TARGET Y: {} {}".format(target_x, target_y))
+
         else:
             # Basic autonomous control using the autonomous control loop
             target_location = Point()
@@ -113,8 +115,9 @@ class RoverController:
 
         # Send resulting rover pose
         rospy.loginfo("position: ({}, {})".format(self.world_state.positionX, self.world_state.positionY))
-        if nf.euclidean_distance(self.world_state.positionX, 5, self.world_state.positionY, 7) <= 1.0 :
-            rospy.loginfo("WE HERE!!!!!")
+        # rospy.loginfo("dig site location: ({}, {})".format(self.world_state.dig_site.x, self.world_state.dig_site.y))
+        # if nf.euclidean_distance(self.world_state.positionX, self.world_state.dig_site.x, self.world_state.positionY, self.world_state.dig_site.y) <= 1.0 :
+        #     rospy.loginfo("WE HERE!!!!!")
         self.waypoint_server.set_succeeded(result)
 
     def send_status(self, request):

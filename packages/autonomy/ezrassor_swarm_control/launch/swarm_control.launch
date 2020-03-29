@@ -3,8 +3,8 @@
 
 <launch>
   <arg name="robot_count" default="2"/>
-  <arg name="digsite_x_coords" default="10"/>
-  <arg name="digsite_y_coords" default="10"/>
+  <arg name="digsite_x_coords" default="9"/>
+  <arg name="digsite_y_coords" default="9"/>
   <arg name="lander_coords" default="5 5"/>
 
   <!-- Launch the autonomous control node. -->
