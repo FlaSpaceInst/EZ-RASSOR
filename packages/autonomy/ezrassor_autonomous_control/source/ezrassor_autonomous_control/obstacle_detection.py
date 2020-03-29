@@ -149,17 +149,19 @@ def point_cloud_to_laser_scan(point_cloud):
             # Since the rows are sorted by dist, the farthest point for this step is in the last row
             cliff_ranges[step] = direction[-1, 1]
 
+            # Slice down and dist in order to perform operations at idx and idx-1
             down1 = direction[:-1, 2]
             down2 = direction[1:, 2]
-
             dist1 = direction[:-1, 1]
             dist2 = direction[1:, 1]
 
             # Calculate slope for each pair of points
-            slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
+            drop = np.subtract(down2, down1)
+
+            slope = np.abs(np.divide(drop, np.subtract(dist2, dist1)))
 
             # Find first index of row where the slope crosses the threshold
-            condition = (slope > threshold)
+            condition = np.logical_or(drop < min_hole_depth, slope > threshold)
             index = condition.argmax() if condition.any() else None
 
             if index is not None:
@@ -194,7 +196,7 @@ def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None,
     globals()['range_max'] = range_max
 
     globals()['camera_height'] = camera_height_yaml
-    globals()['min_hole_depth'] = min_hole_depth_yaml
+    globals()['min_hole_depth'] = min_hole_depth_yaml * -1
     globals()['min_obstacle_height'] = min_obstacle_height_yaml
 
     camera_info = rospy.wait_for_message("depth/camera_info", CameraInfo)
