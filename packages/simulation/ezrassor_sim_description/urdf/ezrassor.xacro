@@ -399,7 +399,7 @@
   </joint>
 
   <joint name="camera_front_joint" type="fixed">
-    <origin xyz=".3 0 -.1" rpy="0 ${pi/2} 0"/>
+    <origin xyz="0 0 -.1" rpy="0 ${pi/2} 0"/>
     <axis xyz="0 1 0" />
     <parent link="drum_front"/>
     <child link="depth_camera_front"/>
