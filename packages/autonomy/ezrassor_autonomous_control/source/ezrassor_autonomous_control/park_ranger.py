@@ -96,16 +96,22 @@ class Particle:
         self.std_y = std_y
 
 class ParticleFilter:
-    def __init__(self, resolution, dem_min_x, dem_max_x, dem_min_y, dem_max_y):
+    def __init__(self, resolution, dem_size):
         self.resolution = resolution
-        self.dem_min_x = dem_min_x
-        self.dem_max_x = dem_max_x
-        self.dem_min_y = dem_min_y
-        self.dem_max_y = dem_max_y
+        self.dem_size = dem_size
         self.particles = []
+        self.init_particles()
 
     def add_particle(self, x, y, heading, weight=0, std_x=0, std_y=0):
         self.particles.append(Particle(x, y, heading, weight, std_x, std_y))
+
+    def init_particles(self):
+        weight = 1.0 / (self.dem_size ** 2)
+        rospy.logwarn("Initialize")
+        for y in range(self.dem_size):
+            for x in range(self.dem_size):
+                self.add_particle(x, y, 0.0, weight)
+            rospy.logwarn("At {}".format(y))
 
     def move_particles(self, x_diff, y_diff, theta, std_x, std_y):
         for p in self.particles:
@@ -115,7 +121,7 @@ class ParticleFilter:
             p.std_x += std_x
             p.std_y += std_y
 
-        self.particles = [p for p in self.particles if (self.dem_min_x < p.x < self.dem_max_x) and (self.dem_min_y < p.y < self.dem_max_y)]
+        self.particles = [p for p in self.particles if (0 < p.x < self.dem_size) and (0 < p.y < self.dem_size)]
 
     def sample(self):
         for p in self.particles:
@@ -162,6 +168,9 @@ class ParkRanger(PointCloudProcessor):
             rospy.logdebug("Failed to get index. Skipping...")
 
         self.position_z = data.pose[index].position.z + self.origin_z
+        self.actual_x = data.pose[index].position.x
+        self.actual_y = data.pose[index].position.y
+        self.actual_theta = nf.quaternion_to_yaw(data.pose[index]) * 180/np.pi
 
     def odometry_callback(self, data):
         self.covar = data.pose.covariance
@@ -418,8 +427,8 @@ class ParkRanger(PointCloudProcessor):
             (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
     def plot_points(self):
-        plt.ylim(self.particle_filter.dem_max_y, 0)
-        plt.xlim(0, self.particle_filter.dem_max_x)
+        plt.ylim(self.particle_filter.dem_size, 0)
+        plt.xlim(0, self.particle_filter.dem_size)
         for p in self.particle_filter.particles:
             plt.plot([p.y], [p.x], marker='o', markersize=3, color="red")
         plt.show(block=False)
@@ -439,12 +448,18 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
-        self.num_initial_particles = 200
-        self.max_particles = 1000
+        self.num_initial_particles = 500
+        self.max_particles = 1500
 
         path = ParkRanger.path_dem()
 
         self.create_array_global_dem(path)
+        # plt.imshow(self.global_dem)
+        # plt.title("global DEM")
+        # plt.colorbar()
+        # plt.show()
+        # plt.pause(5.)
+        # plt.close()
         self.init_local_dem_info(range_min, range_max)
 
         # Subscribe to "altimeter" data, waiting for at least one message
@@ -467,7 +482,7 @@ class ParkRanger(PointCloudProcessor):
     def run(self, period, local_dem_comparison_type):
         r = rospy.Rate(1./period)
         init_flag = True
-        self.particle_filter = ParticleFilter(self.resolution, 0, self.dem_size, 0, self.dem_size)
+        self.particle_filter = ParticleFilter(self.resolution, self.dem_size)
         while not rospy.is_shutdown():
             if not self.arms_up:
                 continue
@@ -481,9 +496,9 @@ class ParkRanger(PointCloudProcessor):
                         rospy.logwarn("Prediction")
                     self.predict_particle_movement()
                     # 3 Sampling
-                    if ParkRanger.debug:
-                        rospy.logwarn("Sampling")
-                    self.particle_filter.sample()
+                    #if ParkRanger.debug:
+                        #rospy.logwarn("Sampling")
+                    #  self.particle_filter.sample()
                     self.place_high_like_parts(self.max_particles)
                     # 4 Update
                     if ParkRanger.debug:
@@ -494,10 +509,13 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
                     est_x, est_y = self.estimate()
+                    if ParkRanger.debug:
+                        rospy.logwarn("Current Estimate: {} {}".format(est_x, est_y))
                     est_x = est_x - (self.dem_size / 2)
                     est_y = (self.dem_size / 2) - est_y
                     if ParkRanger.debug:
                         rospy.logwarn("Current Estimate: {} {}".format(est_x, est_y))
+                    self.plot_points()
                     # 5 Resample
                     if ParkRanger.debug:
                         rospy.logwarn("Resample")
@@ -508,7 +526,7 @@ class ParkRanger(PointCloudProcessor):
                         rospy.logwarn("Initialize")
                     # According to the paper, this would generate a particle at every possible dem
                     # For the sake of not taking forever, just set this to 50
-                    self.init_particles(500)
+                    #self.init_particles(1000)
                     self.likelihood(local_dem)
                     # rather than a NxN operation like previous two right above,
                     # for the sorting, lambda function is used so fast af and N is used to
@@ -519,6 +537,13 @@ class ParkRanger(PointCloudProcessor):
 
     """TODO: Initialize start_row and start_col from start_x and start_y"""
     def init_particles(self, num_particles):
+        weight = 1.0 / (self.dem_size ** 2)
+        for y in range(self.dem_size):
+            for x in range(self.dem_size):
+                rospy.logwarn("{} {}".format(x, y))
+                self.particle_filter.add_particle(x, y, 0.0, weight)
+
+        return
         x_coords = np.random.randint(self.dem_size, size=num_particles)
         y_coords = np.random.randint(self.dem_size, size=num_particles)
         weight = 1.0 / num_particles
@@ -533,19 +558,21 @@ class ParkRanger(PointCloudProcessor):
 
     def likelihood(self, local_dem):
         num_particles = len(self.particle_filter.particles)
-
+        count = 0
         for p in self.particle_filter.particles:
             predicted_dem = self.get_predicted_local_dem(p)
             if predicted_dem is not None:
                 score = ParkRanger.histogram_match(local_dem, predicted_dem)
                 p.weight *= score
 
-                if ParkRanger.debug:
+                #if ParkRanger.debug:
+                if count % 1000 == 0:
                     rospy.logwarn("Predicted local DEM score for ({}, {}): {}".format(p.x, p.y, score))
             else:
-                if ParkRanger.debug:
-                    rospy.logwarn("Invalid predicted local DEM")
+                #if ParkRanger.debug:
+                    #rospy.logwarn("Invalid predicted local DEM")
                 p.weight = None
+            count += 1
 
         self.particle_filter.particles = [p for p in self.particle_filter.particles if p.weight is not None]
 
@@ -570,9 +597,13 @@ class ParkRanger(PointCloudProcessor):
     def predict_particle_movement(self):
         # Compare odometry messages and adjust particle physically and probability
         covar = self.covar
-        current_x = self.position_x
-        current_y = self.position_y
-        current_heading = self.heading
+        # current_x = self.position_x
+        # current_y = self.position_y
+        # current_heading = self.heading
+        current_x = self.actual_x
+        current_y = self.actual_y
+        current_heading = self.actual_theta
+
         x_diff = int(current_x - self.last_x)
         y_diff = int(current_y - self.last_y)
 
@@ -598,8 +629,9 @@ class ParkRanger(PointCloudProcessor):
     def resample(self):
         rospy.logwarn("num particles: {}".format(len(self.particle_filter.particles)))
         weights = [p.weight for p in self.particle_filter.particles]
-        norm = np.divide(weights, np.sum(weights))
-        if ParkRanger.neff(norm) <  self.num_initial_particles / 2:
+        norm = weights / np.linalg.norm(weights)
+        if ParkRanger.neff(norm) <  (self.num_initial_particles / 8):
+            rospy.logwarn("Resample invoked")
             indexes = mc.systematic_resample(norm)
             self.particle_filter.resample(indexes)
 
