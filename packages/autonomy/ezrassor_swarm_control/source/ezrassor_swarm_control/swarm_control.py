@@ -69,6 +69,9 @@ class SwarmController:
                                 self.rover_activity_status_db[i].path_in_progress = True
         
                     else :
+                        if self.rover_activity_status_db[i].path_in_progress :
+                            self.rover_activity_status_db[i].path_in_progress = False
+
                         rospy.loginfo("FROM SWARM CONTROLLER: rover at dig site!")
                    
 
