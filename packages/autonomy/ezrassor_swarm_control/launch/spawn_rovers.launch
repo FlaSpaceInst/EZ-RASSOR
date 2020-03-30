@@ -4,7 +4,7 @@
 
 <launch>
   <arg name="robot_count" default="2"/>
-  <arg name="spawn_x_coords" default=" 3 6"/>
+  <arg name="spawn_x_coords" default="3 6"/>
   <arg name="spawn_y_coords" default="0 0"/>
   <arg name="spawn_z_coords" default="default"/>
   <arg name="enable_cameras" default="default"/>

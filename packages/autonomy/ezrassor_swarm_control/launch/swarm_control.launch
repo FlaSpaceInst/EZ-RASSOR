@@ -3,8 +3,9 @@
 
 <launch>
   <arg name="robot_count" default="2"/>
-  <arg name="digsite_x_coords" default="10"/>
-  <arg name="digsite_y_coords" default="10"/>
+  <arg name="digsite_x_coords" default="9"/>
+  <arg name="digsite_y_coords" default="9"/>
+  <arg name="lander_coords" default="5 5"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_swarm_control"
@@ -14,5 +15,6 @@
     <param name="robot_count" value="$(arg robot_count)"/>
     <param name="digsite_x_coords" value="$(arg digsite_x_coords)"/>
     <param name="digsite_y_coords" value="$(arg digsite_y_coords)"/>
+    <param name="lander_coords" value="$(arg lander_coords)"/>
   </node>
 </launch>

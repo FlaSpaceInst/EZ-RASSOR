@@ -75,6 +75,8 @@ class WaypointClient:
         # Create the goal to send to server
         goal = waypointGoal(target=waypoint)
 
+        rospy.loginfo('digsite: {}'.format(waypoint))
+
         # Send the goal to the rover's waypoint server
         self.client.send_goal(goal, done_cb=self.done_cb, feedback_cb=self.feedback_cb)
 

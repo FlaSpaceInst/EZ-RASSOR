@@ -15,9 +15,9 @@ from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
 import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
+import nav_functions as nf
 
 import re
-
 
 class RoverController:
     def __init__(self, target_x, target_y, movement_topic, front_arm_topic,
@@ -77,6 +77,8 @@ class RoverController:
             self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
             rospy.loginfo('Rover status service initialized.')
 
+            rospy.loginfo("TARGET X AND TARGET Y: {} {}".format(target_x, target_y))
+
         else:
             # Basic autonomous control using the autonomous control loop
             target_location = Point()
@@ -110,6 +112,7 @@ class RoverController:
             result = waypointResult(feedback.pose, feedback.battery, 0)
             self.waypoint_server.set_succeeded(result)
 
+
     def send_status(self, request):
         """
         Sends the rover's current battery and pose to the swarm controller
@@ -122,8 +125,8 @@ class RoverController:
         status.pose.orientation = self.world_state.orientation
         status.battery = self.world_state.battery
 
-        rospy.loginfo('Service {} sending current status'.format(
-                        self.status_service.resolved_name))
+        # rospy.loginfo('Service {} sending current status'.format(
+        #                 self.status_service.resolved_name))
 
         return status
 

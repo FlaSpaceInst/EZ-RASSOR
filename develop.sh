@@ -52,6 +52,7 @@ setup_environment() {
     catkin_init_workspace
     cd - > /dev/null 2>&1
     source_setups_in_directory "$WORKSPACE_DEVEL_DIR"
+    cp -r extra_worlds/random ~/.gazebo/models/random
 }
 
 # Create a new ROS package in source control.
