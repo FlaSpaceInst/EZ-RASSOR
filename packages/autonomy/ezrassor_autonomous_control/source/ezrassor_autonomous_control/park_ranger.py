@@ -21,6 +21,7 @@ from os import listdir
 from os.path import isfile, join
 import re
 
+import math
 import random
 from scipy.stats import truncnorm
 # for residual_resample
@@ -94,6 +95,10 @@ class Particle:
         self.weight = weight
         self.std_x = std_x
         self.std_y = std_y
+class Point:
+    def __init__(self, row, col):
+        self.row = row
+        self.col = col
 
 class ParticleFilter:
     def __init__(self, resolution, dem_size):
@@ -448,8 +453,9 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
-        self.num_initial_particles = 500
+        self.num_initial_particles = 1000
         self.max_particles = 1500
+        self.estimate_queue = []
 
         path = ParkRanger.path_dem()
 
@@ -482,6 +488,7 @@ class ParkRanger(PointCloudProcessor):
     def run(self, period, local_dem_comparison_type):
         r = rospy.Rate(1./period)
         init_flag = True
+        ran_out_of_particles = False
         self.particle_filter = ParticleFilter(self.resolution, self.dem_size)
         while not rospy.is_shutdown():
             if not self.arms_up:
@@ -492,13 +499,22 @@ class ParkRanger(PointCloudProcessor):
                 local_dem = self.point_cloud_to_local_dem(pc, local_dem_comparison_type)
                 if not init_flag:
                     # 2 Prediction
+                    if len(self.particle_filter.particles) == 0:
+                        if ParkRanger.debug:
+                            rospy.logwarn("Actual: {} {}".format(self.actual_x, self.actual_y))
+                            rospy.logwarn("Last Estimate {} {}".format(self.estimate_queue[-1].row, self.estimate_queue[-1].col))
+                            est_x = self.estimate_queue[-1].row - (self.dem_size / 2)
+                            est_y = (self.dem_size / 2) - self.estimate_queue[-1].col
+                            rospy.logwarn("Last Estimate: {} {}".format(est_x, est_y))
+                            ran_out_of_particles = True
+                            break
                     if ParkRanger.debug:
                         rospy.logwarn("Prediction")
                     self.predict_particle_movement()
                     # 3 Sampling
-                    #if ParkRanger.debug:
-                        #rospy.logwarn("Sampling")
-                    #  self.particle_filter.sample()
+                    # if ParkRanger.debug:
+                    #     rospy.logwarn("Sampling")
+                    # self.particle_filter.sample()
                     self.place_high_like_parts(self.max_particles)
                     # 4 Update
                     if ParkRanger.debug:
@@ -506,13 +522,15 @@ class ParkRanger(PointCloudProcessor):
                     self.likelihood(local_dem)
                     # self.plot_points()
                     # estimate
+                    #if len(self.particle_filter.particles) != 0:
+                    rospy.logwarn("Actual: {} {}".format(self.actual_x, self.actual_y))
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
-                    est_x, est_y = self.estimate()
+                    self.estimate()
                     if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate: {} {}".format(est_x, est_y))
-                    est_x = est_x - (self.dem_size / 2)
-                    est_y = (self.dem_size / 2) - est_y
+                        rospy.logwarn("Current Estimate: {} {}".format(self.estimate_queue[-1].row, self.estimate_queue[-1].col))
+                    est_x = self.estimate_queue[-1].row - (self.dem_size / 2)
+                    est_y = (self.dem_size / 2) - self.estimate_queue[-1].col
                     if ParkRanger.debug:
                         rospy.logwarn("Current Estimate: {} {}".format(est_x, est_y))
                     self.plot_points()
@@ -534,6 +552,21 @@ class ParkRanger(PointCloudProcessor):
                     self.place_high_like_parts(self.num_initial_particles)
                     init_flag = False
             r.sleep()
+        plt.ylim(self.particle_filter.dem_size, 0)
+        plt.xlim(0, self.particle_filter.dem_size)
+        index = 0
+        for p in self.estimate_queue:
+            plt.plot([p.col], [p.row], marker='o', markersize=3, color="red")
+            label = "{}".format(index)
+            index += 1
+            plt.annotate(label, # this is the text
+                         (p.col,p.row), # this is the point to label
+                         textcoords="offset points", # how to position the text
+                         xytext=(0,10), # distance from text to points (x,y)
+                         ha='center') # horizontal alignment can be left, right or center
+        plt.show(block=False)
+        plt.pause(5)
+        plt.close()
 
     """TODO: Initialize start_row and start_col from start_x and start_y"""
     def init_particles(self, num_particles):
@@ -585,12 +618,13 @@ class ParkRanger(PointCloudProcessor):
         particles = []
 
         # Get and "place" the N highest weighted particles and reset weights and gaussian
-        for i in range(num_particles):
+        while len(particles) < num_particles and len(self.particle_filter.particles) > 0:
             p = place.pop(0)
-            p.weight = 1.0 / num_particles
-            p.std_x = self.resolution / 2
-            p.std_y = self.resolution / 2
-            particles.append(p)
+            if p.weight is not None:
+                p.weight = 1.0 / num_particles
+                p.std_x = self.resolution / 2
+                p.std_y = self.resolution / 2
+                particles.append(p)
 
         self.particle_filter.particles = particles
 
@@ -624,13 +658,18 @@ class ParkRanger(PointCloudProcessor):
             #rospy.logwarn("{}".format(p.weight))
             sum_x += (p.x * p.weight)
             sum_y += (p.y * p.weight)
-        return int(sum_x / sum_weights), int(sum_y / sum_weights)
+        if sum_weights == 0:
+            rospy.logwarn("Number of particles: {}".format(num_particles))
+            for p in self.particle_filter.particles:
+                rospy.logwarn("p {} {} {}".format(p.x, p.y, p.weight))
+            return
+        self.estimate_queue.append(Point(int(sum_x / sum_weights), int(sum_y / sum_weights)))
 
     def resample(self):
         rospy.logwarn("num particles: {}".format(len(self.particle_filter.particles)))
         weights = [p.weight for p in self.particle_filter.particles]
         norm = weights / np.linalg.norm(weights)
-        if ParkRanger.neff(norm) <  (self.num_initial_particles / 8):
+        if ParkRanger.neff(norm) <  ( len(norm) / 2 ):
             rospy.logwarn("Resample invoked")
             indexes = mc.systematic_resample(norm)
             self.particle_filter.resample(indexes)
