@@ -132,8 +132,8 @@ class RoverController:
         status.pose.orientation = self.world_state.orientation
         status.battery = self.world_state.battery
 
-        rospy.loginfo('Service {} sending current status'.format(
-                        self.status_service.resolved_name))
+        # rospy.loginfo('Service {} sending current status'.format(
+        #                 self.status_service.resolved_name))
 
         return status
 

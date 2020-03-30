@@ -10,25 +10,43 @@ from swarm_utils import euclidean_distance
 
 import os
 
+class Rover :
+    def __init__(self, id) :
+        self.id = id
+        self.path_in_progress = False
+        self.path_completed = False
+        self.battery = 100
+
 
 class SwarmController:
     def __init__(self, robot_count, dig_sites, lander_loc):
         self.robot_count = robot_count
         self.dig_sites = dig_sites
         self.lander_loc = lander_loc
+        self.rover_activity_status_db = [Rover(i) for i in range(10)]
 
         self.waypoint_pubs = {i: rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
                                                  Path,
                                                  queue_size=10)
                               for i in range(1, robot_count+1)}
 
+    def is_at_lander(self, robot_status) :
+        if euclidean_distance(robot_status.pose.position.x, self.lander_loc.x, robot_status.pose.position.y, self.lander_loc.y) <= 1 :
+            return True
+        else :
+            return False
+    
+    def is_at_digsite(self, robot_status) :
+        if euclidean_distance(robot_status.pose.position.x, self.dig_sites[0].x, robot_status.pose.position.y, self.dig_sites[0].y) <= 1 :
+            return True
+        else :
+            return False
+   
     def run(self):
         rospy.loginfo('Running the swarm controller for {} rover(s)'.format(self.robot_count))
         rospy.loginfo('{} total dig sites: {}'
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
         
-        rospy.loginfo('FROM SWARM CONTROLLER: lander location: {}'.format(self.lander_loc))
-
         # wait for rovers to spawn
         rospy.sleep(5.)
 
@@ -36,36 +54,23 @@ class SwarmController:
                                   '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
 
         path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
-
-
-        while(True) :
+        
+        while True :
             for i in range(1, self.robot_count + 1) :
-                status = get_rover_status(i)
-                # rospy.loginfo(status)
-                rospy.sleep(1.)
-                if status is not None :
-                    dist_from_digsite = euclidean_distance(status.pose.position.x, self.dig_sites[0].x, status.pose.position.y, self.dig_sites[0].y)
-                    rospy.loginfo('FROM SWARM CONTROLLER: distance from dig site: {}'.format(dist_from_digsite))
-                    if dist_from_digsite > 0.5 :
-                        path = path_planner.find_path(status.pose.position, self.dig_sites[0])
-                        if path is not None :
-                            self.waypoint_pubs[i].publish(path)
+                rover_status = get_rover_status(i)
+                rospy.loginfo(self.rover_activity_status_db[i].path_in_progress)
+
+                if rover_status :
+                    if not self.is_at_digsite(rover_status) :
+                        if not self.rover_activity_status_db[i].path_in_progress :
+                            path = path_planner.find_path(rover_status.pose.position, self.dig_sites[0])
+                            if path :
+                                self.waypoint_pubs[i].publish(path)
+                                self.rover_activity_status_db[i].path_in_progress = True
+        
                     else :
-                        pass
-
-        # for i in range(1, self.robot_count + 1):
-            # Get status (battery and pose) of rover using status service
-            # status = get_rover_status(i)
-            # rospy.loginfo(status)
-
-            # if status is not None:
-            #     # Find path
-            #     path = path_planner.find_path(status.pose.position, self.dig_sites[0])
-
-            #     # Send rover along path
-            #     if path is not None:
-            #         self.waypoint_pubs[i].publish(path)
-
+                        rospy.loginfo("FROM SWARM CONTROLLER: rover at dig site!")
+                   
 
 def on_start_up(robot_count, target_xs, target_ys, lander_coords):
     """ Initialization Function  """
