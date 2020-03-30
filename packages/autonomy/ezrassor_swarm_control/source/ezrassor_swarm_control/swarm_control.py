@@ -5,7 +5,7 @@ from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
 from path_planner import PathPlanner
-from swarm_utils import get_rover_status
+from swarm_utils import get_rover_status, preempt_rover_path
 
 import os
 
@@ -45,6 +45,8 @@ class SwarmController:
                 if path is not None:
                     self.waypoint_pubs[i].publish(path)
 
+        rospy.sleep(5.)
+        preempt_rover_path(1)
 
 def on_start_up(robot_count, target_xs, target_ys):
     """ Initialization Function  """
