@@ -30,7 +30,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                   str(world_state.target_location.x),
                   str(world_state.target_location.y))
 
-    # If request sent from waypoint action client we'll send feedback during navigation
+    # Send feedback to waypoint client if being controlled by swarm controller
     feedback = uf.send_feedback(world_state, waypoint_server)
 
     # Set arms up for travel
@@ -48,11 +48,6 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                 waypoint_server.set_preempted()
 
             rospy.logdebug('Status check failed.')
-            return
-
-        # Check that goal has not been preempted by the client
-        # Returns false if action_server is None
-        if uf.preempt_check(waypoint_server) is True:
             return
 
         # Get new heading angle relative to current heading as (0,0)
@@ -85,7 +80,9 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
 
-    rospy.loginfo('Destination reached!')
+    # Action server will print it's own info
+    if waypoint_server is None:
+        rospy.loginfo('Destination reached!')
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 

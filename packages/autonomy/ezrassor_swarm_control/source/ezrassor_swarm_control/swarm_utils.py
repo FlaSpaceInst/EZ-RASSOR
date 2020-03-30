@@ -3,7 +3,7 @@
 import rospy
 from geometry_msgs.msg import Point
 
-from ezrassor_swarm_control.srv import GetRoverStatus
+from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
 
 
 def get_rover_status(rover_num):
@@ -26,6 +26,28 @@ def get_rover_status(rover_num):
         # Convert float coordinates to integers
         response.pose.position.x = int(round(response.pose.position.x))
         response.pose.position.y = int(round(response.pose.position.y))
+        return response
+
+    except rospy.ServiceException as e:
+        print "Service call failed: %s" % e
+
+def preempt_rover_path(rover_num):
+    """
+    ROS service that allows the swarm controller to force a rover to
+    stop following a path
+    """
+
+    # Build the service endpoint
+    service = '/ezrassor{}/preempt_path'.format(rover_num)
+
+    # Ensure it's running
+    rospy.wait_for_service(service, 5.0)
+
+    try:
+        # Retrieve rover status
+        preempt_path = rospy.ServiceProxy(service, PreemptPath)
+        response = preempt_path()
+
         return response
 
     except rospy.ServiceException as e:
