@@ -6,17 +6,13 @@ import numpy as np
 from pointcloud_processor import PointCloudProcessor
 
 class ObstacleDetector(PointCloudProcessor):
-    def __init__(self, camera_height, min_hole_depth, min_obstacle_height,
-                 scan_time, range_min, range_max):
+    def __init__(self, max_angle, scan_time, range_min, range_max):
         super(ObstacleDetector, self).__init__('obstacle_detection')
 
         self.scan_time = scan_time
         self.range_min = range_min
         self.range_max = range_max
-        self.camera_height = camera_height
-        self.min_hole_depth = min_hole_depth
-        self.min_obstacle_height = min_obstacle_height
-        self.threshold = 1.0
+        self.max_slope = np.tan(max_angle * np.pi / 180.0)
 
         self.cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                                 LaserScan, queue_size = 10)
@@ -73,9 +69,12 @@ class ObstacleDetector(PointCloudProcessor):
         positive_ranges = [float("nan")] * self.ranges_size
         min_ranges = [float("nan")] * self.ranges_size
 
+        # Populate the point cloud
         pc = self.get_points()
 
+        # Perform obstacle detection if there are points in the pc
         if pc is not None:
+            # Arrays for values of points in each direction
             forward = pc[:,PointCloudProcessor.XYZ["FORWARD"]]
             right = pc[:,PointCloudProcessor.XYZ["RIGHT"]]
             down = pc[:,PointCloudProcessor.XYZ["DOWN"]]
@@ -99,17 +98,17 @@ class ObstacleDetector(PointCloudProcessor):
                 # Since the rows are sorted by dist, the farthest point for this step is in the last row
                 cliff_ranges[step] = direction[-1, 1]
 
+                # Slice the down and dist arrays to do vectorized operations at idx and idx-1
                 down1 = direction[:-1, 2]
                 down2 = direction[1:, 2]
-
                 dist1 = direction[:-1, 1]
                 dist2 = direction[1:, 1]
 
                 # Calculate slope for each pair of points
                 slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
 
-                # Find first index of row where the slope crosses the threshold
-                condition = (slope > self.threshold)
+                # Find first index of row where the slope crosses the max_slope
+                condition = (slope > self.max_slope)
                 index = condition.argmax() if condition.any() else None
 
                 if index is not None:
@@ -131,12 +130,9 @@ class ObstacleDetector(PointCloudProcessor):
         return steps, dists
 
 """Initializes obstacle detection."""
-def obstacle_detection(camera_height_yaml=None, min_hole_depth_yaml=None, 
-                       min_obstacle_height_yaml=None, scan_time=1./30, 
-                       range_min=0.105, range_max=10.):
-    od = ObstacleDetector(camera_height_yaml, min_hole_depth_yaml,
-                          min_obstacle_height_yaml, scan_time, range_min,
-                          range_max)
+def obstacle_detection(max_angle, scan_time=1./30, range_min=0.105, range_max=10.):
+
+    od = ObstacleDetector(max_angle, scan_time, range_min, range_max)
 
     rospy.spin()
 
