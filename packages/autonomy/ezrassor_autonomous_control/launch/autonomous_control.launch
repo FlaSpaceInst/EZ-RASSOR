@@ -9,6 +9,8 @@
   <arg name="back_drum_instructions_topic"/>
   <arg name="digsite_x_coord" default="10"/>
   <arg name="digsite_y_coord" default="10"/>
+  <arg name="spawn_x_coord" default="0"/>
+  <arg name="spawn_y_coord" default="0"/>
   <arg name="max_linear_velocity" default="0.125"/>
   <arg name="max_angular_velocity" default="0.3"/>
   <arg name="enable_real_odometry" default="false"/>
@@ -20,6 +22,8 @@
         output="screen">
     <param name="digsite_x_coord" value="$(arg digsite_x_coord)"/>
     <param name="digsite_y_coord" value="$(arg digsite_y_coord)"/>
+    <param name="spawn_x_coord" value="$(arg spawn_x_coord)"/>
+    <param name="spawn_y_coord" value="$(arg spawn_y_coord)"/>
     <param name="max_linear_velocity" value="$(arg max_linear_velocity)"/>
     <param name="max_angular_velocity" value="$(arg max_angular_velocity)"/>
     <param name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
