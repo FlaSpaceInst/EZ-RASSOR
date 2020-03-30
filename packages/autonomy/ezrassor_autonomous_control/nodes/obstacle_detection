@@ -2,10 +2,6 @@
 import rospy
 from ezrassor_autonomous_control import obstacle_detection
 
-camera_height_yaml = rospy.get_param('obstacle_detection/camera_height')
-min_hole_depth_yaml = rospy.get_param('obstacle_detection/min_hole_depth')
-min_obstacle_height_yaml = rospy.get_param('obstacle_detection/min_obstacle_height')
+max_angle = rospy.get_param('obstacle_detection/max_angle')
 
-obstacle_detection.obstacle_detection(camera_height_yaml, 
-                                      min_hole_depth_yaml, 
-                                      min_obstacle_height_yaml)
+obstacle_detection.obstacle_detection(max_angle)
