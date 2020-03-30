@@ -37,6 +37,12 @@
            value="$(eval str(digsite_y_coords).split()[robot_count - 1])"
            unless="$(eval digsite_y_coords == 'default')"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+      <arg name="spawn_x_coord"
+           value="$(eval str(spawn_x_coords).split()[robot_count - 1])"
+           unless="$(eval spawn_x_coords == 'default')"/>
+      <arg name="spawn_y_coord"
+           value="$(eval str(spawn_y_coords).split()[robot_count - 1])"
+           unless="$(eval spawn_y_coords == 'default')"/>
     </include>
 
     <!-- Spawn the model. -->

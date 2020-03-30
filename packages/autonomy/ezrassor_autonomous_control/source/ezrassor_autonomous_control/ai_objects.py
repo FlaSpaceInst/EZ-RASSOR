@@ -18,6 +18,8 @@ class WorldState():
         self.positionX = 0
         self.positionY = 0
         self.positionZ = 0
+        self.startPositionX = 0
+        self.startPositionY = 0
         self.front_arm_angle = 0
         self.back_arm_angle = 0
         self.front_arm_angle = 0
@@ -41,8 +43,8 @@ class WorldState():
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
-        self.positionX = data.pose.pose.position.x
-        self.positionY = data.pose.pose.position.y
+        self.positionX = data.pose.pose.position.x + self.startPositionX
+        self.positionY = data.pose.pose.position.y + self.startPositionY
 
         heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
 
@@ -93,6 +95,10 @@ class WorldState():
         back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
         return front_arm_force, back_arm_force
 
+    # Use initial spawn coordinates to later offset position
+    def initial_spawn(self, start_x, start_y):
+        self.startPositionX = start_x
+        self.startPositionY = start_y
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
