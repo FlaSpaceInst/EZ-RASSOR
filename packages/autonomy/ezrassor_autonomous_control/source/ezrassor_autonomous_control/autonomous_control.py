@@ -70,6 +70,8 @@ class RoverController:
 
             self.waypoint_server.start()
 
+            self.waypoint_server.register_preempt_callback(self.preempt_cb)
+
             rospy.loginfo('Rover waypoint server initialized.')
 
             self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
@@ -97,28 +99,31 @@ class RoverController:
         rover's waypoint client-server API
         """
 
-        # Check that goal has not been preempted by the client
-        if uf.preempt_check(self.waypoint_server):
-            return
-
         self.world_state.target_location = goal.target
 
-        rospy.loginfo('Waypoint server {} moving rover to {}'.format(
-            self.namespace + self.server_name, (goal.target.x, goal.target.y)))
+        if goal.target.x == -999 and goal.target.y == -999 :
+            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER CHARGING!')
+            af.charge_battery(self.world_state, self.ros_util, self.waypoint_server)
+        
+        elif goal.target.x == -998 and goal.target.y == -998 :
+            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
+            af.auto_dig(self.world_state, self.ros_util, 80)
+        
+        else :
+            rospy.loginfo('Waypoint server {} moving rover to {}'.format(
+                self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
-        # Set rover to autonomously navigate to target
-        feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
+            # Set rover to autonomously navigate to target
+            feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
 
-        # Publish result
-        result = waypointResult()
-        result.final_pose = feedback.current_pose
+            # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
+            if not self.waypoint_server.is_preempt_requested():
+                result = waypointResult(feedback.pose, feedback.battery, 0)
+                self.waypoint_server.set_succeeded(result)
+    
+    def charge_rover(self) :
+        af.charge_battery(self.world_state, self.ros_util)
 
-        # Send resulting rover pose
-        rospy.loginfo("position: ({}, {})".format(self.world_state.positionX, self.world_state.positionY))
-        # rospy.loginfo("dig site location: ({}, {})".format(self.world_state.dig_site.x, self.world_state.dig_site.y))
-        # if nf.euclidean_distance(self.world_state.positionX, self.world_state.dig_site.x, self.world_state.positionY, self.world_state.dig_site.y) <= 1.0 :
-        #     rospy.loginfo("WE HERE!!!!!")
-        self.waypoint_server.set_succeeded(result)
 
     def send_status(self, request):
         """
@@ -136,6 +141,24 @@ class RoverController:
         #                 self.status_service.resolved_name))
 
         return status
+
+    def preempt_cb(self):
+        """
+        Callback to be executed when the waypoint server receives a preempt request
+        """
+        if self.waypoint_server.is_preempt_requested():
+            # Stop the rover
+            self.ros_util.publish_actions('stop', 0, 0, 0, 0)
+
+            # Send rover status while preempting the waypoint goal
+            result = waypointResult()
+            result.pose.position.x = self.world_state.positionX
+            result.pose.position.y = self.world_state.positionY
+            result.pose.position.z = self.world_state.positionZ
+            result.pose.orientation = self.world_state.orientation
+            result.battery = self.world_state.battery
+            result.preempted = 1
+            self.waypoint_server.set_preempted(result)
 
     def full_autonomy(self, world_state, ros_util):
         """ Full Autonomy Loop Function """
