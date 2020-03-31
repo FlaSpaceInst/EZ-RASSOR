@@ -107,7 +107,7 @@ class RoverController:
         
         elif goal.target.x == -998 and goal.target.y == -998 :
             rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
-            af.auto_dig(self.world_state, self.ros_util, 80)
+            af.auto_dig(self.world_state, self.ros_util, 1000)
         
         else :
             rospy.loginfo('Waypoint server {} moving rover to {}'.format(
