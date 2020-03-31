@@ -20,6 +20,17 @@ def at_target(world_state, ros_util):
 
     return not value
 
+def charge_battery(world_state, ros_util, waypoint_server=None) :
+    """ Charge the rover's battery for a designated duration until battery is 100% """
+
+    # world_state.battery = 100
+    ros_util.publish_actions('stop', 0, 0, 0, 0)
+    # feedback = uf.send_feedback(world_state, waypoint_server)
+    while world_state.battery < 100 :
+        rospy.sleep(0.1)
+        world_state.battery += 1
+        rospy.loginfo(world_state.battery)
+    world_state.battery = 100    
 
 def auto_drive_location(world_state, ros_util, waypoint_server=None):
     """ Navigate to location. Avoid obstacles while moving toward location. """
@@ -82,6 +93,8 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
+        world_state.battery -= 0.1
+
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
 
@@ -89,7 +102,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
-    return feedback
+    # return feedback
 
 
 def auto_dig(world_state, ros_util, duration):
@@ -106,8 +119,12 @@ def auto_dig(world_state, ros_util, duration):
     while t < duration * 40:
         if uf.self_check(world_state, ros_util) != 1:
             return
+        if world_state.battery <= 30 :
+            break
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t += 1
+        # world_state.battery -= (duration / 40)
+        world_state.battery -= 0.05
         ros_util.rate.sleep()
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)

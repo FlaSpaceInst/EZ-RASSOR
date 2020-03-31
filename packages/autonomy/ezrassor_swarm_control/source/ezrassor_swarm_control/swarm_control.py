@@ -13,7 +13,7 @@ import os
 class Rover :
     def __init__(self, id) :
         self.id = id
-        self.path_in_progress = False
+        self.activity = 'idle'
         self.path_completed = False
         self.battery = 100
 
@@ -58,21 +58,74 @@ class SwarmController:
         while True :
             for i in range(1, self.robot_count + 1) :
                 rover_status = get_rover_status(i)
-                rospy.loginfo(self.rover_activity_status_db[i].path_in_progress)
+                rospy.sleep(0.5)
+                # rover_status.id = i
+                rospy.loginfo("FROM SWARM CONTROL: BATTERY {} percent".format(rover_status.battery))
+                rospy.loginfo("FROM SWARM CONTROL: {}".format(self.rover_activity_status_db[i].activity))
 
+                # if rover_status :
+                    
+                #     if self.is_at_digsite(rover_status) :
+                #         if self.rover_activity_status_db[i].activity is 'driving to digsite' :
+                #             self.rover_activity_status_db[i].activity = 'digging'
+                #         if rover_status.battery <= 85.0 and self.rover_activity_status_db[i].activity is not 'driving to lander': 
+                #             path = path_planner.find_path(rover_status.pose.position, self.lander_loc)
+                #             if path :
+                #                 self.waypoint_pubs[i].publish(path)
+                #                 self.rover_activity_status_db[i].activity = 'driving to lander'
+                    
+                #     elif self.is_at_lander(rover_status) :
+                #         if self.rover_activity_status_db[i].activity is 'driving to lander' :
+                #             path = Path()
+                #             path.path.append(Point())
+                #             path.path[0].x = -999
+                #             path.path[0].y = -999
+                #             path.path[0].z = -999
+                #             self.waypoint_pubs[i].publish(path)
+                #             self.rover_activity_status_db[i].activity = 'charging'
+
+                #     else : # not at either digsite or lander
+                #         if rover_status.battery >= 85.0 and self.rover_activity_status_db[i].activity is not 'driving to digsite':
+                #             path = path_planner.find_path(rover_status.pose.position, self.dig_sites[0])
+                #             if path :
+                #                 self.waypoint_pubs[i].publish(path)
+                #                 self.rover_activity_status_db[i].activity = 'driving to digsite'
+                
                 if rover_status :
-                    if not self.is_at_digsite(rover_status) :
-                        if not self.rover_activity_status_db[i].path_in_progress :
+                    if self.is_at_digsite(rover_status) :
+                        if self.rover_activity_status_db[i].activity is 'driving to digsite' :
+                            path = Path()
+                            path.path.append(Point(-998, -998, -998))
+                            self.waypoint_pubs[i].publish(path)
+                            self.rover_activity_status_db[i].activity = 'digging'
+                        if rover_status.battery <= 85.0 :
+                            if self.rover_activity_status_db[i].activity is not 'driving to lander' :
+                                path = path_planner.find_path(rover_status.pose.position, self.lander_loc)
+                                if path :
+                                    self.waypoint_pubs[i].publish(path)
+                                    self.rover_activity_status_db[i].activity = 'driving to lander'
+                    
+                    elif self.is_at_lander(rover_status) :
+                        if rover_status.battery >= 85.0 : 
+                            if self.rover_activity_status_db[i].activity is 'charging':
+                                path = path_planner.find_path(rover_status.pose.position, self.dig_sites[0])
+                                if path :
+                                    self.waypoint_pubs[i].publish(path)
+                                    self.rover_activity_status_db[i].activity = 'driving to digsite'
+                        else :
+                            if self.rover_activity_status_db[i].activity is 'driving to lander' :
+                                path = Path()
+                                path.path.append(Point(-999, -999, -999))
+                                self.waypoint_pubs[i].publish(path)
+                                self.rover_activity_status_db[i].activity = 'charging'
+
+                    else : # not at either digsite or lander
+                        if rover_status.battery >= 85.0 and self.rover_activity_status_db[i].activity is not 'driving to digsite':
                             path = path_planner.find_path(rover_status.pose.position, self.dig_sites[0])
                             if path :
                                 self.waypoint_pubs[i].publish(path)
-                                self.rover_activity_status_db[i].path_in_progress = True
-        
-                    else :
-                        if self.rover_activity_status_db[i].path_in_progress :
-                            self.rover_activity_status_db[i].path_in_progress = False
-
-                        rospy.loginfo("FROM SWARM CONTROLLER: rover at dig site!")
+                                self.rover_activity_status_db[i].activity = 'driving to digsite'
+                
                    
 
 def on_start_up(robot_count, target_xs, target_ys, lander_coords):
