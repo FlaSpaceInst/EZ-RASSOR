@@ -100,12 +100,18 @@ def auto_dig(world_state, ros_util, duration):
 
     # Perform Auto Dig for the desired Duration
     t = 0
-    while t < duration * 40:
+    while t < duration:
         if uf.self_check(world_state, ros_util) != 1:
             return
+        # Dig while moving forward for 5 seconds
         ros_util.publish_actions('forward', 0, 0, 1, 1)
-        t += 1
-        ros_util.rate.sleep()
+        t += 5
+        rospy.sleep(5)
+
+        # Dig while moving backward for 5 seconds
+        ros_util.publish_actions('reverse', 0, 0, 1, 1)
+        t += 5
+        rospy.sleep(5)
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
     rospy.loginfo('Done digging')
