@@ -118,8 +118,9 @@ class RoverController:
 
             # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
             if not self.waypoint_server.is_preempt_requested():
-                result = waypointResult(feedback.pose, feedback.battery, 0)
-                self.waypoint_server.set_succeeded(result)
+                if feedback :
+                    result = waypointResult(feedback.pose, feedback.battery, 0)
+                    self.waypoint_server.set_succeeded(result)
     
     def charge_rover(self) :
         af.charge_battery(self.world_state, self.ros_util)

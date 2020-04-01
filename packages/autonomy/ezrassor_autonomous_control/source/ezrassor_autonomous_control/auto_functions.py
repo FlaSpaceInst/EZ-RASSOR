@@ -124,7 +124,7 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t += 1
         # world_state.battery -= (duration / 40)
-        world_state.battery -= 0.025
+        world_state.battery -= 0.05
         ros_util.rate.sleep()
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
