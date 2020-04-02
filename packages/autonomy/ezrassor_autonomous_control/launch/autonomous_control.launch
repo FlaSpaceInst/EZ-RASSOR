@@ -14,6 +14,9 @@
   <arg name="max_linear_velocity" default="0.125"/>
   <arg name="max_angular_velocity" default="0.3"/>
   <arg name="enable_real_odometry" default="false"/>
+  <arg name="obstacle_threshold" default="4.0"/>
+  <arg name="obstacle_buffer" default="1.5"/>
+  <arg name="move_increment" default="3.0"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
@@ -37,6 +40,12 @@
            value="$(arg front_drum_instructions_topic)"/>
     <param name="back_drum_instructions_topic"
            value="$(arg back_drum_instructions_topic)"/>
+    <param name="obstacle_threshold"
+           value="$(arg obstacle_threshold)"/>
+    <param name="obstacle_buffer"
+           value="$(arg obstacle_buffer)"/>
+    <param name="move_increment"
+           value="$(arg move_increment)"/>
   </node>
 
   <node pkg="image_view" type="image_view" name="image_view">
