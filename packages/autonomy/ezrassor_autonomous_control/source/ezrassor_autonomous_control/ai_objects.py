@@ -1,13 +1,12 @@
 import rospy
+import nav_functions as nf
+import math
+from random import uniform
 from std_msgs.msg import String, Float32, Bool
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
-import nav_functions as nf
-import math
-
-from random import uniform
 
 class WorldState():
     """ World State Object Representing
@@ -107,7 +106,8 @@ class ROSUtility():
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
                  front_drum_topic, back_drum_topic,
-                 max_linear_velocity, max_angular_velocity):
+                 max_linear_velocity, max_angular_velocity, obstacle_threshold,
+                 obstacle_buffer, move_increment):
         """ Initialize the ROS Utility Object. """
 
         self.movement_pub = rospy.Publisher(movement_topic,
@@ -136,6 +136,10 @@ class ROSUtility():
         self.auto_function_command = 0
 
         self.threshold = .5
+
+        self.obstacle_threshold = obstacle_threshold
+        self.obstacle_buffer = obstacle_buffer
+        self.move_increment = move_increment
 
     def publish_actions(self, movement, front_arm, back_arm,
                         front_drum, back_drum):
