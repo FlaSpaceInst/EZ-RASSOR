@@ -16,10 +16,17 @@ class ObstacleDetector(PointCloudProcessor):
 
         self.cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
                                                 LaserScan, queue_size = 10)
+        self.drop_pub = rospy.Publisher('obstacle_detection/drop',
+                                                LaserScan, queue_size = 10)
+        self.hike_pub = rospy.Publisher('obstacle_detection/hike',
+                                                LaserScan, queue_size = 10)
+        self.slope_pub = rospy.Publisher('obstacle_detection/slope',
+                                                LaserScan, queue_size = 10)
         self.positive_pub = rospy.Publisher('obstacle_detection/positive',
                                                 LaserScan, queue_size = 10)
         self.combined_pub = rospy.Publisher('obstacle_detection/combined',
                                                 LaserScan, queue_size = 10)
+        
 
         rospy.loginfo("Obstacle Detection initialized.")
 
@@ -66,6 +73,9 @@ class ObstacleDetector(PointCloudProcessor):
     def point_cloud_to_laser_scan(self):
         # Initial LaserScans assume infinite travel in every direction
         cliff_ranges = [float("nan")] * self.ranges_size
+        drop_ranges = [float("nan")] * self.ranges_size
+        hike_ranges = [float("nan")] * self.ranges_size
+        slope_ranges = [float("nan")] * self.ranges_size
         positive_ranges = [float("nan")] * self.ranges_size
         min_ranges = [float("nan")] * self.ranges_size
 
@@ -104,13 +114,29 @@ class ObstacleDetector(PointCloudProcessor):
                 dist1 = direction[:-1, 1]
                 dist2 = direction[1:, 1]
 
+                drop = np.subtract(down2, down1)
+                hike = np.subtract(dist2, dist1)
+
                 # Calculate slope for each pair of points
-                slope = np.abs(np.divide(np.subtract(down2, down1), np.subtract(dist2, dist1)))
+                slope = np.abs(np.divide(drop, hike))
 
                 # Find first index of row where the slope crosses the max_slope
-                condition = (slope > self.max_slope)
+                cond_drop = drop < -0.2
+                cond_hike = hike > 0.1
+                cond_slope = slope > 1
+                condition = np.logical_or(cond_drop, cond_hike, cond_slope)
+                
+                index_drop = cond_drop.argmax() if cond_drop.any() else None
+                index_hike = cond_hike.argmax() if cond_hike.any() else None
+                index_slope = cond_slope.argmax() if cond_slope.any() else None
                 index = condition.argmax() if condition.any() else None
 
+                if index_drop is not None:
+                    drop_ranges[step] = direction[index_drop, 1]
+                if index_hike is not None:
+                    hike_ranges[step] = direction[index_hike, 1]
+                if index_slope is not None:
+                    slope_ranges[step] = direction[index_slope, 1]
                 if index is not None:
                     positive_ranges[step] = direction[index, 1]
                     min_ranges[step] = min(positive_ranges[step], cliff_ranges[step])
@@ -118,6 +144,9 @@ class ObstacleDetector(PointCloudProcessor):
                     min_ranges[step] = cliff_ranges[step]
 
             self.cliffs_pub.publish(self.create_laser_scan(cliff_ranges))
+            self.drop_pub.publish(self.create_laser_scan(drop_ranges))
+            self.hike_pub.publish(self.create_laser_scan(hike_ranges))
+            self.slope_pub.publish(self.create_laser_scan(slope_ranges))
             self.positive_pub.publish(self.create_laser_scan(positive_ranges))
             self.combined_pub.publish(self.create_laser_scan(min_ranges))
 
