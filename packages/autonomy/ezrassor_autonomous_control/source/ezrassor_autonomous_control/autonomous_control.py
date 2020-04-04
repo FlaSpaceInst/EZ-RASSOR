@@ -65,7 +65,7 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic,
     rospy.Subscriber('autonomous_toggles',
                      Int8,
                      ros_util.autoCommandCallBack)
-    rospy.Subscriber('obstacle_detection/positive',
+    rospy.Subscriber('obstacle_detection/combined',
                      LaserScan,
                      uf.on_scan_update,
                      queue_size=1)

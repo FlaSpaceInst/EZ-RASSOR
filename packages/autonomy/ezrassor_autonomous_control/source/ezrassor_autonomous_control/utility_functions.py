@@ -82,6 +82,11 @@ def turn(new_heading, direction, world_state, ros_util):
 
     # Turn the number of degrees towards your new heading.
     while angle_traveled < angle_dist - 2:
+        # Exit if the simulation is closed.
+        if self_check(world_state, ros_util) != 1:
+            rospy.logdebug('Status check failed.')
+            return
+        
         old_heading = world_state.heading
 
         # Maps angle traveled to sin(x) function for velocity ramping.

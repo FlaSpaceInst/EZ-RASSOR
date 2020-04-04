@@ -21,6 +21,11 @@ def auto_drive_location(world_state, ros_util):
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
+    # Check if robot should stpop moving
+    if uf.self_check(world_state, ros_util) != 1:
+        rospy.logdebug('Status check failed.')
+        return
+
     # Before we head towards our goal, turn to face it.
     # Get new heading angle relative to current heading
     new_heading_degrees = nf.calculate_heading(world_state)
