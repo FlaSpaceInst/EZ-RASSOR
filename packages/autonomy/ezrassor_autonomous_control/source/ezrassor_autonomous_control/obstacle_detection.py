@@ -6,27 +6,22 @@ import numpy as np
 from pointcloud_processor import PointCloudProcessor
 
 class ObstacleDetector(PointCloudProcessor):
-    def __init__(self, max_angle, scan_time, range_min, range_max):
+    def __init__(self, max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max):
         super(ObstacleDetector, self).__init__('obstacle_detection')
 
         self.scan_time = scan_time
         self.range_min = range_min
         self.range_max = range_max
         self.max_slope = np.tan(max_angle * np.pi / 180.0)
+        self.max_obstacle_dist = max_obstacle_dist
+        self.min_hole_diameter = min_hole_diameter
 
-        self.cliffs_pub = rospy.Publisher('obstacle_detection/cliffs',
-                                                LaserScan, queue_size = 10)
-        self.drop_pub = rospy.Publisher('obstacle_detection/drop',
-                                                LaserScan, queue_size = 10)
         self.hike_pub = rospy.Publisher('obstacle_detection/hike',
                                                 LaserScan, queue_size = 10)
         self.slope_pub = rospy.Publisher('obstacle_detection/slope',
                                                 LaserScan, queue_size = 10)
-        self.positive_pub = rospy.Publisher('obstacle_detection/positive',
-                                                LaserScan, queue_size = 10)
         self.combined_pub = rospy.Publisher('obstacle_detection/combined',
                                                 LaserScan, queue_size = 10)
-        
 
         rospy.loginfo("Obstacle Detection initialized.")
 
@@ -72,11 +67,8 @@ class ObstacleDetector(PointCloudProcessor):
     """
     def point_cloud_to_laser_scan(self):
         # Initial LaserScans assume infinite travel in every direction
-        cliff_ranges = [float("nan")] * self.ranges_size
-        drop_ranges = [float("nan")] * self.ranges_size
         hike_ranges = [float("nan")] * self.ranges_size
         slope_ranges = [float("nan")] * self.ranges_size
-        positive_ranges = [float("nan")] * self.ranges_size
         min_ranges = [float("nan")] * self.ranges_size
 
         # Populate the point cloud
@@ -105,9 +97,6 @@ class ObstacleDetector(PointCloudProcessor):
                 # Step is first column of any row
                 step = int(direction[0, 0])
 
-                # Since the rows are sorted by dist, the farthest point for this step is in the last row
-                cliff_ranges[step] = direction[-1, 1]
-
                 # Slice the down and dist arrays to do vectorized operations at idx and idx-1
                 down1 = direction[:-1, 2]
                 down2 = direction[1:, 2]
@@ -120,34 +109,23 @@ class ObstacleDetector(PointCloudProcessor):
                 # Calculate slope for each pair of points
                 slope = np.abs(np.divide(drop, hike))
 
-                # Find first index of row where the slope crosses the max_slope
-                cond_drop = drop < -0.2
-                cond_hike = hike > 0.1
-                cond_slope = slope > 1
-                condition = np.logical_or(cond_drop, cond_hike, cond_slope)
-                
-                index_drop = cond_drop.argmax() if cond_drop.any() else None
+                # Find first index of row where the value crosses thresholds
+                cond_hike = hike > self.min_hole_diameter
+                cond_slope = slope > self.max_slope
                 index_hike = cond_hike.argmax() if cond_hike.any() else None
                 index_slope = cond_slope.argmax() if cond_slope.any() else None
-                index = condition.argmax() if condition.any() else None
 
-                if index_drop is not None:
-                    drop_ranges[step] = direction[index_drop, 1]
-                if index_hike is not None:
+                # Populate laserscan with closest point detected
+                if index_hike is not None and direction[index_hike, 1] <= self.max_obstacle_dist:
                     hike_ranges[step] = direction[index_hike, 1]
                 if index_slope is not None:
                     slope_ranges[step] = direction[index_slope, 1]
-                if index is not None:
-                    positive_ranges[step] = direction[index, 1]
-                    min_ranges[step] = min(positive_ranges[step], cliff_ranges[step])
-                else:
-                    min_ranges[step] = cliff_ranges[step]
+                
+                # Combine above laserscans
+                min_ranges[step] = np.nanmin((hike_ranges[step], slope_ranges[step]))
 
-            self.cliffs_pub.publish(self.create_laser_scan(cliff_ranges))
-            self.drop_pub.publish(self.create_laser_scan(drop_ranges))
             self.hike_pub.publish(self.create_laser_scan(hike_ranges))
             self.slope_pub.publish(self.create_laser_scan(slope_ranges))
-            self.positive_pub.publish(self.create_laser_scan(positive_ranges))
             self.combined_pub.publish(self.create_laser_scan(min_ranges))
 
     def to_laser_scan_data(self, forward, right):
@@ -159,9 +137,9 @@ class ObstacleDetector(PointCloudProcessor):
         return steps, dists
 
 """Initializes obstacle detection."""
-def obstacle_detection(max_angle, scan_time=1./30, range_min=0.105, range_max=10.):
+def obstacle_detection(max_angle, max_obstacle_dist, min_hole_diameter, scan_time=1./30, range_min=0.105, range_max=10.):
 
-    od = ObstacleDetector(max_angle, scan_time, range_min, range_max)
+    od = ObstacleDetector(max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max)
 
     rospy.spin()
 
