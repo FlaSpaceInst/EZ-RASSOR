@@ -11,10 +11,6 @@ def on_scan_update(new_scan):
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
-    rospy.loginfo('Setting front arm angle to %s radian%s...',
-                  str(target_angle),
-                  "" if target_angle == 1 else "s")
-
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
             ros_util.publish_actions('stop', 1, 0, 0, 0)
@@ -28,10 +24,6 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
-    rospy.loginfo('Setting back arm angle to %s radian%s...',
-                  str(target_angle),
-                  "" if target_angle == 1 else "s")
-
     if target_angle > world_state.back_arm_angle:
         while target_angle > world_state.back_arm_angle:
             ros_util.publish_actions('stop', 0, 1, 0, 0)
@@ -246,6 +238,10 @@ def get_turn_angle(world_state, ros_util):
 
             # Keep checking adjacent wedges until we find a safe angle.
             while best_angle is None:
+                if self_check(world_state, ros_util) != 1:
+                    rospy.logdebug('Status check failed.')
+                    return
+
                 set_front_arm_angle(world_state, ros_util, 1.3)
                 set_back_arm_angle(world_state, ros_util, 1.3)
 
