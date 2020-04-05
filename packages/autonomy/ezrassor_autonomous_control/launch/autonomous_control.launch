@@ -18,7 +18,7 @@
   <arg name="obstacle_buffer" default="1.5"/>
   <arg name="move_increment" default="3.0"/>
   <arg name="max_obstacle_angle" default="45.0"/>
-  <arg name="min_hole_diameter" default="0.2"/>
+  <arg name="min_hole_diameter" default="0.5"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
