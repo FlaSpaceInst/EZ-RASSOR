@@ -36,3 +36,10 @@ install(
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/dem_data
 )
+
+install(
+    DIRECTORY
+        weights_results/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/weights_results
+)
