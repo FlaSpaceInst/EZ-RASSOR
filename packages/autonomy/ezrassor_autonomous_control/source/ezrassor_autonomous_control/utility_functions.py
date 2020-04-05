@@ -82,11 +82,10 @@ def turn(new_heading, direction, world_state, ros_util):
 
     # Turn the number of degrees towards your new heading.
     while angle_traveled < angle_dist - 2:
-        # Exit if the simulation is closed.
         if self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
-        
+
         old_heading = world_state.heading
 
         # Maps angle traveled to sin(x) function for velocity ramping.
@@ -129,7 +128,6 @@ def move(dist, world_state, ros_util, direction='forward'):
     # Drive the designated distance and exit when we pass it or there is an
     # obstacle in the way.
     while dist_traveled < move_dist:
-        # Exit if the simulation is closed.
         if self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
             return
@@ -248,6 +246,9 @@ def get_turn_angle(world_state, ros_util):
 
             # Keep checking adjacent wedges until we find a safe angle.
             while best_angle is None:
+                set_front_arm_angle(world_state, ros_util, 1.3)
+                set_back_arm_angle(world_state, ros_util, 1.3)
+
                 switchDirection *= -1
                 wedgeDist += 1
 
