@@ -40,11 +40,11 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-              <size>129 129 0</size>
-              <pos>0 0 -50</pos>
+              <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_10773_11286_converted.jpg</uri>
+              <pos>0 0 -38</pos>
+              <size>513 513 52</size>
               <texture>
-                <size>10</size>
+                <size>5</size>
                 <diffuse>__default__</diffuse>
                 <normal>__default__</normal>
               </texture>
@@ -73,9 +73,9 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-              <size>129 129 0</size>
-              <pos>0 0 0</pos>
+              <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_10773_11286_converted.jpg</uri>
+              <pos>0 0 -38</pos>
+              <size>513 513 52</size>
             </heightmap>
           </geometry>
         </visual>

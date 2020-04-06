@@ -1,13 +1,12 @@
 import rospy
+import nav_functions as nf
+import math
+from random import uniform
 from std_msgs.msg import String, Float32, Bool
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point, Twist
-import nav_functions as nf
-import math
-
-from random import uniform
 
 class WorldState():
     """ World State Object Representing
@@ -18,6 +17,8 @@ class WorldState():
         self.positionX = 0
         self.positionY = 0
         self.positionZ = 0
+        self.startPositionX = 0
+        self.startPositionY = 0
         self.front_arm_angle = 0
         self.back_arm_angle = 0
         self.front_arm_angle = 0
@@ -41,8 +42,8 @@ class WorldState():
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """
 
-        self.positionX = data.pose.pose.position.x
-        self.positionY = data.pose.pose.position.y
+        self.positionX = data.pose.pose.position.x + self.startPositionX
+        self.positionY = data.pose.pose.position.y + self.startPositionY
 
         heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
 
@@ -93,6 +94,10 @@ class WorldState():
         back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
         return front_arm_force, back_arm_force
 
+    # Use initial spawn coordinates to later offset position
+    def initial_spawn(self, start_x, start_y):
+        self.startPositionX = start_x
+        self.startPositionY = start_y
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
@@ -101,7 +106,8 @@ class ROSUtility():
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
                  front_drum_topic, back_drum_topic,
-                 max_linear_velocity, max_angular_velocity):
+                 max_linear_velocity, max_angular_velocity, obstacle_threshold,
+                 obstacle_buffer, move_increment):
         """ Initialize the ROS Utility Object. """
 
         self.movement_pub = rospy.Publisher(movement_topic,
@@ -130,6 +136,10 @@ class ROSUtility():
         self.auto_function_command = 0
 
         self.threshold = .5
+
+        self.obstacle_threshold = obstacle_threshold
+        self.obstacle_buffer = obstacle_buffer
+        self.move_increment = move_increment
 
     def publish_actions(self, movement, front_arm, back_arm,
                         front_drum, back_drum):

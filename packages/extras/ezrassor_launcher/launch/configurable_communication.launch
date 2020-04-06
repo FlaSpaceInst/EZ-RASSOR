@@ -7,6 +7,8 @@
   <arg name="joystick" default="default"/>
   <arg name="digsite_x_coord" default="default"/>
   <arg name="digsite_y_coord" default="default"/>
+  <arg name="spawn_x_coord" default="default"/>
+  <arg name="spawn_y_coord" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
   <!-- A large collection of constants that this launch file needs. -->
@@ -95,6 +97,12 @@
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="spawn_x_coord"
+             value="$(arg spawn_x_coord)"
+             unless="$(eval spawn_x_coord == 'default')"/>
+        <arg name="spawn_y_coord"
+             value="$(arg spawn_y_coord)"
+             unless="$(eval spawn_y_coord == 'default')"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
@@ -162,6 +170,12 @@
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="spawn_x_coord"
+             value="$(arg spawn_x_coord)"
+             unless="$(eval spawn_x_coord == 'default')"/>
+        <arg name="spawn_y_coord"
+             value="$(arg spawn_y_coord)"
+             unless="$(eval spawn_y_coord == 'default')"/>
       </include>
     </group>
   </group>
