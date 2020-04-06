@@ -6,15 +6,16 @@ import numpy as np
 from pointcloud_processor import PointCloudProcessor
 
 class ObstacleDetector(PointCloudProcessor):
-    def __init__(self, max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max):
+    def __init__(self, max_angle, max_obstacle_dist, min_hole_diameter, 
+                 scan_time, range_min, range_max):
         super(ObstacleDetector, self).__init__('obstacle_detection')
 
-        self.scan_time = scan_time
-        self.range_min = range_min
-        self.range_max = range_max
         self.max_slope = np.tan(max_angle * np.pi / 180.0)
         self.max_obstacle_dist = max_obstacle_dist
         self.min_hole_diameter = min_hole_diameter
+        self.scan_time = scan_time
+        self.range_min = range_min
+        self.range_max = range_max
 
         self.hike_pub = rospy.Publisher('obstacle_detection/hike',
                                                 LaserScan, queue_size = 10)
@@ -31,7 +32,8 @@ class ObstacleDetector(PointCloudProcessor):
         # Get LaserScan-specific info from camera_info message
         self.ranges_size = camera_info.width
         self.frame_id = camera_info.header.frame_id
-        self.angle_increment = (self.angle_max-self.angle_min)/(self.ranges_size-1)
+        self.angle_increment = ((self.angle_max - self.angle_min) /
+                                (self.ranges_size - 1))
 
     """Creates and returns a LaserScan object based on the given ranges list."""
     def create_laser_scan(self, ranges):
@@ -56,14 +58,11 @@ class ObstacleDetector(PointCloudProcessor):
     """ Converts PointCloud2 to LaserScan
 
     Given a PointCloud2 message representing the area in front of the robot,
-    this method uses the Farthest Point and Floor Projection methods
-    proposed by Ghani et al. in "Detecting negative obstacle using Kinect
-    sensor" to create LaserScans containing the farthest point the robot
-    can see in each direction (to detect cliffs) and the closest holes
-    to the robot in each direction. These LaserScans are combined with a
-    LaserScan containing the closest above-ground obstacles in each
-    direction to form a LaserScan that contains the closest cliff, hole,
-    or above-ground obstacle in each direction.
+    this method calculates the slope and the gap in distance (hike) between
+    consecutive points in a given direction. These slope and hike values are
+    compared to thresholds to determine the distance to the closest obstacle in
+    each direction. Slope is used to detect above-ground (positive) obstacles
+    and hike is used to detect holes (negative obstacles).
     """
     def point_cloud_to_laser_scan(self):
         # Initial LaserScans assume infinite travel in every direction
@@ -82,12 +81,13 @@ class ObstacleDetector(PointCloudProcessor):
             down = pc[:,PointCloudProcessor.XYZ["DOWN"]]
             steps, dists = self.to_laser_scan_data(forward, right)
 
-            # Create matrix where the steps, dists, and down arrays are the columns
+            # Create matrix where steps, dists, and down arrays are the columns
             directions = np.column_stack((steps, dists, down))
-            # Sort rows by the first column (steps); this is necessary for the next step
+            # Sort rows by first column (steps)
             directions = directions[directions[:,0].argsort()]
             # Group rows by step
-            directions = np.split(directions, np.unique(directions[:,0], return_index=True)[1][1:],axis=0)
+            directions = np.split(directions, np.unique(directions[:,0],
+                                  return_index=True)[1][1:],axis=0)
 
             # Loop through the rows for each step and find obstacles
             for direction in directions:
@@ -97,16 +97,16 @@ class ObstacleDetector(PointCloudProcessor):
                 # Step is first column of any row
                 step = int(direction[0, 0])
 
-                # Slice the down and dist arrays to do vectorized operations at idx and idx-1
+                # Slice the down and dist arrays to do vectorized operations 
+                # at idx and idx-1
                 down1 = direction[:-1, 2]
                 down2 = direction[1:, 2]
                 dist1 = direction[:-1, 1]
                 dist2 = direction[1:, 1]
 
+                # Calculate slope for each pair of points
                 drop = np.subtract(down2, down1)
                 hike = np.subtract(dist2, dist1)
-
-                # Calculate slope for each pair of points
                 slope = np.abs(np.divide(drop, hike))
 
                 # Find first index of row where the value crosses thresholds
@@ -116,30 +116,37 @@ class ObstacleDetector(PointCloudProcessor):
                 index_slope = cond_slope.argmax() if cond_slope.any() else None
 
                 # Populate laserscan with closest point detected
-                if index_hike is not None and direction[index_hike, 1] <= self.max_obstacle_dist:
+                if (index_hike is not None and direction[index_hike, 1] <= 
+                                               self.max_obstacle_dist):
                     hike_ranges[step] = direction[index_hike, 1]
                 if index_slope is not None:
                     slope_ranges[step] = direction[index_slope, 1]
                 
                 # Combine above laserscans
-                min_ranges[step] = np.nanmin((hike_ranges[step], slope_ranges[step]))
+                min_ranges[step] = np.nanmin((hike_ranges[step],
+                                             slope_ranges[step]))
 
             self.hike_pub.publish(self.create_laser_scan(hike_ranges))
             self.slope_pub.publish(self.create_laser_scan(slope_ranges))
             self.combined_pub.publish(self.create_laser_scan(min_ranges))
 
+    """Returns laserscan indices and dists based on the right/forward of a pc"""
     def to_laser_scan_data(self, forward, right):
-        # multiply angles by -1 to get counter-clockwise (right to left) ordering
+        # Multiply angles by -1 to get counterclockwise (right to left) ordering
         angles = np.negative(np.arctan2(right, forward))
-        steps = np.divide(np.subtract(angles,self.angle_min),self.angle_increment).astype(int)
+        # Group angles to discrete indices in laserscan array
+        steps = np.divide(np.subtract(angles,self.angle_min),
+                          self.angle_increment).astype(int)
         # Find the distance each forward, right coordinate from the robot
         dists = np.sqrt(np.add(np.square(forward), np.square(right)))
         return steps, dists
 
 """Initializes obstacle detection."""
-def obstacle_detection(max_angle, max_obstacle_dist, min_hole_diameter, scan_time=1./30, range_min=0.105, range_max=10.):
+def obstacle_detection(max_angle, max_obstacle_dist, min_hole_diameter, 
+                       scan_time=1./30, range_min=0.105, range_max=10.):
 
-    od = ObstacleDetector(max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max)
+    od = ObstacleDetector(max_angle, max_obstacle_dist, min_hole_diameter,
+                          scan_time, range_min, range_max)
 
     rospy.spin()
 
