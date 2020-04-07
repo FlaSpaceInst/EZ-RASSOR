@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import rospy
 from ezrassor_autonomous_control import park_ranger
 
-park_ranger.park_ranger()
+real_odometry = rospy.get_param('autonomous_control/enable_real_odometry')
+
+park_ranger.park_ranger(real_odometry)
