@@ -8,86 +8,14 @@ from gazebo_msgs.msg import LinkStates
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Bool
 import cv2
-import seaborn as sns
 from datetime import datetime
 from copy import deepcopy
-
-from sklearn.preprocessing import normalize
-
-# **Remove later (used for visualization of local DEM only)
-import matplotlib
-#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
 import rospkg
 from os import listdir
 from os.path import isfile, join
 import re
-
-import math
-import random
-from scipy.stats import truncnorm
-# for residual_resample
 import filterpy.monte_carlo as mc
-
-"""
-    # Background:
-    # The main steps of "simple" particle filter are:
-        # Predict: using odometry to "predict" the position of a particle after one pass
-        # Update: compare data from, usually using a laser scan, to a "predicted" laser scan for each
-            # particle, and then they are scored. This score is then used to weight the particle
-        # Resample: looking at the weights, use neff  or some other function to find an overall score
-            # for the set of particles. If below a threshold, they usually just replace the particles with
-            # a fresh batch, probably with some of the previous weighted values. This is done to get rid of incorrect particles
-    # There are 2 additional steps the paper adds
-        # Initialization: obvi you need initialzation but this one basically supposed if there are particles at every
-        # position and then only uses the highest likelihood ones
-        # Sampling: this is generating more particles to account for uncertainty
-    # Other unconventional stuff:
-        # Instead of keeping a global standard deviations for like x, y, theta, they add an error function to each particle.
-        # With global standard deviations, they would normally use it to essential inject noise into calculations. With an error
-        # function, it seems like they are putting an error radius around a particle.
-
-    # The Paper's Particle Filter Steps
-
-    # 1 Initialize
-        # a) use likelihood (local to global compare) to initially score positions (essential evaluate as if particle at every position in global dem)
-        # b) place the highest likelihood particles
-        # c) for each particle, give it a weight and an error distribution
-
-    # 2 Predict (aka predict movement of particle)
-        # a) for each particle, use motion vector to predict new position
-            # - Use odometry message(s) (pose don't use twist, i'm avoiding physics math) to predict a position + orientation
-            # - Thinking about keeping track of previous odometry message and compare current one to
-            #   predict position but subscribers are async so to do this, need global variables
-            # - Could also try to get the world_state pose published but might need to completely change the architecture for that
-            #   cuz of how ros nodes do progress guarantee or whatever it's called in concurrency
-        # b) update gaussian distribution (error distribution function) by replacing it
-        # with a new distribution but using the sum of the current one's variance and one found from odometry
-            # - variance = standard deviation^2 -> just sum the standard deviations, only need more than one odom object
-            # - could use the covariance matrix possibly to find the standard deviation (see gvar library for python)
-
-    # 3 Sample
-        # a) for each particle or some particle? wasn't sure which one but in this case, i do it for a random particle
-        # b) Compare x, y, and z, to their error distribution's standard deviation and see how much off
-        # c) if the either of the differences is above the threshold, generate particles around it
-        # d) update the standard deviation for the particle from a) and the newly generate particles to dem_size/2 or 74/2 (74 is intel fov yaw)
-
-        # My uncertainty on this implementation comes from this:
-            # "Given a particle i, its gaussian distribution standard deviation are compared with the coordinate resolution and with the angular resolution"
-            # - I'm unsure about the "resolution" values, not sure if it's like the size of the local dem but in this case, i went with using the coordinates of
-            # the particle since the goal of the function is to gen particles around some particle i to account for error
-
-    # 4 Update
-        # for each particle
-        # a) score the particle (compare local_dem to predicted_dem)
-        # b) update weight of particle
-
-    # 5 Resample
-        # a) check the equation is below the threshold
-        # b) if true, resample particles with probabilities given by there weights ?????
-        # c) weights are then reinitialized to 1/N
-"""
 
 """Represents a single particle in the particle filter"""
 class Particle:
@@ -143,7 +71,7 @@ class ParkRanger(PointCloudProcessor):
         self.arms_up = data
 
     """Stores most recent Z position of robot"""
-    def sim_state_z_position_callback(self, data):
+    def sim_state_callback(self, data):
         namespace = rospy.get_namespace()
         namespace = namespace[1:-1]+"::base_link"
         try:
@@ -152,16 +80,17 @@ class ParkRanger(PointCloudProcessor):
             rospy.logdebug("Failed to get index. Skipping...")
 
         self.position_z = data.pose[index].position.z + self.origin_z
-        self.actual_x = data.pose[index].position.x
-        self.actual_y = data.pose[index].position.y
-        self.actual_theta = nf.quaternion_to_yaw(data.pose[index]) * 180/np.pi
+
+        if not self.real_odometry:
+            self.position_x = data.pose[index].position.x
+            self.position_y = data.pose[index].position.y
+            heading = nf.quaternion_to_yaw(data.pose[index]) * 180/np.pi
+            self.heading = heading % 360
 
     def odometry_callback(self, data):
         self.position_x = data.pose.pose.position.x + self.start_x
         self.position_y = data.pose.pose.position.y + self.start_y
-
         heading = nf.quaternion_to_yaw(data.pose.pose) * 180/np.pi
-
         self.heading = heading % 360
 
     """Returns the path to dem_data/"""
@@ -334,11 +263,6 @@ class ParkRanger(PointCloudProcessor):
 
         return np.array(indexes)
 
-    """Returns the inverse of the sum of absolute differences (SAD) of two arrays"""
-    @staticmethod
-    def inverse_sad(a, b):
-        return 1.0 / np.nansum(np.absolute(np.subtract(a, b)))
-
     @staticmethod
     def histogram_match(a, b):
         indexes = ~np.isnan(a)
@@ -410,26 +334,12 @@ class ParkRanger(PointCloudProcessor):
     def neff(norm):
         return 1.0 / np.sum(np.square(norm))
 
-    @staticmethod
-    def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
-        return truncnorm(
-            (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
-
-    def plot_points(self):
-        plt.imshow(self.global_dem, cmap='gray')
-        # plt.ylim(self.particle_filter.dem_size, 0)
-        # plt.xlim(0, self.particle_filter.dem_size)
-        for p in self.particle_filter.particles:
-            plt.plot([p.y], [p.x], marker='o', markersize=3, color="red")
-        plt.show(block=False)
-        plt.pause(3)
-        plt.close()
-
-    def __init__(self, resolution, local_dem_comparison_type, period,
+    def __init__(self, real_odometry, resolution, local_dem_comparison_type, period,
                  range_min, range_max, camera_height):
         super(ParkRanger, self).__init__('park_ranger')
         self.resolution = resolution
         self.camera_height = camera_height
+        self.real_odometry = real_odometry
 
         # Get spawn x and y coordinates for offsetting odometry messages
         self.start_x = rospy.get_param('autonomous_control/spawn_x_coord')
@@ -437,15 +347,6 @@ class ParkRanger(PointCloudProcessor):
 
         self.last_x = self.start_x
         self.last_y = self.start_y
-
-        self.num_initial_particles = 1000
-        self.max_particles = 1500
-        self.estimate_queue = []
-
-        self.predicted_displacement_x = 0
-        self.predicted_displacement_y = 0
-        self.actual_displacement_x = 0.0
-        self.actual_displacement_y = 0.0
 
         path = ParkRanger.path_dem()
 
@@ -456,11 +357,12 @@ class ParkRanger(PointCloudProcessor):
         # Subscribe to "altimeter" data, waiting for at least one message
         # moving on
         link_states = rospy.wait_for_message("/gazebo/link_states", LinkStates)
-        self.sim_state_z_position_callback(link_states)
+        self.sim_state_callback(link_states)
         rospy.Subscriber('/gazebo/link_states', LinkStates,
-                         self.sim_state_z_position_callback)
+                         self.sim_state_callback)
 
-        rospy.Subscriber('odometry/filtered', Odometry, self.odometry_callback)
+        if real_odometry:
+            rospy.Subscriber('odometry/filtered', Odometry, self.odometry_callback)
 
         self.arms_up = False
         rospy.Subscriber('arms_up', Bool, self.on_arm_movement)
@@ -495,15 +397,6 @@ class ParkRanger(PointCloudProcessor):
                 # if not init_flag and valid_points_num > num_points_local * 0.35:
                 if not init_flag:
                     # 2 Prediction
-                    # if len(self.particle_filter.particles) == 0:
-                    #     if ParkRanger.debug:
-                    #         rospy.logwarn("Actual: {} {}".format(self.actual_x, self.actual_y))
-                    #         rospy.logwarn("Last Estimate {} {}".format(self.estimate_queue[-1].row, self.estimate_queue[-1].col))
-                    #         est_x = self.estimate_queue[-1].row - (self.dem_size / 2)
-                    #         est_y = (self.dem_size / 2) - self.estimate_queue[-1].col
-                    #         rospy.logwarn("Last Estimate: {} {}".format(est_x, est_y))
-                    #         ran_out_of_particles = True
-                    #         break
                     if ParkRanger.debug:
                          rospy.logwarn("Prediction")
                     self.predict_particle_movement()
@@ -513,7 +406,7 @@ class ParkRanger(PointCloudProcessor):
                         rospy.logwarn("Update")
                     self.likelihood(local_dem)
 
-                    rospy.logwarn("Actual: {} {}".format(self.actual_x, self.actual_y))
+                    rospy.logwarn("Actual: {} {}".format(self.position_x, self.position_y))
                     if ParkRanger.debug:
                         rospy.logwarn("Estimate")
                     est_x, est_y = self.estimate()
@@ -537,23 +430,6 @@ class ParkRanger(PointCloudProcessor):
                     init_flag = False
             r.sleep()
 
-    #@staticmethod
-    def graph_float_array(self, array, name, j, ids):
-        img_path = self.weights_results()
-        curr_len = len(array)
-        array = [x for _,x in sorted(zip(ids,array))]
-        offset_weights = (self.dem_size ** 2) - curr_len
-        for i in range(offset_weights):
-            array = np.append(array, 0.0)
-        array = np.asarray(array, dtype=np.float32)
-        array = array.reshape(self.dem_size, self.dem_size)
-        rospy.logwarn("{}".format(array.shape))
-        ax = sns.heatmap(array, linewidth=0.01)
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        plt.savefig("{}{}_{}.png".format(img_path, name, current_time), bbox_inches='tight')
-        plt.clf()
-
     def likelihood(self, local_dem):
         img_path = self.weights_results()
         weights = np.zeros_like(self.global_dem)
@@ -576,25 +452,13 @@ class ParkRanger(PointCloudProcessor):
         plt.clf()
 
     def predict_particle_movement(self):
-        # Compare odometry messages and adjust particle physically and probability
-        # current_x = self.position_x
-        # current_y = self.position_y
-        # current_heading = self.heading
-        current_x = self.actual_x
-        current_y = self.actual_y
-        current_heading = self.actual_theta
+        # Compare movement of robot and adjust particles accordingly
+        current_x = self.position_x
+        current_y = self.position_y
+        current_heading = self.heading
 
         x_diff = int(current_x - self.last_x)
         y_diff = int(current_y - self.last_y)
-
-        self.predicted_displacement_x += x_diff
-        self.predicted_displacement_y += y_diff
-        self.actual_displacement_x += current_x - self.last_x
-        self.actual_displacement_y += current_y - self.last_y
-
-        rospy.logwarn("predicted displacement: ({}, {}), actual: ({}, {})".format(
-            self.predicted_displacement_x, self.predicted_displacement_y,
-            self.actual_displacement_x, self.actual_displacement_y))
 
         self.particle_filter.move_particles(x_diff, y_diff, current_heading)
 
@@ -628,9 +492,9 @@ class ParkRanger(PointCloudProcessor):
             self.particle_filter.resample(indexes)
 
 """Initializes park ranger"""
-def park_ranger(resolution=0.5, local_dem_comparison_type="max", period=5,
+def park_ranger(real_odometry, resolution=0.5, local_dem_comparison_type="max", period=5,
                 range_min=0.105, range_max=10., camera_height=0.34):
-    pr = ParkRanger(resolution, local_dem_comparison_type, period, range_min,
+    pr = ParkRanger(real_odometry, resolution, local_dem_comparison_type, period, range_min,
                     range_max, camera_height)
 
 if __name__ == "__main__":
