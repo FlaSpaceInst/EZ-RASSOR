@@ -18,9 +18,8 @@ def auto_drive_location(world_state, ros_util):
                   str(world_state.target_location.y))
 
     # Set arms up for travel
-    arm_angle = np.pi / 2.0
-    uf.set_front_arm_angle(world_state, ros_util, arm_angle)
-    uf.set_back_arm_angle(world_state, ros_util, arm_angle)
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
     # Check if robot should stpop moving
     if uf.self_check(world_state, ros_util) != 1:
@@ -49,8 +48,8 @@ def auto_drive_location(world_state, ros_util):
                         world_state.target_location.y, ros_util.threshold):
 
         # Set arms up for travel
-        uf.set_front_arm_angle(world_state, ros_util, arm_angle)
-        uf.set_back_arm_angle(world_state, ros_util, arm_angle)
+        uf.set_front_arm_angle(world_state, ros_util, 1.3)
+        uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
         if uf.self_check(world_state, ros_util) != 1:
             rospy.logdebug('Status check failed.')
