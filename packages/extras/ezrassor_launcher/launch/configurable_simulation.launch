@@ -19,6 +19,7 @@
   <arg name="recording" default="default"/>
   <arg name="use_sim_time" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
+  <arg name="enable_park_ranger" default="default"/>
 
   <!-- Launch the communication system for a simulated robot. -->
   <group ns="ezrassor$(arg robot_count)">
@@ -37,6 +38,7 @@
            value="$(eval str(digsite_y_coords).split()[robot_count - 1])"
            unless="$(eval digsite_y_coords == 'default')"/>
       <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+      <arg name="enable_park_ranger" value="$(arg enable_park_ranger)"/>
       <arg name="spawn_x_coord"
            value="$(eval str(spawn_x_coords).split()[robot_count - 1])"
            unless="$(eval spawn_x_coords == 'default')"/>
@@ -111,5 +113,6 @@
     <arg name="recording" value="$(arg recording)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+    <arg name="enable_park_ranger" value="$(arg enable_park_ranger)"/>
   </include>
 </launch>
