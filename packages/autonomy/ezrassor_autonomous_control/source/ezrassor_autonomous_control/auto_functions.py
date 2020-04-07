@@ -1,16 +1,10 @@
 import rospy
-import math
 import utility_functions as uf
 import nav_functions as nf
-import numpy as np
-
-threshold = 4.0
-buffer = 1.5
-move_dist = 3.0
 
 def at_target(positionX, positionY, targetX, targetY, threshold):
-    """ Determine if the current position is within 
-        the desired threshold of the target position. 
+    """ Determine if the current position is within
+        the desired threshold of the target position.
     """
     value = ((targetX - threshold) < positionX < (targetX + threshold)
             and (targetY - threshold) < positionY < (targetY + threshold))
@@ -19,19 +13,28 @@ def at_target(positionX, positionY, targetX, targetY, threshold):
 
 def auto_drive_location(world_state, ros_util):
     """ Navigate to location. Avoid obstacles while moving toward location. """
-    rospy.loginfo('Auto-driving to [%s, %s]...',str(world_state.target_location.x),str(world_state.target_location.y))
+    rospy.loginfo('Auto-driving to [%s, %s]...',
+                  str(world_state.target_location.x),
+                  str(world_state.target_location.y))
 
     # Set arms up for travel
     arm_angle = np.pi / 2.0
     uf.set_front_arm_angle(world_state, ros_util, arm_angle)
     uf.set_back_arm_angle(world_state, ros_util, arm_angle)
 
+    # Check if robot should stpop moving
+    if uf.self_check(world_state, ros_util) != 1:
+        rospy.logdebug('Status check failed.')
+        return
+
     # Before we head towards our goal, turn to face it.
     # Get new heading angle relative to current heading
     new_heading_degrees = nf.calculate_heading(world_state)
-    angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
+    angle2goal_radians = nf.adjust_angle(world_state.heading,
+                                         new_heading_degrees)
 
-    # If our angle is less than zero, then we would expect a right turn otherwise turn left.
+    # If our angle is less than zero, then we would expect a right turn
+    # otherwise turn left.
     if angle2goal_radians < 0:
         direction = 'right'
     else:
@@ -41,8 +44,9 @@ def auto_drive_location(world_state, ros_util):
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
     # Main loop until location is reached
-    while not at_target(world_state.positionX, world_state.positionY, world_state.target_location.x, world_state.target_location.y, ros_util.threshold):
-        rospy.loginfo("Starting nav loop!")
+    while not at_target(world_state.positionX, world_state.positionY,
+                        world_state.target_location.x,
+                        world_state.target_location.y, ros_util.threshold):
 
         # Set arms up for travel
         uf.set_front_arm_angle(world_state, ros_util, arm_angle)
@@ -52,16 +56,18 @@ def auto_drive_location(world_state, ros_util):
             rospy.logdebug('Status check failed.')
             return
 
-        angle = uf.get_turn_angle(world_state, ros_util, buffer, threshold)
+        angle = uf.get_turn_angle(world_state, ros_util)
 
-        # If our angle is less than zero, then we would expect a right turn otherwise turn left.
+        # If our angle is less than zero, then we would expect a right turn
+        # otherwise turn left.
         direction = 'right' if angle < 0 else 'left'
 
         # Turn towards the direction chosen.
-        uf.turn(nf.rel_to_abs(world_state.heading, angle), direction, world_state, ros_util)
+        uf.turn(nf.rel_to_abs(world_state.heading, angle), direction,
+                world_state, ros_util)
 
         # Move towards the direction chosen.
-        uf.move(move_dist, world_state, ros_util, threshold / 2.0, buffer)
+        uf.move(ros_util.move_increment, world_state, ros_util)
 
     rospy.loginfo('Destination reached!')
     ros_util.publish_actions('stop', 0, 0, 0, 0)

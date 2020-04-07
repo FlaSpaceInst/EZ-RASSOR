@@ -1,30 +1,24 @@
 import rospy
-import sys
-
+import ai_objects as obj
+import auto_functions as af
+import utility_functions as uf
 from std_msgs.msg import Int8, Int16, String
 from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
-from sensor_msgs.msg import JointState
-from sensor_msgs.msg import Imu
-from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import JointState, Imu, LaserScan
 
-from numpy import random as r
-
-import ai_objects as obj
-import auto_functions as af
-import utility_functions as uf
-
-def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
-                back_arm_topic, front_drum_topic, back_drum_topic,
-                max_linear_velocity=1, max_angular_velocity=1,
+""" Initialization Function  """
+def on_start_up(target_x, target_y, start_x, start_y, movement_topic,
+                front_arm_topic, back_arm_topic, front_drum_topic,
+                back_drum_topic, obstacle_threshold, obstacle_buffer,
+                move_increment, max_linear_velocity=1, max_angular_velocity=1,
                 real_odometry=False):
-    """ Initialization Function  """
 
     # ROS Node Init Parameters
     rospy.init_node('autonomous_control')
 
-    #Create Utility Objects
+    # Create Utility Objects
     world_state = obj.WorldState()
     ros_util = obj.ROSUtility(movement_topic,
                               front_arm_topic,
@@ -32,7 +26,10 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
                               front_drum_topic,
                               back_drum_topic,
                               max_linear_velocity,
-                              max_angular_velocity)
+                              max_angular_velocity,
+                              obstacle_threshold,
+                              obstacle_buffer,
+                              move_increment)
 
     target_location = Point()
     temp = Point()
@@ -50,14 +47,6 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
 
     # If enable_real_odometry flag is true, use odometry for position
     if real_odometry:
-
-        # Get path to dem_data/
-        path = world_state.path_dem()
-
-        # Offset the z value in world state according to expected elevation at
-        # Gazebo's origin (0, 0) -> dem (size / 2, size / 2)
-        world_state.get_origin_dem_data(path)
-
         # Get initial spawn coords
         world_state.initial_spawn(start_x, start_y)
 
@@ -65,11 +54,6 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
         rospy.Subscriber('odometry/filtered',
                          Odometry,
                          world_state.odometryCallBack)
-
-        # Simulates "altimeter" data
-        rospy.Subscriber('/gazebo/link_states',
-                          LinkStates,
-                          world_state.simStateZPositionCallBack)
 
     # If enable_real_odometry flag is false, just use Gazebo's position
     else:
@@ -86,7 +70,7 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
     rospy.Subscriber('autonomous_toggles',
                      Int8,
                      ros_util.autoCommandCallBack)
-    rospy.Subscriber('obstacle_detection/positive',
+    rospy.Subscriber('obstacle_detection/combined',
                      LaserScan,
                      uf.on_scan_update,
                      queue_size=1)
@@ -94,7 +78,6 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_
     rospy.loginfo('Autonomous control initialized.')
 
     autonomous_control_loop(world_state, ros_util)
-
 
 def full_autonomy(world_state, ros_util):
     """ Full Autonomy Loop Function """
@@ -117,7 +100,6 @@ def full_autonomy(world_state, ros_util):
 
     world_state.target_location.x = world_state.dig_site.x
     world_state.target_location.y = world_state.dig_site.y
-
 
 def autonomous_control_loop(world_state, ros_util):
     """ Control Auto Functions based on auto_function_command input. """
