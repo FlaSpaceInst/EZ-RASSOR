@@ -6,7 +6,7 @@ import numpy as np
 from pointcloud_processor import PointCloudProcessor
 
 class ObstacleDetector(PointCloudProcessor):
-    def __init__(self, max_angle, max_obstacle_dist, min_hole_diameter, 
+    def __init__(self, max_angle, max_obstacle_dist, min_hole_diameter,
                  scan_time, range_min, range_max):
         super(ObstacleDetector, self).__init__('obstacle_detection')
 
@@ -97,7 +97,7 @@ class ObstacleDetector(PointCloudProcessor):
                 # Step is first column of any row
                 step = int(direction[0, 0])
 
-                # Slice the down and dist arrays to do vectorized operations 
+                # Slice the down and dist arrays to do vectorized operations
                 # at idx and idx-1
                 down1 = direction[:-1, 2]
                 down2 = direction[1:, 2]
@@ -116,12 +116,12 @@ class ObstacleDetector(PointCloudProcessor):
                 index_slope = cond_slope.argmax() if cond_slope.any() else None
 
                 # Populate laserscan with closest point detected
-                if (index_hike is not None and direction[index_hike, 1] <= 
+                if (index_hike is not None and direction[index_hike, 1] <=
                                                self.max_obstacle_dist):
                     hike_ranges[step] = direction[index_hike, 1]
                 if index_slope is not None:
                     slope_ranges[step] = direction[index_slope, 1]
-                
+
                 # Combine above laserscans
                 min_ranges[step] = np.nanmin((hike_ranges[step],
                                              slope_ranges[step]))
@@ -142,7 +142,7 @@ class ObstacleDetector(PointCloudProcessor):
         return steps, dists
 
 """Initializes obstacle detection."""
-def obstacle_detection(max_angle, max_obstacle_dist, min_hole_diameter, 
+def obstacle_detection(max_angle, max_obstacle_dist, min_hole_diameter,
                        scan_time=1./30, range_min=0.105, range_max=10.):
 
     od = ObstacleDetector(max_angle, max_obstacle_dist, min_hole_diameter,
