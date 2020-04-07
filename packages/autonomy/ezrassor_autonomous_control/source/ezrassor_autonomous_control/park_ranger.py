@@ -114,42 +114,31 @@ class ParkRanger(PointCloudProcessor):
         # User hasn't put file in dem_data
         if not onlyfiles:
             rospy.logerr("Couldn't read dem data")
-        else:
-            rospy.loginfo("Reading %s", onlyfiles[0])
-            file = open(directory + onlyfiles[0], "r")
+            return
 
-            # Reads file line by line, line number starts at 0
-            for i, line in enumerate(file):
+        file = open(directory + onlyfiles[0], "r")
+        lines = file.readlines()
+        dem_size = map(int,re.findall(r'-?(\d+)',lines[2]))
 
-                # 3rd line of file contains "(rows, cols)"
-                if i == 2:
+        # File doesn't have dimmensions at line 3
+        if not dem_size:
+            rospy.logerr("Couldn't find dem size")
+            return
 
-                    # Use regex to obtain dimmensions
-                    dem_size = map(int,re.findall(r'-?(\d+)',line))
-                    rospy.loginfo(dem_size)
+        # Give warning if not square
+        if dem_size[0] != dem_size[1]:
+            rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
 
-                    # File doesn't have dimmensions at line 3
-                    if not dem_size:
-                        rospy.logerr("Couldn't find dem size")
-                        break
-                    else:
-                        # Give warning if not square
-                        if dem_size[0] != dem_size[1]:
-                            rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
+        self.dem_size = dem_size[0]
+        middle = int(dem_size[0] / 2)
 
-                        self.dem_size = dem_size[0]
+        self.global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
 
-                        middle = int(dem_size[0] / 2)
-
-                        self.global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
-
-                elif i > 2:
-                    self.global_dem[i - 3] = line.split()
-
-                    if (i-3) == middle:
-                        # Split by white space, then find the middle value on the level
-                        temp = line.split()
-                        self.origin_z = float(temp[middle])
+        for i, line in enumerate(lines[3:]):
+            heights = line.split()
+            self.global_dem[i] = heights
+            if i == middle:
+                self.origin_z = float(heights[middle])
 
     """Initializes data for creating local DEM
 
