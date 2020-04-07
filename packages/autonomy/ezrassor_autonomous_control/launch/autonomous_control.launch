@@ -19,6 +19,7 @@
   <arg name="move_increment" default="3.0"/>
   <arg name="max_obstacle_angle" default="45.0"/>
   <arg name="min_hole_diameter" default="3.0"/>
+  <arg name="enable_park_ranger" default="false"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
@@ -63,6 +64,12 @@
               value="$(arg min_hole_diameter)"/>
   </node>
 
+  <group if="$(arg enable_park_ranger)">
+       <node pkg="ezrassor_autonomous_control"
+             type="park_ranger"
+             name="park_ranger"/>
+  </group>
+
   <group if="$(arg enable_real_odometry)">
        <node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">
               <param name="frame_id" value="depth_camera_optical_frame"/>
@@ -81,9 +88,5 @@
        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
               <rosparam command="load" file="$(find ezrassor_autonomous_control)/config/ekf_template.yaml" />
        </node>
-
-       <node pkg="ezrassor_autonomous_control"
-             type="park_ranger"
-             name="park_ranger"/>
   </group>
 </launch>

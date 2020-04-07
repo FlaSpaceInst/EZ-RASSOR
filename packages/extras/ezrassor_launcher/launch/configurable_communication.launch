@@ -10,6 +10,7 @@
   <arg name="spawn_x_coord" default="default"/>
   <arg name="spawn_y_coord" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
+  <arg name="enable_park_ranger" default="default"/>
 
   <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>
@@ -97,6 +98,9 @@
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
         <arg name="spawn_x_coord"
              value="$(arg spawn_x_coord)"
              unless="$(eval spawn_x_coord == 'default')"/>
@@ -170,6 +174,9 @@
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
         <arg name="spawn_x_coord"
              value="$(arg spawn_x_coord)"
              unless="$(eval spawn_x_coord == 'default')"/>
