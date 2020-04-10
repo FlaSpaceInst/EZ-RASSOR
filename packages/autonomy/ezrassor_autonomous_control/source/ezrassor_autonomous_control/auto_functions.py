@@ -113,6 +113,7 @@ def auto_dig(world_state, ros_util, duration):
 
     # Perform Auto Dig for the desired Duration
     t = 0
+    
     while t < duration:
         if uf.self_check(world_state, ros_util) != 1:
             return
@@ -122,7 +123,7 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t += 5
         rospy.sleep(5)
-        world_state.battery -= 0.05
+        world_state.battery -= 10
         # Dig while moving backward for 5 seconds
         ros_util.publish_actions('reverse', 0, 0, 1, 1)
         t += 5
