@@ -1,7 +1,0 @@
-ID  Name                       V  RA            DEC
-000 Alpha Canis Majoris        1  06 45 08.92  -16 42 58.02
-001 Alpha Carinae              1  06 23 57.11  -52 41 44.38
-002 Alpha Centauri AB          1  14 39 36.00  -60 50 06.00
-003 Alpha Bootis               1  14 15 39.70  +19 10 56.00
-004 Alpha Lyrae                1  18 36 56.34  +38 47 01.28
-005 Alpha Orionis              1  05 55 10.30  +07 24 25.43

@@ -1,3 +1,0 @@
-# Star Max Intensity Queue
-
-
