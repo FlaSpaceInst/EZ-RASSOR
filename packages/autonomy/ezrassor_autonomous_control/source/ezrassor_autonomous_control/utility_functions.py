@@ -2,6 +2,7 @@ import rospy
 import time
 import nav_functions as nf
 
+from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose
 from ezrassor_swarm_control.msg import waypointFeedback
 
@@ -153,24 +154,8 @@ def send_feedback(world_state, waypoint_server):
     current_pose.position.z = world_state.positionZ
     current_pose.orientation = world_state.orientation
 
-    feedback = waypointFeedback(current_pose=current_pose)
+    feedback = waypointFeedback(current_pose, world_state.battery)
 
     # Publish feedback (current pose)
     waypoint_server.publish_feedback(feedback)
     return feedback
-
-
-def preempt_check(waypoint_server):
-    """
-    Returns true if an action request has been canceled
-    """
-
-    if waypoint_server is None:
-        return False
-
-    if waypoint_server.is_preempt_requested():
-        rospy.loginfo('%s: Preempted' % (rospy.get_namespace() + waypoint_server.action_server.ns))
-        waypoint_server.set_preempted()
-        return True
-
-    return False

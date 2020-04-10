@@ -5,8 +5,8 @@ from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
 from path_planner import PathPlanner
-from swarm_utils import get_rover_status
 from swarm_utils import euclidean_distance
+from swarm_utils import get_rover_status, preempt_rover_path
 
 import os
 
@@ -97,7 +97,8 @@ class SwarmController:
                                     self.waypoint_pubs[i].publish(path)
                                     self.rover_activity_status_db[i].activity = 'digging'
                 
-                   
+            rospy.sleep(5.)
+            preempt_rover_path(1)       
 
 def on_start_up(robot_count, target_xs, target_ys, lander_coords):
     """ Initialization Function  """
