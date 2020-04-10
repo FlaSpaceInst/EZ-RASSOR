@@ -26,7 +26,7 @@ class SwarmController:
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
 
         # wait for rovers to spawn
-        rospy.sleep(5.)
+        rospy.sleep(20.)
 
         height_map = os.path.join(os.path.expanduser('~'),
                                   '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
@@ -45,8 +45,7 @@ class SwarmController:
                 if path is not None:
                     self.waypoint_pubs[i].publish(path)
 
-        rospy.sleep(5.)
-        preempt_rover_path(1)
+
 
 def on_start_up(robot_count, target_xs, target_ys):
     """ Initialization Function  """

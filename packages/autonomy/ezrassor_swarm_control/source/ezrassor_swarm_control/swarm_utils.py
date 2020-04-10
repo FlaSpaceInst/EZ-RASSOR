@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 
 import rospy
+import numpy as np
+
 from geometry_msgs.msg import Point
 
 from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
 
+
+def euclidean2D(a, b):
+    """
+    Returns the 2D (x and y axes) euclidean distance between 2 ROS Points
+    """
+
+    return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
 
 def get_rover_status(rover_num):
     """
