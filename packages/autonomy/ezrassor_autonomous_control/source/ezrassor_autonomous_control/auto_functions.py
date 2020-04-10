@@ -1,25 +1,15 @@
 import rospy
-import math
 import utility_functions as uf
 import nav_functions as nf
-import arm_force as armf
 
-
-def at_target(world_state, ros_util):
+def at_target(positionX, positionY, targetX, targetY, threshold):
     """ Determine if the current position is within 
         the desired threshold of the target position. 
     """
-    positionX = world_state.positionX
-    positionY = world_state.positionY
+    value = ((targetX - threshold) < positionX < (targetX + threshold)
+            and (targetY - threshold) < positionY < (targetY + threshold))
 
-    targetX = world_state.target_location.x
-    targetY = world_state.target_location.y
-
-    value = ((targetX - ros_util.threshold) < positionX < (targetX + ros_util.threshold)
-             and (targetY - ros_util.threshold) < positionY < (targetY + ros_util.threshold))
-
-    return not value
-
+    return value
 
 def auto_drive_location(world_state, ros_util, waypoint_server=None):
     """ Navigate to location. Avoid obstacles while moving toward location. """
@@ -30,6 +20,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                   str(world_state.target_location.x),
                   str(world_state.target_location.y))
 
+
     # Send feedback to waypoint client if being controlled by swarm controller
     feedback = uf.send_feedback(world_state, waypoint_server)
 
@@ -37,8 +28,40 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
+    # Check rover battery, hardware, and if it's flipped over
+    if uf.self_check(world_state, ros_util) != 1:
+
+        # Cancel action server request is self check failed
+        if waypoint_server is not None:
+            waypoint_server.set_preempted()
+
+        rospy.logdebug('Status check failed.')
+        return feedback
+
+    # Before we head towards our goal, turn to face it.
+    # Get new heading angle relative to current heading
+    new_heading_degrees = nf.calculate_heading(world_state)
+    angle2goal_radians = nf.adjust_angle(world_state.heading,
+                                         new_heading_degrees)
+
+    # If our angle is less than zero, then we would expect a right turn
+    # otherwise turn left.
+    if angle2goal_radians < 0:
+        direction = 'right'
+    else:
+        direction = 'left'
+
+    uf.turn(new_heading_degrees, direction, world_state, ros_util)
+    ros_util.publish_actions('stop', 0, 0, 0, 0)
+
     # Main loop until location is reached
-    while at_target(world_state, ros_util):
+    while not at_target(world_state.positionX, world_state.positionY,
+                        world_state.target_location.x,
+                        world_state.target_location.y, ros_util.threshold):
+
+        # Set arms up for travel
+        uf.set_front_arm_angle(world_state, ros_util, 1.3)
+        uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
         # Check rover battery, hardware, and if it's flipped over
         if uf.self_check(world_state, ros_util) != 1:
@@ -48,34 +71,20 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                 waypoint_server.set_preempted()
 
             rospy.logdebug('Status check failed.')
-            return
+            return feedback
 
-        # Get new heading angle relative to current heading as (0,0)
-        new_heading = nf.calculate_heading(world_state, ros_util)
-        angle_difference = nf.adjust_angle(world_state.heading, new_heading)
+        angle = uf.get_turn_angle(world_state, ros_util)
 
-        if angle_difference < 0:
-            direction = 'right'
-        else:
-            direction = 'left'
+        # If our angle is less than zero, then we would expect a right turn
+        # otherwise turn left.
+        direction = 'right' if angle < 0 else 'left'
 
-        # Adjust heading until it matches new heading
-        while not ((new_heading - 5) < world_state.heading < (new_heading + 5)):
-            ros_util.publish_actions(direction, 0, 0, 0, 0)
-            ros_util.rate.sleep()
+        # Turn towards the direction chosen.
+        uf.turn(nf.rel_to_abs(world_state.heading, angle), direction,
+                world_state, ros_util)
 
-        # Avoid obstacles by turning left or right if warning flag is raised
-        if world_state.warning_flag == 1:
-            uf.dodge_right(world_state, ros_util)
-        if world_state.warning_flag == 2:
-            uf.dodge_left(world_state, ros_util)
-        if world_state.warning_flag == 3:
-            uf.reverse_turn(world_state, ros_util)
-            rospy.loginfo('Avoiding detected obstacle...')
-
-        # Otherwise go forward
-        ros_util.publish_actions('forward', 0, 0, 0, 0)
-        ros_util.rate.sleep()
+        # Move towards the direction chosen.
+        uf.move(ros_util.move_increment, world_state, ros_util)
 
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
@@ -88,10 +97,9 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
 
     return feedback
 
-
 def auto_dig(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward 
-        for duration time in seconds. 
+    """ Rotate both drums inward and drive forward
+        for duration time in seconds.
     """
     rospy.loginfo('Auto-digging for %d seconds...', duration)
 
@@ -114,7 +122,6 @@ def auto_dig(world_state, ros_util, duration):
         rospy.sleep(5)
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
-    rospy.loginfo('Done digging')
 
 
 def auto_dock(world_state, ros_util):

@@ -10,15 +10,12 @@
         pkg="controller_manager"
         type="spawner"
         output="screen"
-        args="left_wheel_back_velocity_controller
-              left_wheel_front_velocity_controller
-              right_wheel_back_velocity_controller
-              right_wheel_front_velocity_controller
-              arm_front_velocity_controller
+        args="arm_front_velocity_controller
               arm_back_velocity_controller
               drum_front_velocity_controller
               drum_back_velocity_controller
-              joint_state_controller"/>
+              joint_state_controller
+              diff_drive_controller"/>
 
   <!-- Launch the driver nodes. -->
   <node pkg="ezrassor_sim_control"
