@@ -11,9 +11,8 @@ catkin_python_setup()
 catkin_package()
 catkin_install_python(
     PROGRAMS
-        nodes/depth_estimator
+        nodes/obstacle_detection
         nodes/autonomous_control
-        nodes/transform_broadcaster
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -22,4 +21,10 @@ install(
         launch/
     DESTINATION
         ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
+install(
+    DIRECTORY
+        config/
+    DESTINATION
+        ${CATKIN_PACKAGE_SHARE_DESTINATION}/config
 )
