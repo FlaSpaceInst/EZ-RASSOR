@@ -30,7 +30,7 @@ class PathPlanner:
         # Only cardinal directions
         # self.neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
 
-        # Maximum slope a rover can climb
+        # Maximum slope a rover can climb (must be >= 1)
         self.max_slope = rover_max_climb_slope
 
     def find_path(self, start_, goal_):
@@ -50,8 +50,8 @@ class PathPlanner:
 
         # Convert simulation coordinates, whose origin are in the center of the map,
         # to image coordinates with origin in the bottom-left corner
-        start = Point(start_.x + self.width // 2, start_.y + self.height // 2, 0)
-        goal = Point(goal_.x + self.width // 2, goal_.y + self.height // 2, 0)
+        start = Point(int(round(start_.x + self.width // 2)), int(round(start_.y + self.height // 2)), 0)
+        goal = Point(int(round(goal_.x + self.width // 2)), int(round(goal_.y + self.height // 2)), 0)
 
         # Initialize open and closed
         open = []
@@ -186,8 +186,11 @@ class PathPlanner:
         Returns the 3D euclidean distance between 2 ROS Points
         """
 
-        # Difference in z value weighed heavily
-        return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (self.map[b.y][b.x] - self.map[a.y][a.x]) ** 4)
+        # Ensure we're only indexing the height map with integers
+        a_x, a_y = int(round(a.x)), int(round(a.y))
+        b_x, b_y = int(round(b.x)), int(round(b.y))
+
+        return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (self.map[b_y][b_x] - self.map[a_y][a_x]) ** 2)
 
     def check_bounds(self, coord):
         """
