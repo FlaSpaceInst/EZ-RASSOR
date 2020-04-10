@@ -323,6 +323,24 @@ class ParkRanger(PointCloudProcessor):
     def neff(norm):
         return 1.0 / np.sum(np.square(norm))
 
+    """Publishes the given position estimate as an Odometry message"""
+    def publish_estimate(self, x, y):
+        # Initialize odometry message
+        odom_msg = Odometry()
+        odom_msg.header.stamp = rospy.Time.now()
+        odom_msg.header.frame_id = 'odom'
+        odom_msg.child_frame_id = 'base_link'
+
+        # Set x and y values to x and y estimate
+        odom_msg.pose.pose.position.x = float(x)
+        odom_msg.pose.pose.position.y = float(y)
+
+        # Set x and y variance to high values
+        odom_msg.pose.covariance[0] = 9999.0
+        odom_msg.pose.covariance[7] = 9999.0
+
+        self.estimate_pub.publish(odom_msg)
+
     def __init__(self, real_odometry, resolution, local_dem_comparison_type, period,
                  range_min, range_max, camera_height):
         super(ParkRanger, self).__init__('park_ranger')
@@ -355,6 +373,9 @@ class ParkRanger(PointCloudProcessor):
 
         self.arms_up = False
         rospy.Subscriber('arms_up', Bool, self.on_arm_movement)
+
+        self.estimate_pub = rospy.Publisher('park_ranger/odom', Odometry,
+                                            queue_size=10)
 
         self.run(period, local_dem_comparison_type)
 
@@ -402,10 +423,17 @@ class ParkRanger(PointCloudProcessor):
                     if ParkRanger.debug:
                         rospy.logwarn("Current Estimate (x, y): {} {}".format(est_x, est_y))
 
-                    est_x = est_x - (self.dem_size / 2)
-                    est_y = (self.dem_size / 2) - est_y
-                    if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate (x, y): {} {}".format(est_x, est_y))
+                    if est_x is not None and est_y is not None:
+                        est_x = est_x - (self.dem_size / 2)
+                        est_y = (self.dem_size / 2) - est_y
+                        if ParkRanger.debug:
+                            rospy.logwarn("Current Estimate (x, y): {} {}".format(est_x, est_y))
+
+                        # Get number of unique (in terms of x, y values) particles
+                        num_unique = len(set([(p.x, p.y) for p in self.particle_filter.particles]))
+                        # If particle filter has nearly converged, publish estimate
+                        if num_unique <= 5:
+                            self.publish_estimate(est_x, est_y)
 
                     # 5 Resample
                     if ParkRanger.debug:
@@ -466,9 +494,7 @@ class ParkRanger(PointCloudProcessor):
                 sum_y += (p.y * p.weight)
         if sum_weights == 0:
             rospy.logwarn("Sum is zero, Number of particles: {}".format(num_particles))
-            #for p in self.particle_filter.particles:
-            #    rospy.logwarn("p {} {} {}".format(p.x, p.y, p.weight))
-            return -3000, -3000
+            return None, None
         return int(sum_x / sum_weights), int(sum_y / sum_weights)
 
     def resample(self):
