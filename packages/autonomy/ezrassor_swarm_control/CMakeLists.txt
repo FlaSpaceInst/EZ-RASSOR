@@ -21,7 +21,10 @@ add_message_files(
 
 add_service_files(
   DIRECTORY srv
-  FILES GetRoverStatus.srv
+  FILES
+    GetRoverStatus.srv
+    PreemptPath.srv
+
 )
 
 generate_messages(DEPENDENCIES
