@@ -91,7 +91,7 @@
       </link>
     </model>
     <model name='base_station'>
-      <pose frame=''>0 0 .0.7 0 0 180</pose>
+      <pose frame=''>0 0 .0.7 0 0 90</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -139,10 +139,10 @@
         </link>
       </model>
       <model name='base_station'>
-        <pose frame=''>0 0 -0.7 0 0 180</pose>
+        <pose frame=''>0 0 -0.7 0 0 90</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0 0 -0.7 0 -0 180</pose>
+          <pose frame=''>0 0 -0.7 0 -0 90</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
