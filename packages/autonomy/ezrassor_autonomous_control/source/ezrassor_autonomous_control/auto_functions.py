@@ -28,7 +28,7 @@ def charge_battery(world_state, ros_util, waypoint_server=None) :
     # feedback = uf.send_feedback(world_state, waypoint_server)
     while world_state.battery < 100 :
         rospy.sleep(0.1)
-        world_state.battery += 1
+        world_state.battery += 3
         # rospy.loginfo(world_state.battery)
     world_state.battery = 100    
 
@@ -88,7 +88,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-        world_state.battery -= 0.01
+        world_state.battery -= (0.00775/10)
 
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
@@ -123,7 +123,7 @@ def auto_dig(world_state, ros_util, duration):
         ros_util.publish_actions('forward', 0, 0, 1, 1)
         t += 5
         rospy.sleep(5)
-        world_state.battery -= 10
+        world_state.battery -= 20
         # Dig while moving backward for 5 seconds
         ros_util.publish_actions('reverse', 0, 0, 1, 1)
         t += 5
