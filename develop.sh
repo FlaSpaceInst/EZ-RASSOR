@@ -53,6 +53,7 @@ setup_environment() {
     cd - > /dev/null 2>&1
     source_setups_in_directory "$WORKSPACE_DEVEL_DIR"
     cp -r extra_worlds/random ~/.gazebo/models/random
+    cp -r extra_models/base_station ~/.gazebo/models/base_station
 }
 
 # Create a new ROS package in source control.
