@@ -2,6 +2,8 @@ import rospy
 from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
 
+from constants import commands
+
 from ezrassor_swarm_control.msg import Path
 
 from path_planner import PathPlanner
@@ -41,6 +43,11 @@ class SwarmController:
             return True
         else :
             return False
+    
+    def create_command(self, cmd) :
+        path = Path()
+        path.path.append(commands[cmd])
+        return path
    
     def run(self):
         rospy.loginfo('Running the swarm controller for {} rover(s)'.format(self.robot_count))
@@ -59,31 +66,29 @@ class SwarmController:
             for i in range(1, self.robot_count + 1) :
  
                 rover_status = get_rover_status(i)
+                # rospy.loginfo(i)
 
                 if rover_status :
                     rospy.loginfo("ROVER {} BATTERY: {} percent".format(i, rover_status.battery))
                     rospy.loginfo("ROVER {} ACTIVITY: {}".format(i, self.rover_activity_status_db[i].activity))
 
                     if self.is_at_digsite(rover_status, i) :
-                        if rover_status.battery >= 35 and self.rover_activity_status_db[i].activity != 'digging' :
-                            rospy.loginfo('started digging')
-                            path = Path()
-                            path.path.append(Point(-998, -998, -998))
-                            self.waypoint_pubs[i].publish(path)
-                            self.rover_activity_status_db[i].activity = 'digging'
-                        
-                        elif rover_status.battery < 35 and self.rover_activity_status_db[i].activity != 'driving to lander' :
-                            path = path_planner.find_path(rover_status.pose.position, self.lander_loc)
-                            if path :
-                                rospy.loginfo('started driving to lander')
-                                self.waypoint_pubs[i].publish(path)
-                                self.rover_activity_status_db[i].activity = 'driving to lander'
+                        if rover_status.battery >= 35 :
+                            if self.rover_activity_status_db[i].activity != 'digging' :
+                                rospy.loginfo('started digging')
+                                self.waypoint_pubs[i].publish(self.create_command('DIG'))
+                                self.rover_activity_status_db[i].activity = 'digging'
+                        else :
+                            if self.rover_activity_status_db[i].activity != 'driving to lander' :
+                                path = path_planner.find_path(rover_status.pose.position, self.lander_loc)
+                                if path :
+                                    rospy.loginfo('started driving to lander')
+                                    self.waypoint_pubs[i].publish(path)
+                                    self.rover_activity_status_db[i].activity = 'driving to lander'
                 
                     elif self.is_at_lander(rover_status) :
                         if self.rover_activity_status_db[i].activity == 'driving to lander'  :
-                            path = Path()
-                            path.path.append(Point(-999, -999, -999))
-                            self.waypoint_pubs[i].publish(path)
+                            self.waypoint_pubs[i].publish(self.create_command('CHG'))
                             rospy.loginfo('started charging')
                             self.rover_activity_status_db[i].activity = 'charging'
 
