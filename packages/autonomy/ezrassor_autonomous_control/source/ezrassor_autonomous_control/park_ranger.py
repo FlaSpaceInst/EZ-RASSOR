@@ -36,22 +36,28 @@ class ParticleFilter:
     def add_particle(self, x, y, heading, weight=0):
         self.particles.append(Particle(x, y, heading, weight))
 
+    """Place particle at every cell in global DEM"""
     def init_particles(self):
         weight = 1.0 / (self.dem_size ** 2)
         for y in range(self.dem_size):
             for x in range(self.dem_size):
                 self.add_particle(x, y, 0.0, weight)
 
+    """Moves all particles by the given displacement and updates headings"""
     def move_particles(self, x_diff, y_diff, theta):
         for p in self.particles:
             p.x += x_diff
             p.y += -y_diff
             p.theta = theta
 
-        self.particles = [p for p in self.particles if (0 < p.x < self.dem_size) and (0 < p.y < self.dem_size)]
+        # Remove particles that are now out-of-bounds
+        self.particles = [p for p in self.particles if (0 < p.x < self.dem_size)
+                            and (0 < p.y < self.dem_size)]
 
     def resample(self, indexes):
+        # Get new particles based on given indexes
         self.particles = [deepcopy(self.particles[i]) for i in indexes]
+        # Reset particle weights to 1/N
         num_particles = len(self.particles)
         for p in self.particles:
             p.weight = 1.0 / num_particles
@@ -68,10 +74,15 @@ class ParkRanger(PointCloudProcessor):
 
     debug = True
 
+    """Tracks whether the arms are up (camera isn't blocked)"""
     def on_arm_movement(self, data):
         self.arms_up = data
 
-    """Stores most recent Z position of robot"""
+    """Provides robot's z position for simulating altimeteter
+
+    Get the z position (height) of the robot using the simulation state. If
+    odometry is not enabled, update x and y positions.
+    """
     def sim_state_callback(self, data):
         namespace = rospy.get_namespace()
         namespace = namespace[1:-1]+"::base_link"
@@ -88,6 +99,7 @@ class ParkRanger(PointCloudProcessor):
             heading = nf.quaternion_to_yaw(data.pose[index]) * 180/np.pi
             self.heading = heading % 360
 
+    """Updates x and y position of robot using most recent Odometry message"""
     def odometry_callback(self, data):
         self.position_x = data.pose.pose.position.x + self.start_x
         self.position_y = data.pose.pose.position.y + self.start_y
@@ -101,23 +113,27 @@ class ParkRanger(PointCloudProcessor):
         base = rospack.get_path("ezrassor_autonomous_control")
         return base + "/dem_data/"
 
+    """Returns the path to worlds/"""
     @staticmethod
     def path_world():
         rospack = rospkg.RosPack()
         base = rospack.get_path("ezrassor_sim_gazebo")
         return base + "/worlds/"
 
+    """Returns the path to weights_results/"""
     @staticmethod
     def weights_results():
         rospack = rospkg.RosPack()
         base = rospack.get_path("ezrassor_autonomous_control")
         return base + "/weights_results/"
 
+    """Returns first heightmap tag from given world file"""
     @staticmethod
     def get_first_heightmap_tag(world_file_string):
         world_root = etree.XML(world_file_string)
         return world_root.find('.//heightmap')
 
+    """Returns the range from the world file"""
     @staticmethod
     def get_world_dem_range(path_world_file):
         file = open(path_world_file, "r")
@@ -126,10 +142,10 @@ class ParkRanger(PointCloudProcessor):
         xyz_size = dem_size_path.split(' ')
         return int(xyz_size[-1])
 
+    """Returns the name of the DEM associated with the world file"""
     @staticmethod
     def get_world_dem_name(path_world_file):
         file = open(path_world_file, "r")
-        rospy.logwarn(path_world_file)
         first_heightmap_tag = ParkRanger.get_first_heightmap_tag(file.read())
         dem_jpg_path = first_heightmap_tag.find('uri').text
         split_by_slash = dem_jpg_path.split('/')
@@ -144,10 +160,11 @@ class ParkRanger(PointCloudProcessor):
             new_string += s + "_"
         return new_string
 
+    """Returns path of the file associated with world_dem_name in directory"""
     @staticmethod
     def get_match_dem_n_world(world_dem_name, directory):
-        # Use list comprehension to get only files in directory as opposed to files and subdirectories
-        onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
+        # Get only files in directory as opposed to files and subdirectories
+        onlyfiles = [f for f in listdir(directory) if isfile(join(directory,f))]
 
         # User hasn't put file in dem_data
         if not onlyfiles:
@@ -155,22 +172,18 @@ class ParkRanger(PointCloudProcessor):
             return
 
         for i in onlyfiles:
-            #rospy.logwarn("{}".format(type(i)))
             split_by_underscore = i.split('_')
             split_by_underscore.pop()
             split_by_underscore.pop()
             new_string = ""
             for s in split_by_underscore:
                 new_string += s + "_"
-            rospy.logwarn("{} vs {}".format(world_dem_name, new_string))
             if world_dem_name == new_string:
                 return directory + "/" + i
         return None
 
-
     """Creates global DEM from file in dem_data/"""
     def create_array_global_dem(self):
-
         file = open(self.dem_data_file_path, "r")
         lines = file.readlines()
         dem_size = map(int,re.findall(r'-?(\d+)',lines[2]))
@@ -182,51 +195,57 @@ class ParkRanger(PointCloudProcessor):
 
         # Give warning if not square
         if dem_size[0] != dem_size[1]:
-            rospy.logwarn("Dimmensions are not same value (w != l). Treating as w x w")
+            rospy.logwarn("Given DEM is not square. Treating as w x w")
 
-        self.dem_size = dem_size[0]
+        self.dem_size = int(dem_size[0])
         middle = int(dem_size[0] / 2)
 
-        self.global_dem = np.empty((int(dem_size[0]), int(dem_size[1])), dtype=np.float32)
+        self.global_dem = np.empty((self.dem_size, self.dem_size),
+                                    dtype=np.float32)
 
+        # Read height values into global DEM
         for i, line in enumerate(lines[3:]):
             heights = line.split()
             self.global_dem[i] = heights
             if i == middle:
                 self.origin_z = float(heights[middle])
+
+        # "Squishes" the global_dem data to match range found in world file
         old_dem_range = np.ptp(self.global_dem)
         self.global_dem = (self.global_dem * old_dem_range) / self.new_dem_range
 
     """Initializes data for creating local DEM
 
-    Analyzes a given CameraInfo message to find the minimum and maximum angles the
-    camera can see. This information, along with the minimum and maximum range the
-    camera can see and the resolution of the global DEM, is used to determine the
-    number of rows and columns and the minimum row value and column value so that
-    a local DEM can be created from a point cloud.
+    Analyzes a given CameraInfo message to find the minimum and maximum angles
+    the camera can see. This information, along with the minimum and maximum
+    range the camera can see and the resolution of the global DEM, is used to
+    determine the number of rows and columns and the minimum row value and
+    column value so that a local DEM can be created from a point cloud.
     """
     def init_local_dem_info(self, range_min, range_max):
-        # Find number of rows and columns and minimum row and column values in the
-        # local DEM array based on the angles and range the camera can see and the
-        # resolution of the global DEM
+        # Find number of rows and columns and minimum row and column values in
+        # the local DEM array based on the angles and range the camera can see
+        # and the resolution of the global DEM
         self.num_rows = int(range_max - range_min) + 1
-        self.num_columns = int(range_max * (np.tan(self.angle_max) - np.tan(self.angle_min))) + 1
+        self.num_columns = int(range_max * (np.tan(self.angle_max) -
+                                            np.tan(self.angle_min))) + 1
         self.min_row = range_min
         self.min_column = range_max * np.tan(self.angle_min)
 
     """Gets the predicted local DEM for a given particle
 
-    Given a particle, this method picks out and returns the portion of the global
-    DEM that represents what the robot would see if it were in the state described
-    by the particle.
+    Given a particle, this method picks out and returns the portion of the
+    global DEM that represents what the robot would see if it were in the state
+    described by the particle.
     """
     def get_predicted_local_dem(self, particle):
         # Get angle perpendicular to heading
         angle_perp = (particle.theta + 90) % 360
 
-        predicted_local_dem = np.empty((self.num_rows, self.num_columns), np.float32)
+        predicted_local_dem = np.empty((self.num_rows, self.num_columns),
+                                        dtype=np.float32)
 
-        # To have the predicted local DEM centered around the particle, we need to
+        # To have the predicted local DEM centered around the particle, we need
         # to determine the number of columns on each side of the particle
         num_cols_left = self.num_columns/2 + 1
         num_cols_right = self.num_columns/2 + 1
@@ -234,22 +253,28 @@ class ParkRanger(PointCloudProcessor):
             num_cols_right -= 1
 
         # Get line to the left of the particle
-        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_left, -angle_perp, 'left')
+        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_left,
+                                            -angle_perp, 'left')
         # Fill up columns to the left of the particle
         for i, coord in enumerate(reversed(row_coords)):
-            col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows, particle.theta, 'right')
+            col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows,
+                                                particle.theta, 'right')
             try:
-                predicted_local_dem[:, i] = self.global_dem[col_coords[:,0], col_coords[:,1]]
+                predicted_local_dem[:, i] = self.global_dem[col_coords[:,0],
+                                                            col_coords[:,1]]
             except IndexError:
                 return None
 
         # Get line to the right of the particle
-        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_right, angle_perp, 'right')
+        row_coords = ParkRanger.get_line(particle.y, particle.x, num_cols_right,
+                                            angle_perp, 'right')
         # Fill up columns to the right of the particle
         for i, coord in enumerate(row_coords):
-            col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows, particle.theta, 'right')
+            col_coords = ParkRanger.get_line(coord[0], coord[1], self.num_rows,
+                                                particle.theta, 'right')
             try:
-                predicted_local_dem[:, num_cols_left-1+i] = self.global_dem[col_coords[:,0], col_coords[:,1]]
+                predicted_local_dem[:, num_cols_left-1+i] = \
+                    self.global_dem[col_coords[:,0], col_coords[:,1]]
             except IndexError:
                 return None
 
@@ -260,8 +285,9 @@ class ParkRanger(PointCloudProcessor):
 
     Given a center coordinate for the line, the number of cells we're allowed to
     use to draw the line, and the angle and direction of the line, this method
-    calculates and returns the list of indexes that closely approximates the line
-    described. This is done using a modified version of Bresenham's line algorithm.
+    calculates and returns the list of indexes that closely approximates the
+    line described. This is done using a modified version of Bresenham's line
+    algorithm.
     """
     @staticmethod
     def get_line(center_row, center_col, num_cells, angle, direction):
@@ -269,7 +295,7 @@ class ParkRanger(PointCloudProcessor):
         if angle < 0:
             angle += 360
 
-        # Handles cases where tangent returns the same value for different angles
+        # Handle cases where tangent returns the same value for different angles
         # and messes up the rest of the calculations
         if direction is 'right' and 135 < angle <= 315:
             direction = 'left'
@@ -309,6 +335,7 @@ class ParkRanger(PointCloudProcessor):
 
         return np.array(indexes)
 
+    """Produces similarity score between 0 and 2 for the given numpy arrays"""
     @staticmethod
     def histogram_match(a, b):
         indexes = ~np.isnan(a)
@@ -326,17 +353,17 @@ class ParkRanger(PointCloudProcessor):
 
     """Converts Point Cloud to Local DEM
 
-    Given an array representing the points in the area in front of the robot, this
-    method creates and returns a local DEM (Digital Elevation Map) representation
-    of the point cloud. That is, it creates and returns a top-down grid view (as a
-    2D numpy array), where each cell represents the height at that point. If there
-    are multiple points mapping to the same cell in the local DEM, the height value
-    chosen for that cell is chosen according to the given comparison type ("mean",
-    "median", "min", or "max").
+    Given an array representing the points in the area in front of the robot,
+    this method creates and returns a local DEM (Digital Elevation Map)
+    representation of the point cloud. That is, it creates and returns a
+    top-down grid view (as a 2D numpy array), where each cell represents the
+    height at that point. If there are multiple points mapping to the same cell
+    in the local DEM, the height value chosen for that cell is chosen according
+    to the given comparison type ("mean", "median", "min", or "max").
     """
     def point_cloud_to_local_dem(self, pc, comparison_type):
-        # Get the comparison function to use when multiple points map to the same
-        # cell in the local DEM
+        # Get the comparison function to use when multiple points map to the
+        # same cell in the local DEM
         comparison = ParkRanger.local_dem_comparison_options[comparison_type]
 
         local_dem = np.empty((self.num_rows, self.num_columns), dtype=object)
@@ -363,19 +390,21 @@ class ParkRanger(PointCloudProcessor):
 
         return local_dem.astype(np.float32)
 
-    """Finds the local DEM row, column indexes and heights for a given point cloud"""
+    """Finds local DEM row, column indexes and heights for given point cloud"""
     def get_local_dem_info(self, pc):
         forward = pc[:,PointCloudProcessor.XYZ["FORWARD"]]
         right = pc[:,PointCloudProcessor.XYZ["RIGHT"]]
         down = pc[:,PointCloudProcessor.XYZ["DOWN"]]
 
-        row_indexes = np.subtract(self.num_rows-1, np.subtract(forward, self.min_row)).astype(int)
+        row_indexes = np.subtract(self.num_rows-1, np.subtract(forward,
+                                                    self.min_row)).astype(int)
         column_indexes = np.subtract(right, self.min_column).astype(int)
-        heights = np.add(np.add(self.position_z, self.camera_height), np.negative(down))
+        heights = np.add(np.add(self.position_z, self.camera_height),
+                            np.negative(down))
 
         return row_indexes, column_indexes, heights
 
-    # Auxilary functions
+    """Returns number of effective particles based on the given weights"""
     @staticmethod
     def neff(norm):
         return 1.0 / np.sum(np.square(norm))
@@ -398,8 +427,9 @@ class ParkRanger(PointCloudProcessor):
 
         self.estimate_pub.publish(odom_msg)
 
-    def __init__(self, real_odometry, world_name, resolution, local_dem_comparison_type, period,
-                 range_min, range_max, camera_height):
+    def __init__(self, real_odometry, world_name, resolution,
+                 local_dem_comparison_type, period, range_min, range_max,
+                 camera_height):
         super(ParkRanger, self).__init__('park_ranger')
         self.resolution = resolution
         self.camera_height = camera_height
@@ -412,16 +442,20 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = self.start_x
         self.last_y = self.start_y
 
+        # Get apropriate DEM data file
         path = ParkRanger.path_dem()
         world_name = ParkRanger.path_world() + world_name + ".world"
         world_dem_name = ParkRanger.get_world_dem_name(world_name)
         self.new_dem_range = ParkRanger.get_world_dem_range(world_name)
-        self.dem_data_file_path = ParkRanger.get_match_dem_n_world(world_dem_name, path)
+        self.dem_data_file_path = \
+            ParkRanger.get_match_dem_n_world(world_dem_name, path)
         if not self.dem_data_file_path:
             rospy.logerr("Couldn't find match")
         else:
+            # Initialize global DEM
             self.create_array_global_dem()
 
+        # Initialize values used during local DEM processing
         self.init_local_dem_info(range_min, range_max)
 
         # Subscribe to "altimeter" data, waiting for at least one message
@@ -432,7 +466,8 @@ class ParkRanger(PointCloudProcessor):
                          self.sim_state_callback)
 
         if real_odometry:
-            rospy.Subscriber('odometry/filtered', Odometry, self.odometry_callback)
+            rospy.Subscriber('odometry/filtered', Odometry,
+                                self.odometry_callback)
 
         self.arms_up = False
         rospy.Subscriber('arms_up', Bool, self.on_arm_movement)
@@ -443,14 +478,6 @@ class ParkRanger(PointCloudProcessor):
         self.run(period, local_dem_comparison_type)
 
         rospy.loginfo("Park Ranger initialized")
-
-    def print_top_particles(self):
-        place = sorted(self.particle_filter.particles, key=lambda x: x.weight, reverse=True)
-        for i in range(10):
-            x = (place[i]).x - (self.dem_size / 2)
-            y = (self.dem_size / 2) - (place[i]).y
-            weight = (place[i]).weight
-            rospy.logwarn("{} {} {}".format(x, y, weight))
 
     """Compares global DEM to point clouds to localize the robot"""
     def run(self, period, local_dem_comparison_type):
@@ -464,52 +491,52 @@ class ParkRanger(PointCloudProcessor):
 
             pc = self.get_points()
             if pc is not None:
-                local_dem = self.point_cloud_to_local_dem(pc, local_dem_comparison_type)
-                num_points_local = len(local_dem.flatten())
-                valid_points_num = np.count_nonzero(~np.isnan(local_dem))
-                # if not init_flag and valid_points_num > num_points_local * 0.35:
+                local_dem = self.point_cloud_to_local_dem(pc,
+                                    local_dem_comparison_type)
+
                 if not init_flag:
-                    # 2 Prediction
                     if ParkRanger.debug:
-                         rospy.logwarn("Prediction")
+                         rospy.logwarn("Prediction step")
                     self.predict_particle_movement()
 
-                    # 4 Update
                     if ParkRanger.debug:
-                        rospy.logwarn("Update")
+                        rospy.logwarn("Update step")
                     self.likelihood(local_dem)
 
-                    rospy.logwarn("Actual: {} {}".format(self.position_x, self.position_y))
                     if ParkRanger.debug:
-                        rospy.logwarn("Estimate")
+                        rospy.logwarn("Actual position: {} {}".format(
+                                        self.position_x, self.position_y))
+                        rospy.logwarn("Estimation step")
                     est_x, est_y = self.estimate()
-                    if ParkRanger.debug:
-                        rospy.logwarn("Current Estimate (x, y): {} {}".format(est_x, est_y))
 
                     if est_x is not None and est_y is not None:
                         est_x = est_x - (self.dem_size / 2)
                         est_y = (self.dem_size / 2) - est_y
                         if ParkRanger.debug:
-                            rospy.logwarn("Current Estimate (x, y): {} {}".format(est_x, est_y))
+                            rospy.logwarn("Estimated position: {} {}".format(
+                                            est_x, est_y))
 
-                        # Get number of unique (in terms of x, y values) particles
-                        num_unique = len(set([(p.x, p.y) for p in self.particle_filter.particles]))
-                        # If particle filter has nearly converged, publish estimate
+                        # Get number of unique (in terms of x, y vals) particles
+                        num_unique = len(set([(p.x, p.y) for p in
+                                            self.particle_filter.particles]))
+                        # If particle filter has nearly converged,
+                        # publish estimate
                         if num_unique <= 5:
                             self.publish_estimate(est_x, est_y)
 
-                    # 5 Resample
+                    # Resample step
                     if ParkRanger.debug:
-                        rospy.logwarn("Resample")
+                        rospy.logwarn("Resample step")
                     self.resample()
                 elif init_flag:
-                    # 1 Initialization
+                    # Initialization step
                     if ParkRanger.debug:
-                        rospy.logwarn("Initialize")
+                        rospy.logwarn("Initialization step")
                     self.likelihood(local_dem)
                     init_flag = False
             r.sleep()
 
+    """Updates weight of each particle by comparing local and predicted DEMs"""
     def likelihood(self, local_dem):
         img_path = self.weights_results()
         weights = np.zeros_like(self.global_dem)
@@ -524,13 +551,16 @@ class ParkRanger(PointCloudProcessor):
             else:
                 p.weight = 0.0
 
+        # Save image where each pixel represents a particle (x,y) and weight
         plt.imshow(weights)
         plt.colorbar()
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        plt.savefig("{}{}_{}.png".format(img_path, "score", current_time), bbox_inches='tight')
+        plt.savefig("{}{}_{}.png".format(img_path, "weights", current_time),
+                        bbox_inches='tight')
         plt.clf()
 
+    """Move particles based on movement of robot"""
     def predict_particle_movement(self):
         # Compare movement of robot and adjust particles accordingly
         current_x = self.position_x
@@ -545,35 +575,36 @@ class ParkRanger(PointCloudProcessor):
         self.last_x = current_x
         self.last_y = current_y
 
+    """Produce estimate for robot's position via weighted sum of particles"""
     def estimate(self):
         sum_x = 0
         sum_y = 0
         num_particles = len(self.particle_filter.particles)
         sum_weights = sum([p.weight for p in self.particle_filter.particles])
         for p in self.particle_filter.particles:
-            #rospy.logwarn("{}".format(p.weight))
             if p.weight != 0.0:
                 sum_x += (p.x * p.weight)
                 sum_y += (p.y * p.weight)
         if sum_weights == 0:
-            rospy.logwarn("Sum is zero, Number of particles: {}".format(num_particles))
+            rospy.logwarn("Sum of particle weights is zero")
             return None, None
         return int(sum_x / sum_weights), int(sum_y / sum_weights)
 
+    """Perform resampling if neff value drops below threshold"""
     def resample(self):
-        rospy.logwarn("num particles: {}".format(len(self.particle_filter.particles)))
         weights = [p.weight for p in self.particle_filter.particles]
         norm = weights / np.linalg.norm(weights)
-        if ParkRanger.neff(norm) <  ( len(norm) / 8 ):
-            rospy.logwarn("Resample invoked")
+        if ParkRanger.neff(norm) <  (len(norm) / 8):
             indexes = mc.systematic_resample(norm)
             self.particle_filter.resample(indexes)
 
 """Initializes park ranger"""
-def park_ranger(real_odometry, world_name, resolution=0.5, local_dem_comparison_type="max", period=5,
-                range_min=0.105, range_max=10., camera_height=0.34):
-    pr = ParkRanger(real_odometry, world_name, resolution, local_dem_comparison_type, period, range_min,
-                    range_max, camera_height)
+def park_ranger(real_odometry, world_name, resolution=0.5,
+                local_dem_comparison_type="max", period=5, range_min=0.105,
+                range_max=10., camera_height=0.34):
+    pr = ParkRanger(real_odometry, world_name, resolution,
+                    local_dem_comparison_type, period, range_min, range_max,
+                    camera_height)
 
 if __name__ == "__main__":
     try:
