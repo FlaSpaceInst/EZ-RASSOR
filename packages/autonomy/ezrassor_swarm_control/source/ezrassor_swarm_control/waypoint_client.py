@@ -111,20 +111,17 @@ class WaypointClient:
 
         # Send each waypoint in a path to the rover
         for node in path:
-            # If request was canceled, reset server to receive a new request in the future
+            # If request was canceled stop sending waypoints
             if self.preempt:
-                self.preempt = False
-                self.cur_waypoint = None
-                self.goal = None
-
-                # Return to stop sending waypoints
-                return
+                break
 
             # Sends the waypoint to a rover
             self.cur_waypoint = node
             self.send_waypoint(node)
 
-        rospy.loginfo('Waypoint client {} succeeded, path completed!'.format(self.namespace + self.client_name))
+        rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
+        # Reset server to receive another path
+        self.preempt = False
         self.cur_waypoint = None
         self.goal = None
 

@@ -71,6 +71,10 @@ class PathPlanner:
         heapq.heappush(open, (f_scores[start], start))
 
         while open:
+            # Try for only 30 seconds
+            if timer() - start_time > 30:
+                break
+
             # Visit coordinate with the smallest f value
             cur = heapq.heappop(open)[1]
 
@@ -109,8 +113,10 @@ class PathPlanner:
 
                     heapq.heappush(open, (f_scores[neighbor], neighbor))
 
-        print('No path found in {}'.format(timer() - start_time))
-        return
+        print('No path found in {} seconds. Sending straight line path.'.format(timer() - start_time))
+        previous[goal] = start
+        path = self.backtrack_path(goal, start, previous)
+        return path
 
     def get_valid_neighbors(self, cur):
         '''
@@ -176,6 +182,10 @@ class PathPlanner:
                 cur = previous[cur]
             else:
                 raise ValueError('Unable to backtrack to start node.')
+
+        cur.x -= self.width // 2
+        cur.y -= self.width // 2
+        p.path.append(cur)
 
         # Reverse path before returning being that it's been built from goal to start
         p.path = p.path[::-1]
