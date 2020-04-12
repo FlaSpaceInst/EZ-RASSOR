@@ -16,6 +16,7 @@ from os import listdir
 from os.path import isfile, join
 import re
 import filterpy.monte_carlo as mc
+from lxml import etree
 
 """Represents a single particle in the particle filter"""
 class Particle:
@@ -101,22 +102,76 @@ class ParkRanger(PointCloudProcessor):
         return base + "/dem_data/"
 
     @staticmethod
+    def path_world():
+        rospack = rospkg.RosPack()
+        base = rospack.get_path("ezrassor_sim_gazebo")
+        return base + "/worlds/"
+
+    @staticmethod
     def weights_results():
         rospack = rospkg.RosPack()
         base = rospack.get_path("ezrassor_autonomous_control")
         return base + "/weights_results/"
 
-    """Creates global DEM from file in dem_data/"""
-    def create_array_global_dem(self, directory):
+    @staticmethod
+    def get_first_heightmap_tag(world_file_string):
+        world_root = etree.XML(world_file_string)
+        return world_root.find('.//heightmap')
+
+    @staticmethod
+    def get_world_dem_range(path_world_file):
+        file = open(path_world_file, "r")
+        first_heightmap_tag = ParkRanger.get_first_heightmap_tag(file.read())
+        dem_size_path = first_heightmap_tag.find('size').text
+        xyz_size = dem_size_path.split(' ')
+        return int(xyz_size[-1])
+
+    @staticmethod
+    def get_world_dem_name(path_world_file):
+        file = open(path_world_file, "r")
+        rospy.logwarn(path_world_file)
+        first_heightmap_tag = ParkRanger.get_first_heightmap_tag(file.read())
+        dem_jpg_path = first_heightmap_tag.find('uri').text
+        split_by_slash = dem_jpg_path.split('/')
+        last_item_slash = split_by_slash[len(split_by_slash) - 1]
+        split_by_underscore = last_item_slash.split('_')
+        last_item_index = len(split_by_underscore) - 1
+        if split_by_underscore[last_item_index] != 'converted.jpg':
+            return None
+        split_by_underscore.pop()
+        new_string = ""
+        for s in split_by_underscore:
+            new_string += s + "_"
+        return new_string
+
+    @staticmethod
+    def get_match_dem_n_world(world_dem_name, directory):
         # Use list comprehension to get only files in directory as opposed to files and subdirectories
         onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
 
         # User hasn't put file in dem_data
         if not onlyfiles:
-            rospy.logerr("Couldn't read dem data")
+            rospy.logerr("No files found in dem data")
             return
 
-        file = open(directory + onlyfiles[0], "r")
+        for i in onlyfiles:
+            #rospy.logwarn("{}".format(type(i)))
+            split_by_underscore = i.split('_')
+            split_by_underscore.pop()
+            split_by_underscore.pop()
+            new_string = ""
+            for s in split_by_underscore:
+                new_string += s + "_"
+            rospy.logwarn("{} vs {}".format(world_dem_name, new_string))
+            if world_dem_name == new_string:
+                return directory + "/" + i
+        return None
+
+
+    """Creates global DEM from file in dem_data/"""
+    def create_array_global_dem(self):
+
+        file = open(self.dem_data_file_path, "r")
         lines = file.readlines()
         dem_size = map(int,re.findall(r'-?(\d+)',lines[2]))
 
@@ -139,6 +194,8 @@ class ParkRanger(PointCloudProcessor):
             self.global_dem[i] = heights
             if i == middle:
                 self.origin_z = float(heights[middle])
+        old_dem_range = np.ptp(self.global_dem)
+        self.global_dem = (self.global_dem * old_dem_range) / self.new_dem_range
 
     """Initializes data for creating local DEM
 
@@ -341,7 +398,7 @@ class ParkRanger(PointCloudProcessor):
 
         self.estimate_pub.publish(odom_msg)
 
-    def __init__(self, real_odometry, resolution, local_dem_comparison_type, period,
+    def __init__(self, real_odometry, world_name, resolution, local_dem_comparison_type, period,
                  range_min, range_max, camera_height):
         super(ParkRanger, self).__init__('park_ranger')
         self.resolution = resolution
@@ -356,8 +413,14 @@ class ParkRanger(PointCloudProcessor):
         self.last_y = self.start_y
 
         path = ParkRanger.path_dem()
-
-        self.create_array_global_dem(path)
+        world_name = ParkRanger.path_world() + world_name + ".world"
+        world_dem_name = ParkRanger.get_world_dem_name(world_name)
+        self.new_dem_range = ParkRanger.get_world_dem_range(world_name)
+        self.dem_data_file_path = ParkRanger.get_match_dem_n_world(world_dem_name, path)
+        if not self.dem_data_file_path:
+            rospy.logerr("Couldn't find match")
+        else:
+            self.create_array_global_dem()
 
         self.init_local_dem_info(range_min, range_max)
 
@@ -507,9 +570,9 @@ class ParkRanger(PointCloudProcessor):
             self.particle_filter.resample(indexes)
 
 """Initializes park ranger"""
-def park_ranger(real_odometry, resolution=0.5, local_dem_comparison_type="max", period=5,
+def park_ranger(real_odometry, world_name, resolution=0.5, local_dem_comparison_type="max", period=5,
                 range_min=0.105, range_max=10., camera_height=0.34):
-    pr = ParkRanger(real_odometry, resolution, local_dem_comparison_type, period, range_min,
+    pr = ParkRanger(real_odometry, world_name, resolution, local_dem_comparison_type, period, range_min,
                     range_max, camera_height)
 
 if __name__ == "__main__":
