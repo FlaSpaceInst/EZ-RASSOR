@@ -34,6 +34,8 @@ class PathPlanner:
         # Maximum slope a rover can climb (must be >= 1)
         self.max_slope = rover_max_climb_slope
 
+        self.wait_time = 300
+
     def find_path(self, start_, goal_):
         """
         Leverages A* algorithm to find cost effective path from start to goal
@@ -73,7 +75,7 @@ class PathPlanner:
 
         while open:
             # Try for only 30 seconds
-            if timer() - start_time > 30:
+            if timer() - start_time > self.wait_time:
                 break
 
             # Visit coordinate with the smallest f value
@@ -114,7 +116,7 @@ class PathPlanner:
 
                     heapq.heappush(open, (f_scores[neighbor], neighbor))
 
-        print('No path found in {} seconds. Sending straight line path.'.format(timer() - start_time))
+        rospy.loginfo('No path found in {} seconds. Sending straight line path.'.format(timer() - start_time))
         previous[goal] = start
         path = self.backtrack_path(goal, start, previous)
         return path
@@ -171,13 +173,10 @@ class PathPlanner:
         p = Path()
         p.path = []
 
-        temp = []
         while cur != start:
             # Convert image coordinates to gazebo simulation coordinates before adding to path
-            z = self.map[cur.y, cur.x]
             cur.x -= self.width // 2
             cur.y = -(cur.y - (self.height // 2))
-            temp.append((cur.x, cur.y, z))
             p.path.append(cur)
 
             # Continue backtracking along each node's previous pointer
@@ -186,15 +185,13 @@ class PathPlanner:
             else:
                 raise ValueError('Unable to backtrack to start node.')
 
+        # Add start node to path
         cur.x -= self.width // 2
         cur.y = -(cur.y - (self.height // 2))
         p.path.append(cur)
 
         # Reverse path before returning being that it's been built from goal to start
         p.path = p.path[::-1]
-
-        for i in temp[::-1]:
-            print(i)
         return p
 
     def euclidean(self, a, b):

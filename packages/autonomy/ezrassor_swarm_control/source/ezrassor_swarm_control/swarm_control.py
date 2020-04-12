@@ -31,7 +31,7 @@ class SwarmController:
         height_map = os.path.join(os.path.expanduser('~'),
                                   '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
 
-        path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
+        path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
         status = get_rover_status(1)
 
