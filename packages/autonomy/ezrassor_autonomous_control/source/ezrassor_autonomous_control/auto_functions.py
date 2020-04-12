@@ -25,12 +25,13 @@ def charge_battery(world_state, ros_util, waypoint_server=None) :
 
     # world_state.battery = 100
     ros_util.publish_actions('stop', 0, 0, 0, 0)
-    # feedback = uf.send_feedback(world_state, waypoint_server)
+    feedback = uf.send_feedback(world_state, waypoint_server)
     while world_state.battery < 100 :
         rospy.sleep(0.1)
         world_state.battery += 3
         # rospy.loginfo(world_state.battery)
     world_state.battery = 100    
+    feedback = uf.send_feedback(world_state, waypoint_server)
 
 def auto_drive_location(world_state, ros_util, waypoint_server=None):
     """ Navigate to location. Avoid obstacles while moving toward location. """
@@ -102,10 +103,11 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
     # return feedback
 
 
-def auto_dig(world_state, ros_util, duration):
+def auto_dig(world_state, ros_util, duration, waypoint_server=None) :
     """ Rotate both drums inward and drive forward 
         for duration time in seconds. 
     """
+    feedback = uf.send_feedback(world_state, waypoint_server)
     rospy.loginfo('Auto-digging for %d seconds...', duration)
 
     uf.set_front_arm_angle(world_state, ros_util, -0.1)
@@ -121,17 +123,19 @@ def auto_dig(world_state, ros_util, duration):
         if world_state.battery <= 30 :
             break
         ros_util.publish_actions('forward', 0, 0, 1, 1)
+        feedback = uf.send_feedback(world_state, waypoint_server)
         t += 5
         rospy.sleep(5)
         world_state.battery -= 20
         # Dig while moving backward for 5 seconds
         ros_util.publish_actions('reverse', 0, 0, 1, 1)
+        feedback = uf.send_feedback(world_state, waypoint_server)
         t += 5
         rospy.sleep(5)
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
+    feedback = uf.send_feedback(world_state, waypoint_server)
     rospy.loginfo('Done digging')
-
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """
