@@ -7,7 +7,6 @@
   <arg name="spawn_x_coords" default=" 3 6"/>
   <arg name="spawn_y_coords" default="0 0"/>
   <arg name="spawn_z_coords" default="default"/>
-  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
   <arg name="swarm_control" default="default"/>
 
@@ -15,9 +14,6 @@
   <group ns="ezrassor$(arg robot_count)">
     <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
       <arg name="control_methods" value="autonomy"/>
-      <arg name="enable_cameras"
-            value="$(arg enable_cameras)"
-            unless="$(eval enable_cameras == 'default')"/>
       <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>

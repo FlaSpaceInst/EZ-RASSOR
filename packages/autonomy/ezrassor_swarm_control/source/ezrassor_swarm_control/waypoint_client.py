@@ -70,6 +70,11 @@ class WaypointClient:
                 self.preempt_path()
 
                 new_path = self.path_planner.find_path(feedback.pose.position, self.goal)
+
+                # Wait for previous path to be totally cancelled before sending the new path
+                while self.preempt is True:
+                    rospy.sleep(1.)
+
                 self.send_path(new_path)
 
     def done_cb(self, status, result):
