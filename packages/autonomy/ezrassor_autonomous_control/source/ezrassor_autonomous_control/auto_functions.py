@@ -89,7 +89,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-        world_state.battery -= (0.00775/10)
+        world_state.battery -= (0.00775 / 4)
 
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
