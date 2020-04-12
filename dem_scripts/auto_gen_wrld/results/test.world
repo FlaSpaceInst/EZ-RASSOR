@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='ASCII'?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://gen_test</uri>
+      <friction>
+        <mu>0.01</mu>
+        <mu2>0.01</mu2>
+      </friction>
+    </include>
+    <model name="gen_test">
+      <static>true</static>
+      <link name="link">
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+        <collision name="collision">
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.01</mu>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <soft_cfm>1</soft_cfm>
+                <kp>100000</kp>
+                <kd>1</kd>
+                <max_vel>1e-06</max_vel>
+                <min_depth>0.02</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+          <geometry>
+            <heightmap>
+              <uri>model://gen_test/example_dem.jpg</uri>
+              <pos>0 0 0</pos>
+              <size>513 513 50</size>
+            </heightmap>
+          </geometry>
+        </collision>
+        <visual>
+          <geometry>
+            <heightmap>
+              <texture>
+                <diffuse>model://gen_test/example_diff.jpg</diffuse>
+                <normal>model://gen_test/example_norm.jpg</normal>
+                <size>2</size>
+              </texture>
+              <uri>model://gen_test/example_dem.jpg</uri>
+              <pos>0 0 0</pos>
+              <size>513 513 50</size>
+            </heightmap>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+    <physics default="0" name="default_physics" type="ode">
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>75</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -1.622</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic"/>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose frame="">16.3249 -27.6364 14.6277 -0 0.621796 2.22418</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+  </world>
+</sdf>

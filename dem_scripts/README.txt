@@ -1,5 +1,8 @@
 dem_scripts README
 
+NOTE: To run tile_test, user needs to put tile_test/ folder in the current directory
+to their ~/.gazebo/models folder.
+
 ****************************** Pre-requisites *******************************************
 
 Prior to running this script ensure you:
@@ -37,6 +40,9 @@ Note about Docker:
 
 ***************************** Running the programs *************************************
 
+NOTE: Please run the reset, queue_reset, and results_reset command first since
+there is just a placeholder file in the otherwise empty folders
+
 To run the script:
     sudo bash run_programs.sh WHATEVER_COMMAND
 
@@ -63,6 +69,10 @@ Running the programs:
     however you want, just keep in mind that some permutations aren't efficient
     or just redundant. If you want to do all of them in a single run, the
     recommended order is 4->3->2->1.
+
+    NOTE: auto_gen_wrld (5) is not streamlined to run as an option in the run_programs.sh
+    script and does not require docker. The process of running this script is relatively
+    similar to how to run the run_programs.sh. See below for more details.
 
     Programs:
 
@@ -98,19 +108,48 @@ Running the programs:
             other sizes but these are the known sizes that gazebo can recognize for
             a heightmap object.
 
-      4 - convert2tif:
-              Given a PDS (.lbl + ((aux.xml + .jp2) or (.img))), converts to a
-              DEM (.tif). Might work with ISIS files (.cub + .lbl) but not tested
+    4 - convert2tif:
+            Given a PDS (.lbl + ((aux.xml + .jp2) or (.img))), converts to a
+            DEM (.tif). Might work with ISIS files (.cub + .lbl) but not tested
 
-              If you encounter errors such as:
-                  band 1: IReadBlock failed at X offset 0, Y offset 0: Failed
-                  to read scanline 0
+            If you encounter errors such as:
+                band 1: IReadBlock failed at X offset 0, Y offset 0: Failed
+                to read scanline 0
 
-                  or
+                or
 
-                  0ERROR 1: Tile part length size inconsistent with stream length
-              Either part of the file is corrupted or missing, try using a
-              different pds or re-download it
+                0ERROR 1: Tile part length size inconsistent with stream length
+            Either part of the file is corrupted or missing, try using a
+            different pds or re-download it
+
+    5 - auto_gen_wrld:
+            For each image (.jpg) in the queue in the auto_gen_wrld, a world file
+            and a model package are created with name. These items are piped into
+            to appropriate folders for you. Ideally, use the output of mk_gaz_wrld
+            for input to this program, especially if you want to use Park Ranger for
+            this (see the Park Ranger section for details).
+
+            Things this script does NOT do for you:
+
+                - Check if your image is of the correct size for gazebo
+                - Create a world by throwing the image used for geometry with
+                the images used for diffuse and normal map respectively
+                - Reset the queue nor the results
+
+            Things that you CAN configure in global variables for generate_xmls.py:
+
+                - The path for the diffuse and normal map
+                - Author name and author email (defaults to mine)
+                - Position of the terrain object
+                - What sdf version is being used
+
+            You can of course edit other items after everything is generated but
+            be sure to update the world file as well as the sdf file in the respective
+            model directory that is made for the heightmap in the ~/.gazebo/models.
+            You only need to update the tags in common for the heightmap, i.e. don't
+            define physics in both the sdf and the world files.
+
+            For more details, see the Making a Gazebo World section.
 
 IMPORTANT NOTE: Before executing run again, you might want to at least execute
 the reset command otherwise it will execute the old jobs you sent to them as well
@@ -133,9 +172,8 @@ values on the extreme ends i.e z = 3000 or z = -4927. To reduce uncertainty, the
 is reflected to expect .jpgs along with the extracted elevation data, which is outputted
 by get_elev. For more information about this, see the Park Ranger section.
 
-Unfortunately, we don't have functionality to automate the creation of a world
-for you but it is possible for to create a script that does since world files
-are essential xml.
+Cheatsheet for what each tag means (EZ-RASSOR currently uses version 1.4):
+http://sdformat.org/spec
 
 Definitions:
 
@@ -153,7 +191,7 @@ Definitions:
     - World:
         This is where you define the environment that the rover will load up into.
 
-Quick overview:
+Quick Manual World Creation Overview:
 
     - Make a model and put in ~/.gazebo/models/
         - Name_of_model_dir/
@@ -161,14 +199,14 @@ Quick overview:
             - model.sdf
             - materials/
     - World file which is moved to EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds
-        - ref model in uri and textures as "model://Name_of_model_dir/path_to_files"
+        - ref model in uri and materials/texture as "model://Name_of_model_dir/path_to_files"
         - add physics
 
 Quick and Dirty Setup:
     The best way to understand is to look at the example and gazebo documentation.
-    Or you can copy and tweak the model and world examples included in the current
-    directory to create your own world. These instructions will make a world of lunar
-    appearance and physics so adjust for your application.
+    Or you can copy and tweak the model tile_test/ included in the current
+    directory and the corresponding world file packages/simulation/ezrassor_sim_gazebo/worlds/tile_test.world.
+    These instructions will make a world of lunar appearance and physics so adjust for your application.
 
     1. Rename the model folder
     2. In the .sdf, change the filename in the <heightmap><uri> tag to the
@@ -190,8 +228,9 @@ Although you can use either a .jpg or .tif, we've opted to use .jpg s so the aut
 code reflects this decision. This is primarily due to one of our localization estimation
 methods called park ranger. It depends upon knowing your elevation and a DEM of the area,
 so in order to get them in the same frame, we place the heightmap to make the z
-at the gazebo origin's start at zero and then offset it with the actual expected elevation
-so that park ranger can receive "altimeter" data without the weirdness of a .tif heightmap.
+at the gazebo origin's to start at zero elevation. Then, Park Ranger offsets the z values with a
+text file equivalent of the data in the .tif, which allows us to simulate an "altimeter" data without the
+weirdness of a .tif heightmap.
 
 NOTE: If you do use the .tif file with the enable_real_odometry flag to true,
 the world state object in the autonomy package will have an incorrect z value
@@ -205,7 +244,7 @@ To ensure park ranger functionality works, you must do the following things:
   - The <heightmap><size> tag must consist of <size> m m range </size>,
     where range = max_elev - min_elev and m == m == jpg_dem_width == jpg_dem_length
 
-  - The <heightmap><pos> tag must consist of <pos> 0 0 middle_dem_elevation - range </pos>
+  - The <heightmap><pos> tag must consist of <pos> 0 0 center_dem_elevation_value - range </pos>
 
 If you load up the simulation and the terrain has extreme slopes, that means it could
 be one of two things: the ratio of range to the mxm of the heightmap is too large or
@@ -228,7 +267,7 @@ Gazebo depends on a GDAL library, those dependancies only let Gazebo read dems a
 persistent outside of Gazebo. If you search your system for those GDAL libraries they will show up,
 but they don't recognize operations such as gdal_translate. Because of this, when you try to install
 additional libraries for development with GDAL, there are dependency conflicts between Gazebo and
-GDAL development libraries. So in order to do read DEMs without breaking the environment to run
+GDAL development libraries. So in order to read DEMs without breaking the environment to run
 the EZ-RASSOR simulation, we have to isolate it.
 
 We have 3 options: VirtualMachine, Docker, or Anaconda. VMs are quite heavy since
@@ -267,8 +306,8 @@ https://coderbook.com/@marcus/should-i-use-virtualenv-or-docker-containers-with-
 
 Docker Implementation:
 
-In terms of docker implementation, each program has there own docker image associated
-with it. If you notice, there is a Dockerfile.base and a Dockerfile.child file rather
+In terms of docker implementation, each program has their own docker image associated
+with it (except auto_gen_wrld). If you notice, there is a Dockerfile.base and a Dockerfile.child file rather
 than the standard one Dockerfile per directory. The Dockerfile.base and entrypoint.sh
 are just for setting up the program to run as a local user vs root. Even though that
 a docker container is used for isolation, it's insecure to run as root.
