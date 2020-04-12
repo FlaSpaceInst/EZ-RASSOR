@@ -58,9 +58,6 @@ class WaypointClient:
     def feedback_cb(self, feedback):
         """Callback executed when the waypoint client receives feedback from a rover"""
 
-        x = round(feedback.pose.position.x, 2)
-        y = round(feedback.pose.position.y, 2)
-
         # rospy.loginfo('Waypoint client {} received feedback! position: {} battery: {}'.
         #              format((self.namespace + self.client_name), (x, y), feedback.battery))
 
@@ -110,7 +107,7 @@ class WaypointClient:
         self.goal = path[-1]
 
         # Send each waypoint in a path to the rover
-        for node in path:
+        for node in path[1:]:
             # If request was canceled stop sending waypoints
             if self.preempt:
                 break
@@ -120,6 +117,7 @@ class WaypointClient:
             self.send_waypoint(node)
 
         rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
+
         # Reset server to receive another path
         self.preempt = False
         self.cur_waypoint = None

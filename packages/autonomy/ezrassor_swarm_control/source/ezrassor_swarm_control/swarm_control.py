@@ -33,18 +33,15 @@ class SwarmController:
 
         path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
 
-        for i in range(1, self.robot_count + 1):
-            # Get status (battery and pose) of rover using status service
-            status = get_rover_status(i)
+        status = get_rover_status(1)
 
-            if status is not None:
-                # Find path
-                path = path_planner.find_path(status.pose.position, self.dig_sites[0])
+        if status is not None:
+            # Find path
+            path = path_planner.find_path(status.pose.position, self.dig_sites[0])
 
-                # Send rover along path
-                if path is not None:
-                    self.waypoint_pubs[i].publish(path)
-
+            # Send rover along path
+            if path is not None:
+                self.waypoint_pubs[1].publish(path)
 
 
 def on_start_up(robot_count, target_xs, target_ys):
