@@ -19,6 +19,8 @@
   <arg name="move_increment" default="3.0"/>
   <arg name="max_obstacle_angle" default="45.0"/>
   <arg name="min_hole_diameter" default="3.0"/>
+  <arg name="enable_park_ranger" default="false"/>
+  <arg name="world" default="default"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_autonomous_control"
@@ -53,7 +55,7 @@
   <node pkg="image_view" type="image_view" name="image_view">
 	<remap from="image" to="depth/image_raw"/>
   </node>
-  
+
   <node pkg="ezrassor_autonomous_control" type="obstacle_detection" name="obstacle_detection">
        <param name="max_angle"
               value="$(arg max_obstacle_angle)"/>
@@ -62,6 +64,12 @@
        <param name="min_hole_diameter"
               value="$(arg min_hole_diameter)"/>
   </node>
+
+  <group if="$(arg enable_park_ranger)">
+       <node pkg="ezrassor_autonomous_control" type="park_ranger" name="park_ranger">
+              <param name="world" value="$(arg world)"/>
+       </node>
+  </group>
 
   <group if="$(arg enable_real_odometry)">
        <node pkg="rtabmap_ros" type="rgbd_odometry" name="visual_odometry">

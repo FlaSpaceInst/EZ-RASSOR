@@ -4,12 +4,12 @@
     <static>true</static>
     <link name="link">
       <collision name="collision">
-       
+
         <geometry>
           <heightmap>
-            <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-            <size>129 129 49</size>
-            <pos>0 0 -25</pos>
+            <uri>model://tile_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
+            <pos>0 0 -8</pos>
+            <size>129 129 15</size>
           </heightmap>
         </geometry>
       </collision>
@@ -22,9 +22,9 @@
               <normal>file://media/materials/textures/flat_normal.png</normal>
               <size>2</size>
             </texture>
-            <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
-            <size>129 129 49</size>
-            <pos>0 0 -25</pos>
+            <uri>model://tile_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
+            <pos>0 0 -8</pos>
+            <size>129 129 15</size>
           </heightmap>
         </geometry>
       </visual>

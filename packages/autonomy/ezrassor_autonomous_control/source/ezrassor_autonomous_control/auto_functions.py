@@ -3,8 +3,8 @@ import utility_functions as uf
 import nav_functions as nf
 
 def at_target(positionX, positionY, targetX, targetY, threshold):
-    """ Determine if the current position is within 
-        the desired threshold of the target position. 
+    """ Determine if the current position is within
+        the desired threshold of the target position.
     """
     value = ((targetX - threshold) < positionX < (targetX + threshold)
             and (targetY - threshold) < positionY < (targetY + threshold))
@@ -82,7 +82,7 @@ def auto_dig(world_state, ros_util, duration):
 
     # Perform Auto Dig for the desired Duration
     t = 0
-    while t < duration*40:        
+    while t < duration*40:
         if uf.self_check(world_state, ros_util) != 1:
             return
         ros_util.publish_actions('forward', 0, 0, 1, 1)
@@ -112,8 +112,8 @@ def auto_dock(world_state, ros_util):
 
 
 def auto_dump(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward 
-        for duration time in seconds. 
+    """ Rotate both drums inward and drive forward
+        for duration time in seconds.
     """
     rospy.loginfo('Auto-dumping drum contents...')
 
@@ -121,7 +121,7 @@ def auto_dump(world_state, ros_util, duration):
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
     t = 0
-    while t < duration*40:        
+    while t < duration*40:
         if uf.self_check(world_state, ros_util) != 1:
             return
         ros_util.publish_actions('stop', 0, 0, -1, -1)
@@ -134,7 +134,7 @@ def auto_dump(world_state, ros_util, duration):
             ros_util.publish_actions('left', 0, 0, 0, 0)
             ros_util.rate.sleep()
 
-    while t < duration*30:        
+    while t < duration*30:
         ros_util.publish_actions('stop', 0, 0, -1, -1)
         t+=1
         ros_util.rate.sleep()
