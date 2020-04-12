@@ -44,13 +44,18 @@ def on_start_up(target_x, target_y, start_x, start_y, movement_topic,
     world_state.dig_site = temp
 
     # Setup Subscriber Callbacks
+
+    # If enable_real_odometry flag is true, use odometry for position
     if real_odometry:
         # Get initial spawn coords
         world_state.initial_spawn(start_x, start_y)
 
+        # Get x and y from filtered odometry readings
         rospy.Subscriber('odometry/filtered',
                          Odometry,
                          world_state.odometryCallBack)
+
+    # If enable_real_odometry flag is false, just use Gazebo's position
     else:
         rospy.Subscriber('/gazebo/link_states',
                          LinkStates,

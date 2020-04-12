@@ -77,6 +77,8 @@ def main():
             print("Coordinates of each corner pixel in degree decimal:", file=extr_data)
             print(geo_ext, file=extr_data)
 
+        print("Has {} bands".format(dataset.RasterCount))
+
         # loads up a channel of the image i.e. r from rgb
         band = dataset.GetRasterBand(1)
 

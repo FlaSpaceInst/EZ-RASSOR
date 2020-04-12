@@ -74,30 +74,77 @@ then
 else
     case $1 in
         reset)
-            echo "Resetting mk_gaz_wrld"
-            rm -rf "$dot/mk_gaz_wrld/queued_dems"/*
-            rm -rf "$dot/mk_gaz_wrld/downsized_dems"/*
-            rm -rf "$dot/mk_gaz_wrld/converted_dems"/*
+            read -p "Too many files to delete? [0 or 1]" too_many
+            if [ $too_many -eq 0 ]
+            then
+              echo "Resetting mk_gaz_wrld"
+              rm -rf "$dot/mk_gaz_wrld/queued_dems"/*
+              rm -rf "$dot/mk_gaz_wrld/downsized_dems"/*
+              rm -rf "$dot/mk_gaz_wrld/converted_dems"/*
 
-            echo "Resetting get_elev"
-            rm -rf "$dot/get_elev/queued_dems"/*
-            rm -rf "$dot/get_elev/dem_results"/*
+              echo "Resetting get_elev"
+              rm -rf "$dot/get_elev/queued_dems"/*
+              rm -rf "$dot/get_elev/dem_results"/*
 
-            echo "Resetting extract_tile"
-            rm -rf "$dot/extract_tile/queued_dems"/*
-            rm -rf "$dot/extract_tile/results"/*
+              echo "Resetting extract_tile"
+              rm -rf "$dot/extract_tile/queued_dems"/*
+              rm -rf "$dot/extract_tile/results"/*
 
-            echo "Resetting convert2tif"
-            rm -rf "$dot/convert2tif/queued_dems"/*
-            rm -rf "$dot/convert2tif/results"/*
+              echo "Resetting convert2tif"
+              rm -rf "$dot/convert2tif/queued_dems"/*
+              rm -rf "$dot/convert2tif/results"/*
+            else
+              mkdir empty
+              echo "Resetting mk_gaz_wrld"
+              rsync -a --delete empty/ "$dot/mk_gaz_wrld/queued_dems"
+              rsync -a --delete empty/ "$dot/mk_gaz_wrld/downsized_dems"
+              rsync -a --delete empty/ "$dot/mk_gaz_wrld/converted_dems"
+              rmdir empty
+
+              mkdir empty
+              echo "Resetting get_elev"
+              rsync -a --delete empty/ "$dot/get_elev/queued_dems"
+              rsync -a --delete empty/ "$dot/get_elev/dem_results"
+              rmdir empty
+
+              mkdir empty
+              echo "Resetting extract_tile"
+              rsync -a --delete empty/ "$dot/extract_tile/queued_dems"
+              rsync -a --delete empty/ "$dot/extract_tile/results"
+              rmdir empty
+
+              mkdir empty
+              echo "Resetting convert2tif"
+              rsync -a --delete empty/ "$dot/convert2tif/queued_dems"
+              rsync -a --delete empty/ "$dot/convert2tif/results"/*
+              rmdir empty
+            fi
             ;;
         queue_reset)
-            echo "Removing items from queue"
-            rm -rf "$dot/queue"/*
+            read -p "Too many files to delete? [0 or 1]" too_many
+            if [ $too_many -eq 0 ]
+            then
+              echo "Removing items from queue"
+              rm -rf "$dot/queue"/*
+            else
+              mkdir empty
+              echo "Removing items from results"
+              rsync -a --delete empty/ "$dot/queue"
+              rmdir empty
+            fi
             ;;
         results_reset)
-            echo "Removing items from results"
-            rm -rf "$dot/results"/*
+            read -p "Too many files to delete? [0 or 1]" too_many
+            if [ $too_many -eq 0 ]
+            then
+              echo "Removing items from results"
+              rm -rf "$dot/results"/*
+            else
+              mkdir empty
+              echo "Removing items from results"
+              rsync -a --delete empty/ "$dot/results"
+              rmdir empty
+            fi
             ;;
         run)
             request=0
