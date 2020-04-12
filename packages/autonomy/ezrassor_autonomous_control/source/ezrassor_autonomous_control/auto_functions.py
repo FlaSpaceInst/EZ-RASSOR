@@ -59,6 +59,10 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                         world_state.target_location.x,
                         world_state.target_location.y, ros_util.threshold):
 
+        # Check that the waypoint client request hasnt been canceled
+        if waypoint_server.is_preempt_requested():
+            break
+
         # Set arms up for travel
         uf.set_front_arm_angle(world_state, ros_util, 1.3)
         uf.set_back_arm_angle(world_state, ros_util, 1.3)
@@ -66,12 +70,12 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         # Check rover battery, hardware, and if it's flipped over
         if uf.self_check(world_state, ros_util) != 1:
 
-            # Cancel action server request is self check failed
+            # Cancel waypoint client request is self check failed
             if waypoint_server is not None:
                 waypoint_server.set_preempted()
 
             rospy.logdebug('Status check failed.')
-            return feedback
+            break
 
         angle = uf.get_turn_angle(world_state, ros_util)
 
@@ -98,7 +102,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
     return feedback
 
 def auto_dig(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward
+    """ Rotate both drums inward and dig
         for duration time in seconds.
     """
     rospy.loginfo('Auto-digging for %d seconds...', duration)
@@ -145,7 +149,7 @@ def auto_dock(world_state, ros_util):
 
 
 def auto_dump(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward 
+    """ Rotate both drums inward and drive forward
         for duration time in seconds. 
     """
     rospy.loginfo('Auto-dumping drum contents...')
