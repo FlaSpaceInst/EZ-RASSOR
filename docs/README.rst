@@ -98,6 +98,7 @@ Please read the `wiki page for the ezrassor_launcher`_ to learn more about what 
 AUTHORS
 -------
 **EZ-RASSOR 1.0 Team**
+
 - `Sean Rapp`_
 - `Ron Marrero`_
 - `Tiger Sachse`_
@@ -110,6 +111,7 @@ AUTHORS
 - `Lucas Gonzalez`_
 
 **EZ-RASSOR 2.0 (GPS-Denied Autonomous Navigation) Team**
+
 - `Jordan Albury`_
 - `Shelby Basco`_
 - `John Hacker`_
