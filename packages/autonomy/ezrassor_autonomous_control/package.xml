@@ -25,6 +25,13 @@
   <depend>rtabmap_ros</depend>
   <depend>image_geometry</depend>
   <depend>robot_localization</depend>
+  <depend>diff_drive_controller</depend>
+  <depend>python-matplotlib</depend>
+  <depend>python-tk</depend>
+  <depend>python-filterpy-pip</depend>
+  <depend>docker.io</depend>
+  <depend>python-lxml</depend>
+  <depend>python-pygame</depend>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
 </package>
