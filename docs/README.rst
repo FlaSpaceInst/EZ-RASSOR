@@ -15,16 +15,12 @@ For more information, our `wiki`_ contains a high-level overview of the EZ-RASSO
 
 TYPICAL INSTALLATION
 --------------------
-Clone this repository with ``git`` and include the ``--recursive`` flag. This tells ``git`` to also clone the submodules that this project relies on.
+First, clone this repository with ``git``.
 ::
-  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git --recursive
+  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
   cd EZ-RASSOR
-  
-If you've already cloned the repository without the ``--recursive`` flag you can run this command to clone the submodules manually:
-::
-  git submodule update --init --recursive
 
-Finally, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
+Then, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
 ::
   sh install.sh ros
   ** RESTART TERMINAL **
