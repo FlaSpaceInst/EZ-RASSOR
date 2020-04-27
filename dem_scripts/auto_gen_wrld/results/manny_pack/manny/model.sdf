@@ -1,0 +1,33 @@
+<sdf version="1.4">
+  <model name="manny">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        
+        <geometry>
+          <heightmap>
+            <uri>model://manny/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+            <size>514 514 49</size>
+            <pos>0 0 -45</pos>
+          </heightmap>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <heightmap>
+            <texture>
+              <diffuse>model://manny/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+              <normal>file://media/materials/textures/flat_normal.png</normal>
+              <size>2</size>
+            </texture>
+            <uri>model://manny/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+            <size>514 514 49</size>
+            <pos>0 0 -45</pos>
+          </heightmap>
+        </geometry>
+      </visual>
+
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
+<title>DEM Scripts</title>
+<style type="text/css">
+
+/* Minimal style sheet for the HTML output of Docutils.                    */
+/*                                                                         */
+/* :Author: Günter Milde, based on html4css1.css by David Goodger          */
+/* :Id: $Id: minimal.css 8397 2019-09-20 11:09:34Z milde $               */
+/* :Copyright: © 2015 Günter Milde.                                        */
+/* :License: Released under the terms of the `2-Clause BSD license`_,      */
+/*    in short:                                                            */
+/*                                                                         */
+/*    Copying and distribution of this file, with or without modification, */
+/*    are permitted in any medium without royalty provided the copyright   */
+/*    notice and this notice are preserved.                                */
+/*                                                                         */
+/*    This file is offered as-is, without any warranty.                    */
+/*                                                                         */
+/* .. _2-Clause BSD license: http://www.spdx.org/licenses/BSD-2-Clause     */
+
+/* This CSS2.1_ stylesheet defines rules for Docutils elements without    */
+/* HTML equivalent. It is required to make the document semantic visible. */
+/*                                                                        */
+/* .. _CSS2.1: http://www.w3.org/TR/CSS2                                  */
+/* .. _validates: http://jigsaw.w3.org/css-validator/validator$link       */
+
+/* alignment of text and inline objects inside block objects*/
+.align-left   { text-align: left; }
+.align-right  { text-align: right; }
+.align-center { clear: both; text-align: center; }
+.align-top    { vertical-align: top; }
+.align-middle { vertical-align: middle; }
+.align-bottom { vertical-align: bottom; }
+
+/* titles */
+h1.title, p.subtitle {
+  text-align: center;
+}
+p.topic-title,
+p.sidebar-title,
+p.rubric,
+p.admonition-title,
+p.system-message-title {
+  font-weight: bold;
+}
+h1 + p.subtitle,
+h1 + p.section-subtitle {
+  font-size: 1.6em;
+}
+h2 + p.section-subtitle { font-size: 1.28em; }
+p.subtitle,
+p.section-subtitle,
+p.sidebar-subtitle {
+  font-weight: bold;
+  margin-top: -0.5em;
+}
+p.sidebar-title,
+p.rubric {
+  font-size: larger;
+}
+p.rubric { color: maroon; }
+a.toc-backref {
+  color: black;
+  text-decoration: none; }
+
+/* Warnings, Errors */
+div.caution p.admonition-title,
+div.attention p.admonition-title,
+div.danger p.admonition-title,
+div.error p.admonition-title,
+div.warning p.admonition-title,
+div.system-messages h1,
+div.error,
+span.problematic,
+p.system-message-title {
+  color: red;
+}
+
+/* inline literals */
+span.docutils.literal {
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+/* do not wraph at hyphens and similar: */
+.literal > span.pre { white-space: nowrap; }
+
+/* Lists */
+
+/* compact and simple lists: no margin between items */
+.simple  li, .compact li,
+.simple  ul, .compact ul,
+.simple  ol, .compact ol,
+.simple > li p, .compact > li p,
+dl.simple > dd, dl.compact > dd {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Table of Contents */
+div.topic.contents { margin: 0.5em 0; }
+div.topic.contents ul {
+  list-style-type: none;
+  padding-left: 1.5em;
+}
+
+/* Enumerated Lists */
+ol.arabic     { list-style: decimal }
+ol.loweralpha { list-style: lower-alpha }
+ol.upperalpha { list-style: upper-alpha }
+ol.lowerroman { list-style: lower-roman }
+ol.upperroman { list-style: upper-roman }
+
+dt span.classifier { font-style: italic }
+dt span.classifier:before {
+  font-style: normal;
+  margin: 0.5em;
+  content: ":";
+}
+
+/* Field Lists and drivatives */
+/* bold field name, content starts on the same line */
+dl.field-list > dt,
+dl.option-list > dt,
+dl.docinfo > dt,
+dl.footnote > dt,
+dl.citation > dt {
+  font-weight: bold;
+  clear: left;
+  float: left;
+  margin: 0;
+  padding: 0;
+  padding-right: 0.5em;
+}
+/* Offset for field content (corresponds to the --field-name-limit option) */
+dl.field-list > dd,
+dl.option-list > dd,
+dl.docinfo > dd {
+  margin-left:  9em; /* ca. 14 chars in the test examples */
+}
+/* start field-body on a new line after long field names */
+dl.field-list > dd > *:first-child,
+dl.option-list > dd > *:first-child
+{
+  display: inline-block;
+  width: 100%;
+  margin: 0;
+}
+/* field names followed by a colon */
+dl.field-list > dt:after,
+dl.docinfo > dt:after {
+  content: ":";
+}
+
+/* Bibliographic Fields (docinfo) */
+pre.address { font: inherit; }
+dd.authors > p { margin: 0; }
+
+/* Option Lists */
+dl.option-list { margin-left: 1.5em; }
+dl.option-list > dt { font-weight: normal; }
+span.option { white-space: nowrap; }
+
+/* Footnotes and Citations  */
+dl.footnote.superscript > dd {margin-left: 1em; }
+dl.footnote.brackets > dd {margin-left: 2em; }
+dl > dt.label { font-weight: normal; }
+a.footnote-reference.brackets:before,
+dt.label > span.brackets:before { content: "["; }
+a.footnote-reference.brackets:after,
+dt.label > span.brackets:after { content: "]"; }
+a.footnote-reference.superscript,
+dl.footnote.superscript > dt.label {
+  vertical-align: super;
+  font-size: smaller;
+}
+dt.label > span.fn-backref { margin-left: 0.2em; }
+dt.label > span.fn-backref > a { font-style: italic; }
+
+/* Line Blocks */
+div.line-block { display: block; }
+div.line-block div.line-block {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 40px;
+}
+
+/* Figures, Images, and Tables */
+.figure.align-left,
+figure.align-left,
+img.align-left,
+object.align-left,
+table.align-left {
+  margin-right: auto;
+}
+.figure.align-center,
+figure.align-center,
+img.align-center,
+object.align-center,
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.figure.align-right,
+figure.align-right,
+img.align-right,
+object.align-right,
+table.align-right {
+  margin-left: auto;
+}
+.figure.align-center, .figure.align-right,
+figure.align-center, figure.align-right,
+img.align-center, img.align-right,
+object.align-center, object.align-right {
+  display: block;
+}
+/* reset inner alignment in figures and tables */
+.figure.align-left, .figure.align-right,
+figure.align-left, figure.align-right,
+table.align-left, table.align-center, table.align-right {
+  text-align: inherit;
+}
+
+/* Admonitions and System Messages */
+div.admonition,
+div.system-message,
+div.sidebar,
+aside.sidebar {
+  margin: 1em 1.5em;
+  border: medium outset;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+/* Sidebar */
+div.sidebar,
+aside.sidebar {
+  width: 30%;
+  max-width: 26em;
+  float: right;
+  clear: right;
+}
+
+/* Text Blocks */
+blockquote,
+div.topic,
+pre.literal-block,
+pre.doctest-block,
+pre.math,
+pre.code {
+  margin-left: 1.5em;
+  margin-right: 1.5em;
+}
+pre.code .ln { color: gray; } /* line numbers */
+
+/* Tables */
+table { border-collapse: collapse; }
+td, th {
+  border-style: solid;
+  border-color: silver;
+  padding: 0 1ex;
+  border-width: thin;
+}
+td > p:first-child, th > p:first-child { margin-top: 0; }
+td > p, th > p { margin-bottom: 0; }
+
+table > caption {
+  text-align: left;
+  margin-bottom: 0.25em
+}
+
+table.borderless td, table.borderless th {
+  border: 0;
+  padding: 0;
+  padding-right: 0.5em /* separate table cells */
+}
+
+/* Document Header and Footer */
+/* div.header,				      */
+/* header { border-bottom: 1px solid black; } */
+/* div.footer,				      */
+/* footer { border-top: 1px solid black; }    */
+
+/* new HTML5 block elements: set display for older browsers */
+header, section, footer, aside, nav, main, article, figure {
+  display: block;
+}
+
+</style>
+<style type="text/css">
+
+/* CSS31_ style sheet for the output of Docutils HTML writers.             */
+/* Rules for easy reading and pre-defined style variants.		   */
+/*                                                                         */
+/* :Author: Günter Milde, based on html4css1.css by David Goodger          */
+/* :Id: $Id: plain.css 8397 2019-09-20 11:09:34Z milde $               */
+/* :Copyright: © 2015 Günter Milde.                                        */
+/* :License: Released under the terms of the `2-Clause BSD license`_,      */
+/*    in short:                                                            */
+/*                                                                         */
+/*    Copying and distribution of this file, with or without modification, */
+/*    are permitted in any medium without royalty provided the copyright   */
+/*    notice and this notice are preserved.                                */
+/*    	     	      	     	 					   */
+/*    This file is offered as-is, without any warranty.                    */
+/*                                                                         */
+/* .. _2-Clause BSD license: http://www.spdx.org/licenses/BSD-2-Clause     */
+/* .. _CSS3: http://www.w3.org/TR/CSS3		        		   */
+
+
+/* Document Structure */
+/* ****************** */
+
+/* "page layout" */
+body {
+  margin: 0;
+  background-color: #dbdbdb;
+}
+div.document,
+main {
+  line-height:1.3;
+  counter-reset: table;
+  /* counter-reset: figure; */
+  /* avoid long lines --> better reading */
+  /* OTOH: lines should not be too short because of missing hyphenation, */
+  max-width: 50em;
+  padding: 1px 2%; /* 1px on top avoids grey bar above title (mozilla) */
+  margin: auto;
+  background-color: white;
+}
+
+/* Sections */
+
+/* Transitions */
+
+hr.docutils {
+  width: 80%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  clear: both;
+}
+
+/* Paragraphs */
+/* ========== */
+
+/* vertical space (parskip) */
+p, ol, ul, dl,
+div.line-block,
+div.topic,
+table {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+p:first-child { margin-top: 0; }
+/* (:last-child is new in CSS 3) */
+p:last-child  { margin-bottom: 0; }
+
+h1, h2, h3, h4, h5, h6,
+dl > dd {
+  margin-bottom: 0.5em;
+}
+
+/* Lists */
+/* ===== */
+
+/* Definition Lists */
+
+/* lists nested in definition lists */
+/* (:only-child is new in CSS 3) */
+dd > ul:only-child, dd > ol:only-child { padding-left: 1em; }
+
+/* Description Lists */
+/* styled like in most dictionaries, encyclopedias etc. */
+dl.description > dt {
+  font-weight: bold;
+  clear: left;
+  float: left;
+  margin: 0;
+  padding: 0;
+  padding-right: 0.5em;
+}
+
+/* Field Lists */
+
+/* example for custom field-name width */
+dl.field-list.narrow > dd {
+  margin-left: 5em;
+}
+/* run-in: start field-body on same line after long field names */
+dl.field-list.run-in > dd p {
+  display: block;
+}
+
+/* Bibliographic Fields */
+
+/* generally, bibliographic fields use special definition list dl.docinfo */
+/* but dedication and abstract are placed into "topic" divs */
+div.abstract p.topic-title {
+  text-align: center;
+}
+div.dedication {
+  margin: 2em 5em;
+  text-align: center;
+  font-style: italic;
+}
+div.dedication p.topic-title {
+  font-style: normal;
+}
+
+/* Citations */
+dl.citation dt.label {
+  font-weight: bold;
+}
+span.fn-backref {
+  font-weight: normal;
+}
+
+/* Text Blocks */
+/* =========== */
+
+/* Literal Blocks */
+
+pre.literal-block,
+pre.doctest-block,
+pre.math,
+pre.code {
+  font-family: monospace;
+}
+
+/* Block Quotes */
+
+blockquote > table,
+div.topic > table {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+blockquote p.attribution,
+div.topic p.attribution {
+  text-align: right;
+  margin-left: 20%;
+}
+
+/* Tables */
+/* ====== */
+
+/* th { vertical-align: bottom; } */
+
+table tr { text-align: left; }
+
+/* "booktabs" style (no vertical lines) */
+table.booktabs {
+  border: 0;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.booktabs * {
+  border: 0;
+}
+table.booktabs th {
+  border-bottom: thin solid;
+}
+
+/* numbered tables (counter defined in div.document) */
+table.numbered > caption:before {
+  counter-increment: table;
+  content: "Table " counter(table) ": ";
+  font-weight: bold;
+}
+
+/* Explicit Markup Blocks */
+/* ====================== */
+
+/* Footnotes and Citations */
+/* ----------------------- */
+
+/* line on the left */
+dl.footnote {
+  padding-left: 1ex;
+  border-left: solid;
+  border-left-width: thin;
+}
+
+/* Directives */
+/* ---------- */
+
+/* Body Elements */
+/* ~~~~~~~~~~~~~ */
+
+/* Images and Figures */
+
+/* let content flow to the side of aligned images and figures */
+.figure.align-left,
+figure.align-left,
+img.align-left,
+object.align-left {
+  display: block;
+  clear: left;
+  float: left;
+  margin-right: 1em;
+}
+.figure.align-right,
+figure.align-right,
+img.align-right,
+object.align-right {
+  display: block;
+  clear: right;
+  float: right;
+  margin-left: 1em;
+}
+/* Stop floating sidebars, images and figures at section level 1,2,3 */
+h1, h2, h3 { clear: both; }
+
+/* Sidebar */
+
+/* Move right. In a layout with fixed margins, */
+/* it can be moved into the margin.   	       */
+div.sidebar,
+aside.sidebar {
+  width: 30%;
+  max-width: 26em;
+  margin-left: 1em;
+  margin-right: -2%;
+  background-color: #ffffee;
+}
+
+/* Code */
+
+pre.code { padding: 0.7ex }
+pre.code, code { background-color: #eeeeee }
+pre.code .ln { color: gray; } /* line numbers */
+/* basic highlighting: for a complete scheme, see */
+/* http://docutils.sourceforge.net/sandbox/stylesheets/ */
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+/* Math */
+/* styled separately (see math.css for math-output=HTML) */
+
+/* Epigraph           */
+/* Highlights         */
+/* Pull-Quote         */
+/* Compound Paragraph */
+/* Container          */
+
+/* can be styled in a custom stylesheet */
+
+/* Document Header and Footer */
+
+footer, header,
+div.footer, div.header {
+  font-size: smaller;
+  clear: both;
+  padding: 0.5em 2%;
+  background-color: #ebebee;
+  border: none;
+}
+
+/* Inline Markup */
+/* ============= */
+
+/* Emphasis           */
+/*   em               */
+/* Strong Emphasis    */
+/*   strong	      */
+/* Interpreted Text   */
+/*   span.interpreted */
+/* Title Reference    */
+/*   cite	      */
+
+/* Inline Literals                                          */
+/* possible values: normal, nowrap, pre, pre-wrap, pre-line */
+/*   span.docutils.literal { white-space: pre-wrap; }       */
+
+/* Hyperlink References */
+a { text-decoration: none; }
+
+/* External Targets       */
+/*   span.target.external */
+/* Internal Targets  	  */
+/*   span.target.internal */
+/* Footnote References    */
+/*   a.footnote-reference */
+/* Citation References    */
+/*   a.citation-reference */
+
+</style>
+</head>
+<body>
+<div class="document" id="dem-scripts">
+<h1 class="title">DEM Scripts</h1>
+<p class="subtitle" id="subtitle">Subtitle</p>
+
+<div class="contents topic" id="overview">
+<p class="topic-title">Overview</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#pre-requisites" id="id1">Pre-Requisites</a></p></li>
+<li><p><a class="reference internal" href="#important-notes" id="id2">Important Notes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#note-about-github" id="id3">Note about Github</a></p></li>
+<li><p><a class="reference internal" href="#note-about-docker" id="id4">Note about Docker</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-the-programs" id="id5">Running the programs</a></p>
+<ul>
+<li><p><a class="reference internal" href="#run-programs-sh-run" id="id6">run_programs.sh run</a></p>
+<ul>
+<li><p><a class="reference internal" href="#to-run-the-script" id="id7">To run the script</a></p></li>
+<li><p><a class="reference internal" href="#command-line-argument-options" id="id8">Command line argument options</a></p></li>
+<li><p><a class="reference internal" href="#list-of-programs" id="id9">List of Programs</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#making-a-gazebo-world" id="id10">Making a Gazebo World</a></p>
+<ul>
+<li><p><a class="reference internal" href="#definitions" id="id11">Definitions</a></p></li>
+<li><p><a class="reference internal" href="#world-creation-overview" id="id12">World Creation Overview</a></p></li>
+<li><p><a class="reference internal" href="#quick-setup" id="id13">Quick Setup</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#park-ranger" id="id14">Park Ranger</a></p></li>
+<li><p><a class="reference internal" href="#docker-isolation" id="id15">Docker: Isolation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-docker" id="id16">Why Docker</a></p>
+<ul>
+<li><p><a class="reference internal" href="#a-note-about-python-virtual-environments" id="id17">A Note about Python Virtual Environments</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#docker-implementation" id="id18">Docker Implementation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pre-requisites">
+<h1><a class="toc-backref" href="#id1">Pre-Requisites</a></h1>
+<dl class="simple">
+<dt>Prior to running this script, ensure you:</dt>
+<dd><ul class="simple">
+<li><p>Have Docker installed</p></li>
+<li><dl class="simple">
+<dt>Have one or multiple Digital Elevation Models (DEM) you wish to test</dt>
+<dd><ul>
+<li><p>Place the DEM(s) in the dem_scripts/queue folder</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="important-notes">
+<h1><a class="toc-backref" href="#id2">Important Notes</a></h1>
+<div class="section" id="note-about-github">
+<h2><a class="toc-backref" href="#id3">Note about Github</a></h2>
+<p>DO NOT PUSH ORIGINAL DEMS TO GITHUB, SINCE MOST DEMS ARE QUITE LARGE, YOUR COMMIT
+PROBABLY WILL BE REJECTED IF THE FILE IS OVER THE 100 MB AND FILES 50-100 MB WILL
+BE GIVEN A WARNING.</p>
+</div>
+<div class="section" id="note-about-docker">
+<h2><a class="toc-backref" href="#id4">Note about Docker</a></h2>
+<p>The more you run this script, the more memory the docker images will take up
+since it appears that each build of an image is kept in like a linked list cache.
+It may also take sometime to load up a docker image since it needs to install
+dependencies before running a program. But once you have run one of programs before, it
+will cache some of the computation when you run it again. However, this may create
+another image, which is something to keep in mind if you're using docker for more
+than this application. If you want to keep your other docker stuff, you'll have to
+manually delete the images. Otherwise, you can simply run the clean command and it
+will wipe all docker containers, images, etc. Because the containers are set
+to remove themselves after execution, you just need to get rid of the images.</p>
+<p>Remove all docker images:</p>
+<pre class="code literal-block"><code>docker rmi $(docker images -q)</code></pre>
+<p>Remove a docker image by tag:</p>
+<pre class="code literal-block"><code>docker rmi test1:ver_number</code></pre>
+<p>If you would like to know why we're using docker and some details about how
+it works, see the section below labeled &quot;Docker: Isolation&quot;</p>
+</div>
+</div>
+<div class="section" id="running-the-programs">
+<h1><a class="toc-backref" href="#id5">Running the programs</a></h1>
+<div class="section" id="run-programs-sh-run">
+<h2><a class="toc-backref" href="#id6">run_programs.sh run</a></h2>
+<p>When you execute the script with the run command, you will be prompted with
+how many programs you would like to run, from 0 to 4. If in range and not 0,
+you will be prompted with what program would you like to run for each iteration.
+If you run more than 1 program, the output for each sequential execution will
+feed off each other. For example, if you say you want to run 2 programs,
+<span class="docutils literal">extract_tile</span> and <span class="docutils literal">mk_gaz_wrld</span>, once <span class="docutils literal">extract_tile</span> is finished, the results
+will be queued into <span class="docutils literal">mk_gaz_wrld</span>. The script allows you to order the programs
+however you want, just keep in mind that some permutations aren't efficient
+or just redundant. If you want to do all of them in a single run, the
+recommended order is 4-&gt;3-&gt;2-&gt;1.</p>
+<p><strong>Note</strong>: <span class="docutils literal">auto_gen_wrld</span> (5) is not streamlined to run as an option in the <span class="docutils literal">run_programs.sh</span>
+script and does not require docker. The process of running this script is relatively
+similar to how to run the <span class="docutils literal">run_programs.sh</span>. See below for more details.</p>
+<div class="section" id="to-run-the-script">
+<h3><a class="toc-backref" href="#id7">To run the script</a></h3>
+<pre class="code literal-block"><code>sudo bash run_programs.sh WHATEVER_COMMAND</code></pre>
+<p><strong>Note 1</strong>: sudo is not necessary but you have to make sure that you're a part of
+the docker group permissions on your computer, see the link for details:</p>
+<p><a class="reference external" href="https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user">https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user</a></p>
+<p><strong>Note 2</strong>: Please run the <span class="docutils literal">reset</span>, <span class="docutils literal">queue_reset</span>, and <span class="docutils literal">results_reset</span> commands first since
+there is just a placeholder file in the otherwise empty folders</p>
+</div>
+<div class="section" id="command-line-argument-options">
+<h3><a class="toc-backref" href="#id8">Command line argument options</a></h3>
+<dl class="simple">
+<dt>queue_reset</dt>
+<dd><p>deletes all files from <span class="docutils literal">dem_scripts/queue</span> folder</p>
+</dd>
+<dt>results_reset</dt>
+<dd><p>deletes all files from <span class="docutils literal">dem_scripts/results</span> folder</p>
+</dd>
+<dt>reset</dt>
+<dd><p>deletes all files from each respective program's nested <span class="docutils literal">queued_dems</span> and <span class="docutils literal">results</span>
+folders but not <span class="docutils literal">dem_scripts/queue</span> nor <span class="docutils literal">dem_scripts/results</span></p>
+</dd>
+<dt>clean</dt>
+<dd><p>purge your system of docker containers, images, etc.</p>
+</dd>
+<dt>run</dt>
+<dd><p>runs the script</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="list-of-programs">
+<h3><a class="toc-backref" href="#id9">List of Programs</a></h3>
+<ol class="arabic">
+<li><dl class="simple">
+<dt>get_elev</dt>
+<dd><p>Given a DEM (.tif), it will output two text files:</p>
+<ul class="simple">
+<li><p>DEM_FILE_NAME_extr_out.txt - consists of the decimal coordinates
+(lat, long) of each corner pixel, dimensions of the DEM, and all
+the elevation values</p></li>
+<li><p>DEM_FILE_NAME_loc_max_out.txt - gets the local maxima values
+and the (row, col) where they occur within the DEM</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>mk_gaz_wrld</dt>
+<dd><p>Given a DEM (.tif), it will output two files:</p>
+<ul class="simple">
+<li><p>DEM_FILE_NAME_resized.tif - a downsized dem of a given size</p></li>
+<li><p>DEM_FILE_NAME_converted.jpg - converted dem to jpg using _resized.tif</p></li>
+</ul>
+<p>You can use the .jpg to create a gazebo world, see the respectively
+named section below</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>extract_tile</dt>
+<dd><p>Given a DEM (.tif), it will create DEM tiles (.tif) for each part of the DEM:</p>
+<ul class="simple">
+<li><p>DEM_FILE_NAME_SOMEX_SOMEY.tif - extracted &quot;tile&quot; of a given size</p></li>
+</ul>
+<p>This functionality is included to keep the right scaling factor when
+trying to create a gazebo world from a DEM. DEMs are quite large and
+represent quite large areas, so to get it into the right format for
+gazebo, we have to downsize or compress it. The available tile sizes
+are: 513x513, 257x257, or 129x129. You could modify this code to support
+other sizes but these are the known sizes that gazebo can recognize for
+a heightmap object.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>comvert2tif</dt>
+<dd><p>Given a PDS (.lbl + ((aux.xml + .jp2) or (.img))), it outputs:</p>
+<ul class="simple">
+<li><p>PDS_FILE_NAME.tif - converted DEM (.tif) of the PDS file</p></li>
+</ul>
+<p>Might work with ISIS files (.cub + .lbl) but not tested</p>
+<p>If you encounter errors such as:</p>
+<pre class="code literal-block"><code>band 1: IReadBlock failed at X offset 0, Y offset 0: Failed
+to read scanline 0
+
+or
+
+0ERROR 1: Tile part length size inconsistent with stream length</code></pre>
+<p>Either part of the file is corrupted or missing, try using a
+different pds or re-download it</p>
+</dd>
+</dl>
+</li>
+<li><p>auto_gen_wrld</p>
+<blockquote>
+<p>For each image (.jpg) in the queue in the auto_gen_wrld, it outputs a folder with:</p>
+<blockquote>
+<ul class="simple">
+<li><p>USER_DEFINED_NAME_world.world - a world file</p></li>
+<li><p>USER_DEFINED_NAME/ - a model folder</p></li>
+</ul>
+</blockquote>
+<p>These items are piped into to appropriate folders for you. Ideally, use the output of
+mk_gaz_wrld for input to this program, especially if you want to use Park Ranger for
+this (see the Park Ranger section for details).</p>
+<p>Things this script does NOT do for you:</p>
+<blockquote>
+<ul class="simple">
+<li><p>Check if your image is of the correct size for gazebo</p></li>
+<li><p>Create a world by throwing the image used for geometry with
+the images used for diffuse and normal map respectively</p></li>
+<li><p>Reset the queue nor the results</p></li>
+</ul>
+</blockquote>
+<p>Things that you CAN configure in global variables for generate_xmls.py:</p>
+<blockquote>
+<ul class="simple">
+<li><p>The path for the diffuse and normal map</p></li>
+<li><p>Author name and author email (defaults to mine)</p></li>
+<li><p>Position of the terrain object</p></li>
+<li><p>What sdf version is being used</p></li>
+</ul>
+</blockquote>
+<p>You can of course edit other items after everything is generated but
+be sure to update the world file as well as the sdf file in the respective
+model directory that is made for the heightmap in the ~/.gazebo/models.
+You only need to update the tags in common for the heightmap, i.e. don't
+define physics in both the sdf and the world files.</p>
+<p>For more details, see the Making a Gazebo World section.</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>IMPORTANT NOTE</strong>: Before executing run again, you might want to at least execute
+the reset command otherwise it will execute the old jobs you sent to them as well
+as the new ones in the queues.</p>
+<p><strong>Output</strong>: Output files can be found in each program's nested results folder and also the
+dem_scripts/results folder (fed all the output files of each program except auto_gen_wrld).
+You may have to change the permissions on the files to edit them.</p>
+</div>
+</div>
+</div>
+<div class="section" id="making-a-gazebo-world">
+<h1><a class="toc-backref" href="#id10">Making a Gazebo World</a></h1>
+<p>After executing the mk_gaz_wrld, you can use the outputted .jpg or downsized .tif or, if you
+used the extract_tile program, you can use a tile .tif to create a gazebo world.</p>
+<p><strong>NOTE</strong>: Using a .tif file might be a bit buggy, mostly the ones that have elevation
+values on the extreme ends i.e z = 3000 or z = -4927. To reduce uncertainty, the code
+is reflected to expect .jpgs along with the extracted elevation data, which is outputted
+by get_elev. For more information about this, see the Park Ranger section.</p>
+<p>Cheatsheet for what each tag means (EZ-RASSOR currently uses version 1.4):</p>
+<p><a class="reference external" href="http://sdformat.org/spec">http://sdformat.org/spec</a></p>
+<div class="section" id="definitions">
+<h2><a class="toc-backref" href="#id11">Definitions</a></h2>
+<dl>
+<dt>Model</dt>
+<dd><p>This is essential making the jpg into a persistent gazebo world object
+you call in the world file. This consists of multiple items, all within
+a model_name folder:</p>
+<blockquote>
+<ul class="simple">
+<li><p>model.config - References the .sdf file and has metadata</p></li>
+<li><p>model.sdf - Reference the path to the dem jpg (creates the geometry of the object)
+as well as to paths for normal and diffuse texturing</p></li>
+<li><p>materials/ - Stores the jpg and all the other files used for textures or appearance</p></li>
+</ul>
+</blockquote>
+</dd>
+<dt>World</dt>
+<dd><p>This is where you define the environment that the rover will load up into</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="world-creation-overview">
+<h2><a class="toc-backref" href="#id12">World Creation Overview</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Make a model and put in ~/.gazebo/models/</dt>
+<dd><ul>
+<li><dl class="simple">
+<dt>Name_of_model_dir/</dt>
+<dd><ul>
+<li><p>model.config</p></li>
+<li><p>model.sdf</p></li>
+<li><p>materials/</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>World file which is moved to EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds</dt>
+<dd><ul>
+<li><p>ref model in uri and materials/texture as &quot;model://Name_of_model_dir/path_to_files&quot;</p></li>
+<li><p>add physics</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="quick-setup">
+<h2><a class="toc-backref" href="#id13">Quick Setup</a></h2>
+<p>The best way to understand is to look at the example and gazebo documentation. Or you can
+copy and tweak the model tile_test/ included in the current directory and the corresponding
+world file packages/simulation/ezrassor_sim_gazebo/worlds/tile_test.world. These instructions
+will make a world of lunar appearance and physics so adjust for your application.</p>
+<p>Instructions:</p>
+<ol class="arabic simple">
+<li><p>Rename the model folder</p></li>
+<li><p>In the .sdf, change the filename in the &lt;heightmap&gt;&lt;uri&gt; tag to the
+name of the new dem jpg</p></li>
+<li><p>Also in the .sdf, change the base of the path &quot;model://original_model/...&quot; to
+&quot;model://whatever_you_renamed_the_folder&quot; for each reference to an image</p></li>
+<li><p>Remove the old dem jpg from your materials folder and add the new dem jpg to it</p></li>
+<li><p>Copy the model folder into your ~/.gazebo/models/</p></li>
+<li><p>Rename the world file to whatever you want</p></li>
+<li><p>In the world file, change the filenames and &quot;model://name_of_model&quot;
+to account for the new model name and the new dem jpg</p></li>
+<li><p>Move the world file into EZ-RASSOR/packages/simulation/ezrassor_sim_gazebo/worlds/</p></li>
+<li><p>You can now use this world by adding the flag
+&quot;world:=whatever_you_named_the_world_without_the_extension&quot;
+when launching the simulation</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="park-ranger">
+<h1><a class="toc-backref" href="#id14">Park Ranger</a></h1>
+<p>Although you can use either a .jpg or .tif, we've opted to use .jpg s so the autonomy
+code reflects this decision. This is primarily due to one of our localization estimation
+methods called park ranger. It depends upon knowing your elevation and a DEM of the area,
+so in order to get them in the same frame, we place the heightmap to make the z
+at the gazebo origin's to start at zero elevation. Then, Park Ranger offsets the z values
+with a text file equivalent of the data in the .tif, which allows us to simulate an
+&quot;altimeter&quot; data without the weirdness of a .tif heightmap.</p>
+<p>NOTE: If you do use the .tif file with the enable_real_odometry flag to true,
+the world state object in the autonomy package will have an incorrect z value
+since it derives the elevation as gazebo position z + dem middle point elevation.</p>
+<p>To ensure park ranger functionality works, you must do the following things:</p>
+<blockquote>
+<ul class="simple">
+<li><p>The dem_data/ in autonomy must have a single ....DEM_FILE_NAME_extr_out.txt
+for the .jpg used in the .world and .sdf in the model</p></li>
+<li><p>The &lt;heightmap&gt;&lt;size&gt; tag must consist of &lt;size&gt; m m range &lt;/size&gt;,
+where range = max_elev - min_elev and m == m == jpg_dem_width == jpg_dem_length</p></li>
+<li><p>The &lt;heightmap&gt;&lt;pos&gt; tag must consist of
+&lt;pos&gt; 0 0 center_dem_elevation_value - range &lt;/pos&gt;</p></li>
+</ul>
+</blockquote>
+<p>If you load up the simulation and the terrain has extreme slopes, that means it could
+be one of two things: the ratio of range to the mxm of the heightmap is too large or
+there is a high density of local max and local mins. To mitigate the first case,
+try to choose dems with a range &lt; 60 as they seem to work the best to simulate realistic
+moon terrain. For the second case, it's best to look at the .jpgs and look for
+relatively flat terrain. Flat terrain represents the majority of the moon and EZ-RASSOR
+would not be expected to operate optimally in the other situations such as extremely mountainous.</p>
+</div>
+<div class="section" id="docker-isolation">
+<h1><a class="toc-backref" href="#id15">Docker: Isolation</a></h1>
+<div class="section" id="why-docker">
+<h2><a class="toc-backref" href="#id16">Why Docker</a></h2>
+<p>Because DEM readers aren't built into Ubuntu, we need to use either an application,
+driver, or a library that can be used to read them in. In most applications and libraries,
+they use a library called GDAL (<a class="reference external" href="https://gdal.org/">https://gdal.org/</a>) as the base for all their functionality.
+GDAL is &quot;a translator library for raster and vector geospatial data formats&quot; of which
+includes support for PDS (Nasa's Planetary Data System format) and GeoTiff (.tiff). Although
+Gazebo depends on a GDAL library, those dependancies only let Gazebo read dems and are not
+persistent outside of Gazebo. If you search your system for those GDAL libraries they will
+show up, but they don't recognize operations such as gdal_translate. Because of this, when
+you try to install additional libraries for development with GDAL, there are dependency
+conflicts between Gazebo and GDAL development libraries. So in order to read DEMs without
+breaking the environment to run the EZ-RASSOR simulation, we have to isolate it.</p>
+<p>We have 3 options: VirtualMachine, Docker, or Anaconda. VMs are quite heavy since
+we don't need a whole operating system, just a terminal. Anaconda is popular package
+manager for python and can also provide isolated environments for python. The
+main problems with it are that since it doesn't play well with ROS out of the box
+and it can install excess packages (mostly data science) we don't need for our
+application. Anaconda would be a great choice if you're already using python
+for data science stuff but in our case, it's only for EZ-RASSOR. In hindsight,
+there is the lighter version of Anaconda called Miniconda that you could use but
+learning docker can be applied to more fields so using docker for only this application
+isn't as bloatware-y as -conda stuff is to non-data scientists.</p>
+<div class="section" id="a-note-about-python-virtual-environments">
+<h3><a class="toc-backref" href="#id17">A Note about Python Virtual Environments</a></h3>
+<p>Above were the known options when the script was made. If you wish to recreate the
+functionality without docker, I recommend python virtual environments. Below are links that
+explain it better than me why and when to use python virtual environment. I attempted to see
+if you can install GDAL but I ran into problems with it. I included a link that may fix it
+but Docker implementation is good enough for our iteration.</p>
+<p>pip vs pyenv vs virtualenv vs anconda:</p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/38217545/what-is-the-difference-between-pyenv-virtualenv-anaconda">https://stackoverflow.com/questions/38217545/what-is-the-difference-between-pyenv-virtualenv-anaconda</a></p>
+<p>Python virtual environment:</p>
+<p><a class="reference external" href="https://towardsdatascience.com/virtual-environments-104c62d48c54">https://towardsdatascience.com/virtual-environments-104c62d48c54</a></p>
+<p>Installing GDAL in virtual environment (the text is weird on the page):</p>
+<p><a class="reference external" href="https://pypi.org/project/pygdal/">https://pypi.org/project/pygdal/</a></p>
+<p>Docker vs python virtual environment:</p>
+<p><a class="reference external" href="https://coderbook.com/&#64;marcus/should-i-use-virtualenv-or-docker-containers-with-python/">https://coderbook.com/&#64;marcus/should-i-use-virtualenv-or-docker-containers-with-python/</a></p>
+</div>
+</div>
+<div class="section" id="docker-implementation">
+<h2><a class="toc-backref" href="#id18">Docker Implementation</a></h2>
+<p>In terms of docker implementation, each program has their own docker image associated
+with it (except auto_gen_wrld). If you notice, there is a Dockerfile.base and
+a Dockerfile.child file rather than the standard one Dockerfile per directory.
+The Dockerfile.base and entrypoint.sh are just for setting up the program to run as a local
+user vs root. Even though that a docker container is used for isolation, it's insecure to run
+as root.</p>
+<p>Why to not run as root (there are other articles that mention this):</p>
+<p><a class="reference external" href="https://americanexpress.io/do-not-run-dockerized-applications-as-root/">https://americanexpress.io/do-not-run-dockerized-applications-as-root/</a></p>
+<p>Another thing that we do that is not standard, we use bind mounts to mount a host
+directory inside a docker container. The most popular way to store data with Docker
+is through volumes but isn't the ideal for our application. Volumes are usually the
+recommended choice since they are more secure and a great way to transfer data from
+container to container. Although we could store our data in volumes and pass it to
+other containers created if a user runs more than one of the programs in the script,
+we ultimately need to get the results back to the host, which isn't possible or at
+least quite difficult to do. This makes bind mounts the best choice in this case.</p>
+<p>Full comparison of storage formats in Docker:</p>
+<p><a class="reference external" href="https://docs.docker.com/storage/">https://docs.docker.com/storage/</a></p>
+</div>
+</div>
+</div>
+</body>
+</html>
