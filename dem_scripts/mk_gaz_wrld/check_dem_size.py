@@ -1,6 +1,6 @@
 #!usr/bin/env python
 
-# Program to check the size of a dem
+""" Program to check the size of a dem """
 
 import gdal
 import ogr

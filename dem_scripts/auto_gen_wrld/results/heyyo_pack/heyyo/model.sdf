@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='ASCII'?>
 <sdf version="1.4">
   <model name="heyyo">
     <static>true</static>
@@ -6,9 +7,9 @@
         
         <geometry>
           <heightmap>
-            <uri>model://heyyo/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
-            <size>514 514 49</size>
-            <pos>0 0 -45</pos>
+            <uri>model://heyyo/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+            <size>513 513 25</size>
+            <pos>0 0 0</pos>
           </heightmap>
         </geometry>
       </collision>
@@ -21,9 +22,9 @@
               <normal>file://media/materials/textures/flat_normal.png</normal>
               <size>2</size>
             </texture>
-            <uri>model://heyyo/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
-            <size>514 514 49</size>
-            <pos>0 0 -45</pos>
+            <uri>model://heyyo/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+            <size>513 513 25</size>
+            <pos>0 0 0</pos>
           </heightmap>
         </geometry>
       </visual>

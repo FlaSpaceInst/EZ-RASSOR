@@ -26,7 +26,7 @@ do
         curr_size=$ind_size
     fi
 
-    python3 "$dot/tile.py" $f $all_size
+    python "$dot/tile.py" $f $all_size
 
     curr_size=0
 done
