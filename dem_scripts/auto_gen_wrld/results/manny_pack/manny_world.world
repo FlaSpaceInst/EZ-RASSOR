@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='ASCII'?>
 <sdf version="1.4">
-  <world name="heyyo_world">
+  <world name="manny_world">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://heyyo</uri>
+      <uri>model://manny</uri>
       <friction>
         <mu> 100 </mu>
         <mu2> 100 </mu2>
@@ -14,7 +14,7 @@
     </include>
     <!--Hopper Model-->
     <!-- Own physics settings to speed up simulation -->
-    <model name="heyyo">
+    <model name="manny">
       <static>true</static>
       <link name="link">
         <collision name="collision">
@@ -40,7 +40,7 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://heyyo/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
+              <uri>model://manny/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
               <size>129 129 25</size>
               <pos>0 0 0</pos>
               <texture>
@@ -61,7 +61,7 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>model://heyyo/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+                <diffuse>model://manny/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
                 <normal>file://media/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
@@ -73,7 +73,7 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://heyyo/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
+              <uri>model://manny/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_0_5289_converted.jpg</uri>
               <size>129 129 25</size>
               <pos>0 0 0</pos>
             </heightmap>
@@ -99,12 +99,12 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name="heyyo_world">
+    <state world_name="manny_world">
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name="heyyo">
+      <model name="manny">
         <pose frame="">0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name="link">

@@ -9,7 +9,7 @@
           <heightmap>
             <uri>model://s_pole/materials/textures/LRO_PNG_TEST_257.jpg</uri>
             <size>514 514 49</size>
-            <pos>0 0 -45</pos>
+            <pos>0 0 0</pos>
           </heightmap>
         </geometry>
       </collision>
@@ -24,7 +24,7 @@
             </texture>
             <uri>model://s_pole/materials/textures/LRO_PNG_TEST_257.jpg</uri>
             <size>514 514 49</size>
-            <pos>0 0 -45</pos>
+            <pos>0 0 0</pos>
           </heightmap>
         </geometry>
       </visual>

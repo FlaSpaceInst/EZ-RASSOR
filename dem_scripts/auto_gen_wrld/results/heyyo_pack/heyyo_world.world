@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='ASCII'?>
 <sdf version="1.4">
-  <world name="manny_world">
+  <world name="heyyo_world">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://manny</uri>
+      <uri>model://heyyo</uri>
       <friction>
         <mu> 100 </mu>
         <mu2> 100 </mu2>
@@ -14,7 +14,7 @@
     </include>
     <!--Hopper Model-->
     <!-- Own physics settings to speed up simulation -->
-    <model name="manny">
+    <model name="heyyo">
       <static>true</static>
       <link name="link">
         <collision name="collision">
@@ -40,8 +40,8 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://manny/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
-              <size>129 129 25</size>
+              <uri>model://heyyo/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+              <size>513 513 25</size>
               <pos>0 0 0</pos>
               <texture>
                 <size>10</size>
@@ -61,7 +61,7 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>model://manny/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+                <diffuse>model://heyyo/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
                 <normal>file://media/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
@@ -73,8 +73,8 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://manny/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
-              <size>129 129 25</size>
+              <uri>model://heyyo/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_1539_3591_converted.jpg</uri>
+              <size>513 513 25</size>
               <pos>0 0 0</pos>
             </heightmap>
           </geometry>
@@ -99,12 +99,12 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name="manny_world">
+    <state world_name="heyyo_world">
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name="manny">
+      <model name="heyyo">
         <pose frame="">0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name="link">

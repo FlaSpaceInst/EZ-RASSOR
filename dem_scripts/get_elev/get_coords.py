@@ -6,7 +6,7 @@ import sys
 import struct
 import numpy as np
 
-# Returns the list of geocoordinates for each corner
+""" Returns the list of geocoordinates for each corner """
 def get_corner_coordinates(geotransform, num_cols, num_rows):
 
     corners = []
@@ -24,7 +24,7 @@ def get_corner_coordinates(geotransform, num_cols, num_rows):
         y_arr.reverse()
     return corners
 
-# As the name says, reprojects coordinates from one system to another
+""" As the name says, reprojects coordinates from one system to another """
 def reproj_coordinates(coords, src_spa_ref_sys, targ_spa_ref_sys):
     trans_coords = []
     transform = osr.CoordinateTransformation(src_spa_ref_sys, targ_spa_ref_sys)
