@@ -1,27 +1,27 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='ASCII'?>
 <sdf version="1.4">
-  <world name="default">
+  <world name="park_ranger_test_world">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
     <include>
-      <uri>model://tile_test</uri>
+      <uri>model://park_ranger_test</uri>
       <friction>
-        <mu> 0.01</mu>
-        <mu2> 0.01 </mu2>
+        <mu> 100 </mu>
+        <mu2> 100 </mu2>
       </friction>
     </include>
     <!--Hopper Model-->
     <!-- Own physics settings to speed up simulation -->
-    <model name="tile_test">
+    <model name="park_ranger_test">
       <static>true</static>
       <link name="link">
         <collision name="collision">
           <surface>
             <friction>
               <ode>
-                <mu>0.01</mu>
+                <mu>30</mu>
               </ode>
               <torsional>
                 <ode/>
@@ -40,11 +40,11 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://tile_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
-              <pos>0 0 -8</pos>
+              <uri>model://park_ranger_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
               <size>129 129 15</size>
+              <pos>0 0 0</pos>
               <texture>
-                <size>5</size>
+                <size>10</size>
                 <diffuse>__default__</diffuse>
                 <normal>__default__</normal>
               </texture>
@@ -61,7 +61,7 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>model://tile_test/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+                <diffuse>model://park_ranger_test/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
                 <normal>file://media/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
@@ -73,9 +73,9 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://tile_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
-              <pos>0 0 -8</pos>
+              <uri>model://park_ranger_test/materials/textures/APOLLO17_ORTHOMOSAIC_50CM_tile_129_18963_converted.jpg</uri>
               <size>129 129 15</size>
+              <pos>0 0 0</pos>
             </heightmap>
           </geometry>
         </visual>
@@ -84,14 +84,14 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <physics name='default_physics' default='0' type='ode'>
+    <physics name="default_physics" default="0" type="ode">
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>75</real_time_update_rate>
     </physics>
     <gravity>0 0 -1.622</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
+    <atmosphere type="adiabatic"/>
     <spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
       <latitude_deg>0</latitude_deg>
@@ -99,25 +99,25 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name='tile_test'>
+    <state world_name="park_ranger_test_world">
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name='tile_test'>
-        <pose frame=''>0 0 0 0 -0 0</pose>
+      <model name="park_ranger_test">
+        <pose frame="">0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>0 0 0 0 -0 0</pose>
+        <link name="link">
+          <pose frame="">0 0 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
      </state>
-      <gui fullscreen='0'>
-          <camera name='user_camera'>
-            <pose frame=''>16.3249 -27.6364 14.6277 -0 0.621796 2.22418</pose>
+      <gui fullscreen="0">
+          <camera name="user_camera">
+            <pose frame="">16.3249 -27.6364 14.6277 -0 0.621796 2.22418</pose>
             <view_controller>orbit</view_controller>
             <projection_type>perspective</projection_type>
           </camera>
