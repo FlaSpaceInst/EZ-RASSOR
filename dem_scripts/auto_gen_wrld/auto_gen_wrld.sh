@@ -46,10 +46,10 @@ do
     dimmensions_h=$(identify -format '%h' $f)
     squish_factor=25
 
-    echo "File is of ${dimmensions_w} ${dimmensions_h}" 
-    
+    echo "File is of ${dimmensions_w} ${dimmensions_h}"
+
     read -p "Would you like to specify a squish (highest - lowest elevation) factor? [y or n]" decide_squish
-    
+
     if [ $decide_squish = "y" ]
     then
         read -p "Please enter squish factor: " user_squish
@@ -60,19 +60,24 @@ do
     mkdir "$dot/results/${temp}_pack"
     cp -a "$dot/template_model_n_world/s_pole/." "$dot/results/${temp}_pack/$temp"
     cp "$dot/template_model_n_world/try_new_model.world" "$dot/results/${temp}_pack/${temp}_world.world"
-	
+
     # Copy DEM_FILE.jpg over to textures
-    cp $f "$dot/results/${temp}_pack/$temp/materials/textures" 
-	
+    cp $f "$dot/results/${temp}_pack/$temp/materials/textures"
+
     # Remove original DEM_FILE.jpg from template model
     rm "$dot/results/${temp}_pack/$temp/materials/textures/LRO_PNG_TEST_257.jpg"
-	
+
     echo "Update ${temp}_pack/$temp/model.sdf"
     python model_create.py "$dot/results/${temp}_pack/${temp}/model.sdf" $temp "${name}.jpg" $dimmensions_w $dimmensions_h $squish_factor
     echo "Update ${temp}_pack/${temp}_world.world"
     python world_file_create.py "$dot/results/${temp}_pack/${temp}_world.world" $temp "${name}.jpg" $dimmensions_w $dimmensions_h $squish_factor
-	
+
+    echo "Copying ${temp}/ and ${temp}_world.world to respective folders"
+
     # Copy model and world to respective place
     cp -r "$dot/results/${temp}_pack/$temp/" "$HOME/.gazebo/models/"
     cp "$dot/results/${temp}_pack/${temp}_world.world" "$ez_dir/packages/simulation/ezrassor_sim_gazebo/worlds/"
+
+    echo "Copying ${temp}_pack/ to auto_move"
+    cp -r "$dot/results/${temp}_pack/" "../auto_move/queue_packs"
 done

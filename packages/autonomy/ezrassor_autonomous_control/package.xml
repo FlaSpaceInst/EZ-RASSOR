@@ -25,6 +25,7 @@
   <depend>rtabmap_ros</depend>
   <depend>image_geometry</depend>
   <depend>robot_localization</depend>
+  <depend>imagemagick</depend>
   <depend>diff_drive_controller</depend>
   <depend>python-matplotlib</depend>
   <depend>python-tk</depend>
