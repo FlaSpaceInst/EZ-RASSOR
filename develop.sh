@@ -4,7 +4,6 @@
 
 USER_SHELLS="bash zsh"
 PACKAGES_DIR="packages"
-EXTERNAL_DIR="external"
 WORKSPACE_DIR="$HOME/.workspace"
 WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
 WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
@@ -89,7 +88,7 @@ link_packages() {
         esac
     fi
 
-    for collection_dir in "$PWD/$PACKAGES_DIR" "$PWD/$EXTERNAL_DIR"; do
+    for collection_dir in "$PWD/$PACKAGES_DIR"; do
         for superpackage_dir in "$collection_dir"/*; do
             for package_dir in "$superpackage_dir"/*; do
                 if [ ! -d "$package_dir" ]; then
