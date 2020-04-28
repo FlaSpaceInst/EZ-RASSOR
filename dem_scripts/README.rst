@@ -135,7 +135,7 @@ List of Programs
         - ``DEM_FILE_NAME_converted.jpg`` - converted dem to jpg using
           ``DEM_FILE_NAME_resized.tif``
 
-		You can use the ``.jpg`` to create a gazebo world through 
+		You can use the ``.jpg`` to create a gazebo world through
 		the``auto_gen_wrld``or through manual creation
 		(see the "Making a Gazebo World" section).
 
@@ -198,7 +198,13 @@ List of Programs
 	You only need to update the tags in common for the heightmap, i.e. don't
 	define physics in both the ``.sdf`` and the ``.world`` files.
 
-	For more quirky details, see the "Making a Gazebo World" section.
+6. auto_move
+    Given a ``SOMENAME_pack/``, which contains a model/ and world file, it moves
+    the items to the corresponding folders. It also clears the cache for the
+    ``DEM_FILE_IMAGE.jpg`` used to create the terrain but assumes only two items
+    in the ``materials/textures/`` of the model.
+
+For more quirky details, see the "Making a Gazebo World" section.
 
 **IMPORTANT NOTE**: Before executing run again, you might want to at least
 execute the reset command otherwise it will execute the old jobs you sent to
@@ -265,6 +271,11 @@ Gazebo Quirks
   it cannot find the model. There might not be any seen ramifications to the user
   but it shows up when ran with gazebo's ``--verbose``, so it's best
   to be avoided.
+- If you encounter black and yellow stripes, you may have to clear the cache for
+  the ``.jpg`` used to create the model.
+
+  ``rm -rf ~/.gazebo/paging/DEM_IMAGE_FILE_WITHOUT_EXTENSION``
+
 
 ============
 Park Ranger

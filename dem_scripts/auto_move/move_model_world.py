@@ -28,6 +28,16 @@ def main():
 		for file in lister:
 			if ".world" in file:
 				world_file = file
+		tester = os.listdir("./" + choice + i + "/" + folder_name
+				+ "/materials/textures/"
+		)
+		cache = ""
+		for file in tester:
+			if file != "AS16-110-18026HR-512x512.jpg":
+				temp = file.split(".")
+				cache = temp[0]
+		print("Remove cache for {}".format(cache))
+		os.system("rm -rf $HOME/.gazebo/paging/" + cache)
 
 		print("Copying model and world to appropriate folders")
 		os.system(
