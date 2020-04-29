@@ -15,16 +15,12 @@ For more information, our `wiki`_ contains a high-level overview of the EZ-RASSO
 
 TYPICAL INSTALLATION
 --------------------
-Clone this repository with ``git`` and include the ``--recursive`` flag. This tells ``git`` to also clone the submodules that this project relies on.
+First, clone this repository with ``git``.
 ::
-  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git --recursive
+  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
   cd EZ-RASSOR
-  
-If you've already cloned the repository without the ``--recursive`` flag you can run this command to clone the submodules manually:
-::
-  git submodule update --init --recursive
 
-Finally, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
+Then, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
 ::
   sh install.sh ros
   ** RESTART TERMINAL **
@@ -97,6 +93,8 @@ Please read the `wiki page for the ezrassor_launcher`_ to learn more about what 
 
 AUTHORS
 -------
+**EZ-RASSOR 1.0 Team**
+
 - `Sean Rapp`_
 - `Ron Marrero`_
 - `Tiger Sachse`_
@@ -107,6 +105,14 @@ AUTHORS
 - `Chris Taliaferro`_
 - `Cameron Taylor`_
 - `Lucas Gonzalez`_
+
+**EZ-RASSOR 2.0 (GPS-Denied Autonomous Navigation) Team**
+
+- `Jordan Albury`_
+- `Shelby Basco`_
+- `John Hacker`_
+- `Michael Jimenez`_
+- `Scott Scalera`_
 
 .. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
 .. _`contributing guidelines`: CONTRIBUTING.rst
@@ -125,3 +131,8 @@ AUTHORS
 .. _`Chris Taliaferro` : https://github.com/Hansuto
 .. _`Cameron Taylor` : https://github.com/CameronTaylorFL
 .. _`Lucas Gonzalez` : https://github.com/gonzalezL
+.. _`Jordan Albury` : https://github.com/jalbury
+.. _`Shelby Basco` : https://github.com/blicogam
+.. _`John Hacker` : https://github.com/JHacker997
+.. _`Michael Jimenez` : https://github.com/Mjimenez01
+.. _`Scott Scalera` : https://github.com/ScottCarL

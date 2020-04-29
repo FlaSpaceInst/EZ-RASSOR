@@ -18,17 +18,21 @@
   <depend>cv_bridge</depend>
   <depend>gazebo_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>stereo_msgs</depend>
   <depend>python-numpy</depend>
   <depend>python-opencv</depend>
   <depend>robot_state_publisher</depend>
+  <depend>image_view</depend>
+  <depend>rtabmap_ros</depend>
+  <depend>image_geometry</depend>
+  <depend>robot_localization</depend>
+  <depend>imagemagick</depend>
+  <depend>diff_drive_controller</depend>
+  <depend>python-matplotlib</depend>
+  <depend>python-tk</depend>
+  <depend>python-filterpy-pip</depend>
+  <depend>docker.io</depend>
+  <depend>python-lxml</depend>
+  <depend>python-pygame</depend>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>
-
-  <!-- These dependencies are required by Viso2, but they didn't include them
-       in their package.xml... -->
-  <depend>viso2_ros</depend>
-  <depend>image_view</depend>
-  <depend>message_runtime</depend>
-  <depend>stereo_image_proc</depend>
 </package>
