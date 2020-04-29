@@ -153,7 +153,7 @@ List of Programs
         code to support other sizes but these are the known sizes that gazebo
         can recognize for a heightmap object.
 
-4. comvert2tif
+4. convert2tif
 	Given a PDS (``.lbl + ((aux.xml + .jp2) or (.img))``), it outputs:
 
     	- ``PDS_FILE_NAME.tif`` - converted DEM (``.tif``) of the PDS file
