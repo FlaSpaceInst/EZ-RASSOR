@@ -84,11 +84,6 @@ class WorldState():
         else:
             self.on_side = False
 
-    def visionCallBack(self, data):
-        """ Set state_flags vision data. """
-
-        self.warning_flag = data.data
-
     def get_arm_force(self):
         front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
         back_arm_force = self.state_flags['back_arm_angle'] + .2 + uniform(-.2, .2)
