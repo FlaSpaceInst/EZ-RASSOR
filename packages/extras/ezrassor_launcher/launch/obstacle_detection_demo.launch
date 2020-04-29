@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch Obstacle Detection demo.
+     Written by Jordan Albury. -->
+<launch>
+  <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+	  <arg name="control_methods" value="autonomy"/>
+	  <arg name="world" value="hole"/>
+	  <arg name="spawn_z_coords" value="5"/>
+  </include>
+</launch>

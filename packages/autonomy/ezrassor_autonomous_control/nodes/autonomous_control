@@ -4,6 +4,8 @@ from ezrassor_autonomous_control import autonomous_control
 
 target_x = rospy.get_param('autonomous_control/digsite_x_coord')
 target_y = rospy.get_param('autonomous_control/digsite_y_coord')
+start_x = rospy.get_param('autonomous_control/spawn_x_coord')
+start_y = rospy.get_param('autonomous_control/spawn_y_coord')
 movement_topic = rospy.get_param('autonomous_control/wheel_instructions_topic')
 front_arm_topic = rospy.get_param('autonomous_control/front_arm_instructions_topic')
 back_arm_topic = rospy.get_param('autonomous_control/back_arm_instructions_topic')
@@ -12,14 +14,22 @@ back_drum_topic = rospy.get_param('autonomous_control/back_drum_instructions_top
 max_linear_velocity = rospy.get_param('autonomous_control/max_linear_velocity')
 max_angular_velocity = rospy.get_param('autonomous_control/max_angular_velocity')
 real_odometry = rospy.get_param('autonomous_control/enable_real_odometry')
+obstacle_threshold = rospy.get_param('autonomous_control/obstacle_threshold')
+obstacle_buffer = rospy.get_param('autonomous_control/obstacle_buffer')
+move_increment = rospy.get_param('autonomous_control/move_increment')
 
 autonomous_control.on_start_up(target_x,
                                target_y,
-                               movement_topic, 
+                               start_x,
+                               start_y,
+                               movement_topic,
                                front_arm_topic,
                                back_arm_topic,
                                front_drum_topic,
-                               back_drum_topic, 
+                               back_drum_topic,
+                               float(obstacle_threshold),
+                               float(obstacle_buffer),
+                               float(move_increment),
                                float(max_linear_velocity),
                                float(max_angular_velocity),
                                bool(real_odometry))
