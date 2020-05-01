@@ -23,8 +23,8 @@ Note about Github
 ------------------
 
 Do not push original DEMs to github, since most DEMs are quite large, your
-commit probably will be reject if the file is over the 100 MB and files
-50-100 MB will be given a warning.
+commit will be rejected if the file is over the 100 MB (file sizes of
+50-100 MB will be given a warning).
 
 ------------------
 Note about Docker
@@ -66,7 +66,7 @@ Running the programs
 run_programs.sh run
 --------------------
 
-When you execute the script with the run command, you will be prompted with
+When you execute the script with the run command, you will be prompted to provide
 how many programs you would like to run, from 0 to 4. If in range and not 0,
 you will be prompted with what program would you like to run for each iteration.
 If you run more than 1 program, the output for each sequential execution will
@@ -103,20 +103,19 @@ Command line argument options
 -----------------------------
 
 queue_reset
-	deletes all files from ``dem_scripts/queue`` folder
+    Deletes all files from ``dem_scripts/queue`` folder
 
 results_reset
-    deletes all files from ``dem_scripts/results`` folder
+    Deletes all files from ``dem_scripts/results`` folder
 
 reset
-  deletes all files from each respective program's nested ``queued_dems`` and
-  ``results`` folders but not ``dem_scripts/queue`` nor ``dem_scripts/results``
+    Deletes all files from each respective program's nested ``queued_dems`` and ``results`` folders but not ``dem_scripts/queue`` nor ``dem_scripts/results``
 
 clean
-	purge your system of docker containers, images, etc.
+    Purge your system of docker containers, images, etc.
 
 run
-	runs the script
+    Runs the script
 
 List of Programs
 -----------------
