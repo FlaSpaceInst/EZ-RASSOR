@@ -1,2 +1,0 @@
-if we throw out particles with weight of none, messes up current graphing of weights so when gap, partices moved over
-stratified squished in none after iniit cuz remove none particles
