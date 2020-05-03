@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # cluster_tests
 
 # input: dictionary with pixel coordinates and intensities

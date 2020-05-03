@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from lxml import etree
 import sys
 import model_create as mc

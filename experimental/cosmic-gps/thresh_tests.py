@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # thresh_tests
 
 # input: 2D array with intensity values, size

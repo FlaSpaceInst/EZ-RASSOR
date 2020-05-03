@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # thresh_global.py
 
 # This module holds diffenent functions for thresholding an image

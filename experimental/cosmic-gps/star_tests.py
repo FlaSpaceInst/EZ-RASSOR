@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_tests.py
 
 # input: list of stars
