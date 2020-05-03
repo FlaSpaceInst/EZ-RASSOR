@@ -1,4 +1,4 @@
-#!usr/bin/env python
+#!/usr/bin/env python
 import gdal
 import ogr
 import osr

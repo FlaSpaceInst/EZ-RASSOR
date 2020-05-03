@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_cat_tests
 
 from star_cat import Star_Cat

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_cat.py
 
 import numpy as np

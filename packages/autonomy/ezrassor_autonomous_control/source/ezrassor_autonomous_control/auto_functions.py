@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 import utility_functions as uf
 import nav_functions as nf

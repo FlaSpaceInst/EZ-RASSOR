@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star.py
 
 from math import radians

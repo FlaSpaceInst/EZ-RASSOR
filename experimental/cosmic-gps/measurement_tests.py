@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # measurement_tests.py
 
 from measurement import Calibration_Function
