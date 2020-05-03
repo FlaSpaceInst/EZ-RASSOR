@@ -1,11 +1,11 @@
-#!/bin/bash
-dot="$(cd "$(dirname "$0")"; pwd)"
+#!/bin/sh
+dot=/tmp
 DEMS="$dot/queued_dems/*"
 
 for f in $DEMS
 do
     # Obtains filename from path i.e. /home/username/hello.txt -> hello.txt
-    name=$(basename -- $f)
+    name=$(basename -- "$f")
     # Obtains the extension i.e. hello.txt -> txt
     extension="${name##*.}"
     # name becomes just the name, no extension i.e. hello
@@ -16,6 +16,6 @@ do
     then
         echo "Processing $name ..."
         # Convert .lbl to .tif
-        gdal_translate $f "$dot/results/${name}.tif"
+        gdal_translate "$f" "$dot/results/${name}.tif"
     fi
 done

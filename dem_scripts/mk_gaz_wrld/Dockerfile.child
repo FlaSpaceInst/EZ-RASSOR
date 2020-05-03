@@ -17,4 +17,4 @@ ADD /mk_gaz_wrld/converted_dems /tmp/converted_dems
 COPY /mk_gaz_wrld/script_convert.sh /tmp/
 COPY /mk_gaz_wrld/check_dem_size.py /tmp/
 
-CMD ["bash", "./tmp/script_convert.sh"]
+CMD ["sh", "./tmp/script_convert.sh"]
