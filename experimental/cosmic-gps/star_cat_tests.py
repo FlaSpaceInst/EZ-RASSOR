@@ -48,7 +48,7 @@ def main():
     star.quick_set_angles(224.120815397, 29.3912178846)
     list_of_stars.append([6, star])
 
-    ### Star Matching ###
+    """ Star Matching """
     
     count = 0
     list_of_stars_size = len(list_of_stars)
