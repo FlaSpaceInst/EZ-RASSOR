@@ -48,7 +48,6 @@ def cell_gps_core():
     # initialize the calibration functions
     gha_aries_calibration = Calibration_Function(time_list,
                                                  actual_gha_aries)
-    # ....
 
     while (True):
 
@@ -68,7 +67,6 @@ def cell_gps_core():
         # threshold the image pixels then
         # cluster these pixels into individual stars
         pixels = thresh_global(img, 50)
-        #pixels = thresh_local_ratio(img, window_size)
         list_of_clusters = cluster(pixels)
 
         # for each cluster find the center, confirm the shape is star-like then

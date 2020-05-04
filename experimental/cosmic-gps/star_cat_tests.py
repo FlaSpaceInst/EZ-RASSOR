@@ -56,7 +56,6 @@ def main():
 
     # loop five times enforced by count
     while (count < 5):
-        # print 'Checkpoint Entry'
         # break early if too few stars
         if list_of_stars_size < 5:
             break;

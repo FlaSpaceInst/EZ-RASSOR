@@ -41,4 +41,3 @@ class Star_Ref:
                self.star_ra,
                self.star_dec,
                self.adj_list)
-

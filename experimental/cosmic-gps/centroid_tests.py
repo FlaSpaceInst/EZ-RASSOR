@@ -34,8 +34,6 @@ def main():
             list_of_stars.append([cluster_intensity, cluster_center, clustr])
     list_of_stars = sorted(list_of_stars, key=getkey, reverse=True)
 
-    #print len(list_of_stars)
-
     print '***Stars***'
     print ''
     for star in list_of_stars:
