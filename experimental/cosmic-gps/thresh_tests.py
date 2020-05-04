@@ -26,12 +26,10 @@ def main():
     rows = img.shape[0]
     cols = img.shape[1]
 
-    #thresh_dict = thresh_local_ratio(img, window_size)
     thresh_dict = thresh_global(img, thresh_value)
 
     thresh_array = convert_dict_to_array(thresh_dict, rows, cols)
     print thresh_dict
-    #cv.imwrite('thresh_test_output.png', thresh_array)
 
 def convert_dict_to_array(thresh_dict, rows, cols):
     temp_array = np.zeros((rows, cols))
