@@ -11,11 +11,9 @@ from timeit import default_timer as timer
 from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
-import matplotlib.pyplot as plt
-
 class PathPlanner:
     """
-    Global A* path planner which runs on the gazebo world's height-map
+    Global A* path planner which runs on a gazebo world's elevation-map
     """
 
     def __init__(self, map_path, rover_max_climb_slope):

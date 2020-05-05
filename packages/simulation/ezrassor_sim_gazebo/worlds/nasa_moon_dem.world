@@ -1,5 +1,5 @@
 <sdf version='1.6'>
-  <world name='random'>
+  <world name='nasa_moon_dem'>
     <scene>
       <background>0 0 0 255</background>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -11,7 +11,7 @@
     </include>
    <!-- DEM of moon surface -->
     <include>
-      <uri>model://random</uri>
+      <uri>model://nasa_moon_dem</uri>
       <friction>
         <mu> 0.01 </mu>
         <mu2> 0.01 </mu2>
@@ -20,7 +20,7 @@
 
     <!--Hopper Model-->
     <!-- Own physics settings to speed up simulation -->
-    <model name="random">
+    <model name="nasa_moon_dem">
       <static>true</static>
       <link name="link">
         <collision name="collision">
@@ -46,7 +46,7 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://random/materials/textures/random_map.jpg</uri>
+              <uri>model://nasa_moon_dem/materials/textures/nasa_moon_dem.jpg</uri>
               <size>513 513 20</size>
               <pos>0 0 -18</pos>
               <texture>
@@ -67,7 +67,7 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>model://random/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+                <diffuse>model://nasa_moon_dem/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
                 <normal>file://media/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
@@ -79,7 +79,7 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://random/materials/textures/random_map.jpg</uri>
+              <uri>model://nasa_moon_dem/materials/textures/nasa_moon_dem.jpg</uri>
               <size>513 513 20</size>
               <pos>0 0 -18</pos>
             </heightmap>
@@ -106,12 +106,12 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name='random'>
+    <state world_name='nasa_moon_dem'>
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name='random'>
+      <model name='nasa_moon_dem'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
