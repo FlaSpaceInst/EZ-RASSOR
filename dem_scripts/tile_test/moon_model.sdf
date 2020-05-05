@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <model name="tile_test">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+       
+        <geometry>
+          <heightmap>
+            <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
+            <size>129 129 49</size>
+            <pos>0 0 -25</pos>
+          </heightmap>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <heightmap>
+            <texture>
+              <diffuse>model://tile_test/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+              <normal>file://media/materials/textures/flat_normal.png</normal>
+              <size>2</size>
+            </texture>
+            <uri>model://tile_test/materials/textures/LRO_LOLA_DEM_SPolar875_10m_tile_9933_8772_converted.jpg</uri>
+            <size>129 129 49</size>
+            <pos>0 0 -25</pos>
+          </heightmap>
+        </geometry>
+      </visual>
+
+    </link>
+  </model>
+</sdf>

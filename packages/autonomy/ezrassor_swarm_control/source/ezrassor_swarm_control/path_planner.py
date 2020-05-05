@@ -11,10 +11,9 @@ from timeit import default_timer as timer
 from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
-
 class PathPlanner:
     """
-    Global A* path planner which runs on the gazebo world's height-map
+    Global A* path planner which runs on a gazebo world's elevation-map
     """
 
     def __init__(self, map_path, rover_max_climb_slope):
@@ -22,7 +21,7 @@ class PathPlanner:
         # Read and store height-map
         self.map = np.array(Image.open(map_path), dtype=int)
 
-        self.height, self.width = self.map.shape
+        self.width, self.height = self.map.shape
 
         # Diagonals and cardinal direction movements allowed
         self.neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -30,8 +29,10 @@ class PathPlanner:
         # Only cardinal directions
         # self.neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
 
-        # Maximum slope a rover can climb
+        # Maximum slope a rover can climb (must be >= 1)
         self.max_slope = rover_max_climb_slope
+
+        self.wait_time = 300
 
     def find_path(self, start_, goal_):
         """
@@ -49,9 +50,9 @@ class PathPlanner:
         start_time = timer()
 
         # Convert simulation coordinates, whose origin are in the center of the map,
-        # to image coordinates with origin in the bottom-left corner
-        start = Point(start_.x + self.width // 2, start_.y + self.height // 2, 0)
-        goal = Point(goal_.x + self.width // 2, goal_.y + self.height // 2, 0)
+        # to image coordinates with origin in the top-left corner
+        start = Point(int(round(start_.x + (self.width // 2))), int(round(abs(start_.y - (self.height // 2)))), 0)
+        goal = Point(int(round(goal_.x + (self.width // 2))), int(round(abs(goal_.y - (self.height // 2)))), 0)
 
         # Initialize open and closed
         open = []
@@ -71,6 +72,10 @@ class PathPlanner:
         heapq.heappush(open, (f_scores[start], start))
 
         while open:
+            # Try for only 30 seconds
+            if timer() - start_time > self.wait_time:
+                break
+
             # Visit coordinate with the smallest f value
             cur = heapq.heappop(open)[1]
 
@@ -109,8 +114,10 @@ class PathPlanner:
 
                     heapq.heappush(open, (f_scores[neighbor], neighbor))
 
-        print('No path found in {}'.format(timer() - start_time))
-        return
+        rospy.loginfo('No path found in {} seconds. Sending straight line path.'.format(timer() - start_time))
+        previous[goal] = start
+        path = self.backtrack_path(goal, start, previous)
+        return path
 
     def get_valid_neighbors(self, cur):
         '''
@@ -128,7 +135,7 @@ class PathPlanner:
                 continue
 
             # Check if slope is too great between current and neighboring node
-            if abs(self.map[y][x] - self.map[cur.y][cur.x]) > self.max_slope:
+            if abs(self.map[y, x] - self.map[cur.y, cur.x]) > self.max_slope:
                 continue
 
             neighbor = Point()
@@ -149,8 +156,8 @@ class PathPlanner:
         # Diagonal move
         if dx == 1 and dy == 1:
             # Check for mountains or craters adjacent to diagonal move
-            if abs(self.map[cur.y][neighbor.x] - self.map[cur.y][cur.x]) > 2 or \
-                    abs(self.map[neighbor.y][cur.x] - self.map[cur.y][cur.x]) > 2:
+            if abs(self.map[cur.y, neighbor.x] - self.map[cur.y, cur.x]) > 2 or \
+                    abs(self.map[neighbor.y, cur.x] - self.map[cur.y, cur.x]) > 2:
                 return False
 
         return True
@@ -167,8 +174,7 @@ class PathPlanner:
         while cur != start:
             # Convert image coordinates to gazebo simulation coordinates before adding to path
             cur.x -= self.width // 2
-            cur.y -= self.width // 2
-
+            cur.y = -(cur.y - (self.height // 2))
             p.path.append(cur)
 
             # Continue backtracking along each node's previous pointer
@@ -176,6 +182,11 @@ class PathPlanner:
                 cur = previous[cur]
             else:
                 raise ValueError('Unable to backtrack to start node.')
+
+        # Add start node to path
+        cur.x -= self.width // 2
+        cur.y = -(cur.y - (self.height // 2))
+        p.path.append(cur)
 
         # Reverse path before returning being that it's been built from goal to start
         p.path = p.path[::-1]
@@ -186,13 +197,16 @@ class PathPlanner:
         Returns the 3D euclidean distance between 2 ROS Points
         """
 
-        # Difference in z value weighed heavily
-        return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (self.map[b.y][b.x] - self.map[a.y][a.x]) ** 4)
+        # Ensure we're only indexing the height map with integers
+        a_x, a_y = int(round(a.x)), int(round(a.y))
+        b_x, b_y = int(round(b.x)), int(round(b.y))
+
+        return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (self.map[b_y, b_x] - self.map[a_y, a_x]) ** 2)
 
     def check_bounds(self, coord):
         """
         Returns false if the given coordinate is out of bounds of the Gazebo world
-        Gazebo coordinates have origin at 0,0
+        Gazebo coordinates have origin in the center of the world
         """
 
         # Check x

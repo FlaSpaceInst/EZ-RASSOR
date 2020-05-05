@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a Gazebo simulation which demonstrates a swarm of EZ-RASSORs collaborating to mine regolith
+<!-- Launch a Gazebo simulation which demonstrates a swarm of EZ-RASSORs collaborating to mine regolith from the lunar surface
      Written by Daniel Silva. -->
 
 <launch>
@@ -9,15 +9,19 @@
   <arg name="spawn_z_coords" default="default"/>
   <arg name="digsite_x_coords" default="default"/>
   <arg name="digsite_y_coords" default="default"/>
+<<<<<<< HEAD
   <arg name="lander_coords" default="5 5"/>
   <arg name="world" default="random"/>
+=======
+  <arg name="world" default="nasa_moon_dem"/>
+  <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
+>>>>>>> swarm_control
   <arg name="debug" default="default"/>
   <arg name="paused" default="default"/>
   <arg name="verbose" default="default"/>
   <arg name="show_gui" default="default"/>
   <arg name="recording" default="default"/>
   <arg name="use_sim_time" default="default"/>
-  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
 
   <!-- Will always use swarm control software -->
@@ -37,12 +41,15 @@
     <arg name="spawn_z_coords"
             value="$(arg spawn_z_coords)"
             unless="$(eval spawn_z_coords == 'default')"/>
-    <arg name="enable_cameras"
-            value="$(arg enable_cameras)"
-            unless="$(eval enable_cameras == 'default')"/>
     <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="elevation_map"
+         value="$(arg elevation_map)"
+         unless="$(eval elevation_map == 'default')"/>
     <arg name="swarm_control"
             value="$(arg swarm_control)"/>
   </include>
@@ -61,6 +68,12 @@
     <arg name="lander_coords"
             value="$(arg lander_coords)"
             unless="$(eval lander_coords == 'default')"/>
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="elevation_map"
+         value="$(arg elevation_map)"
+         unless="$(eval elevation_map == 'default')"/>
   </include>
 
   <!-- Load the world once all rovers have been spawned

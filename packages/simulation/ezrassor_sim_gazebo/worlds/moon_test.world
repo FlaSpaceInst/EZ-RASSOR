@@ -1,33 +1,27 @@
-<sdf version='1.6'>
-  <world name='random'>
-    <scene>
-      <background>0 0 0 255</background>
-      <ambient>0.4 0.4 0.4 1</ambient>
-      <shadows>1</shadows>
-    </scene>
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
-   <!-- DEM of moon surface -->
     <include>
-      <uri>model://random</uri>
+      <uri>model://s_pole</uri>
       <friction>
-        <mu> 0.01 </mu>
-        <mu2> 0.01 </mu2>
+        <mu> 100 </mu>
+        <mu2> 100 </mu2>
       </friction>
     </include>
-
     <!--Hopper Model-->
     <!-- Own physics settings to speed up simulation -->
-    <model name="random">
+    <model name="s_pole">
       <static>true</static>
       <link name="link">
         <collision name="collision">
           <surface>
             <friction>
               <ode>
-                <mu>0.01</mu>
+                <mu>30</mu>
               </ode>
               <torsional>
                 <ode/>
@@ -46,9 +40,9 @@
           </surface>
           <geometry>
             <heightmap>
-              <uri>model://random/materials/textures/random_map.jpg</uri>
-              <size>513 513 20</size>
-              <pos>0 0 -18</pos>
+              <uri>model://s_pole/materials/textures/LRO_PNG_TEST_257.jpg</uri>
+              <size>150 150 50</size>
+              <pos>0 0 -100</pos>
               <texture>
                 <size>10</size>
                 <diffuse>__default__</diffuse>
@@ -67,7 +61,7 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>model://random/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
+                <diffuse>model://s_pole/materials/textures/AS16-110-18026HR-512x512.jpg</diffuse>
                 <normal>file://media/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
@@ -79,9 +73,9 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://random/materials/textures/random_map.jpg</uri>
-              <size>513 513 20</size>
-              <pos>0 0 -18</pos>
+              <uri>model://s_pole/materials/textures/LRO_PNG_TEST_257.jpg</uri>
+              <size>150 150 50</size>
+              <pos>0 0 0</pos>
             </heightmap>
           </geometry>
         </visual>
@@ -90,24 +84,6 @@
         <gravity>1</gravity>
       </link>
     </model>
-    <model name='base_station'>
-      <pose frame=''>0 0 .0.7 0 0 90</pose>
-      <static>1</static>
-      <link name='link'>
-        <visual name='visual'>
-          <geometry>
-            <mesh>
-              <uri>model://base_station/meshes/base_station.dae</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-    </model>
-
     <physics name='default_physics' default='0' type='ode'>
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>
@@ -123,12 +99,12 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <state world_name='random'>
+    <state world_name='moon_test'>
       <sim_time>400 160000000</sim_time>
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name='random'>
+      <model name='s_pole'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -138,23 +114,13 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='base_station'>
-        <pose frame=''>0 0 -0.7 0 0 90</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>0 0 -0.7 0 -0 90</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-    </state>
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose frame=''>16.3249 -27.6364 14.6277 -0 0.621796 2.22418</pose>
-        <view_controller>orbit</view_controller>
-        <projection_type>perspective</projection_type>
-      </camera>
-    </gui>
+     </state>
+      <gui fullscreen='0'>
+          <camera name='user_camera'>
+            <pose frame=''>16.3249 -27.6364 14.6277 -0 0.621796 2.22418</pose>
+            <view_controller>orbit</view_controller>
+            <projection_type>perspective</projection_type>
+          </camera>
+      </gui>
   </world>
 </sdf>

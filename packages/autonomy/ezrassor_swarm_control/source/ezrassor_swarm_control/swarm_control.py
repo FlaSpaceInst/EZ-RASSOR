@@ -21,11 +21,23 @@ class Rover :
 
 
 class SwarmController:
+<<<<<<< HEAD
     def __init__(self, robot_count, dig_sites, lander_loc):
         self.robot_count = robot_count
         self.dig_sites = dig_sites
         self.lander_loc = lander_loc
         self.rover_activity_status_db = [Rover(i) for i in range(10)]
+=======
+    """
+    Central controller for a swarm of EZ-RASSORs
+    Responsible for the scheduling and high-level path planning for each rover
+    """
+    def __init__(self, robot_count, dig_sites, world, elevation_map):
+        self.robot_count = robot_count
+        self.dig_sites = dig_sites
+        self.world = world
+        self.elevation_map = elevation_map
+>>>>>>> swarm_control
 
         self.waypoint_pubs = {i: rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
                                                  Path,
@@ -55,12 +67,18 @@ class SwarmController:
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
         
         # wait for rovers to spawn
+<<<<<<< HEAD
         rospy.sleep(10.)
+=======
+        rospy.sleep(20.)
+>>>>>>> swarm_control
 
+        # Build path of the elevation map
         height_map = os.path.join(os.path.expanduser('~'),
-                                  '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
+                                  '.gazebo', 'models', self.world, 'materials', 'textures', self.elevation_map)
 
-        path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
+        # Create A* path planner
+        path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
         while True :
             for i in range(1, self.robot_count + 1) :
@@ -139,5 +157,6 @@ def on_start_up(robot_count, target_xs, target_ys, lander_coords):
 
         dig_sites.append(coord)
 
-    swarm_controller = SwarmController(robot_count, dig_sites, lander_point)
+    # swarm_controller = SwarmController(robot_count, dig_sites, lander_point)
+    swarm_controller = SwarmController(robot_count, dig_sites, lander_point, world, elevation_map)
     swarm_controller.run()
