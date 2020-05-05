@@ -9,8 +9,13 @@
   <arg name="spawn_z_coords" default="default"/>
   <arg name="digsite_x_coords" default="default"/>
   <arg name="digsite_y_coords" default="default"/>
+<<<<<<< HEAD
+  <arg name="lander_coords" default="5 5"/>
+  <arg name="world" default="random"/>
+=======
   <arg name="world" default="nasa_moon_dem"/>
   <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
+>>>>>>> swarm_control
   <arg name="debug" default="default"/>
   <arg name="paused" default="default"/>
   <arg name="verbose" default="default"/>
@@ -60,6 +65,9 @@
     <arg name="digsite_y_coords"
             value="$(arg digsite_y_coords)"
             unless="$(eval digsite_y_coords == 'default')"/>
+    <arg name="lander_coords"
+            value="$(arg lander_coords)"
+            unless="$(eval lander_coords == 'default')"/>
     <arg name="world"
          value="$(arg world)"
          unless="$(eval world == 'default')"/>

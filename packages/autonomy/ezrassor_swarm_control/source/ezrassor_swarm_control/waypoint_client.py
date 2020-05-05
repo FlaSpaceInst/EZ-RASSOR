@@ -36,6 +36,9 @@ class WaypointClient:
         # Service which allows the waypoint client's current path to be preempted from any other node
         self.preempt_service = rospy.Service('preempt_path', PreemptPath, self.preempt_path)
 
+        # Minimum amount of battery a rover needs to continue along a path
+        self.min_battery_needed = 4
+
         # Whether a path has been canceled or not
         self.preempt = False
 
