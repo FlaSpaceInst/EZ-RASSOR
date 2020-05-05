@@ -14,9 +14,9 @@ from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
 import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
+import nav_functions as nf
 
 import re
-
 
 class RoverController:
     def __init__(self, target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
@@ -84,6 +84,8 @@ class RoverController:
             self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
             rospy.loginfo('Rover status service initialized.')
 
+            rospy.loginfo("TARGET X AND TARGET Y: {} {}".format(target_x, target_y))
+
         else:
             # Basic autonomous control using the autonomous control loop
             target_location = Point()
@@ -123,16 +125,51 @@ class RoverController:
 
         self.world_state.target_location = goal.target
 
-        rospy.loginfo('Waypoint server {} moving rover to {}'.format(
-            self.namespace + self.server_name, (goal.target.x, goal.target.y)))
+        if goal.target.x == -999 and goal.target.y == -999 :
+            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER CHARGING!')
+            af.charge_battery(self.world_state, self.ros_util, self.waypoint_server)
+        
+        elif goal.target.x == -998 and goal.target.y == -998 :
+            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
+            af.auto_dig(self.world_state, self.ros_util, 1000)
+        
+        else :
+            rospy.loginfo('Waypoint server {} moving rover to {}'.format(
+                self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
-        # Set rover to autonomously navigate to target
-        feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
+            # Set rover to autonomously navigate to target
+            feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
+
+            # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
+            if not self.waypoint_server.is_preempt_requested():
+                if feedback :
+                    result = waypointResult(feedback.pose, feedback.battery, 0)
+                    self.waypoint_server.set_succeeded(result)
+    
+    def charge_rover(self) :
+        af.charge_battery(self.world_state, self.ros_util)
 
         # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
         if feedback is not None and not self.waypoint_server.is_preempt_requested():
             result = waypointResult(feedback.pose, feedback.battery, 0)
             self.waypoint_server.set_succeeded(result)
+
+    def send_status(self, request):
+        """
+        Sends the rover's current battery and pose to the swarm controller
+        """
+
+        status = GetRoverStatusResponse()
+        status.pose.position.x = self.world_state.positionX
+        status.pose.position.y = self.world_state.positionY
+        status.pose.position.z = self.world_state.positionZ
+        status.pose.orientation = self.world_state.orientation
+        status.battery = self.world_state.battery
+
+        # rospy.loginfo('Service {} sending current status'.format(
+        #                 self.status_service.resolved_name))
+
+        return status
 
     def preempt_cb(self):
         """
