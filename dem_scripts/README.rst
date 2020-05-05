@@ -87,13 +87,9 @@ To run the script
 
 .. code::
 
-	sudo bash run_programs.sh WHATEVER_COMMAND
+	sh run_programs.sh [reset] [queue_reset] [results_reset] [run] [clean]
 
-**Note 1**: ``sudo`` is not necessary but you have to make sure that you're
-a part of the docker group permissions on your computer, see the link for
-details:
-
-https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
+**Note 1**: Several of these tasks require Docker access and will only work if you are `part of the docker group.`_
 
 **Note 2**: Please run the ``reset``, ``queue_reset``, and ``results_reset``
 commands first since there is just a placeholder file in the otherwise empty
@@ -102,20 +98,21 @@ folders
 Command line argument options
 -----------------------------
 
+reset
+    Deletes all files from each respective program's nested ``queued_dems`` and ``results`` folders but not ``dem_scripts/queue`` nor ``dem_scripts/results``
+
 queue_reset
     Deletes all files from ``dem_scripts/queue`` folder
 
 results_reset
-    Deletes all files from ``dem_scripts/results`` folder
+    Deletes all files from ``dem_scripts/results`` folder 
 
-reset
-    Deletes all files from each respective program's nested ``queued_dems`` and ``results`` folders but not ``dem_scripts/queue`` nor ``dem_scripts/results``
+run
+    Runs the script
 
 clean
     Purge your system of docker containers, images, etc.
 
-run
-    Runs the script
 
 List of Programs
 -----------------
@@ -398,3 +395,5 @@ bind mounts the best choice in this case.
 Full comparison of storage formats in Docker:
 
 https://docs.docker.com/storage/
+
+.. _`part of the docker group.`: https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
