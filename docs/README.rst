@@ -114,6 +114,14 @@ AUTHORS
 - `Michael Jimenez`_
 - `Scott Scalera`_
 
+**EZ-RASSOR 2.0 (Swarm Control & Management) Team**
+
+- `Daniel Silva`_
+- `Chin Winn`_
+- `Martin Power`_
+- `Daniel Simoes`_
+- `Autumn Esponda`_
+
 .. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
@@ -136,3 +144,8 @@ AUTHORS
 .. _`John Hacker` : https://github.com/JHacker997
 .. _`Michael Jimenez` : https://github.com/Mjimenez01
 .. _`Scott Scalera` : https://github.com/ScottCarL
+.. _`Daniel Silva` : https://github.com/danielzgsilva
+.. _`Chin Winn` : https://github.com/wchinny
+.. _`Martin Power` : https://github.com/martinpower
+.. _`Daniel Simoes` : https://github.com/RuptorT
+.. _`Autumn Esponda` : https://github.com/autumnesponda
