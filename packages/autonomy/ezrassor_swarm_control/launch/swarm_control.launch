@@ -5,6 +5,8 @@
   <arg name="robot_count" default="2"/>
   <arg name="digsite_x_coords" default="10"/>
   <arg name="digsite_y_coords" default="10"/>
+  <arg name="world" default="nasa_moon_dem"/>
+  <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
 
   <!-- Launch the autonomous control node. -->
   <node pkg="ezrassor_swarm_control"
@@ -14,5 +16,7 @@
     <param name="robot_count" value="$(arg robot_count)"/>
     <param name="digsite_x_coords" value="$(arg digsite_x_coords)"/>
     <param name="digsite_y_coords" value="$(arg digsite_y_coords)"/>
+    <param name="world" value="$(arg world)"/>
+    <param name="elevation_map" value="$(arg elevation_map)"/>
   </node>
 </launch>

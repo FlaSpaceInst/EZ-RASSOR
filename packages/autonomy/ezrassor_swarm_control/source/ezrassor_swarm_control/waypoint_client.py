@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+
 import os
 
 import rospy
@@ -14,7 +15,12 @@ from ezrassor_swarm_control.srv import PreemptPath, PreemptPathResponse
 
 
 class WaypointClient:
-    def __init__(self, robot_num):
+    """
+    Communication layer between the central swarm controller and each EZ-RASSOR
+    Implemented as a ROS action client-server API
+    """
+
+    def __init__(self, robot_num, world, elevation_map):
         self.client_name = 'waypoint'
         self.namespace = rospy.get_namespace()
 
@@ -44,12 +50,13 @@ class WaypointClient:
 
         # Create path planner to be used during replanning
         height_map = os.path.join(os.path.expanduser('~'),
-                                  '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
+                                  '.gazebo', 'models', world, 'materials', 'textures', elevation_map)
 
-        self.path_planner = PathPlanner(height_map, rover_max_climb_slope=1)
+        self.path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
     def preempt_path(self, request=None):
         """Callback executed when the waypoint client receives a preempt path request"""
+
         self.preempt = True
         self.client.cancel_goal()
 
@@ -129,7 +136,7 @@ class WaypointClient:
         self.goal = None
 
 
-def on_start_up(robot_num):
+def on_start_up(robot_num, world, elevation_map):
     rospy.init_node('waypoint_client', anonymous=True)
-    WaypointClient(robot_num)
+    WaypointClient(robot_num, world, elevation_map)
     rospy.spin()

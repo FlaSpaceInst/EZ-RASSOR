@@ -11,9 +11,15 @@ import os
 
 
 class SwarmController:
-    def __init__(self, robot_count, dig_sites):
+    """
+    Central controller for a swarm of EZ-RASSORs
+    Responsible for the scheduling and high-level path planning for each rover
+    """
+    def __init__(self, robot_count, dig_sites, world, elevation_map):
         self.robot_count = robot_count
         self.dig_sites = dig_sites
+        self.world = world
+        self.elevation_map = elevation_map
 
         self.waypoint_pubs = {i: rospy.Publisher('/ezrassor{}/waypoint_client'.format(i),
                                                  Path,
@@ -28,9 +34,11 @@ class SwarmController:
         # wait for rovers to spawn
         rospy.sleep(20.)
 
+        # Build path of the elevation map
         height_map = os.path.join(os.path.expanduser('~'),
-                                  '.gazebo', 'models', 'random', 'materials', 'textures', 'random_map.jpg')
+                                  '.gazebo', 'models', self.world, 'materials', 'textures', self.elevation_map)
 
+        # Create A* path planner
         path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
         status = get_rover_status(1)
@@ -44,7 +52,7 @@ class SwarmController:
                 self.waypoint_pubs[1].publish(path)
 
 
-def on_start_up(robot_count, target_xs, target_ys):
+def on_start_up(robot_count, target_xs, target_ys, world, elevation_map):
     """ Initialization Function  """
 
     # ROS Node Init Parameters
@@ -67,5 +75,5 @@ def on_start_up(robot_count, target_xs, target_ys):
 
         dig_sites.append(coord)
 
-    swarm_controller = SwarmController(robot_count, dig_sites)
+    swarm_controller = SwarmController(robot_count, dig_sites, world, elevation_map)
     swarm_controller.run()
