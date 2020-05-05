@@ -9,7 +9,7 @@ from std_msgs.msg import Float32, Float64
 NODE = "sim_arms_driver"
 FRONT_TOPIC = "front_arm_instructions"
 BACK_TOPIC = "back_arm_instructions"
-MAX_ARM_SPEED = 2.5
+MAX_ARM_SPEED = 0.75
 
 # /ezrassor/arm_back_velocity_controller/command
 pub_FA = rospy.Publisher('arm_front_velocity_controller/command', 

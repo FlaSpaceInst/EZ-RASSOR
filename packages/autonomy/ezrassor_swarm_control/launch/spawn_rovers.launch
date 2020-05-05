@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch a Gazebo simulation which demonstrates a swarm of EZ-RASSORs collaborating to mine regolith
-     Written by Daniel Silva. -->
+<!-- Spawns each individual EZ-RASSOR and run its autonomy nodes -->
 
 <launch>
   <arg name="robot_count" default="2"/>
   <arg name="spawn_x_coords" default="3 6"/>
   <arg name="spawn_y_coords" default="0 0"/>
   <arg name="spawn_z_coords" default="default"/>
-  <arg name="enable_cameras" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
+  <arg name="world" default="nasa_moon_dem"/>
+  <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
   <arg name="swarm_control" default="default"/>
 
   <!-- Launch a rover's communication system -->
   <group ns="ezrassor$(arg robot_count)">
     <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
       <arg name="control_methods" value="autonomy"/>
-      <arg name="enable_cameras"
-            value="$(arg enable_cameras)"
-            unless="$(eval enable_cameras == 'default')"/>
       <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
@@ -49,6 +46,8 @@
         type="waypoint_client"
         output="screen">
        <param name="robot_num" value="$(arg robot_count)"/>
+       <param name="world" value="$(arg world)"/>
+       <param name="elevation_map" value="$(arg elevation_map)"/>
     </node>
   </group>
 
@@ -61,9 +60,6 @@
     <arg name="spawn_z_coords"
             value="$(arg spawn_z_coords)"
             unless="$(eval spawn_z_coords == 'default')"/>
-    <arg name="enable_cameras"
-            value="$(arg enable_cameras)"
-            unless="$(eval enable_cameras == 'default')"/>
     <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
