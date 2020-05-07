@@ -18,6 +18,7 @@ import nav_functions as nf
 
 import re
 
+
 class RoverController:
     def __init__(self, target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
                  back_arm_topic, front_drum_topic, back_drum_topic,
@@ -72,7 +73,7 @@ class RoverController:
             # Create waypoint action server used to control the rover via the swarm_controller
             self.server_name = 'waypoint'
             self.waypoint_server = actionlib.SimpleActionServer(self.server_name, waypointAction,
-                                                                execute_cb=self.move_rover, auto_start=False)
+                                                                execute_cb=self.execute_action, auto_start=False)
 
             self.waypoint_server.start()
 
@@ -83,8 +84,6 @@ class RoverController:
             # Register GetRoverStatus, used by the swarm controller to retreive a rover's position and battery
             self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
             rospy.loginfo('Rover status service initialized.')
-
-            rospy.loginfo("TARGET X AND TARGET Y: {} {}".format(target_x, target_y))
 
         else:
             # Basic autonomous control using the autonomous control loop
@@ -112,28 +111,27 @@ class RoverController:
         status.pose.orientation = self.world_state.orientation
         status.battery = self.world_state.battery
 
-        rospy.loginfo('Service {} sending current status'.format(
-            self.status_service.resolved_name))
+        # rospy.loginfo('Service {} sending current status'.format(self.status_service.resolved_name))
 
         return status
 
-    def move_rover(self, goal):
+    def execute_action(self, goal):
         """
-        Callback executed when the swarm controller sends a goal to a rover via the
+        Callback executed when the swarm controller sends an action to a rover via the
         rover's waypoint client-server API
         """
 
         self.world_state.target_location = goal.target
 
-        if goal.target.x == -999 and goal.target.y == -999 :
-            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER CHARGING!')
-            af.charge_battery(self.world_state, self.ros_util, self.waypoint_server)
-        
-        elif goal.target.x == -998 and goal.target.y == -998 :
-            rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
+        if goal.target.x == -999 and goal.target.y == -999:
+            # rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER CHARGING!')
+            af.charge_battery(self.world_state, self.ros_util)
+
+        elif goal.target.x == -998 and goal.target.y == -998:
+            # rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
             af.auto_dig(self.world_state, self.ros_util, 1000)
-        
-        else :
+
+        else:
             rospy.loginfo('Waypoint server {} moving rover to {}'.format(
                 self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
@@ -142,34 +140,9 @@ class RoverController:
 
             # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
             if not self.waypoint_server.is_preempt_requested():
-                if feedback :
+                if feedback:
                     result = waypointResult(feedback.pose, feedback.battery, 0)
                     self.waypoint_server.set_succeeded(result)
-    
-    def charge_rover(self) :
-        af.charge_battery(self.world_state, self.ros_util)
-
-        # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
-        if feedback is not None and not self.waypoint_server.is_preempt_requested():
-            result = waypointResult(feedback.pose, feedback.battery, 0)
-            self.waypoint_server.set_succeeded(result)
-
-    def send_status(self, request):
-        """
-        Sends the rover's current battery and pose to the swarm controller
-        """
-
-        status = GetRoverStatusResponse()
-        status.pose.position.x = self.world_state.positionX
-        status.pose.position.y = self.world_state.positionY
-        status.pose.position.z = self.world_state.positionZ
-        status.pose.orientation = self.world_state.orientation
-        status.battery = self.world_state.battery
-
-        # rospy.loginfo('Service {} sending current status'.format(
-        #                 self.status_service.resolved_name))
-
-        return status
 
     def preempt_cb(self):
         """

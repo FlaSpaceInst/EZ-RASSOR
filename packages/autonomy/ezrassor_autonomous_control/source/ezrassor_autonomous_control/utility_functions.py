@@ -61,21 +61,24 @@ def self_check(world_state, ros_util):
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
+
+    if world_state.battery < 30:
+        rospy.loginfo("Low battery! Returning to origin...")
+        world_state.target_location = [0, 0]
+        return 3
+
     # Future status checks for physical hardware
     '''
     if world_state.on_side == True:
         rospy.loginfo("On side! Attempting auto self-right...")
         return 2
-    if world_state.battery < 10:
-        rospy.loginfo("Low battery! Returning to origin...")
-        world_state.target_location = [0,0]
-        return 3
     if world_state.hardware_status == False:
         rospy.loginfo("Hardware failure! Shutting down...")
         ros_util.publish_actions('stop', 1, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
     '''
+
     return 1
 
 """ Turns the robot to the given heading

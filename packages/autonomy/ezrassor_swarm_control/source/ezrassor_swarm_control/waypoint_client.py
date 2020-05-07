@@ -20,7 +20,7 @@ class WaypointClient:
     Implemented as a ROS action client-server API
     """
 
-    def __init__(self, robot_num, world, elevation_map):
+    def __init__(self, world, elevation_map):
         self.client_name = 'waypoint'
         self.namespace = rospy.get_namespace()
 
@@ -139,7 +139,7 @@ class WaypointClient:
         self.goal = None
 
 
-def on_start_up(robot_num, world, elevation_map):
-    rospy.init_node('waypoint_client', anonymous=True)
-    WaypointClient(robot_num, world, elevation_map)
+def on_start_up(world, elevation_map):
+    rospy.init_node('waypoint_client')
+    WaypointClient(world, elevation_map)
     rospy.spin()

@@ -15,6 +15,12 @@
   <group ns="ezrassor$(arg robot_count)">
     <include file="$(find ezrassor_launcher)/launch/configurable_communication.launch">
       <arg name="control_methods" value="autonomy"/>
+      <arg name="spawn_x_coord"
+           value="$(eval str(spawn_x_coords).split()[robot_count - 1])"
+           unless="$(eval spawn_x_coords == 'default')"/>
+      <arg name="spawn_y_coord"
+           value="$(eval str(spawn_y_coords).split()[robot_count - 1])"
+           unless="$(eval spawn_y_coords == 'default')"/>
       <arg name="enable_real_odometry"
             value="$(arg enable_real_odometry)"
             unless="$(eval enable_real_odometry == 'default')"/>
@@ -45,7 +51,6 @@
         name="waypoint_client"
         type="waypoint_client"
         output="screen">
-       <param name="robot_num" value="$(arg robot_count)"/>
        <param name="world" value="$(arg world)"/>
        <param name="elevation_map" value="$(arg elevation_map)"/>
     </node>
@@ -66,5 +71,9 @@
     <arg name="swarm_control"
             value="$(arg swarm_control)"
             unless="$(eval swarm_control == 'default')"/>
+    <arg name="world"
+            value="$(arg world)"/>
+    <arg name="elevation_map"
+            value="$(arg elevation_map)"/>
   </include>
 </launch>
