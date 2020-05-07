@@ -9,4 +9,4 @@ digsite_y_coords = rospy.get_param('swarm_control/digsite_y_coords')
 world = rospy.get_param('swarm_control/world')
 elevation_map = rospy.get_param('swarm_control/elevation_map')
 
-swarm_control.on_start_up(robot_count, digsite_x_coords, digsite_y_coords, lannder_coords, world, elevation_map)
+swarm_control.on_start_up(robot_count, digsite_x_coords, digsite_y_coords, lander_coords, world, elevation_map)

@@ -2,8 +2,7 @@
 import rospy
 from ezrassor_swarm_control import waypoint_client
 
-robot_num = rospy.get_param('waypoint_client/robot_num')
 world = rospy.get_param('waypoint_client/world')
 elevation_map = rospy.get_param('waypoint_client/elevation_map')
 
-waypoint_client.on_start_up(robot_num, world, elevation_map)
+waypoint_client.on_start_up(world, elevation_map)
