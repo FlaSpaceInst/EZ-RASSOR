@@ -32,7 +32,7 @@ class PathPlanner:
         # Maximum slope a rover can climb (must be >= 1)
         self.max_slope = rover_max_climb_slope
 
-        self.wait_time = 300
+        self.wait_time = 120
 
     def find_path(self, start_, goal_):
         """

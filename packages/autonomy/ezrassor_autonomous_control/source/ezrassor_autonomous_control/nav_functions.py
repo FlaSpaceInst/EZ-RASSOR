@@ -51,7 +51,8 @@ Angle is in radians and dist is the distance to an object or threshold value
 passed in.
 """
 def angle_is_safe(angle, dist, buffer, scan, threshold):
-    # Calculate how much to change angle in order for robot to clear obstacle.
+
+    '''# Calculate how much to change angle in order for robot to clear obstacle.
     buffer_angle = math.atan(buffer / threshold)
 
     # These are in radians.
@@ -75,7 +76,7 @@ def angle_is_safe(angle, dist, buffer, scan, threshold):
     # Check to see if something is blocking where we are trying to fit through.
     for i in range(start, end):
         if (not math.isnan(scan.ranges[i])) and scan.ranges[i] <= dist:
-            return False
+            return False'''
 
     return True
 

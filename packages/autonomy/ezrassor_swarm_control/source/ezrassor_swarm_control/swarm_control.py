@@ -49,14 +49,14 @@ class SwarmController:
 
     def is_at_lander(self, robot_status):
         if euclidean_distance(robot_status.pose.position.x, self.lander_loc.x, robot_status.pose.position.y,
-                              self.lander_loc.y) <= 1:
+                              self.lander_loc.y) <= 0.5:
             return True
         else:
             return False
 
     def is_at_digsite(self, robot_status, dig_site_idx):
         if euclidean_distance(robot_status.pose.position.x, self.dig_sites[dig_site_idx].x, robot_status.pose.position.y,
-                              self.dig_sites[dig_site_idx].y) <= 1:
+                              self.dig_sites[dig_site_idx].y) <= 0.5:
             return True
         else:
             return False
@@ -72,7 +72,7 @@ class SwarmController:
                       .format(len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]))
 
         # wait for rovers to spawn
-        rospy.sleep(10.)
+        rospy.sleep(20.)
 
         # Build path of the elevation map
         height_map = os.path.join(os.path.expanduser('~'),
@@ -98,6 +98,7 @@ class SwarmController:
 
                     elif self.rover_activity_status_db[i].activity == 'digging':
                         if rover_status.battery <= 35.0:
+                            preempt_rover_path(i)
                             path = path_planner.find_path(rover_status.pose.position, self.lander_loc)
                             if path:
                                 self.waypoint_pubs[i].publish(path)
@@ -106,11 +107,13 @@ class SwarmController:
                     elif self.rover_activity_status_db[i].activity == 'driving to lander':
                         if self.is_at_lander(rover_status):
                             if self.rover_activity_status_db[i].activity != 'charging':
+                                preempt_rover_path(i)
                                 self.waypoint_pubs[i].publish(self.create_command('CHG'))
                                 self.rover_activity_status_db[i].activity = 'charging'
 
                     elif self.rover_activity_status_db[i].activity == 'charging':
                         if rover_status.battery >= 95:
+                            preempt_rover_path(i)
                             path = path_planner.find_path(rover_status.pose.position, self.dig_sites[site_num])
                             if path:
                                 self.waypoint_pubs[i].publish(path)
@@ -119,6 +122,7 @@ class SwarmController:
                         if self.is_at_digsite(rover_status, site_num):
                             if self.rover_activity_status_db[i].activity == 'driving to digsite':
                                 if rover_status.battery >= 35.0:
+                                    preempt_rover_path(i)
                                     self.waypoint_pubs[i].publish(self.create_command('DIG'))
                                     self.rover_activity_status_db[i].activity = 'digging'
 
