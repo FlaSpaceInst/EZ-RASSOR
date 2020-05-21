@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch Park Ranger demo.
+     Written by Jordan Albury. -->
+<launch>
+  <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+	  <arg name="control_methods" value="autonomy"/>
+	  <arg name="world" value="park_ranger_test_world"/>
+	  <arg name="spawn_x_coords" value="30"/>
+	  <arg name="spawn_y_coords" value="30"/>
+	  <arg name="spawn_z_coords" value="7"/>
+	  <arg name="enable_real_odometry" value="true"/>
+	  <arg name="enable_park_ranger" value="true"/>
+  </include>
+</launch>
