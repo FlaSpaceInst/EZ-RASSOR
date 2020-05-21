@@ -1,14 +1,12 @@
 import rospy
+import nav_functions as nf
+import math
+from random import uniform
 from std_msgs.msg import String, Float32, Bool
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import Point, Twist, Quaternion
-import nav_functions as nf
-import math
-
-from random import uniform
-
+from geometry_msgs.msg import Point, Twist
 
 class WorldState():
     """ World State Object Representing
@@ -25,7 +23,6 @@ class WorldState():
         self.back_arm_angle = 0
         self.front_arm_angle = 0
         self.heading = 0
-        self.orientation = Quaternion()
         self.warning_flag = 0
         self.target_location = Point()
         self.on_side = False
@@ -34,6 +31,7 @@ class WorldState():
         self.back_up = False
         self.battery = 100
         self.hardware_status = True
+
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
@@ -46,11 +44,10 @@ class WorldState():
 
         self.positionX = data.pose.pose.position.x + self.startPositionX
         self.positionY = data.pose.pose.position.y + self.startPositionY
-        self.orientation = data.pose.pose.orientation
 
-        heading = nf.quaternion_to_yaw(data.pose.pose.orientation)
+        heading = nf.quaternion_to_yaw(data.pose.pose) * 180/math.pi
 
-        if self.heading > 0:
+        if heading > 0:
             self.heading = heading
         else:
             self.heading = 360 + heading
@@ -86,11 +83,6 @@ class WorldState():
             self.on_side = True
         else:
             self.on_side = False
-
-    def visionCallBack(self, data):
-        """ Set state_flags vision data. """
-
-        self.warning_flag = data.data
 
     def get_arm_force(self):
         front_arm_force = self.state_flags['front_arm_angle'] + .2 + uniform(-.2, .2)
@@ -131,7 +123,10 @@ class ROSUtility():
         self.control_pub = rospy.Publisher('secondary_override_toggle',
                                            Bool,
                                            queue_size=10)
-        self.rate = rospy.Rate(45)  # 10hz
+        self.arms_up_pub = rospy.Publisher('arms_up',
+                                           Bool,
+                                           queue_size=10)
+        self.rate = rospy.Rate(45) # 10hz
 
         self.max_linear_velocity = max_linear_velocity
         self.max_angular_velocity = max_angular_velocity
