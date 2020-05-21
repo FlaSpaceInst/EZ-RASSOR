@@ -146,7 +146,7 @@ class WaypointClient:
                 self.cur_waypoint = node
                 self.send_waypoint(node)
 
-            rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
+        rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
 
         # Reset server to receive another path
         self.preempt = False
@@ -155,6 +155,6 @@ class WaypointClient:
 
 
 def on_start_up(robot_num, world, elevation_map):
-    rospy.init_node('waypoint_client', anonymous=True)
+    rospy.init_node('waypoint_client')
     WaypointClient(robot_num, world, elevation_map)
     rospy.spin()
