@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch GPS-Denied Autonomous Navigation demo.
+     Written by Jordan Albury. -->
+<launch>
+  <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+	  <arg name="control_methods" value="autonomy"/>
+	  <arg name="world" value="tile_test"/>
+	  <arg name="spawn_x_coords" value="-45"/>
+	  <arg name="spawn_y_coords" value="130"/>
+	  <arg name="spawn_z_coords" value="-29"/>
+	  <arg name="digsite_x_coords" value="5"/>
+	  <arg name="digsite_y_coords" value="111"/>
+	  <arg name="enable_real_odometry" value="true"/>
+  </include>
+</launch>

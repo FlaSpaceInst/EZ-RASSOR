@@ -2,8 +2,6 @@
 dot="$(cd "$(dirname "$0")"; pwd)"
 DEMS="$dot/queued_dems/*"
 
-gdalinfo --formats
-
 for f in $DEMS
 do
     # Obtains filename from path i.e. /home/username/hello.txt -> hello.txt

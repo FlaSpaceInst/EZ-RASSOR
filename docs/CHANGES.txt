@@ -1,3 +1,14 @@
+v2.0.0: 04/28/2020
+- Added GPS-denied autonomous navigation.
+- Simulated robot can detect both above-ground and below-ground obstacles.
+- Simulated robot can navigate around obstacles blocking its view using the WedgeBug algorithm.
+- Simulated robot can estimate its motion through odometry.
+- Simulated robot can estimate its position by comparing surroundings to an overhead elevation map.
+- Provides Cosmic GPS (for use outside of the simulation) for deriving position from images of stars.
+- Provides various scripts for automating the creation of worlds from Digital Elevation Models.
+- Changed simulated stereo camera to depth camera.
+- Moved camera from robot's base to the knuckle of the robot's front drum.
+
 v1.1.1: 09/29/2019
 - Added an onboarding document for future teams.
 

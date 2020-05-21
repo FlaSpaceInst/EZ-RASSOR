@@ -4,8 +4,8 @@ import nav_functions as nf
 
 
 def at_target(positionX, positionY, targetX, targetY, threshold):
-    """ Determine if the current position is within 
-        the desired threshold of the target position. 
+    """ Determine if the current position is within
+        the desired threshold of the target position.
     """
     value = ((targetX - threshold) < positionX < (targetX + threshold)
              and (targetY - threshold) < positionY < (targetY + threshold))
