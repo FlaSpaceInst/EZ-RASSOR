@@ -2,10 +2,10 @@
 <!-- Launch the swarm control system control for the EZ-RASSOR. -->
 
 <launch>
-  <arg name="robot_count" default="2"/>
-  <arg name="lander_coords" default="5 5"/>
-  <arg name="digsite_x_coords" default="10"/>
-  <arg name="digsite_y_coords" default="10"/>
+  <arg name="robot_count" default="3"/>
+  <arg name="lander_coords" default="2 0"/>
+  <arg name="digsite_x_coords" default="5 -5 8"/>
+  <arg name="digsite_y_coords" default="7 6 -5"/>
   <arg name="world" default="nasa_moon_dem"/>
   <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
 

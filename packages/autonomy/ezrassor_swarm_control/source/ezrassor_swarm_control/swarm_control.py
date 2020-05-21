@@ -85,8 +85,8 @@ class SwarmController:
             for i in range(1, self.robot_count + 1):
                 rover_status = get_rover_status(i)
 
-                #rospy.loginfo("ROVER {} BATTERY: {} percent".format(i, rover_status.battery))
-                #rospy.loginfo("ROVER {} ACTIVITY: {}".format(i, self.rover_activity_status_db[i].activity))
+                # rospy.loginfo("ROVER {} BATTERY: {} percent".format(i, rover_status.battery))
+                # rospy.loginfo("ROVER {} ACTIVITY: {}".format(i, self.rover_activity_status_db[i].activity))
 
                 if rover_status:
                     site_num = (i - 1) % len(self.dig_sites)
@@ -112,8 +112,7 @@ class SwarmController:
                                 self.rover_activity_status_db[i].activity = 'charging'
 
                     elif self.rover_activity_status_db[i].activity == 'charging':
-                        if rover_status.battery >= 95:
-                            preempt_rover_path(i)
+                        if rover_status.battery >= 95.0:
                             path = path_planner.find_path(rover_status.pose.position, self.dig_sites[site_num])
                             if path:
                                 self.waypoint_pubs[i].publish(path)

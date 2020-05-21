@@ -2,9 +2,9 @@
 <!-- Spawns each individual EZ-RASSOR and run its autonomy nodes -->
 
 <launch>
-  <arg name="robot_count" default="2"/>
-  <arg name="spawn_x_coords" default="3 6"/>
-  <arg name="spawn_y_coords" default="0 0"/>
+  <arg name="robot_count" default="3"/>
+  <arg name="spawn_x_coords" default="4 7 10"/>
+  <arg name="spawn_y_coords" default="0 0 0"/>
   <arg name="spawn_z_coords" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
   <arg name="world" default="nasa_moon_dem"/>
@@ -51,6 +51,7 @@
         name="waypoint_client"
         type="waypoint_client"
         output="screen">
+       <param name="robot_num" value="$(arg robot_count)"/>
        <param name="world" value="$(arg world)"/>
        <param name="elevation_map" value="$(arg elevation_map)"/>
     </node>

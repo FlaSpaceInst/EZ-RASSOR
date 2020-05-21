@@ -13,6 +13,8 @@ from ezrassor_swarm_control.msg import Path
 
 from ezrassor_swarm_control.srv import PreemptPath, PreemptPathResponse
 
+from constants import commands
+
 
 class WaypointClient:
     """
@@ -20,7 +22,7 @@ class WaypointClient:
     Implemented as a ROS action client-server API
     """
 
-    def __init__(self, world, elevation_map):
+    def __init__(self, robot_num, world, elevation_map):
         self.client_name = 'waypoint'
         self.namespace = rospy.get_namespace()
 
@@ -35,9 +37,6 @@ class WaypointClient:
 
         # Service which allows the waypoint client's current path to be preempted from any other node
         self.preempt_service = rospy.Service('preempt_path', PreemptPath, self.preempt_path)
-
-        # Minimum amount of battery a rover needs to continue along a path
-        self.min_battery_needed = 4
 
         # Whether a path has been canceled or not
         self.preempt = False
@@ -57,6 +56,12 @@ class WaypointClient:
 
         self.path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
+    def is_dig_cmd(self, cmd):
+        return cmd == commands['DIG']
+
+    def is_charge_cmd(self, cmd):
+        return cmd == commands['CHG']
+
     def preempt_path(self, request=None):
         """Callback executed when the waypoint client receives a preempt path request"""
 
@@ -71,8 +76,8 @@ class WaypointClient:
         # rospy.loginfo('Waypoint client {} received feedback! position: {} battery: {}'.
         #              format((self.namespace + self.client_name), (x, y), feedback.battery))
 
-        # Replan path if rover veers off its path too much
-        if self.goal is not None and self.cur_waypoint is not None:
+        # Replan path if rover veers away from its current waypoint too far
+        if not (self.is_dig_cmd(self.goal) or self.is_charge_cmd(self.goal)) and self.goal and self.cur_waypoint:
             veer_distance = euclidean2D(feedback.pose.position, self.cur_waypoint)
 
             if veer_distance > self.max_veer_distance:
@@ -115,23 +120,33 @@ class WaypointClient:
         """Callback executed when the waypoint client receives a path"""
 
         path = data.path
-        rospy.loginfo('Waypoint client {} received path from {} to {}'.
-                      format(self.namespace + self.client_name, (path[0].x, path[0].y), (path[-1].x, path[-1].y)))
 
         # Set rover's ultimate goal as the path's last waypoint
         self.goal = path[-1]
 
-        # Send each waypoint in a path to the rover
-        for node in path[1:]:
-            # If request was canceled stop sending waypoints
-            if self.preempt:
-                break
+        if self.is_dig_cmd(self.goal):
+            rospy.loginfo('Waypoint client {} received dig command!'.format(self.namespace + self.client_name))
+            self.send_waypoint(self.goal)
 
-            # Sends the waypoint to a rover
-            self.cur_waypoint = node
-            self.send_waypoint(node)
+        elif self.is_charge_cmd(self.goal):
+            rospy.loginfo('Waypoint client {} received charge command!'.format(self.namespace + self.client_name))
+            self.send_waypoint(self.goal)
 
-        rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
+        else:
+            rospy.loginfo('Waypoint client {} received path from {} to {}'.
+                          format(self.namespace + self.client_name, (path[0].x, path[0].y), (path[-1].x, path[-1].y)))
+
+            # Send each waypoint in a path to the rover
+            for node in path[1:]:
+                # If request was canceled stop sending waypoints
+                if self.preempt:
+                    break
+
+                # Sends the waypoint to a rover
+                self.cur_waypoint = node
+                self.send_waypoint(node)
+
+            rospy.loginfo('Waypoint client {} finished sending waypoints!'.format(self.namespace + self.client_name))
 
         # Reset server to receive another path
         self.preempt = False
@@ -139,7 +154,7 @@ class WaypointClient:
         self.goal = None
 
 
-def on_start_up(world, elevation_map):
-    rospy.init_node('waypoint_client')
-    WaypointClient(world, elevation_map)
+def on_start_up(robot_num, world, elevation_map):
+    rospy.init_node('waypoint_client', anonymous=True)
+    WaypointClient(robot_num, world, elevation_map)
     rospy.spin()
