@@ -358,7 +358,6 @@ def send_feedback(world_state, waypoint_server):
     current_pose.position.x = world_state.positionX
     current_pose.position.y = world_state.positionY
     current_pose.position.z = world_state.positionZ
-    current_pose.orientation = world_state.orientation
 
     feedback = waypointFeedback(current_pose, world_state.battery)
 
@@ -372,7 +371,6 @@ def build_result(world_state, preempted):
     result.pose.position.x = world_state.positionX
     result.pose.position.y = world_state.positionY
     result.pose.position.z = world_state.positionZ
-    result.pose.orientation = world_state.orientation
     result.battery = world_state.battery
     result.preempted = preempted
 

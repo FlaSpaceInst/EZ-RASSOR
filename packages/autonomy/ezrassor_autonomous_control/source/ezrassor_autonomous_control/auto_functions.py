@@ -75,7 +75,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
                         world_state.target_location.y, ros_util.threshold):
 
         # Check that the waypoint client request hasnt been canceled
-        if waypoint_server.is_preempt_requested():
+        if waypoint_server is not None and waypoint_server.is_preempt_requested():
             preempted = True
             break
 
@@ -159,7 +159,7 @@ def auto_dig(world_state, ros_util, duration, waypoint_server=None):
         # Send feedback to waypoint client if being controlled by swarm controller
         feedback = uf.send_feedback(world_state, waypoint_server)
 
-        if waypoint_server.is_preempt_requested():
+        if waypoint_server is not None and waypoint_server.is_preempt_requested():
             preempted = True
             break
 

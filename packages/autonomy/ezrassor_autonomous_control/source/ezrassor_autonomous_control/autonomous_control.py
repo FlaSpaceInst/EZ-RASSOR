@@ -105,7 +105,6 @@ class RoverController:
         status.pose.position.x = self.world_state.positionX
         status.pose.position.y = self.world_state.positionY
         status.pose.position.z = self.world_state.positionZ
-        status.pose.orientation = self.world_state.orientation
         status.battery = max(int(self.world_state.battery), 0)
 
         # rospy.loginfo('Service {} sending current status'.format(self.status_service.resolved_name))
