@@ -10,6 +10,8 @@
   <arg name="spawn_x_coord" default="default"/>
   <arg name="spawn_y_coord" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
+  <arg name="enable_park_ranger" default="default"/>
+  <arg name="world" default="default"/>
   <arg name="swarm_control" default="default"/>
 
   <!-- A large collection of constants that this launch file needs. -->
@@ -101,12 +103,18 @@
         <arg name="swarm_control"
              value="$(arg swarm_control)"
              unless="$(eval swarm_control == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
         <arg name="spawn_x_coord"
              value="$(arg spawn_x_coord)"
              unless="$(eval spawn_x_coord == 'default')"/>
         <arg name="spawn_y_coord"
              value="$(arg spawn_y_coord)"
              unless="$(eval spawn_y_coord == 'default')"/>
+        <arg name="world"
+             value="$(arg world)"
+             unless="$(eval world == 'default')"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
@@ -174,6 +182,9 @@
         <arg name="enable_real_odometry"
              value="$(arg enable_real_odometry)"
              unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
         <arg name="swarm_control"
              value="$(arg swarm_control)"
              unless="$(eval swarm_control == 'default')"/>
@@ -183,6 +194,9 @@
         <arg name="spawn_y_coord"
              value="$(arg spawn_y_coord)"
              unless="$(eval spawn_y_coord == 'default')"/>
+        <arg name="world"
+             value="$(arg world)"
+             unless="$(eval world == 'default')"/>
       </include>
     </group>
   </group>

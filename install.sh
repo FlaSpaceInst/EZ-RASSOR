@@ -8,7 +8,6 @@ SH_SETUP_FILE="setup.sh"
 README_FILE="docs/README.rst"
 CHANGES_FILE="docs/CHANGES.txt"
 LICENSE_FILE="docs/LICENSE.txt"
-EXTERNALS_DIR="external"
 SUPERPACKAGES_DIR="packages"
 ROS_INSTALL_PARTIAL_DIR="/opt/ros"
 WORKSPACE_SOURCE_RELATIVE_DIR="src"
@@ -174,7 +173,7 @@ install_packages() {
     fi
 
     # Link all of the packages that the user desires.
-    for collection_dir in "$PWD/$EXTERNALS_DIR" "$PWD/$SUPERPACKAGES_DIR"; do
+    for collection_dir in "$PWD/$SUPERPACKAGES_DIR"; do
         for superpackage_dir in "$collection_dir"/*; do
             for package_dir in "$superpackage_dir"/*; do
                 if [ ! -d "$package_dir" ]; then
