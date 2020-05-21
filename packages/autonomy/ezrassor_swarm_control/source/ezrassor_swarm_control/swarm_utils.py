@@ -8,10 +8,12 @@ from geometry_msgs.msg import Point
 
 from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
 
+
 def euclidean_distance(x1, x2, y1, y2):
     """ Calculate Euclidean distance from (x1,y1) to (x2,y2). """
-    
-    return math.sqrt( (x2-x1)**2 + (y2-y1)**2 )
+
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
 
 def euclidean2D(a, b):
     """
@@ -19,6 +21,7 @@ def euclidean2D(a, b):
     """
 
     return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
+
 
 def get_rover_status(rover_num):
     """
@@ -44,6 +47,7 @@ def get_rover_status(rover_num):
 
     except rospy.ServiceException as e:
         print "Service call failed: %s" % e
+
 
 def preempt_rover_path(rover_num):
     """

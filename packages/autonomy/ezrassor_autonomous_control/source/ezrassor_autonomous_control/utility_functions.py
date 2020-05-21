@@ -63,8 +63,8 @@ def self_check(world_state, ros_util):
         ros_util.control_pub.publish(False)
         return -1
 
-    if world_state.battery < 30:
-        rospy.loginfo("Low battery! Returning to origin...")
+    if world_state.battery < 10:
+        rospy.loginfo("Low battery! Rover must charge ASAP or it will halt!")
         world_state.target_location = [0, 0]
         return 3
 

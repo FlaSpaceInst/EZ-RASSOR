@@ -14,9 +14,6 @@ from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
 import ai_objects as obj
 import auto_functions as af
 import utility_functions as uf
-import nav_functions as nf
-
-import re
 
 
 class RoverController:
@@ -109,7 +106,7 @@ class RoverController:
         status.pose.position.y = self.world_state.positionY
         status.pose.position.z = self.world_state.positionZ
         status.pose.orientation = self.world_state.orientation
-        status.battery = self.world_state.battery
+        status.battery = max(int(self.world_state.battery), 0)
 
         # rospy.loginfo('Service {} sending current status'.format(self.status_service.resolved_name))
 
@@ -122,16 +119,22 @@ class RoverController:
         """
 
         if goal.target.x == -999 and goal.target.y == -999:
-            # rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER CHARGING!')
+            rospy.loginfo('Waypoint server {} executing charge command'.format(self.namespace + self.server_name))
+
+            # Set rover to charge
             af.charge_battery(self.world_state, self.ros_util)
             result = uf.build_result(self.world_state, preempted=0)
             self.waypoint_server.set_succeeded(result)
 
         elif goal.target.x == -998 and goal.target.y == -998:
-            # rospy.loginfo('FROM AUTONOMOUS_CONTROL: ROVER DIGGING!')
-            af.auto_dig(self.world_state, self.ros_util, 1000)
-            result = uf.build_result(self.world_state, preempted=0)
-            self.waypoint_server.set_succeeded(result)
+            rospy.loginfo('Waypoint server {} executing dig command'.format(self.namespace + self.server_name))
+
+            # Set rover to dig for 1000 seconds
+            feedback, preempted = af.auto_dig(self.world_state, self.ros_util, 1000, self.waypoint_server)
+
+            if feedback is not None and not preempted and not self.waypoint_server.is_preempt_requested():
+                result = uf.build_result(self.world_state, preempted=0)
+                self.waypoint_server.set_succeeded(result)
 
         else:
             self.world_state.target_location = goal.target
@@ -139,13 +142,12 @@ class RoverController:
                 self.namespace + self.server_name, (goal.target.x, goal.target.y)))
 
             # Set rover to autonomously navigate to target
-            feedback = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
+            feedback, preempted = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
 
             # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
-            if not self.waypoint_server.is_preempt_requested():
-                if feedback:
-                    result = waypointResult(feedback.pose, feedback.battery, 0)
-                    self.waypoint_server.set_succeeded(result)
+            if feedback is not None and not preempted and not self.waypoint_server.is_preempt_requested():
+                result = waypointResult(feedback.pose, feedback.battery, 0)
+                self.waypoint_server.set_succeeded(result)
 
     def preempt_cb(self):
         """
