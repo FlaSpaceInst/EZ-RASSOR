@@ -1,13 +1,21 @@
 import rospy
-import nav_functions as nf
+import time
 import math
+
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Float32
+from geometry_msgs.msg import Pose
+
+import nav_functions as nf
+from ezrassor_swarm_control.msg import waypointFeedback, waypointResult
 
 scan = None
+
 
 def on_scan_update(new_scan):
     global scan
     scan = new_scan
+
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
@@ -24,8 +32,13 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
+
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
+    '''rospy.loginfo('Setting back arm angle to %s radian%s...',
+                  str(target_angle),
+                  "" if target_angle == 1 else "s")'''
+
     if target_angle > world_state.back_arm_angle:
         while target_angle > world_state.back_arm_angle:
             ros_util.publish_actions('stop', 0, 1, 0, 0)
@@ -37,6 +50,7 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
 
+
 def self_check(world_state, ros_util):
     """ Check for unfavorable states in the system 
         and handle or quit gracefully.
@@ -46,22 +60,26 @@ def self_check(world_state, ros_util):
         ros_util.publish_actions('stop', 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
+
+    if world_state.battery < 10:
+        rospy.loginfo("Low battery! Rover must charge ASAP or it will halt!")
+        world_state.target_location = [0, 0]
+        return 3
+
     # Future status checks for physical hardware
     '''
     if world_state.on_side == True:
         rospy.loginfo("On side! Attempting auto self-right...")
         return 2
-    if world_state.battery < 10:
-        rospy.loginfo("Low battery! Returning to origin...")
-        world_state.target_location = [0,0]
-        return 3
     if world_state.hardware_status == False:
         rospy.loginfo("Hardware failure! Shutting down...")
         ros_util.publish_actions('stop', 1, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
     '''
+
     return 1
+
 
 """ Turns the robot to the given heading
 
@@ -69,6 +87,8 @@ Given a heading and a direction to turn to, this function turns the robot from
 our current heading to the new heading. A ramping function (using the sine
 function from 0 to pi) is used.
 """
+
+
 def turn(new_heading, direction, world_state, ros_util):
     # Calculate how many degrees that we need to turn.
     angle_dist = abs((new_heading - world_state.heading + 180) % 360 - 180)
@@ -86,7 +106,7 @@ def turn(new_heading, direction, world_state, ros_util):
         # X is bounded between 0 and angle_dist
         # Y is bounded between 0 and max_angular_velocity
         turn_velocity = (ros_util.max_angular_velocity *
-                         math.sin((angle_traveled/math.pi) * (10/angle_dist)))
+                         math.sin((angle_traveled / math.pi) * (10 / angle_dist)))
 
         # Cap our minimum velocity at 1/10 our max velocity.
         turn_velocity = max(turn_velocity, ros_util.max_angular_velocity / 10)
@@ -100,7 +120,8 @@ def turn(new_heading, direction, world_state, ros_util):
 
         ros_util.rate.sleep()
 
-        angle_traveled += abs((world_state.heading-old_heading+180) % 360 - 180)
+        angle_traveled += abs((world_state.heading - old_heading + 180) % 360 - 180)
+
 
 """ Moves the robot a given distance or until an obstacle is encountered
 
@@ -108,13 +129,15 @@ Given a distance and a direction to move towards, this function moves the robot
 until it has moved that distance or it encounters an obstacle. A ramping
 function (using the sine function from 0 to pi) is used.
 """
+
+
 def move(dist, world_state, ros_util, direction='forward'):
     # Get current distance from EZ-RASSOR to our current best target location.
     old_x = world_state.positionX
     old_y = world_state.positionY
     dist_traveled = 0
-    dist_to_goal = math.sqrt((world_state.target_location.x - old_x) **2 +
-                             (world_state.target_location.y - old_y) **2)
+    dist_to_goal = math.sqrt((world_state.target_location.x - old_x) ** 2 +
+                             (world_state.target_location.y - old_y) ** 2)
 
     # Either move dist amount or the distance to the goal, whichever is smaller.
     move_dist = min(dist, dist_to_goal)
@@ -138,7 +161,7 @@ def move(dist, world_state, ros_util, direction='forward'):
         # X is bounded between 0 and move_dist
         # Y is bounded between 0 and max_linear_velocity
         move_velocity = (ros_util.max_linear_velocity *
-                         math.sin((dist_traveled/math.pi) * (10/move_dist)))
+                         math.sin((dist_traveled / math.pi) * (10 / move_dist)))
 
         # Cap our minimum velocity at 1/10 our max velocity.
         move_velocity = max(move_velocity, ros_util.max_linear_velocity / 10)
@@ -155,6 +178,7 @@ def move(dist, world_state, ros_util, direction='forward'):
         dist_traveled = math.sqrt((world_state.positionX - old_x) ** 2 +
                                   (world_state.positionY - old_y) ** 2)
 
+
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
@@ -167,6 +191,7 @@ def reverse_turn(world_state, ros_util):
     while (new_heading - 1) < world_state.heading < (new_heading + 1):
         ros_util.publish_actions('left', 0, 0, 0, 0)
 
+
 def dodge_left(world_state, ros_util):
     start_x = world_state.positionX
     start_y = world_state.positionY
@@ -175,7 +200,7 @@ def dodge_left(world_state, ros_util):
 
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
-            threshold+=1
+            threshold += 1
         ros_util.publish_actions('left', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
@@ -193,25 +218,26 @@ def dodge_right(world_state, ros_util):
 
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
-            threshold+=1
+            threshold += 1
         ros_util.publish_actions('right', 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.positionX, 
+    while nf.euclidean_distance(start_x, world_state.positionX,
                                 start_y, world_state.positionY) < 2:
-        
         ros_util.publish_actions('forward', 0, 0, 0, 0)
         ros_util.rate.sleep()
+
 
 def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
     rospy.loginfo("Starting auto self-right...")
-    while(world_state.on_side != False):
+    while (world_state.on_side != False):
         ros_util.publish_actions('stop', 0, 1, 0, 0)
         ros_util.publish_actions('stop', 1, 0, 0, 0)
 
     ros_util.publish_actions('stop', 0, 0, 0, 0)
+
 
 """ Returns the best direction to go towards to get to the goal
 
@@ -219,6 +245,8 @@ This function returns the direction the robot should move towards. If no safe
 angle is found, the WedgeBug algorithm is used to look for a safe angle in an
 adjacent view. Return once a safe angle is found.
 """
+
+
 def get_turn_angle(world_state, ros_util):
     # Iterate over all of the laser beams in our current scan and determine the
     # best angle to turn towards.
@@ -305,8 +333,45 @@ def get_turn_angle(world_state, ros_util):
                 break
 
             # Get LaserScan index of best angle
-            best_index = int((best_angle-scan.angle_min) / scan.angle_increment)
+            best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
 
         # Exit once we've found a safe angle.
         if best_angle is not None:
             return best_angle
+
+
+##################################################################
+#  THE BELOW FUNCTIONS ARE UTILIZED BY THE WAYPOINT ACTION       #
+#  CLIENT-SERVER API WHICH IS ONLY USED IN SWARM CONTROL MODE     #
+##################################################################
+
+def send_feedback(world_state, waypoint_server):
+    """
+    Send feedback (rover current pose) from a rover's action server back to the
+    action client
+    """
+
+    if waypoint_server is None:
+        return None
+
+    current_pose = Pose()
+    current_pose.position.x = world_state.positionX
+    current_pose.position.y = world_state.positionY
+    current_pose.position.z = world_state.positionZ
+
+    feedback = waypointFeedback(current_pose, world_state.battery)
+
+    # Publish feedback (current pose)
+    waypoint_server.publish_feedback(feedback)
+    return feedback
+
+
+def build_result(world_state, preempted):
+    result = waypointResult()
+    result.pose.position.x = world_state.positionX
+    result.pose.position.y = world_state.positionY
+    result.pose.position.z = world_state.positionZ
+    result.battery = world_state.battery
+    result.preempted = preempted
+
+    return result
