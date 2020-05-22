@@ -2,9 +2,11 @@ import rospy
 import math
 from tf import transformations
 
+
 def euclidean_distance(x1, x2, y1, y2):
     """ Calculate Euclidean distance from (x1,y1) to (x2,y2). """
-    return math.sqrt((x2-x1)**2 + (y2-y1)**2)
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
 
 def calculate_heading(world_state):
     # Calculate the new heading of the robot given its current location and the
@@ -22,7 +24,7 @@ def calculate_heading(world_state):
     new_heading = math.atan2(dy, dx)
 
     # Convert the angle to degrees.
-    new_heading = (180 * new_heading/math.pi)
+    new_heading = (180 * new_heading / math.pi)
 
     # Since gazebo only uses 0 through 360 degree, we must bound any negative
     # angles to positive ones.
@@ -31,12 +33,14 @@ def calculate_heading(world_state):
 
     return new_heading
 
+
 def adjust_angle(heading, new_heading):
     # Adjust the angle difference to determine fastest turning direction to
     # reach the goal.
     angle_difference = new_heading - heading
     angle_difference = (angle_difference + 180) % 360 - 180
-    return (math.pi * angle_difference / 180)
+    return math.pi * angle_difference / 180
+
 
 def quaternion_to_yaw(pose):
     quaternion = (pose.orientation.x, pose.orientation.y, pose.orientation.z,
@@ -44,12 +48,15 @@ def quaternion_to_yaw(pose):
     euler = transformations.euler_from_quaternion(quaternion)
     return euler[2]
 
+
 """ Returns whether a given angle is safe for the robot to go towards.
 
 Check if EZ-RASSOR can fit through a space given the angle to turn towards it.
 Angle is in radians and dist is the distance to an object or threshold value
 passed in.
 """
+
+
 def angle_is_safe(angle, dist, buffer, scan, threshold):
     # Calculate how much to change angle in order for robot to clear obstacle.
     buffer_angle = math.atan(buffer / threshold)
@@ -79,12 +86,15 @@ def angle_is_safe(angle, dist, buffer, scan, threshold):
 
     return True
 
+
 """ Returns the best angle to go towards in the given LaserScan
 
 Iterate through the laser scan in our current view (wedge) and determine our
 best move towards the goal. Aim to minimize the difference between our facing
 angle and the angle to the goal while avoiding unsafe moves.
 """
+
+
 def get_best_angle(world_state, buffer, scan, threshold):
     best_score = None
     best_angle = None
@@ -109,12 +119,15 @@ def get_best_angle(world_state, buffer, scan, threshold):
 
     return best_angle
 
+
 """ Converts the given relative angle to an absolute angle
 
 Given an angle in degrees relative to the robot's current facing angle, this
 function returns its absolute heading in degrees (same heading that the Gazebo
 world uses).
 """
+
+
 def rel_to_abs(current_heading_degrees, relative_heading_radians):
     # Convert from radians to degrees
     relative_heading_degrees = (180 * relative_heading_radians / math.pi)
