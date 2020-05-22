@@ -61,7 +61,7 @@ class WorldState():
         index = 0
 
         namespace = rospy.get_namespace()
-        namespace = namespace[1:-1]+"::base_link"
+        namespace = namespace[1:-1] + "::base_link"
         try:
             index = data.name.index(namespace)
         except Exception:
@@ -98,7 +98,7 @@ class WorldState():
 
 class ROSUtility():
     """ ROS Utility class that provides publishers,
-        subscribers, and convinient ROS utilies.
+        subscribers, and convenient ROS utilies.
     """
 
     def __init__(self, movement_topic, front_arm_topic, back_arm_topic,
