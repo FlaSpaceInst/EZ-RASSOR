@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # measurements.py
 
 from math import radians
@@ -66,14 +67,13 @@ def determine_coordinate(lamb1, phi1, d1, lamb2, phi2, d2,
                             lamb1, phi1, d1,
                             lamb2, phi2, d2,
                             lamb3, phi3, d3, epsilon)
-    # print 'min lamb: ', cp[0], ', max lamb: ', cp[1], ', p_ratio: ', cp[2]
     return cp
 
 
 def scan_polar(cur_lamb, cur_phi, d,
                lamb1, phi1, d1, lamb2, phi2, d2, lamb3, phi3, d3, epsilon):
     # if polar scan the equator starting at 0.0
-    increment = 0.1  # 0.1
+    increment = 0.1
     temp_lamb = 0.0
     p_ratio = 9999.0
     min_lamb = 0.0
@@ -85,21 +85,15 @@ def scan_polar(cur_lamb, cur_phi, d,
                                         cur_lamb, cur_phi)
         c = abs(1 - (dc/d))
         while search_angle > epsilon:
-            # print ('temp_lamb: ', temp_lamb,
-            #        ' find_phi: ', find_phi, ' ratio: ', c)
             # Calculate distances at the search points
             phi_north = find_phi + search_angle
             phi_south = find_phi - search_angle
             dn = calculate_angular_distance(temp_lamb, phi_north,
                                             cur_lamb, cur_phi)
             n = abs(1 - (dn/d))
-            # print ('for lamb: ', temp_lamb,
-            #        ' phi_north: ', phi_north, ' ratio: ', n)
             ds = calculate_angular_distance(temp_lamb, phi_south,
                                             cur_lamb, cur_phi)
             s = abs(1 - (ds/d))
-            # print ('for lamb: ', temp_lamb,
-            #        ' phi_south: ', phi_south, ' ratio: ', s)
             # find the closest to 0.0 of n,e,s,w
             if s > n:
                 t = n
@@ -118,7 +112,6 @@ def scan_polar(cur_lamb, cur_phi, d,
         d2p = calculate_angular_distance(temp_lamb, find_phi, lamb2, phi2)
         d3p = calculate_angular_distance(temp_lamb, find_phi, lamb3, phi3)
         p = abs(1 - (d1p/d1)) + abs(1 - (d2p/d2)) + abs(1 - (d3p/d3))
-        # print 'p_ratio for ', temp_lamb, ' is ', p
         if p_ratio > p:
             p_ratio = p
             min_lamb = temp_lamb
@@ -132,7 +125,7 @@ def scan_non_polar(cur_lamb, cur_phi, d,
                    lamb2, phi2, d2,
                    lamb3, phi3, d3, epsilon):
     # if not polar scan the equator starting west
-    big_increment = 0.1  # 0.1
+    big_increment = 0.1
     small_increment = 0.01
 
     offset = 0.0
@@ -169,15 +162,11 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         dc = calculate_angular_distance(temp_lamb, find_phi, cur_lamb, cur_phi)
         c = abs(1 - (dc/d))
         while d > search_angle:
-            # print ('temp_lamb: ', temp_lamb,
-            #        ' find_phi: ', find_phi, ' ratio: ', c)
             # Calculate distances at the search points
             phi_north = cur_phi + search_angle
             dn = calculate_angular_distance(temp_lamb, phi_north,
                                             cur_lamb, cur_phi)
             n = abs(1 - (dn/d))
-            # print ('for lamb: ', temp_lamb,
-            #        ' phi_north: ', phi_north, ' ratio: ', n)
             # find the closest to 0.0 of n
             if c > n:
                 t = n
@@ -193,8 +182,6 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         d2p = calculate_angular_distance(temp_lamb, find_phi, lamb2, phi2)
         d3p = calculate_angular_distance(temp_lamb, find_phi, lamb3, phi3)
         p = abs(1 - (d1p/d1)) + abs(1 - (d2p/d2)) + abs(1 - (d3p/d3))
-        # print 'p_ratio for ', temp_lamb, ' and ', find_phi, ' UP is ', p
-        # print ''
         if p_ratio > p:
             p_ratio = p
             min_lamb = temp_lamb
@@ -209,15 +196,11 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         dc = calculate_angular_distance(temp_lamb, find_phi, cur_lamb, cur_phi)
         c = abs(1 - (dc/d))
         while d > search_angle:
-            # print ('temp_lamb: ', temp_lamb,
-            #        ' find_phi: ', find_phi, ' ratio: ', c)
             # Calculate distances at the search points
             phi_south = cur_phi - search_angle
             ds = calculate_angular_distance(temp_lamb, phi_south,
                                             cur_lamb, cur_phi)
             s = abs(1 - (ds/d))
-            # print ('for lamb: ', temp_lamb,
-            #        ' phi_south: ', phi_south, ' ratio: ', s)
             # find the closest to 0.0 of s
             if c > s:
                 t = s
@@ -233,8 +216,6 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         d2p = calculate_angular_distance(temp_lamb, find_phi, lamb2, phi2)
         d3p = calculate_angular_distance(temp_lamb, find_phi, lamb3, phi3)
         p = abs(1 - (d1p/d1)) + abs(1 - (d2p/d2)) + abs(1 - (d3p/d3))
-        # print 'p_ratio for ', temp_lamb, 'and ', find_phi, ' DOWN is ', p
-        # print ''
         if p_ratio > p:
             p_ratio = p
             min_lamb = temp_lamb
@@ -252,15 +233,11 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         dc = calculate_angular_distance(find_lamb, temp_phi, cur_lamb, cur_phi)
         c = abs(1 - (dc/d))
         while (2*d) > search_angle:
-            # print ('temp_phi: ', temp_phi,
-            #        ' find_lamb: ', find_lamb, ' ratio: ', c)
             # Calculate distances at the search points
             lamb_west = cur_lamb - search_angle
             dw = calculate_angular_distance(lamb_west, temp_phi,
                                             cur_lamb, cur_phi)
             w = abs(1 - (dw/d))
-            # print ('for phi: ', temp_phi,
-            #        ' lamb_west: ', lamb_phi, ' ratio: ', w)
             # find the closest to 0.0 of w
             if c > w:
                 t = w
@@ -276,8 +253,6 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         d2p = calculate_angular_distance(find_lamb, temp_phi, lamb2, phi2)
         d3p = calculate_angular_distance(find_lamb, temp_phi, lamb3, phi3)
         p = abs(1 - (d1p/d1)) + abs(1 - (d2p/d2)) + abs(1 - (d3p/d3))
-        # print 'p_ratio for ', temp_phi, ' and ', find_lamb, ' LEFT is ', p
-        # print ''
         if p_ratio > p:
             p_ratio = p
             min_lamb = find_lamb
@@ -292,15 +267,11 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         dc = calculate_angular_distance(find_lamb, temp_phi, cur_lamb, cur_phi)
         c = abs(1 - (dc/d))
         while (2*d) > search_angle:
-            # print ('temp_phi: ', temp_phi,
-            #        ' find_lamb: ', find_lamb, ' ratio: ', c)
             # Calculate distances at the search points
             lamb_east = cur_lamb + search_angle
             de = calculate_angular_distance(lamb_east, temp_phi,
                                             cur_lamb, cur_phi)
             e = abs(1 - (de/d))
-            # print ('for phi: ', temp_phi,
-            #        ' lamb_east: ', lamb_east, ' ratio: ', e)
             # find the closest to 0.0 of e
             if c > e:
                 t = e
@@ -316,8 +287,6 @@ def scan_non_polar(cur_lamb, cur_phi, d,
         d2p = calculate_angular_distance(find_lamb, temp_phi, lamb2, phi2)
         d3p = calculate_angular_distance(find_lamb, temp_phi, lamb3, phi3)
         p = abs(1 - (d1p/d1)) + abs(1 - (d2p/d2)) + abs(1 - (d3p/d3))
-        # print 'p_ratio for ', temp_phi, ' and ', find_lamb, ' RIGHT is ', p
-        # print ''
         if p_ratio > p:
             p_ratio = p
             min_lamb = find_lamb
@@ -337,18 +306,14 @@ def calculate_geographic_position(coor, gha_aries):
     # clock_time
     # gha_aries
     sha_celestial_position = 360 - coor[0]
-    # print 'SHA CP: ', sha_celestial_position
     gha_celestial_position = sha_celestial_position + gha_aries
     if gha_celestial_position > 360.0:
         gha_celestial_position -= 360.0
-    # print 'GHA CP: ', gha_celestial_position
     if gha_celestial_position >= 180.0:
         longitude = 180.0 - (gha_celestial_position - 180.0)
     else:
         longitude = 0.0 - gha_celestial_position
     latitude = coor[1]
-    # print ('Derived global position, longitude: ', longitude,
-    #        ' latitude: ', latitude)
     return (longitude, latitude)
 
 # argv added in the following order:
@@ -380,5 +345,3 @@ class Calibration_Function:
                                                    self.var_list[(i+1)-(j+1)])
             q_list1 = list(q_list2)
         return q_list2[num_coef]
-
-

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # cluster.py
 
 # input: dictionary of pixel coordinates and intensities
@@ -43,4 +44,3 @@ def cluster(pixels):
         list_of_star_objects.append(new_star_object)
 
     return list_of_star_objects
-

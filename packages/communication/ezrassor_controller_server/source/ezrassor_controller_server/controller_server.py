@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Listen for POST requests and route data to the appropriate topics.
 
 Written by Tiger Sachse.

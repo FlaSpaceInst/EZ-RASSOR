@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # cluster_tests
 
 # input: dictionary with pixel coordinates and intensities
@@ -33,4 +34,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_tests
 
 # input: list of stars
@@ -32,8 +33,6 @@ def main():
         if clustr.shape() > 0.50:  # should be 0.60
             list_of_stars.append([cluster_intensity, cluster_center, clustr])
     list_of_stars = sorted(list_of_stars, key=getkey, reverse=True)
-
-    #print len(list_of_stars)
 
     print '***Stars***'
     print ''

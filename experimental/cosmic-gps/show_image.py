@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # show_image.py
 
 import numpy as np

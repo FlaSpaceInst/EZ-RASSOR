@@ -15,4 +15,4 @@ ADD /convert2tif/queued_dems /tmp/queued_dems
 ADD /convert2tif/results /tmp/results
 COPY /convert2tif/script_convert.sh /tmp/
 
-CMD ["bash", "./tmp/script_convert.sh"]
+CMD ["sh", "./tmp/script_convert.sh"]
