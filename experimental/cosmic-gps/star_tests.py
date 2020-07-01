@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_tests.py
 
 # input: list of stars
@@ -59,4 +60,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

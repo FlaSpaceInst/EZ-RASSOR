@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_cat.py
 
 import numpy as np
@@ -7,20 +8,6 @@ from measurement import dec_to_decimal_deg
 from measurement import calculate_angular_distance
 
 class Star_Cat:
-
-    # self.angle_size
-    # self.hfov
-    # self.fov
-    # self.num_angles
-    # self.num_stars
-    # self.scope_size
-    # self.adj_star_list         holds dict of Star_Ref objects
-    # self.angles_list           holds dict of sets
-    # self.scope_position_ra
-    # self.scope_position_dec
-    # self.scope_num_stars
-    # self.scope_adj_star_list
-    # self.scope_angles_list
 
     def __init__(self, image_file, angle_size, fov, scope_size):
         init_ra_position = 0.0
@@ -276,13 +263,10 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
     for x in range(match_size):
         for y in range(match_size):
             if x < y:
-                # print angular_distances[(x, y)]
                 elem = int(angular_distances[(x, y)] * (1 / angle_size))
                 for z in angles_list[elem]:
                     star_array[x][z] += 1
                     star_array[y][z] += 1
-                # print star_array[x]
-                # print star_array[y]
     # take the candidates from the arrays
     candidates = dict()
     for x in range(match_size):
@@ -291,13 +275,10 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
         for starID in range(num_stars):
             if starID in adj_star_list: #included
                 if star_array[x][starID] == (match_size - 1):
-                    # print 'Candidate for', x, 'is', starID
                     count += 1
                     candidates[x].append(starID)
-        # print 'Count', count, 'for', x
         if count == 0:
             return []  # Not good match failed.
-    # print 'Next Checkpoint'
     # create permutations
     # check them with the adjacency list
     # create list of all possible candidate identities
@@ -319,8 +300,6 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
         if (distance01 < (angular_distances[(0,1)] + epsilon) and
             distance01 > (angular_distances[(0,1)] - epsilon)):
             candidate_permutations.append(combo)
-    # print candidate_permutations
-    # print 'Next Checkpoint'
     if not candidate_permutations: return candidate_permutations
     candidate_temp_temp_permutations = candidate_permutations
     candidate_temp_permutations = []
@@ -345,8 +324,6 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
             if (distance12 < (angular_distances[(1,2)] + epsilon) and
                 distance12 > (angular_distances[(1,2)] - epsilon)):
                 candidate_permutations.append(combo)
-    # print candidate_permutations
-    # print 'Next Checkpoint'
     if not candidate_permutations: return candidate_permutations
     candidate_temp_temp_permutations = candidate_permutations
     candidate_temp_permutations = []
@@ -379,8 +356,6 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
                 if (distance23 < (angular_distances[(2,3)] + epsilon) and
                     distance23 > (angular_distances[(2,3)] - epsilon)):
                     candidate_permutations.append(combo)
-    # print candidate_permutations
-    # print 'Next Checkpoint'
     if not candidate_permutations: return candidate_permutations
     candidate_temp_temp_permutations = candidate_permutations
     candidate_temp_permutations = []
@@ -421,8 +396,6 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
                     if (distance34 < (angular_distances[(3,4)] + epsilon) and
                         distance34 > (angular_distances[(3,4)] - epsilon)):
                         candidate_permutations.append(combo)
-    # print candidate_permutations
-    # print 'Next Checkpoint'
     if not candidate_permutations: return candidate_permutations
     candidate_temp_permutations = candidate_permutations
     candidate_permutations = []
@@ -453,5 +426,3 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
                                             adj_star_list[combo[4]].get_dec(),
                                             stars[4].get_distance_angle()) ))
     return candidate_permutations  # 5 star tuples or null order as before
-
-

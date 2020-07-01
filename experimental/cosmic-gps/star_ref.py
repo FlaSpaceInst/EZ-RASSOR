@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_ref.py
 
 import numpy as np
@@ -40,4 +41,3 @@ class Star_Ref:
                self.star_ra,
                self.star_dec,
                self.adj_list)
-

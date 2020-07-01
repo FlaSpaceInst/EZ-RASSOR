@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 import utility_functions as uf
 import nav_functions as nf
@@ -111,7 +113,7 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
         # Send feedback to waypoint action client
         feedback = uf.send_feedback(world_state, waypoint_server)
 
-    # Action server will print it's own info
+    # Action server will print its own info
     if waypoint_server is None:
         rospy.loginfo('Destination reached!')
 

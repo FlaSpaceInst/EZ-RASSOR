@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # thresh_local_ratio.py
 
 # This module holds a function for thresholding an image.

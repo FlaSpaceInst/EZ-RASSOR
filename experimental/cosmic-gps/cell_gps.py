@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Core Function/Node
 
 import numpy as np
@@ -47,27 +48,25 @@ def cell_gps_core():
     # initialize the calibration functions
     gha_aries_calibration = Calibration_Function(time_list,
                                                  actual_gha_aries)
-    # ....
 
     while (True):
 
-        ### waits here until new image is published ###
+        """ waits here until new image is published """
 
         img = cv.imread('d_03_12_20_t_22_16_15.jpg', 1)   # pub by camera node
         clock_time = 26.2708333                           # system call
 
-        ### image processing step (camera dependent) ###
+        """ image processing step (camera dependent) """
 
         # convert the image to grey scale and denoise
         img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
         img = cv.bilateralFilter(img, 5, 150, 150)
 
-        ### Star templating ###
+        """ Star templating """
 
         # threshold the image pixels then
         # cluster these pixels into individual stars
         pixels = thresh_global(img, 50)
-        #pixels = thresh_local_ratio(img, window_size)
         list_of_clusters = cluster(pixels)
 
         # for each cluster find the center, confirm the shape is star-like then
@@ -84,7 +83,7 @@ def cell_gps_core():
                 list_of_stars.append([cluster_intensity, clustr])
         list_of_stars = sorted(list_of_stars, key=getkey, reverse=True)
 
-        ### Star Matching ###
+        """ Star Matching """
         
         count = 0
         list_of_stars_size = len(list_of_stars)

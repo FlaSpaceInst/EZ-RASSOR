@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star_cat_tests
 
 from star_cat import Star_Cat
@@ -47,7 +48,7 @@ def main():
     star.quick_set_angles(224.120815397, 29.3912178846)
     list_of_stars.append([6, star])
 
-    ### Star Matching ###
+    """ Star Matching """
     
     count = 0
     list_of_stars_size = len(list_of_stars)
@@ -55,7 +56,6 @@ def main():
 
     # loop five times enforced by count
     while (count < 5):
-        # print 'Checkpoint Entry'
         # break early if too few stars
         if list_of_stars_size < 5:
             break;

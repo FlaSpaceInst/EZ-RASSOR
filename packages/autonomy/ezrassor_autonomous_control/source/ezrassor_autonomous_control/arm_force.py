@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import rospy
 from ai_objects import WorldState, ROSUtility
 from sensor_msgs.msg import JointState

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # star.py
 
 from math import radians
@@ -81,49 +82,37 @@ class Star:
         return (self.star_center_row, self.star_center_col)
 
     def set_angles(self, image_center_x, image_center_y):
-        # print 'image_center_x', image_center_x
-        # print 'star_center_col', self.star_center_col
-        # print 'image_center_y', image_center_y
-        # print 'star_center_row', self.star_center_row
         # find direction angle
         opp = 0.0
         adj = 0.0
         init_direction_angle = 0.0
         if self.star_center_col >= image_center_x and (self.star_center_row <
                                                        image_center_y):
-            # print 'quad1'
             opp = self.star_center_col - image_center_x
             adj = image_center_y - self.star_center_row
             init_direction_angle = 0.0
         elif self.star_center_col > image_center_x and (self.star_center_row >=
                                                         image_center_y):
-            # print 'quad2'
             opp = self.star_center_row - image_center_y
             adj = self.star_center_col - image_center_x
             init_direction_angle = 90.0
         elif self.star_center_col <= image_center_x and (self.star_center_row >
                                                          image_center_y):
-            # print 'quad3'
             opp = image_center_x - self.star_center_col
             adj = self.star_center_row - image_center_y
             init_direction_angle = 180.0
         elif self.star_center_col < image_center_x and (self.star_center_row <=
                                                         image_center_y):
-            # print 'quad4'
             opp = image_center_y - self.star_center_row 
             adj = image_center_x - self.star_center_col
             init_direction_angle = 270.0
-        # print 'opp', opp
-        # print 'adj', adj
         temp_angle = atan(opp/adj)
         self.angle_of_direction = init_direction_angle + degrees(temp_angle)
-        # print 'angle', self.angle_of_direction
         # find the angle distance from the center
         query = opp / sin(temp_angle)
         # Calibration Function
         self.angle_distance_from_center = ((-0.0000015736242766902*query*query)
                                            + (0.019311808618316 * query))
-        # print 'distance', self.angle_distance_from_center
 
     def get_intensity(self):
         return self.intensity
@@ -159,4 +148,3 @@ class Star:
     def quick_set_angles(self, aod, adfc):
         self.angle_of_direction = aod
         self.angle_distance_from_center = adfc
-
