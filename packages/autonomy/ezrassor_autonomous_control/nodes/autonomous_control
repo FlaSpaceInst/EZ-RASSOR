@@ -17,6 +17,8 @@ real_odometry = rospy.get_param('autonomous_control/enable_real_odometry')
 obstacle_threshold = rospy.get_param('autonomous_control/obstacle_threshold')
 obstacle_buffer = rospy.get_param('autonomous_control/obstacle_buffer')
 move_increment = rospy.get_param('autonomous_control/move_increment')
+swarm_control = rospy.get_param('autonomous_control/swarm_control')
+
 
 autonomous_control.on_start_up(target_x,
                                target_y,
@@ -32,4 +34,5 @@ autonomous_control.on_start_up(target_x,
                                float(move_increment),
                                float(max_linear_velocity),
                                float(max_angular_velocity),
-                               bool(real_odometry))
+                               bool(real_odometry),
+                               swarm_control)

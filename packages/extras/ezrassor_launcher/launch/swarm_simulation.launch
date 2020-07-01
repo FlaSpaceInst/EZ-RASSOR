@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch a Gazebo simulation which demonstrates a swarm of EZ-RASSORs collaborating to mine regolith from the lunar surface
+     Written by Daniel Silva. -->
+
+<launch>
+  <arg name="robot_count" default="default"/>
+  <arg name="spawn_x_coords" default="default"/>
+  <arg name="spawn_y_coords" default="default"/>
+  <arg name="spawn_z_coords" default="default"/>
+  <arg name="digsite_x_coords" default="default"/>
+  <arg name="digsite_y_coords" default="default"/>
+  <arg name="lander_coords" default="default"/>
+  <arg name="world" default="nasa_moon_dem"/>
+  <arg name="elevation_map" default="nasa_moon_dem.jpg"/>
+  <arg name="debug" default="default"/>
+  <arg name="paused" default="default"/>
+  <arg name="verbose" default="default"/>
+  <arg name="show_gui" default="default"/>
+  <arg name="recording" default="default"/>
+  <arg name="use_sim_time" default="default"/>
+  <arg name="enable_real_odometry" default="default"/>
+
+  <!-- Will always use swarm control software -->
+  <arg name="swarm_control" value="true"/>
+
+<!-- Spawn each of the rovers -->
+  <include file="$(find ezrassor_swarm_control)/launch/spawn_rovers.launch">
+    <arg name="robot_count"
+            value="$(arg robot_count)"
+            unless="$(eval robot_count == 'default')"/>
+    <arg name="spawn_x_coords"
+            value="$(arg spawn_x_coords)"
+            unless="$(eval spawn_x_coords == 'default')"/>
+    <arg name="spawn_y_coords"
+            value="$(arg spawn_y_coords)"
+            unless="$(eval spawn_y_coords == 'default')"/>
+    <arg name="spawn_z_coords"
+            value="$(arg spawn_z_coords)"
+            unless="$(eval spawn_z_coords == 'default')"/>
+    <arg name="enable_real_odometry"
+            value="$(arg enable_real_odometry)"
+            unless="$(eval enable_real_odometry == 'default')"/>
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="elevation_map"
+         value="$(arg elevation_map)"
+         unless="$(eval elevation_map == 'default')"/>
+    <arg name="swarm_control"
+            value="$(arg swarm_control)"/>
+  </include>
+
+  <!-- Launch the swarm management system -->
+  <include file="$(find ezrassor_swarm_control)/launch/swarm_control.launch">
+    <arg name="robot_count"
+            value="$(arg robot_count)"
+            unless="$(eval robot_count == 'default')"/>
+    <arg name="digsite_x_coords"
+            value="$(arg digsite_x_coords)"
+            unless="$(eval digsite_x_coords == 'default')"/>
+    <arg name="digsite_y_coords"
+            value="$(arg digsite_y_coords)"
+            unless="$(eval digsite_y_coords == 'default')"/>
+    <arg name="lander_coords"
+            value="$(arg lander_coords)"
+            unless="$(eval lander_coords == 'default')"/>
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="elevation_map"
+         value="$(arg elevation_map)"
+         unless="$(eval elevation_map == 'default')"/>
+  </include>
+
+  <!-- Load the world once all rovers have been spawned
+       Any arguments marked as 'default' are ignored and the
+       defaults within the gazebo launch file are used. -->
+  <include file="$(find ezrassor_sim_gazebo)/launch/gazebo.launch">
+    <arg name="world"
+         value="$(arg world)"
+         unless="$(eval world == 'default')"/>
+    <arg name="debug"
+         value="$(arg debug)"
+         unless="$(eval debug == 'default')"/>
+    <arg name="paused"
+         value="$(arg paused)"
+         unless="$(eval paused == 'default')"/>
+    <arg name="verbose"
+         value="$(arg verbose)"
+         unless="$(eval verbose == 'default')"/>
+    <arg name="show_gui"
+         value="$(arg show_gui)"
+         unless="$(eval show_gui == 'default')"/>
+    <arg name="recording"
+         value="$(arg recording)"
+         unless="$(eval recording == 'default')"/>
+    <arg name="use_sim_time"
+         value="$(arg use_sim_time)"
+         unless="$(eval use_sim_time == 'default')"/>
+  </include>
+</launch>
