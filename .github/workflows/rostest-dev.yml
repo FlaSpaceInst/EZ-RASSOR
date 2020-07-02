@@ -1,0 +1,26 @@
+name: rostest-dev
+
+on:
+  push: 
+    branches:
+      - github-actions
+
+jobs:
+
+  rostest:
+
+    runs-on: ubuntu-latest
+    container: ros:melodic
+
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Prep Workspace and Build Packages
+      run: |
+        sh develop.sh setup
+        sh develop.sh link
+        sh develop.sh build
+
+    - name: Run Tests
+      run: sh develop.sh test
