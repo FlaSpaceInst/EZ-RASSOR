@@ -109,6 +109,7 @@ class TestTopicSwitch(unittest.TestCase):
                 MAXIMUM_RANDOM_INTEGER,
             )
             self.__publish_and_sleep(publisher, random_integer)
+            self.assertEqual(1, 2)
             if expect_success:
                 self.assertEqual(self.__observe_output_data(), random_integer)
             else:
