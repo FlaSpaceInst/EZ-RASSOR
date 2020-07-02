@@ -13,23 +13,36 @@ For more information, our `wiki`_ contains a high-level overview of the EZ-RASSO
 
 **POTENTIAL CONTRIBUTORS:** check out the `contributing guidelines`_ and the `license`_.
 
+INSTALLATION PREREQUISITES
+--------------------------
+- `ROS Melodic`_
+- `Python 2.7`_
+- `Pip`_
+- `rosdep`_
+- `build-essential`_
+
 TYPICAL INSTALLATION
 --------------------
 First, clone this repository with ``git``.
-::
-  git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
-  cd EZ-RASSOR
 
-Then, let the ``install.sh`` script do the heavy lifting! A typical installation on Ubuntu Xenial or Ubuntu Bionic is achieved with these commands:
-::
-  sh install.sh ros
-  ** RESTART TERMINAL **
-  sh install.sh tools
-  sh install.sh packages
+.. code-block:: bash
+
+    git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
+    cd EZ-RASSOR 
+
+Then, let the ``develop.sh`` script do the heavy lifting! On Ubuntu Xenial or Ubuntu Bionic, creating a catkin workspace and building all packages is achieved with these commands:::
+  # By default, all ROS packages in the *packages* folder will be installed
+  sh develop.sh setup
+  sh develop.sh link
+  sh develop.sh resolve
+  sh develop.sh build
+  sh develop.sh install
   ** RESTART TERMINAL **
 
 If you encounter ``Sub-process /usr/bin/dpkg returned an error code...``, try to fix the broken install with the following command, then rerun the original command:
-::
+
+.. code-block:: bash
+
   sudo apt --fix-broken install
   ** RERUN ORIGINAL COMMAND **
   
@@ -37,40 +50,40 @@ Everything's installed now! Proceed to the `usage`_ section.
 
 CUSTOMIZED INSTALLATION
 -----------------------
-Before performing a custom installation, you'll need to install `ROS manually`_. You'll also want to install the `ROS build tools`_. Finally, you'll need to familiarize yourself with the installation script. The script's general syntax looks like this:
-::
-  sh install.sh <software> [arguments...]
+If you want to install specific EZ-RASSOR packages, you can use the same develop.sh script:
+
+Make sure you have already run the setup command at least once:
+
+.. code-block:: bash
+
+  sh develop.sh setup
+
+Then, you can call the relink function and use -o to pass in the package name(s) you would like to install
+
+.. code-block:: bash
+
+  sh develop.sh relink -o ezrassor_sim_control ezrassor_sim_description ezrassor_sim_gazebo
+  sh develop.sh build
+  sh develop.sh install
   
-All of the following are valid ``<software>`` options:
+Alternatively, you can also call the relink function and use the -e flag to make the script install all *but* the specified package(s):
 
-``ros``
-  Install the ROS suite of software. This software is required to operate the EZ-RASSOR (and must be installed first). This script will automatically install ROS for Ubuntu Xenial and Ubuntu Bionic. For all other systems, ROS must be installed manually. After installing ROS with this script, **you must restart your terminal before proceeding**.
-``tools``
-  Install the ROS build tools that are required to build the EZ-RASSOR core packages. Again, this suite of software can only be installed automatically on Ubuntu Xenial and Ubuntu Bionic. For all other systems, you must install these tools manually.
-``packages [-e, --except <packages...> | -o, --only <packages...>]``
-  Install the core EZ-RASSOR packages. After installing these packages, **you must restart your terminal for changes to take effect**. Ignore specific packages with the ``-e`` or ``--except`` flag. Install specific packages with the ``-o`` or ``--only`` flag.
-``help``
-  Display a help menu.
+.. code-block:: bash
 
-Once you have ROS and the ROS build tools installed, you can install any combination of our packages using the installation script. Here are some examples:
-::
-  # Install all packages except 'ezrassor_autonomous_control'.
-  sh install.sh packages --except ezrassor_autonomous_control
-
-  # Install all packages except the simulation packages.
-  sh install.sh packages --except ezrassor_sim_control ezrassor_sim_description ezrassor_sim_gazebo
-  
-  # Install only the communication packages.
-  sh install.sh packages --only ezrassor_controller_server ezrassor_joy_translator ezrassor_topic_switch
+  sh develop.sh relink -e ezrassor_swarm_control
   
 USAGE
 -----
 The EZ-RASSOR is controlled via a collection of *launch files*. These files contain lists of commands that start up the robot's systems and the simulation environment. They are read, understood, and executed by a core ROS utility called ``roslaunch``, whose general syntax is as follows:
-::
+
+.. code-block:: bash
+
   roslaunch <package> <launch file> [arguments...]
   
 Each launch file is located in one of our packages, and the most important launch files are located in the ``ezrassor_launcher`` package. To learn more about a specific launch file, visit that launch file's package's `wiki`_ page (via the navigation menu on the right). Here are some example commands that show launch files in action:
-::
+
+.. code-block:: bash
+
   # Launch the simulation with a single robot controlled by the mobile app.
   roslaunch ezrassor_launcher configurable_simulation.launch control_methods:=app
   
@@ -126,8 +139,6 @@ AUTHORS
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
 .. _`usage`: README.rst#Usage
-.. _`ROS manually`: http://wiki.ros.org/ROS/Installation
-.. _`ROS build tools`: http://wiki.ros.org/kinetic/Installation/Source#Prerequisites
 .. _`wiki page for the ezrassor_launcher`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki/ezrassor_launcher
 .. _`Sean Rapp`: https://github.com/shintoo
 .. _`Ron Marrero` : https://github.com/CSharpRon
@@ -149,3 +160,8 @@ AUTHORS
 .. _`Martin Power` : https://github.com/martinpower
 .. _`Daniel Simoes` : https://github.com/RuptorT
 .. _`Autumn Esponda` : https://github.com/autumnesponda
+.. _`ROS Melodic` : http://wiki.ros.org/melodic/Installation/Ubuntu
+.. _`Python 2.7` : https://www.python.org/download/releases/2.7/
+.. _`Pip` : https://pip.pypa.io/en/stable/installing/
+.. _`rosdep` : http://wiki.ros.org/rosdep
+.. _`build-essential` : https://packages.ubuntu.com/bionic/build-essential
