@@ -1,8 +1,0 @@
-# GitHub Action
-name: 'rostest'
-description: 'Run rostest on the official ROS:Melodic docker image'
-inputs:
-outputs:
-runs:
-  using: 'docker' 
-  image: '.github/build/Dockerfile' 
