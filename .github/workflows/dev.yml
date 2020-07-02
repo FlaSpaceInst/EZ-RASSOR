@@ -1,0 +1,15 @@
+name: rostest-dev
+
+on:
+  push: 
+    branches:
+      - github-actions
+
+jobs:
+
+  rostest:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run rostest on repository
+        uses: .github/actions
