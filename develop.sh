@@ -186,9 +186,16 @@ test_packages() {
     catkin_make run_tests
 
     # This command will return a status code of 0 or 1 depending on if the previous tests succeeded
-    catkin_test_results
+    (catkin_test_results)
+    local result=$?
 
+    # After we return to the main directory, return the status code from the test results
     cd - > /dev/null 2>&1
+    if [ $result -ne 0 ]; then
+      return 1
+    else
+      return 0
+    fi
 }
 
 # Change the version number of all the packages.
