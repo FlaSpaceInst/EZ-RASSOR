@@ -1,4 +1,4 @@
-name: rostest-dev
+name: dev
 
 on:
   push: 
@@ -11,5 +11,8 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2 
       - name: Run rostest on repository
-        uses: .github/actions
+        run: |
+          docker build -t ez-rassor_rostest -f .github/build/Dockerfile .
+          docker run ez-rassor_rostest
