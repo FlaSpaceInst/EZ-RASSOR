@@ -25,4 +25,5 @@ jobs:
 
     # Runs flake8 linter on all Python code. Saves changes as annotations to a PR.
     steps:
+      - uses: actions/checkout@v2 
       - uses: TrueBrain/actions-flake8@master
