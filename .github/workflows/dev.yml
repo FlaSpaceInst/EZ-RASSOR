@@ -10,9 +10,19 @@ jobs:
   rostest:
 
     runs-on: ubuntu-latest
+
+    # Builds a docker image with the repository inside. The executable for the container installs all packages and runs rostest.
     steps:
       - uses: actions/checkout@v2 
       - name: Run rostest on repository
         run: |
           docker build -t ez-rassor_rostest -f .github/build/Dockerfile .
           docker run ez-rassor_rostest
+
+  flake8:
+
+    runs-on: ubuntu-latest
+
+    # Runs flake8 linter on all Python code. Saves changes as annotations to a PR.
+    steps:
+      - uses: TrueBrain/actions-flake8@master
