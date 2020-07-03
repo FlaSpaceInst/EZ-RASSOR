@@ -14,24 +14,26 @@ BACK_TOPIC = "back_drum_instructions"
 MAX_DRUM_SPEED = 5
 
 # /ezrassor/drum_back_velocity_controller/command
-pub_FA = rospy.Publisher('drum_front_velocity_controller/command', 
-                         Float64, 
-                         queue_size = 10)
-pub_BA = rospy.Publisher('drum_back_velocity_controller/command', 
-                         Float64, 
-                         queue_size = 10)
+pub_FA = rospy.Publisher(
+    "drum_front_velocity_controller/command", Float64, queue_size=10
+)
+pub_BA = rospy.Publisher(
+    "drum_back_velocity_controller/command", Float64, queue_size=10
+)
+
 
 def handle_front_drum_movements(data):
     """Move the front drum of the robot per 
         the commands encoded in the instruction.
     """
-    pub_FA.publish(data.data*MAX_DRUM_SPEED)
+    pub_FA.publish(data.data * MAX_DRUM_SPEED)
+
 
 def handle_back_drum_movements(data):
     """Move the back drum of the robot per 
         the commands encoded in the instruction.
     """
-    pub_BA.publish(data.data*MAX_DRUM_SPEED)
+    pub_BA.publish(data.data * MAX_DRUM_SPEED)
 
 
 def start_node():
@@ -44,4 +46,3 @@ def start_node():
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
-

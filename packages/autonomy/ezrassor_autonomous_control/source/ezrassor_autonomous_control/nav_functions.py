@@ -26,7 +26,7 @@ def calculate_heading(world_state):
     new_heading = math.atan2(dy, dx)
 
     # Convert the angle to degrees.
-    new_heading = (180 * new_heading / math.pi)
+    new_heading = 180 * new_heading / math.pi
 
     # Since gazebo only uses 0 through 360 degree, we must bound any negative
     # angles to positive ones.
@@ -45,8 +45,12 @@ def adjust_angle(heading, new_heading):
 
 
 def quaternion_to_yaw(pose):
-    quaternion = (pose.orientation.x, pose.orientation.y, pose.orientation.z,
-                  pose.orientation.w)
+    quaternion = (
+        pose.orientation.x,
+        pose.orientation.y,
+        pose.orientation.z,
+        pose.orientation.w,
+    )
     euler = transformations.euler_from_quaternion(quaternion)
     return euler[2]
 
@@ -112,8 +116,7 @@ def get_best_angle(world_state, buffer, scan, threshold):
         # Aim to minimize the difference between our facing angle and the angle
         # to the goal
         new_heading_degrees = calculate_heading(world_state)
-        angle2goal_radians = adjust_angle(world_state.heading,
-                                          new_heading_degrees)
+        angle2goal_radians = adjust_angle(world_state.heading, new_heading_degrees)
         score = abs(angle2goal_radians - angle)
         if best_score is None or score < best_score:
             best_score = score
@@ -132,7 +135,7 @@ world uses).
 
 def rel_to_abs(current_heading_degrees, relative_heading_radians):
     # Convert from radians to degrees
-    relative_heading_degrees = (180 * relative_heading_radians / math.pi)
+    relative_heading_degrees = 180 * relative_heading_radians / math.pi
 
     # Add current heading to relative heading to get absolute heading
     abs_heading = relative_heading_degrees + current_heading_degrees

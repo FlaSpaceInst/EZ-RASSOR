@@ -30,7 +30,7 @@ def get_rover_status(rover_num):
     """
 
     # Build the service endpoint
-    service = '/ezrassor{}/rover_status'.format(rover_num)
+    service = "/ezrassor{}/rover_status".format(rover_num)
 
     # Ensure it's running
     rospy.wait_for_service(service, 5.0)
@@ -56,7 +56,7 @@ def preempt_rover_path(rover_num):
     """
 
     # Build the service endpoint
-    service = '/ezrassor{}/preempt_path'.format(rover_num)
+    service = "/ezrassor{}/preempt_path".format(rover_num)
 
     # Ensure it's running
     rospy.wait_for_service(service, 5.0)

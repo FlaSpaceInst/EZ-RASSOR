@@ -16,8 +16,10 @@ import geometry_msgs.msg
 
 def get_custom_handler(publishers):
     """Get a custom HTTP request handler with appropriate publishers."""
+
     class CustomRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         """Handle JSON POST requests on a simple HTTP server."""
+
         target_coordinates_publisher = publishers[0]
         autonomous_toggles_publisher = publishers[1]
         wheel_instructions_publisher = publishers[2]
@@ -32,12 +34,8 @@ def get_custom_handler(publishers):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             content_length = int(self.headers.getheader("content-length", 0))
-            instructions = json.loads(
-                self.rfile.read(
-                    content_length,
-                ),
-            )
-            self.wfile.write(json.dumps({"status" : 200}))
+            instructions = json.loads(self.rfile.read(content_length,),)
+            self.wfile.write(json.dumps({"status": 200}))
             self._publish_instructions(instructions)
 
         def _publish_instructions(self, instructions):
@@ -100,7 +98,8 @@ def start_node(
     target_coordinates_topic,
     autonomous_toggles_topic,
     queue_size,
-    sleep_duration):
+    sleep_duration,
+):
     """Start the node and let the fun begin!"""
     try:
         rospy.init_node(default_node_name)
@@ -125,71 +124,55 @@ def start_node(
 
         # Create a whole heap of publishers.
         target_coordinates_publisher = rospy.Publisher(
-            target_coordinates_topic,
-            geometry_msgs.msg.Point,
-            queue_size=queue_size,
+            target_coordinates_topic, geometry_msgs.msg.Point, queue_size=queue_size,
         )
         autonomous_toggles_publisher = rospy.Publisher(
-            autonomous_toggles_topic,
-            std_msgs.msg.Int8,
-            queue_size=queue_size,
+            autonomous_toggles_topic, std_msgs.msg.Int8, queue_size=queue_size,
         )
         wheel_instructions_publisher = rospy.Publisher(
-            wheel_instructions_topic,
-            geometry_msgs.msg.Twist,
-            queue_size=queue_size,
+            wheel_instructions_topic, geometry_msgs.msg.Twist, queue_size=queue_size,
         )
         front_arm_instructions_publisher = rospy.Publisher(
-            front_arm_instructions_topic,
-            std_msgs.msg.Float32,
-            queue_size=queue_size,
+            front_arm_instructions_topic, std_msgs.msg.Float32, queue_size=queue_size,
         )
         back_arm_instructions_publisher = rospy.Publisher(
-            back_arm_instructions_topic,
-            std_msgs.msg.Float32,
-            queue_size=queue_size,
+            back_arm_instructions_topic, std_msgs.msg.Float32, queue_size=queue_size,
         )
         front_drum_instructions_publisher = rospy.Publisher(
-            front_drum_instructions_topic,
-            std_msgs.msg.Float32,
-            queue_size=queue_size,
+            front_drum_instructions_topic, std_msgs.msg.Float32, queue_size=queue_size,
         )
         back_drum_instructions_publisher = rospy.Publisher(
-            back_drum_instructions_topic,
-            std_msgs.msg.Float32,
-            queue_size=queue_size,
+            back_drum_instructions_topic, std_msgs.msg.Float32, queue_size=queue_size,
         )
-        
+
         rospy.loginfo("Creating HTTP server...")
 
         # Create an HTTP server.
         server = BaseHTTPServer.HTTPServer(
             ("", port),
-            get_custom_handler((
-                target_coordinates_publisher,
-                autonomous_toggles_publisher,
-                wheel_instructions_publisher,
-                front_arm_instructions_publisher,
-                back_arm_instructions_publisher,
-                front_drum_instructions_publisher,
-                back_drum_instructions_publisher,
-            )),
+            get_custom_handler(
+                (
+                    target_coordinates_publisher,
+                    autonomous_toggles_publisher,
+                    wheel_instructions_publisher,
+                    front_arm_instructions_publisher,
+                    back_arm_instructions_publisher,
+                    front_drum_instructions_publisher,
+                    back_drum_instructions_publisher,
+                )
+            ),
         )
 
         rospy.loginfo("Creating server kill thread...")
 
         # Launch a kill thread that kills the server when roscore dies.
         kill_thread = threading.Thread(
-            target=kill_server,
-            args=(
-                server,
-                sleep_duration,
-            ),
+            target=kill_server, args=(server, sleep_duration,),
         )
         kill_thread.start()
 
         rospy.loginfo("Controller server initialized.")
-        
+
         # Run the server infinitely.
         server.serve_forever(poll_interval=sleep_duration)
 

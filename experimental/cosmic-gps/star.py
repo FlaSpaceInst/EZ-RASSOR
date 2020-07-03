@@ -6,8 +6,8 @@ from math import degrees
 from math import sin
 from math import atan
 
-class Star:
 
+class Star:
     def __init__(self):  # constructor
         # set by add_pixel()
         self.pixel_dict = dict()
@@ -67,14 +67,14 @@ class Star:
         running_total = 0
         pixel_center = 0.5
         for col_intensity in marginal_distribution_rows:
-            running_total += (pixel_center * col_intensity)
+            running_total += pixel_center * col_intensity
             pixel_center += 1
         mean_i = running_total / self.intensity
         # get the mean of rows
         running_total = 0
         pixel_center = 0.5
         for row_intensity in marginal_distribution_cols:
-            running_total += (pixel_center * row_intensity)
+            running_total += pixel_center * row_intensity
             pixel_center += 1
         mean_j = running_total / self.intensity
         self.star_center_row = mean_j + self.min_row
@@ -86,33 +86,38 @@ class Star:
         opp = 0.0
         adj = 0.0
         init_direction_angle = 0.0
-        if self.star_center_col >= image_center_x and (self.star_center_row <
-                                                       image_center_y):
+        if self.star_center_col >= image_center_x and (
+            self.star_center_row < image_center_y
+        ):
             opp = self.star_center_col - image_center_x
             adj = image_center_y - self.star_center_row
             init_direction_angle = 0.0
-        elif self.star_center_col > image_center_x and (self.star_center_row >=
-                                                        image_center_y):
+        elif self.star_center_col > image_center_x and (
+            self.star_center_row >= image_center_y
+        ):
             opp = self.star_center_row - image_center_y
             adj = self.star_center_col - image_center_x
             init_direction_angle = 90.0
-        elif self.star_center_col <= image_center_x and (self.star_center_row >
-                                                         image_center_y):
+        elif self.star_center_col <= image_center_x and (
+            self.star_center_row > image_center_y
+        ):
             opp = image_center_x - self.star_center_col
             adj = self.star_center_row - image_center_y
             init_direction_angle = 180.0
-        elif self.star_center_col < image_center_x and (self.star_center_row <=
-                                                        image_center_y):
-            opp = image_center_y - self.star_center_row 
+        elif self.star_center_col < image_center_x and (
+            self.star_center_row <= image_center_y
+        ):
+            opp = image_center_y - self.star_center_row
             adj = image_center_x - self.star_center_col
             init_direction_angle = 270.0
-        temp_angle = atan(opp/adj)
+        temp_angle = atan(opp / adj)
         self.angle_of_direction = init_direction_angle + degrees(temp_angle)
         # find the angle distance from the center
         query = opp / sin(temp_angle)
         # Calibration Function
-        self.angle_distance_from_center = ((-0.0000015736242766902*query*query)
-                                           + (0.019311808618316 * query))
+        self.angle_distance_from_center = (-0.0000015736242766902 * query * query) + (
+            0.019311808618316 * query
+        )
 
     def get_intensity(self):
         return self.intensity
@@ -133,16 +138,16 @@ class Star:
 
     # test function
     def show(self):
-        print '*****'
-        print 'Pixels:'
+        print "*****"
+        print "Pixels:"
         print self.pixel_dict
-        print ''
-        print 'Intensity:'
+        print ""
+        print "Intensity:"
         print self.intensity
-        print ''
-        print 'Shape:'
+        print ""
+        print "Shape:"
         print self.shape()
-        print '_____'
+        print "_____"
 
     # test function
     def quick_set_angles(self, aod, adfc):

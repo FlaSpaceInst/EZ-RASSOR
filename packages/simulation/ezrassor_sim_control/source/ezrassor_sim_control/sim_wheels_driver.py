@@ -12,9 +12,10 @@ NODE = "sim_wheels_driver"
 TOPIC = "wheel_instructions"
 MAX_VELOCITY = 5
 
+
 def wheel_movement_callback(twist):
 
-    pub_wheels = rospy.Publisher('diff_drive_controller/cmd_vel', Twist, queue_size=10)
+    pub_wheels = rospy.Publisher("diff_drive_controller/cmd_vel", Twist, queue_size=10)
 
     new_twist = Twist()
 
@@ -34,7 +35,7 @@ def wheel_movement_callback(twist):
 
 def start_node():
     try:
-        rospy.init_node(NODE, anonymous = True)
+        rospy.init_node(NODE, anonymous=True)
         rospy.Subscriber(TOPIC, Twist, wheel_movement_callback)
         rospy.loginfo("Simulation wheels driver initialized.")
         rospy.spin()
