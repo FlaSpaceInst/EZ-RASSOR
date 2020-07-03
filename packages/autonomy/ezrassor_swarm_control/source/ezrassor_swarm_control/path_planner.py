@@ -11,6 +11,7 @@ from timeit import default_timer as timer
 from geometry_msgs.msg import Point
 from ezrassor_swarm_control.msg import Path
 
+
 class PathPlanner:
     """
     Global A* path planner which runs on a gazebo world's elevation-map
@@ -24,7 +25,16 @@ class PathPlanner:
         self.width, self.height = self.map.shape
 
         # Diagonals and cardinal direction movements allowed
-        self.neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        self.neighbors = [
+            (0, 1),
+            (0, -1),
+            (1, 0),
+            (-1, 0),
+            (1, 1),
+            (1, -1),
+            (-1, 1),
+            (-1, -1),
+        ]
 
         # Only cardinal directions
         # self.neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
@@ -40,19 +50,35 @@ class PathPlanner:
         """
 
         if not self.check_bounds(start_):
-            rospy.loginfo('Start coordinate {} is out of bounds'.format((start_.x, start_.y)))
+            rospy.loginfo(
+                "Start coordinate {} is out of bounds".format((start_.x, start_.y))
+            )
             return
         if not self.check_bounds(goal_):
-            rospy.loginfo('Goal coordinate {} is out of bounds'.format((goal_.x, goal_.y)))
+            rospy.loginfo(
+                "Goal coordinate {} is out of bounds".format((goal_.x, goal_.y))
+            )
             return
 
-        rospy.loginfo('Searching for path from {} to {}'.format((start_.x, start_.y), (goal_.x, goal_.y)))
+        rospy.loginfo(
+            "Searching for path from {} to {}".format(
+                (start_.x, start_.y), (goal_.x, goal_.y)
+            )
+        )
         start_time = timer()
 
         # Convert simulation coordinates, whose origin are in the center of the map,
         # to image coordinates with origin in the top-left corner
-        start = Point(int(round(start_.x + (self.width // 2))), int(round(abs(start_.y - (self.height // 2)))), 0)
-        goal = Point(int(round(goal_.x + (self.width // 2))), int(round(abs(goal_.y - (self.height // 2)))), 0)
+        start = Point(
+            int(round(start_.x + (self.width // 2))),
+            int(round(abs(start_.y - (self.height // 2)))),
+            0,
+        )
+        goal = Point(
+            int(round(goal_.x + (self.width // 2))),
+            int(round(abs(goal_.y - (self.height // 2)))),
+            0,
+        )
 
         # Initialize open and closed
         open = []
@@ -84,7 +110,7 @@ class PathPlanner:
 
                 # Build path by backtracking from current node to the start node
                 path = self.backtrack_path(cur, start, previous)
-                rospy.loginfo('Path found in {}'.format(timer() - start_time))
+                rospy.loginfo("Path found in {}".format(timer() - start_time))
                 return path
 
             closed.add(cur)
@@ -107,22 +133,28 @@ class PathPlanner:
 
                 # Add node to open list if it hasn't been looked at or if
                 # we've found a new cheaper path to this node
-                if tent_g < g_scores.get(neighbor, sys.maxint) or neighbor not in [i[1] for i in open]:
+                if tent_g < g_scores.get(neighbor, sys.maxint) or neighbor not in [
+                    i[1] for i in open
+                ]:
                     previous[neighbor] = cur
                     g_scores[neighbor] = tent_g
                     f_scores[neighbor] = tent_g + self.euclidean(neighbor, goal)
 
                     heapq.heappush(open, (f_scores[neighbor], neighbor))
 
-        rospy.loginfo('No path found in {} seconds. Sending straight line path.'.format(timer() - start_time))
+        rospy.loginfo(
+            "No path found in {} seconds. Sending straight line path.".format(
+                timer() - start_time
+            )
+        )
         previous[goal] = start
         path = self.backtrack_path(goal, start, previous)
         return path
 
     def get_valid_neighbors(self, cur):
-        '''
+        """
         Returns a list of valid neighboring nodes as ros Point messages
-        '''
+        """
 
         neighbors = []
 
@@ -156,8 +188,10 @@ class PathPlanner:
         # Diagonal move
         if dx == 1 and dy == 1:
             # Check for mountains or craters adjacent to diagonal move
-            if abs(self.map[cur.y, neighbor.x] - self.map[cur.y, cur.x]) > 2 or \
-                    abs(self.map[neighbor.y, cur.x] - self.map[cur.y, cur.x]) > 2:
+            if (
+                abs(self.map[cur.y, neighbor.x] - self.map[cur.y, cur.x]) > 2
+                or abs(self.map[neighbor.y, cur.x] - self.map[cur.y, cur.x]) > 2
+            ):
                 return False
 
         return True
@@ -181,7 +215,7 @@ class PathPlanner:
             if cur in previous:
                 cur = previous[cur]
             else:
-                raise ValueError('Unable to backtrack to start node.')
+                raise ValueError("Unable to backtrack to start node.")
 
         # Add start node to path
         cur.x -= self.width // 2
@@ -201,7 +235,11 @@ class PathPlanner:
         a_x, a_y = int(round(a.x)), int(round(a.y))
         b_x, b_y = int(round(b.x)), int(round(b.y))
 
-        return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (self.map[b_y, b_x] - self.map[a_y, a_x]) ** 2)
+        return np.sqrt(
+            (b.x - a.x) ** 2
+            + (b.y - a.y) ** 2
+            + (self.map[b_y, b_x] - self.map[a_y, a_x]) ** 2
+        )
 
     def check_bounds(self, coord):
         """

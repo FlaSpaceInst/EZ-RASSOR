@@ -7,6 +7,7 @@ import ogr
 import osr
 import sys
 
+
 def main():
     # Open file
     dataset = gdal.Open(sys.argv[1], gdal.GA_ReadOnly)
@@ -21,7 +22,8 @@ def main():
             num_rows = dataset.RasterYSize
             print("{} {}".format(num_cols, num_rows))
         else:
-        	print("-1 -1")
+            print("-1 -1")
+
 
 if __name__ == "__main__":
     main()
