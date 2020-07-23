@@ -3,7 +3,8 @@ name: dev
 on:
   push: 
     branches:
-      - github-actions
+      - dev
+      - staging
 
 jobs:
 
