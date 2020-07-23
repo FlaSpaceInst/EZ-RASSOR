@@ -79,7 +79,7 @@ def main():
         list_of_stars_size -= 1
         if len(list_of_possible_matches) > 0:
             break  # can be possibly many group of candidates.
-    print list_of_possible_matches
+    print(list_of_possible_matches)
 
 
 if __name__ == "__main__":

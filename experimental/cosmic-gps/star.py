@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # star.py
 
-from math import radians
 from math import degrees
 from math import sin
 from math import atan
@@ -138,16 +137,16 @@ class Star:
 
     # test function
     def show(self):
-        print "*****"
-        print "Pixels:"
-        print self.pixel_dict
-        print ""
-        print "Intensity:"
-        print self.intensity
-        print ""
-        print "Shape:"
-        print self.shape()
-        print "_____"
+        print("*****")
+        print("Pixels:")
+        print(self.pixel_dict)
+        print("")
+        print("Intensity:")
+        print(self.intensity)
+        print("")
+        print("Shape:")
+        print(self.shape())
+        print("_____")
 
     # test function
     def quick_set_angles(self, aod, adfc):

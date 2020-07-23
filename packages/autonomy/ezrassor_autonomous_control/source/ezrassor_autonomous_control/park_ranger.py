@@ -99,7 +99,7 @@ class ParkRanger(PointCloudProcessor):
         namespace = namespace[1:-1] + "::base_link"
         try:
             index = data.name.index(namespace)
-        except:
+        except (AttributeError, ValueError):
             rospy.logdebug("Failed to get index. Skipping...")
 
         self.position_z = data.pose[index].position.z + self.origin_z
@@ -327,10 +327,10 @@ class ParkRanger(PointCloudProcessor):
 
         # Handle cases where tangent returns the same value for different angles
         # and messes up the rest of the calculations
-        if direction is "right" and 135 < angle <= 315:
+        if direction == "right" and 135 < angle <= 315:
             direction = "left"
             angle = 180 - angle
-        if direction is "left" and 45 < angle <= 225:
+        if direction == "left" and 45 < angle <= 225:
             direction = "right"
             angle = 180 - angle
 
@@ -359,9 +359,9 @@ class ParkRanger(PointCloudProcessor):
                 D -= 2
             D += 2 * abs(slope)
             if line_high:
-                row += -1 if direction is "right" else 1
+                row += -1 if direction == "right" else 1
             else:
-                col += 1 if direction is "right" else -1
+                col += 1 if direction == "right" else -1
 
         return np.array(indexes)
 
@@ -525,7 +525,6 @@ class ParkRanger(PointCloudProcessor):
     def run(self, period, local_dem_comparison_type):
         r = rospy.Rate(1.0 / period)
         init_flag = True
-        ran_out_of_particles = False
         self.particle_filter = ParticleFilter(self.resolution, self.dem_size)
         while not rospy.is_shutdown():
             if not self.arms_up:
@@ -589,9 +588,7 @@ class ParkRanger(PointCloudProcessor):
         weights = np.zeros_like(self.global_dem)
 
         for p in self.particle_filter.particles:
-            old_weight = p.weight
             predicted_dem = self.get_predicted_local_dem(p)
-            valid_dem = False
             if predicted_dem is not None:
                 p.weight *= ParkRanger.histogram_match(local_dem, predicted_dem)
                 weights[p.y, p.x] = p.weight
@@ -629,7 +626,6 @@ class ParkRanger(PointCloudProcessor):
     def estimate(self):
         sum_x = 0
         sum_y = 0
-        num_particles = len(self.particle_filter.particles)
         sum_weights = sum([p.weight for p in self.particle_filter.particles])
         for p in self.particle_filter.particles:
             if p.weight != 0.0:
@@ -663,6 +659,8 @@ def park_ranger(
     range_max=10.0,
     camera_height=0.34,
 ):
+
+    """ Usage:
     pr = ParkRanger(
         real_odometry,
         world_name,
@@ -673,10 +671,11 @@ def park_ranger(
         range_max,
         camera_height,
     )
+    """
 
 
 if __name__ == "__main__":
     try:
         park_ranger()
-    except:
+    except(AttributeError, ValueError, IndexError):
         pass

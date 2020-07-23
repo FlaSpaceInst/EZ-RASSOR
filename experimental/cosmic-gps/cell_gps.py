@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # Core Function/Node
 
-import numpy as np
 import cv2 as cv
 
-from thresh_local_ratio import thresh_local_ratio
 from thresh_global import thresh_global
 from cluster import cluster
-from star import Star
 from star_cat import Star_Cat
 from measurement import Calibration_Function
 from measurement import calculate_angular_distance
 from measurement import determine_coordinate
 from measurement import calculate_geographic_position
+
+
+def getkey(item):
+    return item[0]
 
 
 def cell_gps_core():
@@ -22,7 +23,6 @@ def cell_gps_core():
 
     # read the configuarion file
 
-    window_size = 9  # used for thresholding
     image_center_x = 1511.5
     image_center_y = 2015.5
     time_list = [
@@ -103,11 +103,9 @@ def cell_gps_core():
         # from the image center finally pair each star object with its
         # intensity and sort the pairs by intensity
         list_of_stars = []
-        getkey = lambda item: item[0]
         for clustr in list_of_clusters:
             if clustr.shape() > 0.50:
                 cluster_intensity = clustr.get_intensity()
-                cluster_center = clustr.centroid()
                 clustr.set_angles(image_center_x, image_center_y)
                 list_of_stars.append([cluster_intensity, clustr])
         list_of_stars = sorted(list_of_stars, key=getkey, reverse=True)
@@ -179,15 +177,14 @@ def cell_gps_core():
                 position_longitude, position_latitude, gp[0], gp[1]
             )
             if d < min_d:
-                save_coor = coor
                 save_gp = gp
                 save_match = match
                 min_d = d
         position_latitude = save_gp[1]
         position_longitude = save_gp[0]
         star_catalogue.rescope(coor[0], coor[1])
-        print "Geographic Position", save_gp
-        print save_match
+        print("Geographic Position", save_gp)
+        print(save_match)
         break
     # end
 

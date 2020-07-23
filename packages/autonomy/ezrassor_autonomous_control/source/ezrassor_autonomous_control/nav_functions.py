@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import rospy
 import math
 from tf import transformations
 

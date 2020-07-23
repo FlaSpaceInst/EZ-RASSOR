@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-import os, gdal, sys, ntpath
+import os
+import gdal
+import sys
+import ntpath
 
 
 def main():

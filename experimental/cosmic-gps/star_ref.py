@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # star_ref.py
 
-import numpy as np
-
 
 class Star_Ref:
     def __init__(self, sid, name, mag, ra, dec):

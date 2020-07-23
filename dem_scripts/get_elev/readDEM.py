@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 import gdal
-import ogr
 import osr
 import sys
-import struct
 import numpy as np
 import get_coords
-from scipy.signal import argrelextrema
 
 """ Print all elevation values from dem into txt file """
 

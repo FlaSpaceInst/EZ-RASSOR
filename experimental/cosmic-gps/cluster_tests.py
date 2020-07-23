@@ -8,12 +8,10 @@
 # test: outputs the star clusters
 
 
-import numpy as np
 import cv2 as cv
 
 from thresh_global import thresh_global
 from cluster import cluster
-from star import Star
 
 
 def main():
@@ -25,11 +23,11 @@ def main():
 
     list_of_clusters = cluster(pixels)
 
-    print "***Clusters***"
-    print ""
+    print("***Clusters***")
+    print("")
     for clust in list_of_clusters:
         clust.show()
-        print ""
+        print("")
 
 
 if __name__ == "__main__":

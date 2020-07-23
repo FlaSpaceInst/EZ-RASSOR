@@ -12,7 +12,7 @@ class OverrideStatus:
 
     def __init__(self, override_topic):
         """Initialize this override status with a subscriber.
-        
+
         This class possibly doesn't need the lock, but I left it just in case.
         """
         self.__status = False

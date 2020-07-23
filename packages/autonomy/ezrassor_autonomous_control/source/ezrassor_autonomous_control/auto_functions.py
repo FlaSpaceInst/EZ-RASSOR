@@ -205,7 +205,7 @@ def auto_dock(world_state, ros_util):
 
 def auto_dump(world_state, ros_util, duration):
     """ Rotate both drums inward and drive forward
-        for duration time in seconds. 
+        for duration time in seconds.
     """
     rospy.loginfo("Auto-dumping drum contents...")
 

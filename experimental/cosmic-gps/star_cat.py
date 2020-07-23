@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # star_cat.py
 
-import numpy as np
 from star_ref import Star_Ref
 from measurement import ra_to_decimal_deg
 from measurement import dec_to_decimal_deg
@@ -236,21 +235,21 @@ class Star_Cat:
         for sid_star in self.adj_star_list:
             ra = self.adj_star_list[sid_star].get_ra()
             dec = self.adj_star_list[sid_star].get_dec()
-            print "For quad ra", ra, "dec", dec
+            print("For quad ra", ra, "dec", dec)
 
     # test function
     def print_angles(self):
         # How many stars have each angle
         for x in range(self.num_angles):
             size = x * self.angle_size
-            print ("For angle ", size, self.angles_list.get(x))
+            print("For angle ", size, self.angles_list.get(x))
 
     # test function
     def print_scope_angles(self):
         # How many stars have each angle
         for x in range(self.num_angles):
             size = x * self.angle_size
-            print ("For angle ", size, self.scope_angles_list.get(x))
+            print("For angle ", size, self.scope_angles_list.get(x))
 
 
 def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):

@@ -5,7 +5,6 @@
 Written by Tiger Sachse.
 Inspired by Camilo Lozano.
 """
-import time
 import json
 import rospy
 import threading

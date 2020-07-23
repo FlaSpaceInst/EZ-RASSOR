@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
-import time
 import math
 
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose
 
 import nav_functions as nf
@@ -54,7 +52,7 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
 
 def self_check(world_state, ros_util):
-    """ Check for unfavorable states in the system 
+    """ Check for unfavorable states in the system
         and handle or quit gracefully.
     """
     if ros_util.auto_function_command == 32 or ros_util.auto_function_command == 0:
@@ -114,7 +112,7 @@ def turn(new_heading, direction, world_state, ros_util):
         # Cap our minimum velocity at 1/10 our max velocity.
         turn_velocity = max(turn_velocity, ros_util.max_angular_velocity / 10)
 
-        if direction is "right":
+        if direction == "right":
             turn_velocity *= -1
 
         twist_message = Twist()
@@ -176,7 +174,7 @@ def move(dist, world_state, ros_util, direction="forward"):
         # Cap our minimum velocity at 1/10 our max velocity.
         move_velocity = max(move_velocity, ros_util.max_linear_velocity / 10)
 
-        if direction is "backward":
+        if direction == "backward":
             move_velocity *= -1
 
         twist_message = Twist()
@@ -251,7 +249,7 @@ def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
     rospy.loginfo("Starting auto self-right...")
-    while world_state.on_side != False:
+    while world_state.on_side is not False:
         ros_util.publish_actions("stop", 0, 1, 0, 0)
         ros_util.publish_actions("stop", 1, 0, 0, 0)
 
