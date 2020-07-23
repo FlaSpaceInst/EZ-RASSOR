@@ -28,4 +28,4 @@ jobs:
       - uses: actions/checkout@v2 
       - uses: TrueBrain/actions-flake8@master
         with:
-          ignore: E501, W503
+          ignore: "E501, W503"
