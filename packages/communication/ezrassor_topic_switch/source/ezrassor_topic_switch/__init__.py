@@ -2,4 +2,3 @@
 
 Written by Tiger Sachse.
 """
-import topic_switch

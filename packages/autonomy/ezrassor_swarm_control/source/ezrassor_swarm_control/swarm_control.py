@@ -1,5 +1,4 @@
 import rospy
-from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
 
 from constants import commands
