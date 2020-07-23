@@ -3,7 +3,6 @@
 Written by Harrison Black.
 """
 import rospy
-import std_msgs
 from std_msgs.msg import Float32, Float64
 
 NODE = "sim_arms_driver"
@@ -19,14 +18,14 @@ pub_BA = rospy.Publisher("arm_back_velocity_controller/command", Float64, queue_
 
 
 def handle_front_arm_movements(data):
-    """Move the front arm of the robot per 
-        the commands encoded in the instruction.
+    """Move the front arm of the robot per
+       the commands encoded in the instruction.
     """
     pub_FA.publish(data.data * MAX_ARM_SPEED)
 
 
 def handle_back_arm_movements(data):
-    """Move the back arm of the robot per 
+    """Move the back arm of the robot per
         the commands encoded in the instruction.
     """
     pub_BA.publish(data.data * MAX_ARM_SPEED)

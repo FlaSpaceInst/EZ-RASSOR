@@ -146,7 +146,7 @@ def main():
         dec_to_decimal_deg(8, 17, 21.54),
     )
     stars1.append(star)
-    print ""
+    print("")
 
     # compare calculated distances
 
@@ -159,11 +159,11 @@ def main():
             calcul = calculate_angular_distance(
                 starA.angle, 90.0 - starA.distance, starB.angle, 90.0 - starB.distance
             )
-            print "Calculated distances between ", starA.name, " and ", starB.name
-            print "Actual ", actual
-            print "Calcul ", calcul
-            print "diff", calcul - actual
-    print ""
+            print("Calculated distances between ", starA.name, " and ", starB.name)
+            print("Actual ", actual)
+            print("Calcul ", calcul)
+            print("diff", calcul - actual)
+    print("")
 
     # Position derivation for top 3
     coor = determine_coordinate(
@@ -179,15 +179,15 @@ def main():
         30.0,
         0.01,
     )
-    print "Derived celestial position, RA: ", coor[0], " DEC: ", coor[1]
-    print ""
+    print("Derived celestial position, RA: ", coor[0], " DEC: ", coor[1])
+    print("")
 
     # Global Position Derivation for top 3
     clock_time = 26.2708333
     gha_aries = gha_aries_calibration.neville_interpolation(clock_time)
-    print "GHA Aries: ", gha_aries
+    print("GHA Aries: ", gha_aries)
     gp = calculate_geographic_position(coor, gha_aries)
-    print "Derived geographic position, Long: ", gp[0], " Lat: ", gp[1]
+    print("Derived geographic position, Long: ", gp[0], " Lat: ", gp[1])
 
 
 if __name__ == "__main__":

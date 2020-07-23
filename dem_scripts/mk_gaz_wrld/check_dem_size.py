@@ -3,8 +3,6 @@
 """ Program to check the size of a dem """
 
 import gdal
-import ogr
-import osr
 import sys
 
 

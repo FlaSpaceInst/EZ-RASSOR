@@ -4,10 +4,7 @@ import rospy
 import nav_functions as nf
 import math
 from random import uniform
-from std_msgs.msg import String, Float32, Bool
-from nav_msgs.msg import Odometry
-from gazebo_msgs.msg import LinkStates
-from sensor_msgs.msg import JointState
+from std_msgs.msg import Float32, Bool
 from geometry_msgs.msg import Point, Twist
 
 

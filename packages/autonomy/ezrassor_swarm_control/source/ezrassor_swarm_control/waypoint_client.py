@@ -7,8 +7,7 @@ import actionlib
 
 from path_planner import PathPlanner
 from swarm_utils import euclidean2D
-from ezrassor_swarm_control.msg import *
-from geometry_msgs.msg import Point
+from ezrassor_swarm_control.msg import waypointAction, waypointGoal
 from ezrassor_swarm_control.msg import Path
 
 from ezrassor_swarm_control.srv import PreemptPath, PreemptPathResponse

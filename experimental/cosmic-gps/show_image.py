@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # show_image.py
 
-import numpy as np
 import cv2 as cv
 
 

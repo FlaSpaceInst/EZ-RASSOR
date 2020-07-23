@@ -10,13 +10,11 @@
 
 import numpy as np
 import cv2 as cv
-from thresh_local_ratio import thresh_local_ratio
 from thresh_global import thresh_global
 
 
 def main():
 
-    window_size = 9
     thresh_value = 50
 
     img = cv.imread("d_03_12_20_t_22_16_15.jpg", 1)
@@ -29,7 +27,7 @@ def main():
     thresh_dict = thresh_global(img, thresh_value)
 
     thresh_array = convert_dict_to_array(thresh_dict, rows, cols)
-    print thresh_dict
+    print(thresh_array)
 
 
 def convert_dict_to_array(thresh_dict, rows, cols):

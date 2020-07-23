@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 import os
-import sys
 
 
 def main():
 
-    world_ext = ""
     choice = "queue_packs/"
 
-    l = os.listdir("./" + choice)
+    packs = os.listdir("./" + choice)
 
-    for i in l:
+    for i in packs:
 
         print("Processing {}".format(i))
 

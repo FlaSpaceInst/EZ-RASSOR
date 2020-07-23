@@ -142,7 +142,8 @@ class ObstacleDetector(PointCloudProcessor):
                     slope_ranges[step] = direction[index_slope, 1]
 
                 # Combine above laserscans
-                min_ranges[step] = np.nanmin((hike_ranges[step], slope_ranges[step]))
+                min_ranges[step] = np.nanmin(
+                    (hike_ranges[step], slope_ranges[step]))
 
             self.hike_pub.publish(self.create_laser_scan(hike_ranges))
             self.slope_pub.publish(self.create_laser_scan(slope_ranges))
@@ -173,10 +174,11 @@ def obstacle_detection(
     range_min=0.105,
     range_max=10.0,
 ):
-
+    """ Usage:
     od = ObstacleDetector(
         max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max
     )
+    """
 
     rospy.spin()
 
@@ -184,5 +186,5 @@ def obstacle_detection(
 if __name__ == "__main__":
     try:
         obstacle_detection()
-    except:
+    except (AttributeError, ValueError):
         pass

@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-import gdal
-import ogr
 import osr
-import sys
-import struct
-import numpy as np
 
 """ Returns the list of geocoordinates for each corner """
 

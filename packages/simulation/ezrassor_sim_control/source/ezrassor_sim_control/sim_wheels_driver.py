@@ -5,7 +5,6 @@
 Written by Harrison Black and Shelby Basco.
 """
 import rospy
-from std_msgs.msg import Int16, Float64
 from geometry_msgs.msg import Twist
 
 NODE = "sim_wheels_driver"

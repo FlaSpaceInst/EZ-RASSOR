@@ -147,7 +147,7 @@ def start_node():
         pub_auto_toggles = rospy.Publisher(
             publish_topic_auto_toggles, Int8, queue_size=10
         )
-        rate = rospy.Rate(60)
+        rospy.Rate(60)
         rospy.Subscriber(
             TOPIC,
             Joy,

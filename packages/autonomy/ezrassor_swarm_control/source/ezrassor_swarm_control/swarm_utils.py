@@ -46,7 +46,7 @@ def get_rover_status(rover_num):
         return response
 
     except rospy.ServiceException as e:
-        print "Service call failed: %s" % e
+        print("Service call failed: {}".format(e))
 
 
 def preempt_rover_path(rover_num):
@@ -69,4 +69,4 @@ def preempt_rover_path(rover_num):
         return response
 
     except rospy.ServiceException as e:
-        print "Service call failed: %s" % e
+        print("Service call failed: {}".format(e))

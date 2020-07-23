@@ -1,7 +1,6 @@
 import rospy
-import sys
 
-from std_msgs.msg import Int8, Int16, String
+from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
