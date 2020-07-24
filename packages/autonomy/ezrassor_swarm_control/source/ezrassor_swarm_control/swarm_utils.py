@@ -4,8 +4,6 @@ import rospy
 import math
 import numpy as np
 
-from geometry_msgs.msg import Point
-
 from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
 
 
@@ -30,7 +28,7 @@ def get_rover_status(rover_num):
     """
 
     # Build the service endpoint
-    service = '/ezrassor{}/rover_status'.format(rover_num)
+    service = "/ezrassor{}/rover_status".format(rover_num)
 
     # Ensure it's running
     rospy.wait_for_service(service, 5.0)
@@ -46,7 +44,7 @@ def get_rover_status(rover_num):
         return response
 
     except rospy.ServiceException as e:
-        print "Service call failed: %s" % e
+        print("Service call failed: {}".format(e))
 
 
 def preempt_rover_path(rover_num):
@@ -56,7 +54,7 @@ def preempt_rover_path(rover_num):
     """
 
     # Build the service endpoint
-    service = '/ezrassor{}/preempt_path'.format(rover_num)
+    service = "/ezrassor{}/preempt_path".format(rover_num)
 
     # Ensure it's running
     rospy.wait_for_service(service, 5.0)
@@ -69,4 +67,4 @@ def preempt_rover_path(rover_num):
         return response
 
     except rospy.ServiceException as e:
-        print "Service call failed: %s" % e
+        print("Service call failed: {}".format(e))

@@ -24,7 +24,7 @@ PACKAGE_NAME = "ezrassor_controller_server"
 DEFAULT_TEST_NAME = "test_controller_server"
 AUTONOMOUS_TOGGLES_TOPIC = "autonomous_toggles"
 TARGET_COORDINATES_TOPIC = "target_coordinates"
-POST_HEADER = {"content-type" : "application/json"}
+POST_HEADER = {"content-type": "application/json"}
 WHEEL_INSTRUCTION_STRINGS = ("forward", "backward", "left", "right")
 
 
@@ -54,7 +54,7 @@ class Instruction():
     def is_none(self):
         """Check to see if this instruction's content is None."""
         self.__content_lock.acquire()
-        is_none = self.__content == None
+        is_none = self.__content is None
         self.__content_lock.release()
 
         return is_none
@@ -177,7 +177,7 @@ class TestControllerServer(unittest.TestCase):
         for instruction in FLOAT_INSTRUCTIONS:
             for iteration in range(ITERATION_RANGE):
                 speed = self.__get_random_speed()
-                self.__post_and_sleep({instruction.name : speed})
+                self.__post_and_sleep({instruction.name: speed})
                 self.assertFalse(instruction.is_none())
                 self.assertAlmostEqual(instruction.get().data, speed, places=4)
 
@@ -197,8 +197,8 @@ class TestControllerServer(unittest.TestCase):
                 AUTONOMOUS_TOGGLES_INTEGERS,
             )
             instruction["target_coordinate"] = {
-                "x" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
-                "y" : random.randrange(COORDINATE_MIN, COORDINATE_MAX),
+                "x": random.randrange(COORDINATE_MIN, COORDINATE_MAX),
+                "y": random.randrange(COORDINATE_MIN, COORDINATE_MAX),
             }
 
             # Randomly remove one key so that the complex instruction is not

@@ -1,7 +1,6 @@
 import rospy
-import sys
 
-from std_msgs.msg import Int8, Int16, String
+from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import LinkStates
@@ -17,70 +16,86 @@ import utility_functions as uf
 
 
 class RoverController:
-    def __init__(self, target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
-                 back_arm_topic, front_drum_topic, back_drum_topic,
-                 obstacle_threshold, obstacle_buffer, move_increment,
-                 max_linear_velocity, max_angular_velocity, real_odometry, swarm_control):
+    def __init__(
+        self,
+        target_x,
+        target_y,
+        start_x,
+        start_y,
+        movement_topic,
+        front_arm_topic,
+        back_arm_topic,
+        front_drum_topic,
+        back_drum_topic,
+        obstacle_threshold,
+        obstacle_buffer,
+        move_increment,
+        max_linear_velocity,
+        max_angular_velocity,
+        real_odometry,
+        swarm_control,
+    ):
 
         self.namespace = rospy.get_namespace()
 
         # Create Utility Objects
         self.world_state = obj.WorldState()
-        self.ros_util = obj.ROSUtility(movement_topic,
-                                       front_arm_topic,
-                                       back_arm_topic,
-                                       front_drum_topic,
-                                       back_drum_topic,
-                                       max_linear_velocity,
-                                       max_angular_velocity,
-                                       obstacle_threshold,
-                                       obstacle_buffer,
-                                       move_increment)
+        self.ros_util = obj.ROSUtility(
+            movement_topic,
+            front_arm_topic,
+            back_arm_topic,
+            front_drum_topic,
+            back_drum_topic,
+            max_linear_velocity,
+            max_angular_velocity,
+            obstacle_threshold,
+            obstacle_buffer,
+            move_increment,
+        )
 
         # Setup Subscriber Callbacks
         if real_odometry:
             # Get initial spawn coords
             self.world_state.initial_spawn(start_x, start_y)
 
-            rospy.Subscriber('odometry/filtered',
-                             Odometry,
-                             self.world_state.odometryCallBack)
+            rospy.Subscriber(
+                "odometry/filtered", Odometry, self.world_state.odometryCallBack
+            )
         else:
-            rospy.Subscriber('/gazebo/link_states',
-                             LinkStates,
-                             self.world_state.simStateCallBack)
+            rospy.Subscriber(
+                "/gazebo/link_states", LinkStates, self.world_state.simStateCallBack
+            )
 
-        rospy.Subscriber('imu',
-                         Imu,
-                         self.world_state.imuCallBack)
-        rospy.Subscriber('joint_states',
-                         JointState,
-                         self.world_state.jointCallBack)
-        rospy.Subscriber('autonomous_toggles',
-                         Int8,
-                         self.ros_util.autoCommandCallBack)
-        rospy.Subscriber('obstacle_detection/combined',
-                         LaserScan,
-                         uf.on_scan_update,
-                         queue_size=1)
+        rospy.Subscriber("imu", Imu, self.world_state.imuCallBack)
+        rospy.Subscriber("joint_states", JointState, self.world_state.jointCallBack)
+        rospy.Subscriber("autonomous_toggles", Int8, self.ros_util.autoCommandCallBack)
+        rospy.Subscriber(
+            "obstacle_detection/combined", LaserScan, uf.on_scan_update, queue_size=1
+        )
 
         if swarm_control:
             self.ros_util.auto_function_command = 16
 
             # Create waypoint action server used to control the rover via the swarm_controller
-            self.server_name = 'waypoint'
-            self.waypoint_server = actionlib.SimpleActionServer(self.server_name, waypointAction,
-                                                                execute_cb=self.execute_action, auto_start=False)
+            self.server_name = "waypoint"
+            self.waypoint_server = actionlib.SimpleActionServer(
+                self.server_name,
+                waypointAction,
+                execute_cb=self.execute_action,
+                auto_start=False,
+            )
 
             self.waypoint_server.start()
 
             self.waypoint_server.register_preempt_callback(self.preempt_cb)
 
-            rospy.loginfo('Rover waypoint server initialized.')
+            rospy.loginfo("Rover waypoint server initialized.")
 
             # Register GetRoverStatus, used by the swarm controller to retreive a rover's position and battery
-            self.status_service = rospy.Service('rover_status', GetRoverStatus, self.send_status)
-            rospy.loginfo('Rover status service initialized.')
+            self.status_service = rospy.Service(
+                "rover_status", GetRoverStatus, self.send_status
+            )
+            rospy.loginfo("Rover status service initialized.")
 
         else:
             # Basic autonomous control using the autonomous control loop
@@ -118,7 +133,11 @@ class RoverController:
         """
 
         if goal.target.x == -999 and goal.target.y == -999:
-            rospy.loginfo('Waypoint server {} executing charge command'.format(self.namespace + self.server_name))
+            rospy.loginfo(
+                "Waypoint server {} executing charge command".format(
+                    self.namespace + self.server_name
+                )
+            )
 
             # Set rover to charge
             af.charge_battery(self.world_state, self.ros_util)
@@ -126,25 +145,44 @@ class RoverController:
             self.waypoint_server.set_succeeded(result)
 
         elif goal.target.x == -998 and goal.target.y == -998:
-            rospy.loginfo('Waypoint server {} executing dig command'.format(self.namespace + self.server_name))
+            rospy.loginfo(
+                "Waypoint server {} executing dig command".format(
+                    self.namespace + self.server_name
+                )
+            )
 
             # Set rover to dig for 1000 seconds
-            feedback, preempted = af.auto_dig(self.world_state, self.ros_util, 1000, self.waypoint_server)
+            feedback, preempted = af.auto_dig(
+                self.world_state, self.ros_util, 1000, self.waypoint_server
+            )
 
-            if feedback is not None and not preempted and not self.waypoint_server.is_preempt_requested():
+            if (
+                feedback is not None
+                and not preempted
+                and not self.waypoint_server.is_preempt_requested()
+            ):
                 result = uf.build_result(self.world_state, preempted=0)
                 self.waypoint_server.set_succeeded(result)
 
         else:
             self.world_state.target_location = goal.target
-            rospy.loginfo('Waypoint server {} moving rover to {}'.format(
-                self.namespace + self.server_name, (goal.target.x, goal.target.y)))
+            rospy.loginfo(
+                "Waypoint server {} moving rover to {}".format(
+                    self.namespace + self.server_name, (goal.target.x, goal.target.y)
+                )
+            )
 
             # Set rover to autonomously navigate to target
-            feedback, preempted = af.auto_drive_location(self.world_state, self.ros_util, self.waypoint_server)
+            feedback, preempted = af.auto_drive_location(
+                self.world_state, self.ros_util, self.waypoint_server
+            )
 
             # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
-            if feedback is not None and not preempted and not self.waypoint_server.is_preempt_requested():
+            if (
+                feedback is not None
+                and not preempted
+                and not self.waypoint_server.is_preempt_requested()
+            ):
                 result = waypointResult(feedback.pose, feedback.battery, 0)
                 self.waypoint_server.set_succeeded(result)
 
@@ -154,7 +192,7 @@ class RoverController:
         """
         if self.waypoint_server.is_preempt_requested():
             # Stop the rover
-            self.ros_util.publish_actions('stop', 0, 0, 0, 0)
+            self.ros_util.publish_actions("stop", 0, 0, 0, 0)
 
             # Send rover status while preempting the waypoint goal
             result = uf.build_result(self.world_state, preempted=1)
@@ -163,9 +201,9 @@ class RoverController:
     def full_autonomy(self, world_state, ros_util):
         """ Full Autonomy Loop Function """
 
-        rospy.loginfo('Full autonomy activated.')
+        rospy.loginfo("Full autonomy activated.")
 
-        while (ros_util.auto_function_command == 16):
+        while ros_util.auto_function_command == 16:
             af.auto_drive_location(world_state, ros_util)
             if ros_util.auto_function_command != 16:
                 break
@@ -185,9 +223,12 @@ class RoverController:
     def autonomous_control_loop(self, world_state, ros_util):
         """ Control Auto Functions based on auto_function_command input. """
 
-        while (True):
-            while ros_util.auto_function_command == 0 or ros_util.auto_function_command == 32:
-                ros_util.publish_actions('stop', 0, 0, 0, 0)
+        while True:
+            while (
+                ros_util.auto_function_command == 0
+                or ros_util.auto_function_command == 32
+            ):
+                ros_util.publish_actions("stop", 0, 0, 0, 0)
                 ros_util.rate.sleep()
 
             ros_util.control_pub.publish(True)
@@ -203,31 +244,62 @@ class RoverController:
             elif ros_util.auto_function_command == 16:
                 self.full_autonomy(world_state, ros_util)
             else:
-                rospy.loginfo('Invalid auto-function request: %s.',
-                              str(ros_util.auto_function_command))
+                rospy.loginfo(
+                    "Invalid auto-function request: %s.",
+                    str(ros_util.auto_function_command),
+                )
 
             ros_util.auto_function_command = 0
-            ros_util.publish_actions('stop', 0, 0, 0, 0)
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
             ros_util.control_pub.publish(False)
 
 
-def on_start_up(target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
-                back_arm_topic, front_drum_topic, back_drum_topic,
-                obstacle_threshold, obstacle_buffer, move_increment,
-                max_linear_velocity=1, max_angular_velocity=1, real_odometry=False, swarm_control=False):
+def on_start_up(
+    target_x,
+    target_y,
+    start_x,
+    start_y,
+    movement_topic,
+    front_arm_topic,
+    back_arm_topic,
+    front_drum_topic,
+    back_drum_topic,
+    obstacle_threshold,
+    obstacle_buffer,
+    move_increment,
+    max_linear_velocity=1,
+    max_angular_velocity=1,
+    real_odometry=False,
+    swarm_control=False,
+):
     """ Initialization Function  """
 
     # ROS Node Init Parameters
-    rospy.init_node('autonomous_control')
+    rospy.init_node("autonomous_control")
 
-    rover_controller = RoverController(target_x, target_y, start_x, start_y, movement_topic, front_arm_topic,
-                                       back_arm_topic, front_drum_topic, back_drum_topic,
-                                       obstacle_threshold, obstacle_buffer, move_increment,
-                                       max_linear_velocity, max_angular_velocity, real_odometry, swarm_control)
+    rover_controller = RoverController(
+        target_x,
+        target_y,
+        start_x,
+        start_y,
+        movement_topic,
+        front_arm_topic,
+        back_arm_topic,
+        front_drum_topic,
+        back_drum_topic,
+        obstacle_threshold,
+        obstacle_buffer,
+        move_increment,
+        max_linear_velocity,
+        max_angular_velocity,
+        real_odometry,
+        swarm_control,
+    )
 
     # Start autonomous control loop if rover isn't being controlled by a swarm controller
     if not swarm_control:
-        rover_controller.autonomous_control_loop(rover_controller.world_state,
-                                                 rover_controller.ros_util)
+        rover_controller.autonomous_control_loop(
+            rover_controller.world_state, rover_controller.ros_util
+        )
 
-        rospy.loginfo('Autonomous control initialized.')
+        rospy.loginfo("Autonomous control initialized.")

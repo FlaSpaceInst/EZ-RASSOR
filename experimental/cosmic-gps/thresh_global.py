@@ -9,9 +9,6 @@
 # method not optimized #
 # *********************#
 
-import numpy as np
-import cv2 as cv
-
 
 def thresh_global(img, thresh_value=25):
     img_dimension = img.shape
