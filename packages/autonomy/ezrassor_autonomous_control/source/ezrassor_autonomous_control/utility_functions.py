@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
-import time
 import math
 
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose
 
 import nav_functions as nf
@@ -23,43 +21,43 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
     """ Set front arm to absolute angle target_angle in radians. """
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
-            ros_util.publish_actions('stop', 1, 0, 0, 0)
+            ros_util.publish_actions("stop", 1, 0, 0, 0)
             ros_util.rate.sleep()
         ros_util.arms_up_pub.publish(True)
     else:
         while target_angle < world_state.front_arm_angle:
-            ros_util.publish_actions('stop', -1, 0, 0, 0)
+            ros_util.publish_actions("stop", -1, 0, 0, 0)
             ros_util.rate.sleep()
         ros_util.arms_up_pub.publish(False)
 
-    ros_util.publish_actions('stop', 0, 0, 0, 0)
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
 
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
     """ Set back arm to absolute angle target_angle in radians. """
-    '''rospy.loginfo('Setting back arm angle to %s radian%s...',
+    """rospy.loginfo('Setting back arm angle to %s radian%s...',
                   str(target_angle),
-                  "" if target_angle == 1 else "s")'''
+                  "" if target_angle == 1 else "s")"""
 
     if target_angle > world_state.back_arm_angle:
         while target_angle > world_state.back_arm_angle:
-            ros_util.publish_actions('stop', 0, 1, 0, 0)
+            ros_util.publish_actions("stop", 0, 1, 0, 0)
             ros_util.rate.sleep()
     else:
         while target_angle < world_state.back_arm_angle:
-            ros_util.publish_actions('stop', 0, -1, 0, 0)
+            ros_util.publish_actions("stop", 0, -1, 0, 0)
             ros_util.rate.sleep()
 
-    ros_util.publish_actions('stop', 0, 0, 0, 0)
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
 
 
 def self_check(world_state, ros_util):
-    """ Check for unfavorable states in the system 
+    """ Check for unfavorable states in the system
         and handle or quit gracefully.
     """
     if ros_util.auto_function_command == 32 or ros_util.auto_function_command == 0:
         rospy.loginfo("Cancelling auto-function command...")
-        ros_util.publish_actions('stop', 0, 0, 0, 0)
+        ros_util.publish_actions("stop", 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
 
@@ -69,7 +67,7 @@ def self_check(world_state, ros_util):
         return 3
 
     # Future status checks for physical hardware
-    '''
+    """
     if world_state.on_side == True:
         rospy.loginfo("On side! Attempting auto self-right...")
         return 2
@@ -78,7 +76,7 @@ def self_check(world_state, ros_util):
         ros_util.publish_actions('stop', 1, 0, 0, 0)
         ros_util.control_pub.publish(False)
         return -1
-    '''
+    """
 
     return 1
 
@@ -99,7 +97,7 @@ def turn(new_heading, direction, world_state, ros_util):
     # Turn the number of degrees towards your new heading.
     while angle_traveled < angle_dist - 2:
         if self_check(world_state, ros_util) != 1:
-            rospy.logdebug('Status check failed.')
+            rospy.logdebug("Status check failed.")
             return
 
         old_heading = world_state.heading
@@ -107,13 +105,14 @@ def turn(new_heading, direction, world_state, ros_util):
         # Maps angle traveled to sin(x) function for velocity ramping.
         # X is bounded between 0 and angle_dist
         # Y is bounded between 0 and max_angular_velocity
-        turn_velocity = (ros_util.max_angular_velocity *
-                         math.sin((angle_traveled / math.pi) * (10 / angle_dist)))
+        turn_velocity = ros_util.max_angular_velocity * math.sin(
+            (angle_traveled / math.pi) * (10 / angle_dist)
+        )
 
         # Cap our minimum velocity at 1/10 our max velocity.
         turn_velocity = max(turn_velocity, ros_util.max_angular_velocity / 10)
 
-        if direction is 'right':
+        if direction == "right":
             turn_velocity *= -1
 
         twist_message = Twist()
@@ -133,13 +132,15 @@ function (using the sine function from 0 to pi) is used.
 """
 
 
-def move(dist, world_state, ros_util, direction='forward'):
+def move(dist, world_state, ros_util, direction="forward"):
     # Get current distance from EZ-RASSOR to our current best target location.
     old_x = world_state.positionX
     old_y = world_state.positionY
     dist_traveled = 0
-    dist_to_goal = math.sqrt((world_state.target_location.x - old_x) ** 2 +
-                             (world_state.target_location.y - old_y) ** 2)
+    dist_to_goal = math.sqrt(
+        (world_state.target_location.x - old_x) ** 2
+        + (world_state.target_location.y - old_y) ** 2
+    )
 
     # Either move dist amount or the distance to the goal, whichever is smaller.
     move_dist = min(dist, dist_to_goal)
@@ -148,13 +149,17 @@ def move(dist, world_state, ros_util, direction='forward'):
     # obstacle in the way.
     while dist_traveled < move_dist:
         if self_check(world_state, ros_util) != 1:
-            rospy.logdebug('Status check failed.')
+            rospy.logdebug("Status check failed.")
             return
 
         # Exit if we come too close to an obstacle
-        if not nf.angle_is_safe(0, ros_util.obstacle_threshold / 2.0,
-                                ros_util.obstacle_buffer, scan,
-                                ros_util.obstacle_threshold):
+        if not nf.angle_is_safe(
+            0,
+            ros_util.obstacle_threshold / 2.0,
+            ros_util.obstacle_buffer,
+            scan,
+            ros_util.obstacle_threshold,
+        ):
             rospy.loginfo("Obstacle too close! Stopping!")
             ros_util.publish_actions("stop", 0, 0, 0, 0)
             break
@@ -162,13 +167,14 @@ def move(dist, world_state, ros_util, direction='forward'):
         # Maps distance traveled to sin(x) function for velocity ramping.
         # X is bounded between 0 and move_dist
         # Y is bounded between 0 and max_linear_velocity
-        move_velocity = (ros_util.max_linear_velocity *
-                         math.sin((dist_traveled / math.pi) * (10 / move_dist)))
+        move_velocity = ros_util.max_linear_velocity * math.sin(
+            (dist_traveled / math.pi) * (10 / move_dist)
+        )
 
         # Cap our minimum velocity at 1/10 our max velocity.
         move_velocity = max(move_velocity, ros_util.max_linear_velocity / 10)
 
-        if direction is 'backward':
+        if direction == "backward":
             move_velocity *= -1
 
         twist_message = Twist()
@@ -177,21 +183,22 @@ def move(dist, world_state, ros_util, direction='forward'):
 
         ros_util.rate.sleep()
 
-        dist_traveled = math.sqrt((world_state.positionX - old_x) ** 2 +
-                                  (world_state.positionY - old_y) ** 2)
+        dist_traveled = math.sqrt(
+            (world_state.positionX - old_x) ** 2 + (world_state.positionY - old_y) ** 2
+        )
 
 
 def reverse_turn(world_state, ros_util):
     """ Reverse until object no longer detected and turn left """
 
     while world_state.warning_flag == 3:
-        ros_util.publish_actions('reverse', 0, 0, 0, 0)
+        ros_util.publish_actions("reverse", 0, 0, 0, 0)
         ros_util.rate.sleep()
 
     new_heading = (world_state.heading + 60) % 360
 
     while (new_heading - 1) < world_state.heading < (new_heading + 1):
-        ros_util.publish_actions('left', 0, 0, 0, 0)
+        ros_util.publish_actions("left", 0, 0, 0, 0)
 
 
 def dodge_left(world_state, ros_util):
@@ -203,12 +210,16 @@ def dodge_left(world_state, ros_util):
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
             threshold += 1
-        ros_util.publish_actions('left', 0, 0, 0, 0)
+        ros_util.publish_actions("left", 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.positionX,
-                                start_y, world_state.positionY) < 2:
-        ros_util.publish_actions('forward', 0, 0, 0, 0)
+    while (
+        nf.euclidean_distance(
+            start_x, world_state.positionX, start_y, world_state.positionY
+        )
+        < 2
+    ):
+        ros_util.publish_actions("forward", 0, 0, 0, 0)
         ros_util.rate.sleep()
 
 
@@ -221,12 +232,16 @@ def dodge_right(world_state, ros_util):
     while world_state.warning_flag != 0 or (threshold < 25):
         if world_state.warning_flag == 0:
             threshold += 1
-        ros_util.publish_actions('right', 0, 0, 0, 0)
+        ros_util.publish_actions("right", 0, 0, 0, 0)
         ros_util.rate.sleep()
 
-    while nf.euclidean_distance(start_x, world_state.positionX,
-                                start_y, world_state.positionY) < 2:
-        ros_util.publish_actions('forward', 0, 0, 0, 0)
+    while (
+        nf.euclidean_distance(
+            start_x, world_state.positionX, start_y, world_state.positionY
+        )
+        < 2
+    ):
+        ros_util.publish_actions("forward", 0, 0, 0, 0)
         ros_util.rate.sleep()
 
 
@@ -234,11 +249,11 @@ def self_right_from_side(world_state, ros_util):
     """ Flip EZ-RASSOR over from its side. """
 
     rospy.loginfo("Starting auto self-right...")
-    while (world_state.on_side != False):
-        ros_util.publish_actions('stop', 0, 1, 0, 0)
-        ros_util.publish_actions('stop', 1, 0, 0, 0)
+    while world_state.on_side is not False:
+        ros_util.publish_actions("stop", 0, 1, 0, 0)
+        ros_util.publish_actions("stop", 1, 0, 0, 0)
 
-    ros_util.publish_actions('stop', 0, 0, 0, 0)
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
 
 
 """ Returns the best direction to go towards to get to the goal
@@ -252,8 +267,9 @@ adjacent view. Return once a safe angle is found.
 def get_turn_angle(world_state, ros_util):
     # Iterate over all of the laser beams in our current scan and determine the
     # best angle to turn towards.
-    best_angle = nf.get_best_angle(world_state, ros_util.obstacle_buffer, scan,
-                                   ros_util.obstacle_threshold)
+    best_angle = nf.get_best_angle(
+        world_state, ros_util.obstacle_buffer, scan, ros_util.obstacle_threshold
+    )
 
     # Loop until we find a safe angle.
     while True:
@@ -265,13 +281,15 @@ def get_turn_angle(world_state, ros_util):
             switchDirection = -1
             wedgeDist = 0
             wedgeSize = (scan.angle_max - scan.angle_min) / 2.0
-            rospy.loginfo("There is nowhere to go in the current wedge. " +
-                          "Turning to an adjacent wedge.")
+            rospy.loginfo(
+                "There is nowhere to go in the current wedge. "
+                + "Turning to an adjacent wedge."
+            )
 
             # Keep checking adjacent wedges until we find a safe angle.
             while best_angle is None:
                 if self_check(world_state, ros_util) != 1:
-                    rospy.logdebug('Status check failed.')
+                    rospy.logdebug("Status check failed.")
                     return
 
                 set_front_arm_angle(world_state, ros_util, 1.3)
@@ -281,28 +299,34 @@ def get_turn_angle(world_state, ros_util):
                 wedgeDist += 1
 
                 if switchDirection < 0:
-                    direction = 'left'
+                    direction = "left"
                 else:
-                    direction = 'right'
+                    direction = "right"
 
                 # Turn to an adjacent wedge and check if we can see some way to
                 # progress towards the goal.
-                turn(nf.rel_to_abs(world_state.heading, wedgeSize * wedgeDist),
-                     direction, world_state, ros_util)
-                ros_util.publish_actions('stop', 0, 0, 0, 0)
+                turn(
+                    nf.rel_to_abs(world_state.heading, wedgeSize * wedgeDist),
+                    direction,
+                    world_state,
+                    ros_util,
+                )
+                ros_util.publish_actions("stop", 0, 0, 0, 0)
                 ros_util.rate.sleep()
                 rospy.sleep(0.1)
 
                 rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
-                best_angle = nf.get_best_angle(world_state,
-                                               ros_util.obstacle_buffer, scan,
-                                               ros_util.obstacle_threshold)
+                best_angle = nf.get_best_angle(
+                    world_state,
+                    ros_util.obstacle_buffer,
+                    scan,
+                    ros_util.obstacle_threshold,
+                )
 
         # If we over-turned when doing the wedge, try turning back more towards
         # the goal until we see an obstacle in our view.
         wedgeSize = (scan.angle_max - scan.angle_min) / 20.0
-        buffer_angle = math.atan(ros_util.obstacle_buffer /
-                                 ros_util.obstacle_threshold)
+        buffer_angle = math.atan(ros_util.obstacle_buffer / ros_util.obstacle_threshold)
         min_angle = scan.angle_min + buffer_angle
         max_angle = scan.angle_max - buffer_angle
         best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
@@ -314,20 +338,24 @@ def get_turn_angle(world_state, ros_util):
         while best_index <= min_index or best_index >= max_index:
             # Get direction that would bring us closer to facing the goal.
             if best_angle < 0:
-                direction = 'right'
+                direction = "right"
             else:
-                direction = 'left'
+                direction = "left"
 
             # Turn slightly in that direction and check if it's safe to turn
             # more towards the goal.
-            turn(nf.rel_to_abs(world_state.heading, wedgeSize), direction,
-                 world_state, ros_util)
-            ros_util.publish_actions('stop', 0, 0, 0, 0)
+            turn(
+                nf.rel_to_abs(world_state.heading, wedgeSize),
+                direction,
+                world_state,
+                ros_util,
+            )
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
             ros_util.rate.sleep()
             rospy.sleep(0.1)
-            best_angle = nf.get_best_angle(world_state,
-                                           ros_util.obstacle_buffer, scan,
-                                           ros_util.obstacle_threshold)
+            best_angle = nf.get_best_angle(
+                world_state, ros_util.obstacle_buffer, scan, ros_util.obstacle_threshold
+            )
 
             # If we turned too far back and now have no safe angle to go to,
             # break and restart the wedge algorithm.
@@ -346,6 +374,7 @@ def get_turn_angle(world_state, ros_util):
 #  THE BELOW FUNCTIONS ARE UTILIZED BY THE WAYPOINT ACTION       #
 #  CLIENT-SERVER API WHICH IS ONLY USED IN SWARM CONTROL MODE     #
 ##################################################################
+
 
 def send_feedback(world_state, waypoint_server):
     """

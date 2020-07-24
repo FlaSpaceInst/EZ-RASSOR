@@ -4,7 +4,7 @@
 
 USER_SHELLS="bash zsh"
 PACKAGES_DIR="packages"
-WORKSPACE_DIR="$HOME/.workspace"
+WORKSPACE_DIR="$HOME/ezrassor_ws"
 WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
 WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
 PACKAGE_XML_FILE="package.xml"
@@ -45,12 +45,17 @@ source_setups_in_directory() {
 
 # Set up the development environment.
 setup_environment() {
+
+    # Setup will run fresh every time.
     rm -r -f "$WORKSPACE_DIR"
     mkdir -p "$WORKSPACE_SOURCE_DIR"
+
     cd "$WORKSPACE_SOURCE_DIR"
     catkin_init_workspace
     cd - > /dev/null 2>&1
+
     source_setups_in_directory "$WORKSPACE_DEVEL_DIR"
+    mkdir -p ~/.gazebo/models
     cp -r extra_worlds/* ~/.gazebo/models/
     cp -r extra_models/* ~/.gazebo/models/
 }
@@ -176,8 +181,17 @@ kill_ros() {
 # Test all packages in the workspace.
 test_packages() {
     cd "$WORKSPACE_DIR"
+
+    # This command will run the tests but return a status of 0.
     catkin_make run_tests
+
+    # This command will return a status code of 0 or 1 depending on if the previous tests succeeded.
+    (catkin_test_results)
+    local result=$?
+
+    # After we return to the main directory, return the status code from the test results.
     cd - > /dev/null 2>&1
+    [ $result -eq 0 ]
 }
 
 # Change the version number of all the packages.

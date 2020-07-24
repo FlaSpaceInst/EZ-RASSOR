@@ -30,7 +30,7 @@ class TestTopicSwitch(unittest.TestCase):
         """Initialize this test suite with several publishers and other variables."""
         super(TestTopicSwitch, self).__init__(*arguments, **keyword_arguments)
         rospy.init_node(DEFAULT_TEST_NAME)
-        
+
         # Read in all necessary ROS parameters.
         primary_topic = rospy.get_param(
             rospy.get_name() + "/primary_topic",
