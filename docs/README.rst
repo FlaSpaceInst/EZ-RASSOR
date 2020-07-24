@@ -58,7 +58,7 @@ Make sure you have already run the setup command at least once:
 
   sh develop.sh setup
 
-Then, you can call the relink function and use -o to pass in the package name(s) you would like to install
+Then, you can call the relink function and use ``-o`` to pass in the package name(s) you would like to install:
 
 .. code-block:: bash
 
@@ -66,7 +66,7 @@ Then, you can call the relink function and use -o to pass in the package name(s)
   sh develop.sh build
   sh develop.sh install
   
-Alternatively, you can also call the relink function and use the -e flag to make the script install all *but* the specified package(s):
+Alternatively, you can also call the relink function and use the ``-e`` flag to make the script install all *but* the specified package(s):
 
 .. code-block:: bash
 

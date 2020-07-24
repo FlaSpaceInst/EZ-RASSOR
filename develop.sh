@@ -46,7 +46,7 @@ source_setups_in_directory() {
 # Set up the development environment.
 setup_environment() {
 
-    # Setup will run fresh every time
+    # Setup will run fresh every time.
     rm -r -f "$WORKSPACE_DIR"
     mkdir -p "$WORKSPACE_SOURCE_DIR"
 
@@ -182,20 +182,16 @@ kill_ros() {
 test_packages() {
     cd "$WORKSPACE_DIR"
 
-    # This command will run the tests but return a status of 0
+    # This command will run the tests but return a status of 0.
     catkin_make run_tests
 
-    # This command will return a status code of 0 or 1 depending on if the previous tests succeeded
+    # This command will return a status code of 0 or 1 depending on if the previous tests succeeded.
     (catkin_test_results)
     local result=$?
 
-    # After we return to the main directory, return the status code from the test results
+    # After we return to the main directory, return the status code from the test results.
     cd - > /dev/null 2>&1
-    if [ $result -ne 0 ]; then
-      return 1
-    else
-      return 0
-    fi
+    [ $result -eq 0 ]
 }
 
 # Change the version number of all the packages.
