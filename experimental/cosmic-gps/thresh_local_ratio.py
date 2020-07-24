@@ -7,7 +7,6 @@
 
 
 import numpy as np
-import cv2 as cv
 
 
 def thresh_local_ratio(img, window_size=9):

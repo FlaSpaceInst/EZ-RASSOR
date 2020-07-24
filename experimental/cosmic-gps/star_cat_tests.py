@@ -4,17 +4,15 @@
 from star_cat import Star_Cat
 from star import Star
 
+
 def main():
 
-    angle_size = 0.5    # keep angle size (0.5, 0.25 0.125, 0.0625) deg
-    fov = 90            # max fov 180 deg
+    angle_size = 0.5  # keep angle size (0.5, 0.25 0.125, 0.0625) deg
+    fov = 90  # max fov 180 deg
     scope_size = 30
 
     # initialize the star reference catalogue
-    star_catalogue = Star_Cat( 'star_catalogue_init.txt',
-                               angle_size,
-                               fov,
-                               scope_size )
+    star_catalogue = Star_Cat("star_catalogue_init.txt", angle_size, fov, scope_size)
 
     list_of_stars = []
 
@@ -49,22 +47,22 @@ def main():
     list_of_stars.append([6, star])
 
     """ Star Matching """
-    
+
     count = 0
     list_of_stars_size = len(list_of_stars)
     list_of_possible_matches = []
 
     # loop five times enforced by count
-    while (count < 5):
+    while count < 5:
         # break early if too few stars
         if list_of_stars_size < 5:
-            break;
+            break
 
-        star1 = list_of_stars[count+0][1]
-        star2 = list_of_stars[count+1][1]
-        star3 = list_of_stars[count+2][1]
-        star4 = list_of_stars[count+3][1]
-        star5 = list_of_stars[count+4][1]
+        star1 = list_of_stars[count + 0][1]
+        star2 = list_of_stars[count + 1][1]
+        star3 = list_of_stars[count + 2][1]
+        star4 = list_of_stars[count + 3][1]
+        star5 = list_of_stars[count + 4][1]
         stars = (star1, star2, star3, star4, star5)
 
         # Try matching to the scope for the first try
@@ -73,16 +71,16 @@ def main():
         else:
             list_of_possible_matches = star_catalogue.match_global(stars)
 
-        break #remove only test
+        break  # remove only test
 
         # if no candidates are returned
         # remove the count+0 star with the next brightest
         count += 1
         list_of_stars_size -= 1
         if len(list_of_possible_matches) > 0:
-            break # can be possibly many group of candidates.
-    print list_of_possible_matches
-    
+            break  # can be possibly many group of candidates.
+    print(list_of_possible_matches)
+
 
 if __name__ == "__main__":
     main()

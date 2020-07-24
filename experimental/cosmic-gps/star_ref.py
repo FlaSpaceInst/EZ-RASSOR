@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # star_ref.py
 
-import numpy as np
 
 class Star_Ref:
-
     def __init__(self, sid, name, mag, ra, dec):
         self.sid = sid
         self.star_name = name
@@ -35,9 +33,11 @@ class Star_Ref:
         return self.adj_list
 
     def print_star(self):
-        print (self.sid,
-               self.star_name,
-               self.star_mag,
-               self.star_ra,
-               self.star_dec,
-               self.adj_list)
+        print(
+            self.sid,
+            self.star_name,
+            self.star_mag,
+            self.star_ra,
+            self.star_dec,
+            self.adj_list,
+        )
