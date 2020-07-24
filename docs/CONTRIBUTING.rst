@@ -4,7 +4,7 @@ This project is free and open-source under the `MIT license`_. Anyone can fork t
 
 DEVELOPMENT INSTRUCTIONS
 ----
-Before you begin developing, you must first install ROS and the ROS build tools. Clone the repository with the following command:
+Before you begin developing, you must first install ROS and the ROS build tools (these instructions are in the `readme`_). Clone the repository with the following command:
 ::
   git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
   cd EZ-RASSOR
@@ -75,3 +75,4 @@ Here are some example commands to get started.
 .. _`authors`: https://github.com/FlaSpaceInst/NASA-E-RASSOR-Team/blob/master/docs/README.rst#authors
 .. _`README`: README.rst#INSTALLATION
 .. _`the script`: ../develop.sh
+.. _`readme`: https://github.com/FlaSpaceInst/EZ-RASSOR/#installation-prerequisites
