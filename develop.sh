@@ -2,12 +2,19 @@
 
 USER_SHELLS="bash zsh"
 PACKAGES_DIR="packages"
-WORKSPACE_DIR="$HOME/ezrassor_ws"
-WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
-WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
 PACKAGE_XML_FILE="package.xml"
 CONTRIBUTING_FILE="docs/CONTRIBUTING.rst"
 USAGE_STRING="Usage: sh develop.sh <mode> [arguments...]\n"
+
+# If the EZRASSOR_WORKSPACE_DIR is set, use this as the WORKSPACE_DIR, else
+# use a default.
+if [ ! -z "$EZRASSOR_WORKSPACE_DIR" ]; then
+  WORKSPACE_DIR="$EZRASSOR_WORKSPACE_DIR"
+else
+  WORKSPACE_DIR="$HOME/ezrassor_ws"
+fi
+WORKSPACE_SOURCE_DIR="$WORKSPACE_DIR/src"
+WORKSPACE_DEVEL_DIR="$WORKSPACE_DIR/devel"
 
 # Source setup files within a given directory in the user's RC files.
 source_setups_in_directory() {
@@ -25,7 +32,7 @@ source_setups_in_directory() {
       else
         printf "%s\n" \
           "" \
-          "# Source a ROS setup file, if it exists." \
+          "# Source the ROS setup file for the EZRASSOR, if it exists." \
           "if [ -f \"$source_file\" ]; then" \
           "  $source_line" \
           "fi" >> "$shellrc_file"
