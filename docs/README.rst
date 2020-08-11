@@ -30,7 +30,10 @@ First, clone this repository with ``git``.
     git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
     cd EZ-RASSOR 
 
-Then, let the ``develop.sh`` script do the heavy lifting! On Ubuntu Xenial or Ubuntu Bionic, creating a catkin workspace and building all packages is achieved with these commands:::
+Then, let the ``develop.sh`` script do the heavy lifting! On Ubuntu Xenial or Ubuntu Bionic, creating a catkin workspace and building all packages is achieved with these commands:
+
+.. code-block:: bash
+
   # By default, all ROS packages in the *packages* folder will be installed
   sh develop.sh setup
   sh develop.sh link
