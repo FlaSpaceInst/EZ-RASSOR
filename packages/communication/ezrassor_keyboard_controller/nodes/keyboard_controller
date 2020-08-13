@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+"""Call the keyboard_controller node in the ezrassor_keyboard_controller package.
+
+Written by Tiger Sachse.
+"""
+import ezrassor_keyboard_controller
+
+ezrassor_keyboard_controller.keyboard_controller.placeholder()
