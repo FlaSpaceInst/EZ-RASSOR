@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Package metadata for the ezrassor_keyboard_controller ROS package.
+     Written by Tiger Sachse. -->
+<package format="2">
+  <name>ezrassor_keyboard_controller</name>
+  <license>MIT</license>
+  <version>1.0.0</version>
+  <author email="tgsachse@gmail.com">Tiger Sachse</author>
+  <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
+  <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
+  <description>Control the EZRASSOR with your keyboard.</description>
+
+  <!-- A list of package dependencies. -->
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>roslaunch</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>
