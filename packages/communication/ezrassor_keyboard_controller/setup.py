@@ -1,7 +1,4 @@
-"""Setup the ezrassor_keyboard_controller ROS package.
-
-Written by Tiger Sachse.
-"""
+"""Setup the ezrassor_keyboard_controller ROS package."""
 import distutils.core
 import catkin_pkg.python_setup
 

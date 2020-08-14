@@ -1,8 +1,195 @@
 #!/usr/bin/env python
-"""Call the keyboard_controller node in the ezrassor_keyboard_controller package.
-
-Written by Tiger Sachse.
-"""
+"""Publish EZRASSOR commands with a keyboard."""
 import ezrassor_keyboard_controller
+import geometry_msgs.msg
+import Queue
+import rospy
+import std_msgs.msg
+import threading
 
-ezrassor_keyboard_controller.keyboard_controller.placeholder()
+NODE_NAME = "keyboard_controller"
+QUEUE_SIZE = 10
+SLEEP_DURATION = 0.1
+
+AUTO_DRIVE_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b000001)
+AUTO_DIG_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b000010)
+AUTO_DUMP_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b000100)
+AUTO_DOCK_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b001000)
+FULL_AUTONOMY_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b010000)
+STOP_ROUTINE_TOGGLE = std_msgs.msg.Int8(0b100000)
+
+WHEELS_FORWARD_INSTRUCTION = geometry_msgs.msg.Twist(
+    linear=geometry_msgs.msg.Vector3(x=1.0, y=0.0, z=0.0),
+    angular=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+)
+WHEELS_BACKWARD_INSTRUCTION = geometry_msgs.msg.Twist(
+    linear=geometry_msgs.msg.Vector3(x=-1.0, y=0.0, z=0.0),
+    angular=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+)
+WHEELS_LEFT_INSTRUCTION = geometry_msgs.msg.Twist(
+    linear=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+    angular=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=1.0),
+)
+WHEELS_RIGHT_INSTRUCTION = geometry_msgs.msg.Twist(
+    linear=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+    angular=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=-1.0),
+)
+WHEELS_STOP_INSTRUCTION = geometry_msgs.msg.Twist(
+    linear=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+    angular=geometry_msgs.msg.Vector3(x=0.0, y=0.0, z=0.0),
+)
+
+FRONT_ARM_UP_INSTRUCTION = std_msgs.msg.Float32(1.0)
+FRONT_ARM_DOWN_INSTRUCTION = std_msgs.msg.Float32(-1.0)
+FRONT_ARM_STOP_INSTRUCTION = std_msgs.msg.Float32(0.0)
+BACK_ARM_UP_INSTRUCTION = std_msgs.msg.Float32(1.0)
+BACK_ARM_DOWN_INSTRUCTION = std_msgs.msg.Float32(-1.0)
+BACK_ARM_STOP_INSTRUCTION = std_msgs.msg.Float32(0.0)
+
+FRONT_DRUM_FORWARD_INSTRUCTION = std_msgs.msg.Float32(1.0)
+FRONT_DRUM_BACKWARD_INSTRUCTION = std_msgs.msg.Float32(-1.0)
+FRONT_DRUM_STOP_INSTRUCTION = std_msgs.msg.Float32(0.0)
+BACK_DRUM_FORWARD_INSTRUCTION = std_msgs.msg.Float32(1.0)
+BACK_DRUM_BACKWARD_INSTRUCTION = std_msgs.msg.Float32(-1.0)
+BACK_DRUM_STOP_INSTRUCTION = std_msgs.msg.Float32(0.0)
+
+rospy.init_node(NODE_NAME)
+
+# Create a whole heap of publish functions.
+publish_autonomous_toggle = rospy.Publisher(
+    "autonomous_toggles", std_msgs.msg.Int8, queue_size=QUEUE_SIZE,
+).publish
+publish_wheel_instruction = rospy.Publisher(
+    rospy.get_param(rospy.get_name() + "/wheel_instructions_topic"),
+    geometry_msgs.msg.Twist,
+    queue_size=QUEUE_SIZE,
+).publish
+publish_front_arm_instruction = rospy.Publisher(
+    rospy.get_param(rospy.get_name() + "/front_arm_instructions_topic"),
+    std_msgs.msg.Float32,
+    queue_size=QUEUE_SIZE,
+).publish
+publish_back_arm_instruction = rospy.Publisher(
+    rospy.get_param(rospy.get_name() + "/back_arm_instructions_topic"),
+    std_msgs.msg.Float32,
+    queue_size=QUEUE_SIZE,
+).publish
+publish_front_drum_instruction = rospy.Publisher(
+    rospy.get_param(rospy.get_name() + "/front_drum_instructions_topic"),
+    std_msgs.msg.Float32,
+    queue_size=QUEUE_SIZE,
+).publish
+publish_back_drum_instruction = rospy.Publisher(
+    rospy.get_param(rospy.get_name() + "/back_drum_instructions_topic"),
+    std_msgs.msg.Float32,
+    queue_size=QUEUE_SIZE,
+).publish
+
+AUTONOMOUS_TOGGLE_HANDLERS = {
+    "1": lambda: publish_autonomous_toggle(AUTO_DRIVE_ROUTINE_TOGGLE),
+    "2": lambda: publish_autonomous_toggle(AUTO_DIG_ROUTINE_TOGGLE),
+    "3": lambda: publish_autonomous_toggle(AUTO_DUMP_ROUTINE_TOGGLE),
+    "4": lambda: publish_autonomous_toggle(AUTO_DOCK_ROUTINE_TOGGLE),
+    "5": lambda: publish_autonomous_toggle(FULL_AUTONOMY_ROUTINE_TOGGLE),
+    "0": lambda: publish_autonomous_toggle(STOP_ROUTINE_TOGGLE),
+    None: lambda: None,
+}
+WHEEL_HANDLERS = {
+    "a": lambda: publish_wheel_instruction(WHEELS_LEFT_INSTRUCTION),
+    "s": lambda: publish_wheel_instruction(WHEELS_BACKWARD_INSTRUCTION),
+    "w": lambda: publish_wheel_instruction(WHEELS_FORWARD_INSTRUCTION),
+    "d": lambda: publish_wheel_instruction(WHEELS_RIGHT_INSTRUCTION),
+    None: lambda: publish_wheel_instruction(WHEELS_STOP_INSTRUCTION),
+}
+FRONT_ARM_HANDLERS = {
+    "u": lambda: publish_front_arm_instruction(FRONT_ARM_UP_INSTRUCTION),
+    "j": lambda: publish_front_arm_instruction(FRONT_ARM_DOWN_INSTRUCTION),
+    None: lambda: publish_front_arm_instruction(FRONT_ARM_STOP_INSTRUCTION),
+}
+BACK_ARM_HANDLERS = {
+    "i": lambda: publish_back_arm_instruction(BACK_ARM_UP_INSTRUCTION),
+    "k": lambda: publish_back_arm_instruction(BACK_ARM_DOWN_INSTRUCTION),
+    None: lambda: publish_back_arm_instruction(BACK_ARM_STOP_INSTRUCTION),
+}
+FRONT_DRUM_HANDLERS = {
+    "y": lambda: publish_front_drum_instruction(FRONT_DRUM_FORWARD_INSTRUCTION),
+    "h": lambda: publish_front_drum_instruction(
+        FRONT_DRUM_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_front_drum_instruction(FRONT_DRUM_STOP_INSTRUCTION),
+}
+BACK_DRUM_HANDLERS = {
+    "o": lambda: publish_back_drum_instruction(BACK_DRUM_FORWARD_INSTRUCTION),
+    "l": lambda: publish_back_drum_instruction(BACK_DRUM_BACKWARD_INSTRUCTION),
+    None: lambda: publish_back_drum_instruction(BACK_DRUM_STOP_INSTRUCTION),
+}
+
+halt_queue = Queue.Queue(maxsize=1)
+
+# Handle keypresses for each type of handler in a separate thread.
+autonomous_toggle_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        AUTONOMOUS_TOGGLE_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+wheel_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        WHEEL_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+front_arm_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        FRONT_ARM_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+back_arm_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        BACK_ARM_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+front_drum_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        FRONT_DRUM_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+back_drum_control_thread = threading.Thread(
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        BACK_DRUM_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
+)
+threads = [
+    autonomous_toggle_control_thread,
+    wheel_control_thread,
+    front_arm_control_thread,
+    back_arm_control_thread,
+    front_drum_control_thread,
+    back_drum_control_thread,
+]
+
+# Start all the keypress handling threads.
+for thread in threads:
+    thread.start()
+
+# Wait for roscore to shut down, then place something in the halt_queue. When
+# the halt_queue is not empty, all keypress handling threads die gracefully.
+try:
+    while not rospy.core.is_shutdown():
+        rospy.sleep(SLEEP_DURATION)
+except Exception:
+    pass
+finally:
+    halt_queue.put(True)
+    for thread in threads:
+        thread.join()
