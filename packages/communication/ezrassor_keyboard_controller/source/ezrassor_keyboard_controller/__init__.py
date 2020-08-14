@@ -1,7 +1,3 @@
-# flake8: noqa
-
-"""Initialize this directory as a Python module.
-
-Written by Tiger Sachse.
-"""
-import keyboard_controller
+"""Initialize this package with all public objects."""
+from event_generation import Event, pynput_events
+from event_processing import leader_keys, handle_keypresses
