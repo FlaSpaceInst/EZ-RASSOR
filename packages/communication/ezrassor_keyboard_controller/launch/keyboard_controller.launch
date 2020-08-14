@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch the keyboard controller. Written by Tiger Sachse. -->
 <launch>
   <arg name="wheel_instructions_topic"/>
   <arg name="front_arm_instructions_topic"/>
@@ -7,7 +6,6 @@
   <arg name="front_drum_instructions_topic"/>
   <arg name="back_drum_instructions_topic"/>
 
-  <!-- Launch the keyboard controller. -->
   <node name="keyboard_controller"
         pkg="ezrassor_keyboard_controller"
         type="keyboard_controller"
