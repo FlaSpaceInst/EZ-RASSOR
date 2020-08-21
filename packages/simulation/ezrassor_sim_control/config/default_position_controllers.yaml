@@ -33,8 +33,9 @@ diff_drive_controller:
 
   wheel_radius: 0.18
 
-  # In secs between each Twist command
-  cmd_vel_timeout: 0.5
+  # Setting the timeout to INT_MAX (~68 years) until we can migrate all of our
+  # controllers to publish commands continuously instead of discretely.
+  cmd_vel_timeout: 2147483647
 
   # Publish the odometry to separate topic or not; false to work w/ Kalman Filter
   enable_odom_tf: false
