@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+import ezrassor_teleop_actions
+
+ezrassor_teleop_actions.teleop_action_server.start_node()

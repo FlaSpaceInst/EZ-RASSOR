@@ -1,0 +1,12 @@
+# Goal (action + time)
+string operation
+float64 duration
+---
+# Result (Position)
+float64 x
+float64 y
+---
+# Feedback (Position)
+string heading
+float64 x
+float64 y

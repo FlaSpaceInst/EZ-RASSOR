@@ -2,10 +2,14 @@
 
 cd /ez-rassor
 
-# Go through the setup commands
+# Install the EZRASSOR from source.
 sh develop.sh setup
 sh develop.sh link
 sh develop.sh build
+sh develop.sh install
 
-# Run the test function (uses catkin_make run_tests)
+# Source the installation.
+. /root/ezrassor_ws/install/setup.sh
+
+# Run the test function (uses catkin_make run_tests).
 sh develop.sh test

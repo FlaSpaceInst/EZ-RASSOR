@@ -66,6 +66,9 @@
 
     <!-- Launch the model controls. -->
     <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
+    <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
+             if="$(eval 'actions' in control_methods)"/>
+
   </group>
 
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
