@@ -23,14 +23,14 @@ pub_BA = rospy.Publisher(
 
 def handle_front_drum_movements(data):
     """Move the front drum of the robot per
-       the commands encoded in the instruction.
+    the commands encoded in the instruction.
     """
     pub_FA.publish(data.data * MAX_DRUM_SPEED)
 
 
 def handle_back_drum_movements(data):
     """Move the back drum of the robot per
-       the commands encoded in the instruction.
+    the commands encoded in the instruction.
     """
     pub_BA.publish(data.data * MAX_DRUM_SPEED)
 

@@ -38,7 +38,9 @@ def main():
             num_rows = dataset.RasterYSize
 
             # Get coordinates in cartesian
-            ext = get_coords.get_corner_coordinates(geotransform, num_cols, num_rows)
+            ext = get_coords.get_corner_coordinates(
+                geotransform, num_cols, num_rows
+            )
 
             # Get the coordinate systems to convert
             src_spa_ref_sys = osr.SpatialReference()
@@ -51,7 +53,10 @@ def main():
                 ext, src_spa_ref_sys, targ_spa_ref_sys
             )
 
-            print("Coordinates of each corner pixel in degree decimal:", file=extr_data)
+            print(
+                "Coordinates of each corner pixel in degree decimal:",
+                file=extr_data,
+            )
             print(geo_ext, file=extr_data)
 
         # loads up a channel of the image i.e. r from rgb

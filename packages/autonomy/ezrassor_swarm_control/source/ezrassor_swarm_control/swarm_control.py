@@ -13,9 +13,7 @@ import os
 
 
 class Rover:
-    """
-    Abstract class representing the swarm controller's knowledge of an EZ-RASSOR
-    """
+    """Abstract class for the controller's knowledge of an EZRASSOR."""
 
     def __init__(self, id):
         self.id = id
@@ -25,12 +23,14 @@ class Rover:
 
 
 class SwarmController:
-    """
-    Central controller for a swarm of EZ-RASSORs
-    Responsible for the scheduling and high-level path planning for each rover
+    """Central controller for a swarm of EZRASSORs.
+
+    Responsible for the scheduling and high-level path planning for each rover.
     """
 
-    def __init__(self, robot_count, dig_sites, lander_loc, world, elevation_map):
+    def __init__(
+        self, robot_count, dig_sites, lander_loc, world, elevation_map
+    ):
         self.robot_count = robot_count
         self.dig_sites = dig_sites
         self.world = world
@@ -38,7 +38,9 @@ class SwarmController:
         self.lander_loc = lander_loc
 
         # Tracks the battery and activity of rovers
-        self.rover_activity_status_db = {i: Rover(i) for i in range(1, robot_count + 1)}
+        self.rover_activity_status_db = {
+            i: Rover(i) for i in range(1, robot_count + 1)
+        }
 
         # Set up publishers used to send paths to each rover's waypoint client
         self.waypoint_pubs = {
@@ -83,11 +85,14 @@ class SwarmController:
 
     def run(self):
         rospy.loginfo(
-            "Running the swarm controller for {} rover(s)".format(self.robot_count)
+            "Running the swarm controller for {} rover(s)".format(
+                self.robot_count
+            )
         )
         rospy.loginfo(
             "{} total dig sites: {}".format(
-                len(self.dig_sites), [(site.x, site.y) for site in self.dig_sites]
+                len(self.dig_sites),
+                [(site.x, site.y) for site in self.dig_sites],
             )
         )
 
@@ -111,9 +116,6 @@ class SwarmController:
         while True:
             for i in range(1, self.robot_count + 1):
                 rover_status = get_rover_status(i)
-
-                # rospy.loginfo("ROVER {} BATTERY: {} percent".format(i, rover_status.battery))
-                # rospy.loginfo("ROVER {} ACTIVITY: {}".format(i, self.rover_activity_status_db[i].activity))
 
                 if rover_status:
                     site_num = (i - 1) % len(self.dig_sites)
@@ -140,20 +142,29 @@ class SwarmController:
                                 ].activity = "driving to lander"
 
                     elif (
-                        self.rover_activity_status_db[i].activity == "driving to lander"
+                        self.rover_activity_status_db[i].activity
+                        == "driving to lander"
                     ):
                         if self.is_at_lander(rover_status):
-                            if self.rover_activity_status_db[i].activity != "charging":
+                            if (
+                                self.rover_activity_status_db[i].activity
+                                != "charging"
+                            ):
                                 preempt_rover_path(i)
                                 self.waypoint_pubs[i].publish(
                                     self.create_command("CHG")
                                 )
-                                self.rover_activity_status_db[i].activity = "charging"
+                                self.rover_activity_status_db[
+                                    i
+                                ].activity = "charging"
 
-                    elif self.rover_activity_status_db[i].activity == "charging":
+                    elif (
+                        self.rover_activity_status_db[i].activity == "charging"
+                    ):
                         if rover_status.battery >= 95.0:
                             path = path_planner.find_path(
-                                rover_status.pose.position, self.dig_sites[site_num]
+                                rover_status.pose.position,
+                                self.dig_sites[site_num],
                             )
                             if path:
                                 self.waypoint_pubs[i].publish(path)
@@ -176,7 +187,9 @@ class SwarmController:
                                     ].activity = "digging"
 
 
-def on_start_up(robot_count, target_xs, target_ys, lander_coords, world, elevation_map):
+def on_start_up(
+    robot_count, target_xs, target_ys, lander_coords, world, elevation_map
+):
     """ Initialization Function  """
 
     # ROS Node Init Parameters
@@ -197,7 +210,7 @@ def on_start_up(robot_count, target_xs, target_ys, lander_coords, world, elevati
 
     if len(target_xs) != len(target_ys):
         raise ValueError(
-            "Number of dig site x coordinates does not match the number of y coordinates"
+            "Number of X coords doesn't match the number of Y coords"
         )
 
     # Creat array of Point messages to store dig site locations

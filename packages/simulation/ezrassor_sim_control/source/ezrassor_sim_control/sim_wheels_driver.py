@@ -14,7 +14,9 @@ MAX_VELOCITY = 5
 
 def wheel_movement_callback(twist):
 
-    pub_wheels = rospy.Publisher("diff_drive_controller/cmd_vel", Twist, queue_size=10)
+    pub_wheels = rospy.Publisher(
+        "diff_drive_controller/cmd_vel", Twist, queue_size=10
+    )
 
     new_twist = Twist()
 

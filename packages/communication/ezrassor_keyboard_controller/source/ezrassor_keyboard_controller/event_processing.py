@@ -40,7 +40,8 @@ def leader_keys(events):
 def handle_keypresses(handlers, events):
     """Process keypresses using a map ("handlers") of keys to functions."""
     relevant_events = itertools.ifilter(
-        lambda event: event.key in handlers.keys(), events,
+        lambda event: event.key in handlers.keys(),
+        events,
     )
 
     for key in leader_keys(relevant_events):
