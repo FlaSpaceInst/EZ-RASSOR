@@ -83,5 +83,9 @@ class PointCloudProcessor(object):
         center_ray = cam_model.projectPixelTo3dRay(rect_pixel_center)
 
         # Find the range of angles to be covered by the point cloud
-        self.angle_max = PointCloudProcessor.angle_between_rays(left_ray, center_ray)
-        self.angle_min = -PointCloudProcessor.angle_between_rays(center_ray, right_ray)
+        self.angle_max = PointCloudProcessor.angle_between_rays(
+            left_ray, center_ray
+        )
+        self.angle_min = -PointCloudProcessor.angle_between_rays(
+            center_ray, right_ray
+        )

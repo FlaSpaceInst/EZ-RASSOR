@@ -115,7 +115,9 @@ def get_best_angle(world_state, buffer, scan, threshold):
         # Aim to minimize the difference between our facing angle and the angle
         # to the goal
         new_heading_degrees = calculate_heading(world_state)
-        angle2goal_radians = adjust_angle(world_state.heading, new_heading_degrees)
+        angle2goal_radians = adjust_angle(
+            world_state.heading, new_heading_degrees
+        )
         score = abs(angle2goal_radians - angle)
         if best_score is None or score < best_score:
             best_score = score

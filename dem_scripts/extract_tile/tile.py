@@ -11,7 +11,9 @@ def main():
 
     # Creates the beginning of output file name with the input filename without
     # the extension part
-    output_filename = os.path.splitext(ntpath.basename(sys.argv[1]))[0] + "_tile_"
+    output_filename = (
+        os.path.splitext(ntpath.basename(sys.argv[1]))[0] + "_tile_"
+    )
 
     ds = gdal.Open(input_filename)
     band = ds.GetRasterBand(1)

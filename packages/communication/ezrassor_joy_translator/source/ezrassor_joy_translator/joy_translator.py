@@ -72,7 +72,10 @@ def callback(data, additional_arguments):
     # Front Arm
     if data.buttons[5] > (1 - data.axes[5]) / 2:
         command_front_arm = 1
-    elif data.buttons[5] < (1 - data.axes[5]) / 2 and trigger_threshold > data.axes[5]:
+    elif (
+        data.buttons[5] < (1 - data.axes[5]) / 2
+        and trigger_threshold > data.axes[5]
+    ):
         command_front_arm = -1
     else:
         command_front_arm = 0
@@ -80,7 +83,10 @@ def callback(data, additional_arguments):
     # Back Arm
     if data.buttons[4] > (1 - data.axes[2]) / 2:
         command_back_arm = 1
-    elif data.buttons[4] < (1 - data.axes[2]) / 2 and trigger_threshold > data.axes[2]:
+    elif (
+        data.buttons[4] < (1 - data.axes[2]) / 2
+        and trigger_threshold > data.axes[2]
+    ):
         command_back_arm = -1
     else:
         command_back_arm = 0
@@ -134,15 +140,21 @@ def start_node():
         # Wheel twist
         pub_wheels = rospy.Publisher(publish_topic_wheels, Twist, queue_size=10)
         # Arm Front
-        pub_front_arm = rospy.Publisher(publish_topic_front_arm, Float32, queue_size=10)
+        pub_front_arm = rospy.Publisher(
+            publish_topic_front_arm, Float32, queue_size=10
+        )
         # Arm Back
-        pub_back_arm = rospy.Publisher(publish_topic_back_arm, Float32, queue_size=10)
+        pub_back_arm = rospy.Publisher(
+            publish_topic_back_arm, Float32, queue_size=10
+        )
         # Drum Front
         pub_front_drum = rospy.Publisher(
             publish_topic_front_drum, Float32, queue_size=10
         )
         # Drum Back
-        pub_back_drum = rospy.Publisher(publish_topic_back_drum, Float32, queue_size=10)
+        pub_back_drum = rospy.Publisher(
+            publish_topic_back_drum, Float32, queue_size=10
+        )
         # Autonomous Toggles
         pub_auto_toggles = rospy.Publisher(
             publish_topic_auto_toggles, Int8, queue_size=10

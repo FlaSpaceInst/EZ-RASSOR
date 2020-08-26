@@ -51,7 +51,9 @@ class PathPlanner:
 
         if not self.check_bounds(start_):
             rospy.loginfo(
-                "Start coordinate {} is out of bounds".format((start_.x, start_.y))
+                "Start coordinate {} is out of bounds".format(
+                    (start_.x, start_.y)
+                )
             )
             return
         if not self.check_bounds(goal_):
@@ -67,8 +69,8 @@ class PathPlanner:
         )
         start_time = timer()
 
-        # Convert simulation coordinates, whose origin are in the center of the map,
-        # to image coordinates with origin in the top-left corner
+        # Convert simulation coordinates, whose origin are in the center of the
+        # map, to image coordinates with origin in the top-left corner
         start = Point(
             int(round(start_.x + (self.width // 2))),
             int(round(abs(start_.y - (self.height // 2)))),
@@ -127,15 +129,16 @@ class PathPlanner:
                 tent_g = g_scores[cur] + self.euclidean(cur, neighbor)
 
                 # No need to visit node if its already been visited
-                # and the new g value isn't lower than the node's current g value
+                # and the new g value isn't lower than the node's current g
+                # value
                 if neighbor in closed and tent_g >= g_scores[neighbor]:
                     continue
 
                 # Add node to open list if it hasn't been looked at or if
                 # we've found a new cheaper path to this node
-                if tent_g < g_scores.get(neighbor, sys.maxint) or neighbor not in [
-                    i[1] for i in open
-                ]:
+                if tent_g < g_scores.get(
+                    neighbor, sys.maxint
+                ) or neighbor not in [i[1] for i in open]:
                     previous[neighbor] = cur
                     g_scores[neighbor] = tent_g
                     f_scores[neighbor] = tent_g + self.euclidean(neighbor, goal)
@@ -178,8 +181,9 @@ class PathPlanner:
         return neighbors
 
     def is_valid_move(self, cur, neighbor):
-        """
-        Checks a move's edge cases such as moving in between or along base of a mountain or crater
+        """Check a move's edge cases.
+
+        Cases includes moving in between or along base of a mountain or crater.
         """
 
         dx = abs(cur.x - neighbor.x)
@@ -197,8 +201,9 @@ class PathPlanner:
         return True
 
     def backtrack_path(self, cur, start, previous):
-        """
-        Backtracks the path starting at the current node using the node's previous pointers
+        """Backtrack the path starting at the current node.
+
+        Uses the node's previous pointers.
         """
 
         # Create path message
@@ -206,7 +211,8 @@ class PathPlanner:
         p.path = []
 
         while cur != start:
-            # Convert image coordinates to gazebo simulation coordinates before adding to path
+            # Convert image coordinates to gazebo simulation coordinates before
+            # adding to path
             cur.x -= self.width // 2
             cur.y = -(cur.y - (self.height // 2))
             p.path.append(cur)
@@ -222,7 +228,8 @@ class PathPlanner:
         cur.y = -(cur.y - (self.height // 2))
         p.path.append(cur)
 
-        # Reverse path before returning being that it's been built from goal to start
+        # Reverse path before returning being that it's been built from goal
+        # to start
         p.path = p.path[::-1]
         return p
 
@@ -242,8 +249,8 @@ class PathPlanner:
         )
 
     def check_bounds(self, coord):
-        """
-        Returns false if the given coordinate is out of bounds of the Gazebo world
+        """Return false if the given coordinate is out of bounds of the world.
+
         Gazebo coordinates have origin in the center of the world
         """
 

@@ -114,9 +114,9 @@ class Star:
         # find the angle distance from the center
         query = opp / sin(temp_angle)
         # Calibration Function
-        self.angle_distance_from_center = (-0.0000015736242766902 * query * query) + (
-            0.019311808618316 * query
-        )
+        self.angle_distance_from_center = (
+            -0.0000015736242766902 * query * query
+        ) + (0.019311808618316 * query)
 
     def get_intensity(self):
         return self.intensity

@@ -26,6 +26,7 @@ OVERRIDE_TOGGLE_TOPIC = "secondary_override_toggle"
 
 class TestTopicSwitch(unittest.TestCase):
     """A suite of tests that confirm the functionality of a single topic switch."""
+
     def __init__(self, *arguments, **keyword_arguments):
         """Initialize this test suite with several publishers and other variables."""
         super(TestTopicSwitch, self).__init__(*arguments, **keyword_arguments)
@@ -160,7 +161,7 @@ class TestTopicSwitch(unittest.TestCase):
         self.__test_pipeline(
             self.__primary_publisher,
             range(1, random.randrange(SMALL_RANGE_TARGET, LARGE_RANGE_TARGET)),
-            expect_success=False
+            expect_success=False,
         )
         self.__publish_and_sleep(self.__toggle_publisher, False)
 

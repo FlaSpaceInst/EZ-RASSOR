@@ -12,7 +12,9 @@ def main():
     scope_size = 30
 
     # initialize the star reference catalogue
-    star_catalogue = Star_Cat("star_catalogue_init.txt", angle_size, fov, scope_size)
+    star_catalogue = Star_Cat(
+        "star_catalogue_init.txt", angle_size, fov, scope_size
+    )
 
     list_of_stars = []
 
