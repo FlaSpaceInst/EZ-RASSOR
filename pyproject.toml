@@ -1,0 +1,6 @@
+[tool.black]
+line-length = 80
+
+# Include files in nodes/ and test/ that have no file extension (these are also
+# Python files, but by ROS convention they have no extension).
+include = '(\.pyi?|.*nodes/[^\.]+|.*test/[^\.]+)$'
