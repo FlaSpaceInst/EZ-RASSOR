@@ -1,5 +1,7 @@
 EZ-RASSOR
 ---------
+|build badge| |style badge|
+
 The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a demonstration robot for visitors at the Kennedy Space Center. The EZ-RASSOR can:
 
 - Rove across light-to-moderate terrain
@@ -138,6 +140,10 @@ AUTHORS
 - `Daniel Simoes`_
 - `Autumn Esponda`_
 
+.. |build badge| image:: https://github.com/FlaSpaceInst/EZ-RASSOR/workflows/Build/badge.svg
+    :target: https://github.com/FlaSpaceInst/EZ-RASSOR/actions
+.. |style badge| image:: https://img.shields.io/badge/Code%20Style-black-000000.svg
+    :target: https://github.com/psf/black
 .. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
