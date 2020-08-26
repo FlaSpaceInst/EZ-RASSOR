@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - mainline
-      - lint
   pull_request:
     branches:
       - mainline
