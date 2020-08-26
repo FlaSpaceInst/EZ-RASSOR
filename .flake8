@@ -1,0 +1,13 @@
+[flake8]
+
+# Black is configured to reduce line length to 80 but it can't always pull
+# this off. A higher max line length gives Black some wiggle room.
+max-line-length = 88
+
+# Ensure that we lint all Python files.
+filename = */test/*,*/nodes/*,*.py
+exclude = */test/*.test
+
+# Ignore unused imports in __init__.py files.
+per-file-ignores =
+    __init__.py: F401
