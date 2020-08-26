@@ -47,9 +47,8 @@ class ObstacleDetector(PointCloudProcessor):
             self.ranges_size - 1
         )
 
-    """Creates and returns a LaserScan object based on the given ranges list."""
-
     def create_laser_scan(self, ranges):
+        """Return a LaserScan based on the given ranges list."""
         scan = LaserScan()
         scan.header.stamp = rospy.Time.now()
         scan.header.frame_id = self.frame_id
@@ -68,17 +67,17 @@ class ObstacleDetector(PointCloudProcessor):
         super(ObstacleDetector, self).on_pc_update(pc)
         self.point_cloud_to_laser_scan()
 
-    """ Converts PointCloud2 to LaserScan
-
-    Given a PointCloud2 message representing the area in front of the robot,
-    this method calculates the slope and the gap in distance (hike) between
-    consecutive points in a given direction. These slope and hike values are
-    compared to thresholds to determine the distance to the closest obstacle in
-    each direction. Slope is used to detect above-ground (positive) obstacles
-    and hike is used to detect holes (negative obstacles).
-    """
-
     def point_cloud_to_laser_scan(self):
+        """Convert a PointCloud to a LaserScan.
+
+        Given a PointCloud2 message representing the area in front of the
+        robot, this method calculates the slope and the gap in distance (hike)
+        between consecutive points in a given direction. These slope and hike
+        values are compared to thresholds to determine the distance to the
+        closest obstacle in each direction. Slope is used to detect
+        above-ground (positive) obstacles and hike is used to detect holes
+        (negative obstacles).
+        """
         # Initial LaserScans assume infinite travel in every direction
         hike_ranges = [float("nan")] * self.ranges_size
         slope_ranges = [float("nan")] * self.ranges_size
@@ -143,13 +142,12 @@ class ObstacleDetector(PointCloudProcessor):
 
                 # Combine above laserscans
                 min_ranges[step] = np.nanmin(
-                    (hike_ranges[step], slope_ranges[step]))
+                    (hike_ranges[step], slope_ranges[step])
+                )
 
             self.hike_pub.publish(self.create_laser_scan(hike_ranges))
             self.slope_pub.publish(self.create_laser_scan(slope_ranges))
             self.combined_pub.publish(self.create_laser_scan(min_ranges))
-
-    """Returns laserscan indices and dists based on the right/forward of a pc"""
 
     def to_laser_scan_data(self, forward, right):
         # Multiply angles by -1 to get counterclockwise (right to left) ordering
@@ -162,8 +160,9 @@ class ObstacleDetector(PointCloudProcessor):
         dists = np.sqrt(np.add(np.square(forward), np.square(right)))
         return steps, dists
 
-
-"""Initializes obstacle detection."""
+    def spin(self):
+        """Spin the detector."""
+        rospy.spin()
 
 
 def obstacle_detection(
@@ -174,13 +173,17 @@ def obstacle_detection(
     range_min=0.105,
     range_max=10.0,
 ):
-    """ Usage:
-    od = ObstacleDetector(
-        max_angle, max_obstacle_dist, min_hole_diameter, scan_time, range_min, range_max
+    """Initialize obstacle detection."""
+    detector = ObstacleDetector(
+        max_angle,
+        max_obstacle_dist,
+        min_hole_diameter,
+        scan_time,
+        range_min,
+        range_max,
     )
-    """
 
-    rospy.spin()
+    detector.spin()
 
 
 if __name__ == "__main__":
