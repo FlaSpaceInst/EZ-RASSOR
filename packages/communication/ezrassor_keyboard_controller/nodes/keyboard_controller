@@ -57,7 +57,9 @@ rospy.init_node(NODE_NAME)
 
 # Create a whole heap of publish functions.
 publish_autonomous_toggle = rospy.Publisher(
-    "autonomous_toggles", std_msgs.msg.Int8, queue_size=QUEUE_SIZE,
+    "autonomous_toggles",
+    std_msgs.msg.Int8,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_wheel_instruction = rospy.Publisher(
     rospy.get_param(rospy.get_name() + "/wheel_instructions_topic"),

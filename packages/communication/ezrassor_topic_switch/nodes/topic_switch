@@ -3,7 +3,6 @@
 
 Written by Tiger Sachse.
 """
-import rospy
 import ezrassor_topic_switch
 
 

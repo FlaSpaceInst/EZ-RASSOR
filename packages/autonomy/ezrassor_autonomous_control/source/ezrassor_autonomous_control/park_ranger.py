@@ -183,7 +183,9 @@ class ParkRanger(PointCloudProcessor):
     @staticmethod
     def get_match_dem_n_world(world_dem_name, directory):
         # Get only files in directory as opposed to files and subdirectories
-        onlyfiles = [f for f in listdir(directory) if isfile(join(directory, f))]
+        onlyfiles = [
+            f for f in listdir(directory) if isfile(join(directory, f))
+        ]
 
         # User hasn't put file in dem_data
         if not onlyfiles:
@@ -220,7 +222,9 @@ class ParkRanger(PointCloudProcessor):
         self.dem_size = int(dem_size[0])
         middle = int(dem_size[0] / 2)
 
-        self.global_dem = np.empty((self.dem_size, self.dem_size), dtype=np.float32)
+        self.global_dem = np.empty(
+            (self.dem_size, self.dem_size), dtype=np.float32
+        )
 
         # Read height values into global DEM
         for i, line in enumerate(lines[3:]):
@@ -248,7 +252,8 @@ class ParkRanger(PointCloudProcessor):
         # and the resolution of the global DEM
         self.num_rows = int(range_max - range_min) + 1
         self.num_columns = (
-            int(range_max * (np.tan(self.angle_max) - np.tan(self.angle_min))) + 1
+            int(range_max * (np.tan(self.angle_max) - np.tan(self.angle_min)))
+            + 1
         )
         self.min_row = range_min
         self.min_column = range_max * np.tan(self.angle_min)
@@ -435,7 +440,9 @@ class ParkRanger(PointCloudProcessor):
             self.num_rows - 1, np.subtract(forward, self.min_row)
         ).astype(int)
         column_indexes = np.subtract(right, self.min_column).astype(int)
-        heights = np.add(np.add(self.position_z, self.camera_height), np.negative(down))
+        heights = np.add(
+            np.add(self.position_z, self.camera_height), np.negative(down)
+        )
 
         return row_indexes, column_indexes, heights
 
@@ -492,7 +499,9 @@ class ParkRanger(PointCloudProcessor):
         world_name = ParkRanger.path_world() + world_name + ".world"
         world_dem_name = ParkRanger.get_world_dem_name(world_name)
         self.new_dem_range = ParkRanger.get_world_dem_range(world_name)
-        self.dem_data_file_path = ParkRanger.get_match_dem_n_world(world_dem_name, path)
+        self.dem_data_file_path = ParkRanger.get_match_dem_n_world(
+            world_dem_name, path
+        )
         if not self.dem_data_file_path:
             rospy.logerr("Couldn't find match")
         else:
@@ -506,15 +515,21 @@ class ParkRanger(PointCloudProcessor):
         # moving on
         link_states = rospy.wait_for_message("/gazebo/link_states", LinkStates)
         self.sim_state_callback(link_states)
-        rospy.Subscriber("/gazebo/link_states", LinkStates, self.sim_state_callback)
+        rospy.Subscriber(
+            "/gazebo/link_states", LinkStates, self.sim_state_callback
+        )
 
         if real_odometry:
-            rospy.Subscriber("odometry/filtered", Odometry, self.odometry_callback)
+            rospy.Subscriber(
+                "odometry/filtered", Odometry, self.odometry_callback
+            )
 
         self.arms_up = False
         rospy.Subscriber("arms_up", Bool, self.on_arm_movement)
 
-        self.estimate_pub = rospy.Publisher("park_ranger/odom", Odometry, queue_size=10)
+        self.estimate_pub = rospy.Publisher(
+            "park_ranger/odom", Odometry, queue_size=10
+        )
 
         self.run(period, local_dem_comparison_type)
 
@@ -532,7 +547,9 @@ class ParkRanger(PointCloudProcessor):
 
             pc = self.get_points()
             if pc is not None:
-                local_dem = self.point_cloud_to_local_dem(pc, local_dem_comparison_type)
+                local_dem = self.point_cloud_to_local_dem(
+                    pc, local_dem_comparison_type
+                )
 
                 if not init_flag:
                     if ParkRanger.debug:
@@ -562,7 +579,12 @@ class ParkRanger(PointCloudProcessor):
 
                         # Get number of unique (in terms of x, y vals) particles
                         num_unique = len(
-                            set([(p.x, p.y) for p in self.particle_filter.particles])
+                            set(
+                                [
+                                    (p.x, p.y)
+                                    for p in self.particle_filter.particles
+                                ]
+                            )
                         )
                         # If particle filter has nearly converged,
                         # publish estimate
@@ -601,7 +623,8 @@ class ParkRanger(PointCloudProcessor):
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         plt.savefig(
-            "{}{}_{}.png".format(img_path, "weights", current_time), bbox_inches="tight"
+            "{}{}_{}.png".format(img_path, "weights", current_time),
+            bbox_inches="tight",
         )
         plt.clf()
 
@@ -660,7 +683,7 @@ def park_ranger(
     camera_height=0.34,
 ):
 
-    """ Usage:
+    """Usage:
     pr = ParkRanger(
         real_odometry,
         world_name,
@@ -677,5 +700,5 @@ def park_ranger(
 if __name__ == "__main__":
     try:
         park_ranger()
-    except(AttributeError, ValueError, IndexError):
+    except (AttributeError, ValueError, IndexError):
         pass

@@ -96,7 +96,19 @@ def determine_coordinate(
 
 
 def scan_polar(
-    cur_lamb, cur_phi, d, lamb1, phi1, d1, lamb2, phi2, d2, lamb3, phi3, d3, epsilon
+    cur_lamb,
+    cur_phi,
+    d,
+    lamb1,
+    phi1,
+    d1,
+    lamb2,
+    phi2,
+    d2,
+    lamb3,
+    phi3,
+    d3,
+    epsilon,
 ):
     # if polar scan the equator starting at 0.0
     increment = 0.1
@@ -113,9 +125,13 @@ def scan_polar(
             # Calculate distances at the search points
             phi_north = find_phi + search_angle
             phi_south = find_phi - search_angle
-            dn = calculate_angular_distance(temp_lamb, phi_north, cur_lamb, cur_phi)
+            dn = calculate_angular_distance(
+                temp_lamb, phi_north, cur_lamb, cur_phi
+            )
             n = abs(1 - (dn / d))
-            ds = calculate_angular_distance(temp_lamb, phi_south, cur_lamb, cur_phi)
+            ds = calculate_angular_distance(
+                temp_lamb, phi_south, cur_lamb, cur_phi
+            )
             s = abs(1 - (ds / d))
             # find the closest to 0.0 of n,e,s,w
             if s > n:
@@ -144,7 +160,19 @@ def scan_polar(
 
 
 def scan_non_polar(
-    cur_lamb, cur_phi, d, lamb1, phi1, d1, lamb2, phi2, d2, lamb3, phi3, d3, epsilon
+    cur_lamb,
+    cur_phi,
+    d,
+    lamb1,
+    phi1,
+    d1,
+    lamb2,
+    phi2,
+    d2,
+    lamb3,
+    phi3,
+    d3,
+    epsilon,
 ):
     # if not polar scan the equator starting west
     big_increment = 0.1
@@ -186,7 +214,9 @@ def scan_non_polar(
         while d > search_angle:
             # Calculate distances at the search points
             phi_north = cur_phi + search_angle
-            dn = calculate_angular_distance(temp_lamb, phi_north, cur_lamb, cur_phi)
+            dn = calculate_angular_distance(
+                temp_lamb, phi_north, cur_lamb, cur_phi
+            )
             n = abs(1 - (dn / d))
             # find the closest to 0.0 of n
             if c > n:
@@ -219,7 +249,9 @@ def scan_non_polar(
         while d > search_angle:
             # Calculate distances at the search points
             phi_south = cur_phi - search_angle
-            ds = calculate_angular_distance(temp_lamb, phi_south, cur_lamb, cur_phi)
+            ds = calculate_angular_distance(
+                temp_lamb, phi_south, cur_lamb, cur_phi
+            )
             s = abs(1 - (ds / d))
             # find the closest to 0.0 of s
             if c > s:
@@ -255,7 +287,9 @@ def scan_non_polar(
         while (2 * d) > search_angle:
             # Calculate distances at the search points
             lamb_west = cur_lamb - search_angle
-            dw = calculate_angular_distance(lamb_west, temp_phi, cur_lamb, cur_phi)
+            dw = calculate_angular_distance(
+                lamb_west, temp_phi, cur_lamb, cur_phi
+            )
             w = abs(1 - (dw / d))
             # find the closest to 0.0 of w
             if c > w:
@@ -288,7 +322,9 @@ def scan_non_polar(
         while (2 * d) > search_angle:
             # Calculate distances at the search points
             lamb_east = cur_lamb + search_angle
-            de = calculate_angular_distance(lamb_east, temp_phi, cur_lamb, cur_phi)
+            de = calculate_angular_distance(
+                lamb_east, temp_phi, cur_lamb, cur_phi
+            )
             e = abs(1 - (de / d))
             # find the closest to 0.0 of e
             if c > e:
@@ -358,8 +394,13 @@ class Calibration_Function:
             for j in range(num_coef):
                 if j <= i:
                     q_list2[j + 1] = (
-                        ((query - self.var_list[(i + 1) - (j + 1)]) * q_list2[j])
+                        (
+                            (query - self.var_list[(i + 1) - (j + 1)])
+                            * q_list2[j]
+                        )
                         - ((query - self.var_list[i + 1]) * q_list1[j])
-                    ) / (self.var_list[i + 1] - self.var_list[(i + 1) - (j + 1)])
+                    ) / (
+                        self.var_list[i + 1] - self.var_list[(i + 1) - (j + 1)]
+                    )
             q_list1 = list(q_list2)
         return q_list2[num_coef]

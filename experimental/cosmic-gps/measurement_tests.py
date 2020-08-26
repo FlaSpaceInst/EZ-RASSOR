@@ -157,9 +157,14 @@ def main():
                 starA.ra, starA.dec, starB.ra, starB.dec
             )
             calcul = calculate_angular_distance(
-                starA.angle, 90.0 - starA.distance, starB.angle, 90.0 - starB.distance
+                starA.angle,
+                90.0 - starA.distance,
+                starB.angle,
+                90.0 - starB.distance,
             )
-            print("Calculated distances between ", starA.name, " and ", starB.name)
+            print(
+                "Calculated distances between ", starA.name, " and ", starB.name
+            )
             print("Actual ", actual)
             print("Calcul ", calcul)
             print("diff", calcul - actual)

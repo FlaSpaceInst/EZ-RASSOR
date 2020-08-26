@@ -41,7 +41,12 @@ def main():
 
         print("Copying model and world to appropriate folders")
         os.system(
-            "cp -r ./" + choice + i + "/" + folder_name + " $HOME/.gazebo/models/"
+            "cp -r ./"
+            + choice
+            + i
+            + "/"
+            + folder_name
+            + " $HOME/.gazebo/models/"
         )
         os.system(
             "cp ./"

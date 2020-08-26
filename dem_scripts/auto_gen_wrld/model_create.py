@@ -56,17 +56,21 @@ def model_trav(path_to_file, model_name, dem_name, w, h, squish_factor):
 
     top_tag = tree.xpath("//sdf/model")[0]
 
-    collision_uri_tag = tree.xpath("//sdf/model/link/collision/geometry/heightmap/uri")[
-        0
-    ]
-    visual_uri_tag = tree.xpath("//sdf/model/link/visual/geometry/heightmap/uri")[0]
+    collision_uri_tag = tree.xpath(
+        "//sdf/model/link/collision/geometry/heightmap/uri"
+    )[0]
+    visual_uri_tag = tree.xpath(
+        "//sdf/model/link/visual/geometry/heightmap/uri"
+    )[0]
     visual_tex_tag = tree.xpath(
         "//sdf/model/link/visual/geometry/heightmap/texture/diffuse"
     )[0]
     collision_size_tag = tree.xpath(
         "//sdf/model/link/collision/geometry/heightmap/size"
     )[0]
-    visual_size_tag = tree.xpath("//sdf/model/link/visual/geometry/heightmap/size")[0]
+    visual_size_tag = tree.xpath(
+        "//sdf/model/link/visual/geometry/heightmap/size"
+    )[0]
 
     replace_ref(collision_uri_tag, model_name, dem_name)
 

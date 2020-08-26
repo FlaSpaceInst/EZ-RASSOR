@@ -6,8 +6,8 @@ import nav_functions as nf
 
 
 def at_target(positionX, positionY, targetX, targetY, threshold):
-    """ Determine if the current position is within
-        the desired threshold of the target position.
+    """Determine if the current position is within
+    the desired threshold of the target position.
     """
     value = (targetX - threshold) < positionX < (targetX + threshold) and (
         targetY - threshold
@@ -61,7 +61,9 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
     # Before we head towards our goal, turn to face it.
     # Get new heading angle relative to current heading
     new_heading_degrees = nf.calculate_heading(world_state)
-    angle2goal_radians = nf.adjust_angle(world_state.heading, new_heading_degrees)
+    angle2goal_radians = nf.adjust_angle(
+        world_state.heading, new_heading_degrees
+    )
 
     # If our angle is less than zero, then we would expect a right turn
     # otherwise turn left.
@@ -83,7 +85,10 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
     ):
 
         # Check that the waypoint client request hasnt been canceled
-        if waypoint_server is not None and waypoint_server.is_preempt_requested():
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
             preempted = True
             break
 
@@ -109,7 +114,10 @@ def auto_drive_location(world_state, ros_util, waypoint_server=None):
 
         # Turn towards the direction chosen.
         uf.turn(
-            nf.rel_to_abs(world_state.heading, angle), direction, world_state, ros_util
+            nf.rel_to_abs(world_state.heading, angle),
+            direction,
+            world_state,
+            ros_util,
         )
 
         # Move towards the direction chosen.
@@ -168,7 +176,10 @@ def auto_dig(world_state, ros_util, duration, waypoint_server=None):
         # Send feedback to waypoint client if being controlled by swarm controller
         feedback = uf.send_feedback(world_state, waypoint_server)
 
-        if waypoint_server is not None and waypoint_server.is_preempt_requested():
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
             preempted = True
             break
 
@@ -204,8 +215,8 @@ def auto_dock(world_state, ros_util):
 
 
 def auto_dump(world_state, ros_util, duration):
-    """ Rotate both drums inward and drive forward
-        for duration time in seconds.
+    """Rotate both drums inward and drive forward
+    for duration time in seconds.
     """
     rospy.loginfo("Auto-dumping drum contents...")
 

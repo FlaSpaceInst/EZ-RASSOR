@@ -52,10 +52,13 @@ def set_back_arm_angle(world_state, ros_util, target_angle):
 
 
 def self_check(world_state, ros_util):
-    """ Check for unfavorable states in the system
-        and handle or quit gracefully.
+    """Check for unfavorable states in the system
+    and handle or quit gracefully.
     """
-    if ros_util.auto_function_command == 32 or ros_util.auto_function_command == 0:
+    if (
+        ros_util.auto_function_command == 32
+        or ros_util.auto_function_command == 0
+    ):
         rospy.loginfo("Cancelling auto-function command...")
         ros_util.publish_actions("stop", 0, 0, 0, 0)
         ros_util.control_pub.publish(False)
@@ -121,7 +124,9 @@ def turn(new_heading, direction, world_state, ros_util):
 
         ros_util.rate.sleep()
 
-        angle_traveled += abs((world_state.heading - old_heading + 180) % 360 - 180)
+        angle_traveled += abs(
+            (world_state.heading - old_heading + 180) % 360 - 180
+        )
 
 
 """ Moves the robot a given distance or until an obstacle is encountered
@@ -184,7 +189,8 @@ def move(dist, world_state, ros_util, direction="forward"):
         ros_util.rate.sleep()
 
         dist_traveled = math.sqrt(
-            (world_state.positionX - old_x) ** 2 + (world_state.positionY - old_y) ** 2
+            (world_state.positionX - old_x) ** 2
+            + (world_state.positionY - old_y) ** 2
         )
 
 
@@ -326,7 +332,9 @@ def get_turn_angle(world_state, ros_util):
         # If we over-turned when doing the wedge, try turning back more towards
         # the goal until we see an obstacle in our view.
         wedgeSize = (scan.angle_max - scan.angle_min) / 20.0
-        buffer_angle = math.atan(ros_util.obstacle_buffer / ros_util.obstacle_threshold)
+        buffer_angle = math.atan(
+            ros_util.obstacle_buffer / ros_util.obstacle_threshold
+        )
         min_angle = scan.angle_min + buffer_angle
         max_angle = scan.angle_max - buffer_angle
         best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
@@ -354,7 +362,10 @@ def get_turn_angle(world_state, ros_util):
             ros_util.rate.sleep()
             rospy.sleep(0.1)
             best_angle = nf.get_best_angle(
-                world_state, ros_util.obstacle_buffer, scan, ros_util.obstacle_threshold
+                world_state,
+                ros_util.obstacle_buffer,
+                scan,
+                ros_util.obstacle_threshold,
             )
 
             # If we turned too far back and now have no safe angle to go to,
@@ -363,7 +374,9 @@ def get_turn_angle(world_state, ros_util):
                 break
 
             # Get LaserScan index of best angle
-            best_index = int((best_angle - scan.angle_min) / scan.angle_increment)
+            best_index = int(
+                (best_angle - scan.angle_min) / scan.angle_increment
+            )
 
         # Exit once we've found a safe angle.
         if best_angle is not None:

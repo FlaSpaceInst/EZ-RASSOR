@@ -26,15 +26,23 @@ class Star_Cat:
             star_splits = star_info.split(" ")[:-1]
             # Convert RA to decimal
             ra = ra_to_decimal_deg(
-                float(star_splits[3]), float(star_splits[4]), float(star_splits[5])
+                float(star_splits[3]),
+                float(star_splits[4]),
+                float(star_splits[5]),
             )
             # Covert DEC to decimal
             dec = dec_to_decimal_deg(
-                float(star_splits[6]), float(star_splits[7]), float(star_splits[8])
+                float(star_splits[6]),
+                float(star_splits[7]),
+                float(star_splits[8]),
             )
             # Create star_ref
             self.adj_star_list[int(star_splits[0])] = Star_Ref(
-                int(star_splits[0]), star_splits[1], int(star_splits[2]), ra, dec
+                int(star_splits[0]),
+                star_splits[1],
+                int(star_splits[2]),
+                ra,
+                dec,
             )
             count_global += 1
         fptr.close()
@@ -56,15 +64,27 @@ class Star_Cat:
                         self.adj_star_list[sid_starB].get_dec(),
                     )
                     if angular_distance < fov:
-                        self.adj_star_list[sid_starA].add(sid_starB, angular_distance)
+                        self.adj_star_list[sid_starA].add(
+                            sid_starB, angular_distance
+                        )
                         elem = int(angular_distance * (1 / angle_size))
                         if elem == 0:
-                            self.angles_list[elem].update([sid_starA, sid_starB])
-                            self.angles_list[elem + 1].update([sid_starA, sid_starB])
+                            self.angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
+                            self.angles_list[elem + 1].update(
+                                [sid_starA, sid_starB]
+                            )
                         else:
-                            self.angles_list[elem - 1].update([sid_starA, sid_starB])
-                            self.angles_list[elem].update([sid_starA, sid_starB])
-                            self.angles_list[elem + 1].update([sid_starA, sid_starB])
+                            self.angles_list[elem - 1].update(
+                                [sid_starA, sid_starB]
+                            )
+                            self.angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
+                            self.angles_list[elem + 1].update(
+                                [sid_starA, sid_starB]
+                            )
         # Create scopeAdjStarList
         count_scope = 0
         self.scope_adj_star_list = dict()
@@ -106,7 +126,9 @@ class Star_Cat:
                         )
                         elem = int(angular_distance * (1 / angle_size))
                         if elem == 0:
-                            self.scope_angles_list[elem].update([sid_starA, sid_starB])
+                            self.scope_angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
                             self.scope_angles_list[elem + 1].update(
                                 [sid_starA, sid_starB]
                             )
@@ -114,7 +136,9 @@ class Star_Cat:
                             self.scope_angles_list[elem - 1].update(
                                 [sid_starA, sid_starB]
                             )
-                            self.scope_angles_list[elem].update([sid_starA, sid_starB])
+                            self.scope_angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
                             self.scope_angles_list[elem + 1].update(
                                 [sid_starA, sid_starB]
                             )
@@ -131,7 +155,10 @@ class Star_Cat:
 
     def rescope(self, ra_position, dec_position):  # in degrees
         angular_distance = calculate_angular_distance(
-            ra_position, dec_position, self.scope_position_ra, self.scope_position_dec
+            ra_position,
+            dec_position,
+            self.scope_position_ra,
+            self.scope_position_dec,
         )
         if angular_distance < self.scope_size:
             return False
@@ -176,7 +203,9 @@ class Star_Cat:
                         )
                         elem = int(angular_distance * (1 / self.angle_size))
                         if elem == 0:
-                            self.scope_angles_list[elem].update([sid_starA, sid_starB])
+                            self.scope_angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
                             self.scope_angles_list[elem + 1].update(
                                 [sid_starA, sid_starB]
                             )
@@ -184,7 +213,9 @@ class Star_Cat:
                             self.scope_angles_list[elem - 1].update(
                                 [sid_starA, sid_starB]
                             )
-                            self.scope_angles_list[elem].update([sid_starA, sid_starB])
+                            self.scope_angles_list[elem].update(
+                                [sid_starA, sid_starB]
+                            )
                             self.scope_angles_list[elem + 1].update(
                                 [sid_starA, sid_starB]
                             )
@@ -342,9 +373,9 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
         if distance02 < (angular_distances[(0, 2)] + epsilon) and distance02 > (
             angular_distances[(0, 2)] - epsilon
         ):
-            if distance12 < (angular_distances[(1, 2)] + epsilon) and distance12 > (
-                angular_distances[(1, 2)] - epsilon
-            ):
+            if distance12 < (
+                angular_distances[(1, 2)] + epsilon
+            ) and distance12 > (angular_distances[(1, 2)] - epsilon):
                 candidate_permutations.append(combo)
     if not candidate_permutations:
         return candidate_permutations
@@ -354,7 +385,9 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
     for combo in candidate_temp_temp_permutations:
         for x in candidates[3]:
             if combo[0] != x and combo[1] != x and combo[2] != x:
-                candidate_temp_permutations.append((combo[0], combo[1], combo[2], x))
+                candidate_temp_permutations.append(
+                    (combo[0], combo[1], combo[2], x)
+                )
     for combo in candidate_temp_permutations:
         distance03 = calculate_angular_distance(
             adj_star_list[combo[0]].get_ra(),
@@ -377,12 +410,12 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
         if distance03 < (angular_distances[(0, 3)] + epsilon) and distance03 > (
             angular_distances[(0, 3)] - epsilon
         ):
-            if distance13 < (angular_distances[(1, 3)] + epsilon) and distance13 > (
-                angular_distances[(1, 3)] - epsilon
-            ):
-                if distance23 < (angular_distances[(2, 3)] + epsilon) and distance23 > (
-                    angular_distances[(2, 3)] - epsilon
-                ):
+            if distance13 < (
+                angular_distances[(1, 3)] + epsilon
+            ) and distance13 > (angular_distances[(1, 3)] - epsilon):
+                if distance23 < (
+                    angular_distances[(2, 3)] + epsilon
+                ) and distance23 > (angular_distances[(2, 3)] - epsilon):
                     candidate_permutations.append(combo)
     if not candidate_permutations:
         return candidate_permutations
@@ -391,7 +424,12 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
     candidate_permutations = []
     for combo in candidate_temp_temp_permutations:
         for x in candidates[4]:
-            if combo[0] != x and combo[1] != x and combo[2] != x and combo[3] != x:
+            if (
+                combo[0] != x
+                and combo[1] != x
+                and combo[2] != x
+                and combo[3] != x
+            ):
                 candidate_temp_permutations.append(
                     (combo[0], combo[1], combo[2], combo[3], x)
                 )
@@ -423,12 +461,12 @@ def match(stars, epsilon, num_stars, angle_size, angles_list, adj_star_list):
         if distance04 < (angular_distances[(0, 4)] + epsilon) and distance04 > (
             angular_distances[(0, 4)] - epsilon
         ):
-            if distance14 < (angular_distances[(1, 4)] + epsilon) and distance14 > (
-                angular_distances[(1, 4)] - epsilon
-            ):
-                if distance24 < (angular_distances[(2, 4)] + epsilon) and distance24 > (
-                    angular_distances[(2, 4)] - epsilon
-                ):
+            if distance14 < (
+                angular_distances[(1, 4)] + epsilon
+            ) and distance14 > (angular_distances[(1, 4)] - epsilon):
+                if distance24 < (
+                    angular_distances[(2, 4)] + epsilon
+                ) and distance24 > (angular_distances[(2, 4)] - epsilon):
                     if distance34 < (
                         angular_distances[(3, 4)] + epsilon
                     ) and distance34 > (angular_distances[(3, 4)] - epsilon):

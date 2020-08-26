@@ -17,7 +17,9 @@ class OverrideStatus:
         """
         self.__status = False
         rospy.Subscriber(
-            override_topic, std_msgs.msg.Bool, callback=self.__update,
+            override_topic,
+            std_msgs.msg.Bool,
+            callback=self.__update,
         )
         self.__status_lock = threading.Lock()
 
@@ -53,20 +55,30 @@ def start_node(default_node_name, override_topic, queue_size):
         primary_topic = rospy.get_param(rospy.get_name() + "/primary_topic")
         secondary_topic = rospy.get_param(rospy.get_name() + "/secondary_topic")
         output_topic = rospy.get_param(rospy.get_name() + "/output_topic")
-        topic_type_module = rospy.get_param(rospy.get_name() + "/topic_type_module")
-        topic_type_class = rospy.get_param(rospy.get_name() + "/topic_type_class")
+        topic_type_module = rospy.get_param(
+            rospy.get_name() + "/topic_type_module"
+        )
+        topic_type_class = rospy.get_param(
+            rospy.get_name() + "/topic_type_class"
+        )
         override_status = OverrideStatus(override_topic)
 
         # Overwrite the topic type module and topic type class with an imported
         # module and class. If these can't be imported, an exception is thrown.
         try:
             topic_type_module = __import__(
-                topic_type_module, globals(), locals(), [topic_type_class], -1,
+                topic_type_module,
+                globals(),
+                locals(),
+                [topic_type_class],
+                -1,
             )
             topic_type_class = vars(topic_type_module)[topic_type_class]
         except ImportError:
             raise ImportError(
-                'No topic type module named "{0}"'.format(str(topic_type_module)),
+                'No topic type module named "{0}"'.format(
+                    str(topic_type_module)
+                ),
             )
         except KeyError:
             raise ImportError(
@@ -75,19 +87,29 @@ def start_node(default_node_name, override_topic, queue_size):
 
         # Create all publishers and subscribers.
         output_publisher = rospy.Publisher(
-            output_topic, topic_type_class, queue_size=queue_size,
+            output_topic,
+            topic_type_class,
+            queue_size=queue_size,
         )
         rospy.Subscriber(
             primary_topic,
             topic_type_class,
             callback=route_item,
-            callback_args=(output_publisher, override_status, False,),
+            callback_args=(
+                output_publisher,
+                override_status,
+                False,
+            ),
         )
         rospy.Subscriber(
             secondary_topic,
             topic_type_class,
             callback=route_item,
-            callback_args=(output_publisher, override_status, True,),
+            callback_args=(
+                output_publisher,
+                override_status,
+                True,
+            ),
         )
 
         rospy.loginfo("Topic switch initialized.")

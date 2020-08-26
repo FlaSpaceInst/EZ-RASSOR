@@ -74,7 +74,9 @@ def cell_gps_core():
     epsilon_converge = 0.01
 
     # initialize the star reference catalogue
-    star_catalogue = Star_Cat("star_catalogue_init.txt", angle_size, fov, scope_size)
+    star_catalogue = Star_Cat(
+        "star_catalogue_init.txt", angle_size, fov, scope_size
+    )
     # initialize the calibration functions
     gha_aries_calibration = Calibration_Function(time_list, actual_gha_aries)
 

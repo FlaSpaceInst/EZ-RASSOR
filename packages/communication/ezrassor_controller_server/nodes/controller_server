@@ -8,7 +8,7 @@ import ezrassor_controller_server
 
 # Some constants for this node.
 QUEUE_SIZE = 10
-SLEEP_DURATION = .1
+SLEEP_DURATION = 0.1
 DEFAULT_NODE_NAME = "controller_server"
 TARGET_COORDINATES_TOPIC = "target_coordinates"
 AUTONOMOUS_TOGGLES_TOPIC = "autonomous_toggles"

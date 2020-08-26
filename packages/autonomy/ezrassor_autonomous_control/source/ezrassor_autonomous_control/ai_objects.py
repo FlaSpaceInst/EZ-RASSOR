@@ -9,8 +9,8 @@ from geometry_msgs.msg import Point, Twist
 
 
 class WorldState:
-    """ World State Object Representing
-        All Sensor Data
+    """World State Object Representing
+    All Sensor Data
     """
 
     def __init__(self):
@@ -52,8 +52,8 @@ class WorldState:
             self.heading = 360 + heading
 
     def simStateCallBack(self, data):
-        """ More accurate position data to use for
-            testing and experimentation.
+        """More accurate position data to use for
+        testing and experimentation.
         """
         index = 0
 
@@ -84,8 +84,12 @@ class WorldState:
             self.on_side = False
 
     def get_arm_force(self):
-        front_arm_force = self.state_flags["front_arm_angle"] + 0.2 + uniform(-0.2, 0.2)
-        back_arm_force = self.state_flags["back_arm_angle"] + 0.2 + uniform(-0.2, 0.2)
+        front_arm_force = (
+            self.state_flags["front_arm_angle"] + 0.2 + uniform(-0.2, 0.2)
+        )
+        back_arm_force = (
+            self.state_flags["back_arm_angle"] + 0.2 + uniform(-0.2, 0.2)
+        )
         return front_arm_force, back_arm_force
 
     # Use initial spawn coordinates to later offset position
@@ -95,8 +99,8 @@ class WorldState:
 
 
 class ROSUtility:
-    """ ROS Utility class that provides publishers,
-        subscribers, and convenient ROS utilies.
+    """ROS Utility class that provides publishers,
+    subscribers, and convenient ROS utilies.
     """
 
     def __init__(
@@ -114,11 +118,21 @@ class ROSUtility:
     ):
         """ Initialize the ROS Utility Object. """
 
-        self.movement_pub = rospy.Publisher(movement_topic, Twist, queue_size=10)
-        self.front_arm_pub = rospy.Publisher(front_arm_topic, Float32, queue_size=10)
-        self.back_arm_pub = rospy.Publisher(back_arm_topic, Float32, queue_size=10)
-        self.front_drum_pub = rospy.Publisher(front_drum_topic, Float32, queue_size=10)
-        self.back_drum_pub = rospy.Publisher(back_drum_topic, Float32, queue_size=10)
+        self.movement_pub = rospy.Publisher(
+            movement_topic, Twist, queue_size=10
+        )
+        self.front_arm_pub = rospy.Publisher(
+            front_arm_topic, Float32, queue_size=10
+        )
+        self.back_arm_pub = rospy.Publisher(
+            back_arm_topic, Float32, queue_size=10
+        )
+        self.front_drum_pub = rospy.Publisher(
+            front_drum_topic, Float32, queue_size=10
+        )
+        self.back_drum_pub = rospy.Publisher(
+            back_drum_topic, Float32, queue_size=10
+        )
         self.control_pub = rospy.Publisher(
             "secondary_override_toggle", Bool, queue_size=10
         )
@@ -136,7 +150,9 @@ class ROSUtility:
         self.obstacle_buffer = obstacle_buffer
         self.move_increment = move_increment
 
-    def publish_actions(self, movement, front_arm, back_arm, front_drum, back_drum):
+    def publish_actions(
+        self, movement, front_arm, back_arm, front_drum, back_drum
+    ):
         """ Publishes actions for all joints and motors """
 
         twist_message = Twist()

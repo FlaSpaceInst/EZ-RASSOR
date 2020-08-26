@@ -63,20 +63,30 @@ class RoverController:
             )
         else:
             rospy.Subscriber(
-                "/gazebo/link_states", LinkStates, self.world_state.simStateCallBack
+                "/gazebo/link_states",
+                LinkStates,
+                self.world_state.simStateCallBack,
             )
 
         rospy.Subscriber("imu", Imu, self.world_state.imuCallBack)
-        rospy.Subscriber("joint_states", JointState, self.world_state.jointCallBack)
-        rospy.Subscriber("autonomous_toggles", Int8, self.ros_util.autoCommandCallBack)
         rospy.Subscriber(
-            "obstacle_detection/combined", LaserScan, uf.on_scan_update, queue_size=1
+            "joint_states", JointState, self.world_state.jointCallBack
+        )
+        rospy.Subscriber(
+            "autonomous_toggles", Int8, self.ros_util.autoCommandCallBack
+        )
+        rospy.Subscriber(
+            "obstacle_detection/combined",
+            LaserScan,
+            uf.on_scan_update,
+            queue_size=1,
         )
 
         if swarm_control:
             self.ros_util.auto_function_command = 16
 
-            # Create waypoint action server used to control the rover via the swarm_controller
+            # Create waypoint action server used to control the rover via the
+            # swarm_controller
             self.server_name = "waypoint"
             self.waypoint_server = actionlib.SimpleActionServer(
                 self.server_name,
@@ -91,7 +101,8 @@ class RoverController:
 
             rospy.loginfo("Rover waypoint server initialized.")
 
-            # Register GetRoverStatus, used by the swarm controller to retreive a rover's position and battery
+            # Register GetRoverStatus, used by the swarm controller to retrieve
+            # a rover's position and battery
             self.status_service = rospy.Service(
                 "rover_status", GetRoverStatus, self.send_status
             )
@@ -112,9 +123,7 @@ class RoverController:
             self.world_state.dig_site = temp
 
     def send_status(self, request):
-        """
-        Sends the rover's current battery and pose to the swarm controller via the GetRoverStatus service
-        """
+        """Send the rover's battery and pose to the swarm controller."""
 
         status = GetRoverStatusResponse()
         status.pose.position.x = self.world_state.positionX
@@ -122,15 +131,10 @@ class RoverController:
         status.pose.position.z = self.world_state.positionZ
         status.battery = max(int(self.world_state.battery), 0)
 
-        # rospy.loginfo('Service {} sending current status'.format(self.status_service.resolved_name))
-
         return status
 
     def execute_action(self, goal):
-        """
-        Callback executed when the swarm controller sends an action to a rover via the
-        rover's waypoint client-server API
-        """
+        """Handle a swarm controller action."""
 
         if goal.target.x == -999 and goal.target.y == -999:
             rospy.loginfo(
@@ -168,7 +172,8 @@ class RoverController:
             self.world_state.target_location = goal.target
             rospy.loginfo(
                 "Waypoint server {} moving rover to {}".format(
-                    self.namespace + self.server_name, (goal.target.x, goal.target.y)
+                    self.namespace + self.server_name,
+                    (goal.target.x, goal.target.y),
                 )
             )
 
@@ -177,7 +182,8 @@ class RoverController:
                 self.world_state, self.ros_util, self.waypoint_server
             )
 
-            # Send resulting state to client and set server to succeeded, as long as request wasn't preempted
+            # Send resulting state to client and set server to succeeded, as
+            # long as request wasn't preempted
             if (
                 feedback is not None
                 and not preempted
@@ -187,9 +193,7 @@ class RoverController:
                 self.waypoint_server.set_succeeded(result)
 
     def preempt_cb(self):
-        """
-        Callback to be executed when the waypoint server receives a preempt request
-        """
+        """Handle preempt request from swarm controller."""
         if self.waypoint_server.is_preempt_requested():
             # Stop the rover
             self.ros_util.publish_actions("stop", 0, 0, 0, 0)
@@ -296,7 +300,8 @@ def on_start_up(
         swarm_control,
     )
 
-    # Start autonomous control loop if rover isn't being controlled by a swarm controller
+    # Start autonomous control loop if rover isn't being controlled by a swarm
+    # controller
     if not swarm_control:
         rover_controller.autonomous_control_loop(
             rover_controller.world_state, rover_controller.ros_util

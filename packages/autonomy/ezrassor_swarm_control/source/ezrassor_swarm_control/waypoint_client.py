@@ -26,13 +26,16 @@ class WaypointClient:
         self.namespace = rospy.get_namespace()
 
         # Create the waypoint action client
-        self.client = actionlib.SimpleActionClient(self.client_name, waypointAction)
+        self.client = actionlib.SimpleActionClient(
+            self.client_name, waypointAction
+        )
 
         self.client.wait_for_server()
 
         rospy.Subscriber("waypoint_client", Path, self.send_path)
 
-        # Service which allows the waypoint client's current path to be preempted from any other node
+        # Service which allows the waypoint client's current path to be
+        # preempted from any other node
         self.preempt_service = rospy.Service(
             "preempt_path", PreemptPath, self.preempt_path
         )
@@ -43,10 +46,12 @@ class WaypointClient:
         # Waypoint the rover is currently moving towards
         self.cur_waypoint = None
 
-        # Ultimate goal the rover is moving towards (usually a dig site or charging station)
+        # Ultimate goal the rover is moving towards (usually a dig site or
+        # charging station)
         self.goal = None
 
-        # Max distance a rover can veer from its current waypoint before a new path is generated
+        # Max distance a rover can veer from its current waypoint before a new
+        # path is generated
         self.max_veer_distance = 5
 
         # Create path planner to be used during replanning
@@ -69,7 +74,7 @@ class WaypointClient:
         return cmd == commands["CHG"]
 
     def preempt_path(self, request=None):
-        """Callback executed when the waypoint client receives a preempt path request"""
+        """Handle preempt path requests."""
 
         self.preempt = True
         self.client.cancel_goal()
@@ -77,10 +82,7 @@ class WaypointClient:
         return PreemptPathResponse()
 
     def feedback_cb(self, feedback):
-        """Callback executed when the waypoint client receives feedback from a rover"""
-
-        # rospy.loginfo('Waypoint client {} received feedback! position: {} battery: {}'.
-        #              format((self.namespace + self.client_name), (x, y), feedback.battery))
+        """Handle rover feedback."""
 
         # Replan path if rover veers away from its current waypoint too far
         if (
@@ -88,11 +90,13 @@ class WaypointClient:
             and self.goal
             and self.cur_waypoint
         ):
-            veer_distance = euclidean2D(feedback.pose.position, self.cur_waypoint)
+            veer_distance = euclidean2D(
+                feedback.pose.position, self.cur_waypoint
+            )
 
             if veer_distance > self.max_veer_distance:
                 rospy.loginfo(
-                    "Waypoint client {} forced to replan path!".format(
+                    "Client {} forced to replan path!".format(
                         self.namespace + self.client_name
                     )
                 )
@@ -102,27 +106,28 @@ class WaypointClient:
                     feedback.pose.position, self.goal
                 )
 
-                # Wait for previous path to be totally cancelled before sending the new path
+                # Wait for previous path to be totally cancelled before sending
+                # the new path
                 while self.preempt is True:
                     rospy.sleep(1.0)
 
                 self.send_path(new_path)
 
     def done_cb(self, status, result):
-        """Callback executed when the rover reaches a waypoint or the request is preempted"""
+        """Handle interruption or completion of request."""
 
         x = round(result.pose.position.x, 2)
         y = round(result.pose.position.y, 2)
 
         if result.preempted:
             rospy.loginfo(
-                "Waypoint client {} preempted! Current position: {} Current battery: {}".format(
+                "Client {} preempted! (position: {} battery: {})".format(
                     (self.namespace + self.client_name), (x, y), result.battery
                 )
             )
         else:
             rospy.loginfo(
-                "Waypoint client {} reached waypoint! Current position: {} Current battery: {}".format(
+                "Client {} reached waypoint! (position: {} battery: {})".format(
                     (self.namespace + self.client_name), (x, y), result.battery
                 )
             )
@@ -133,7 +138,9 @@ class WaypointClient:
         goal = waypointGoal(target=waypoint)
 
         # Send the goal to the rover's waypoint server
-        self.client.send_goal(goal, done_cb=self.done_cb, feedback_cb=self.feedback_cb)
+        self.client.send_goal(
+            goal, done_cb=self.done_cb, feedback_cb=self.feedback_cb
+        )
 
         # Wait for the server to finish performing the action.
         self.client.wait_for_result()
@@ -148,7 +155,7 @@ class WaypointClient:
 
         if self.is_dig_cmd(self.goal):
             rospy.loginfo(
-                "Waypoint client {} received dig command!".format(
+                "Client {} received dig command!".format(
                     self.namespace + self.client_name
                 )
             )
@@ -156,7 +163,7 @@ class WaypointClient:
 
         elif self.is_charge_cmd(self.goal):
             rospy.loginfo(
-                "Waypoint client {} received charge command!".format(
+                "Client {} received charge command!".format(
                     self.namespace + self.client_name
                 )
             )
@@ -164,7 +171,7 @@ class WaypointClient:
 
         else:
             rospy.loginfo(
-                "Waypoint client {} received path from {} to {}".format(
+                "Client {} received path from {} to {}".format(
                     self.namespace + self.client_name,
                     (path[0].x, path[0].y),
                     (path[-1].x, path[-1].y),
@@ -182,7 +189,7 @@ class WaypointClient:
                 self.send_waypoint(node)
 
         rospy.loginfo(
-            "Waypoint client {} finished sending waypoints!".format(
+            "Client {} finished sending waypoints!".format(
                 self.namespace + self.client_name
             )
         )
