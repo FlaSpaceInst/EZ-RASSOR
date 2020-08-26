@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - mainline
+      - lint
+  pull_request:
+    branches:
+      - mainline
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install Pip
+        run: sudo apt install python3-pip
+
+      - name: Install linting tools
+        run: sudo pip3 install black flake8
+
+      - name: Check Black formatting
+        run: black --check .
+
+      - name: Check PEP8 compliance
+        run: flake8 .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Run integration tests
+        run: |
+          docker build -t ez-rassor_rostest -f .github/build/Dockerfile .
+          docker run ez-rassor_rostest
