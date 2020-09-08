@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='number3'>
+    <link name='link'>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>model://number1/meshes/number.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://number3/materials/scripts</uri>
+            <uri>model://number3/materials/textures</uri>
+            <name>Number/Three</name>
+          </script>
+        </material>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+    </link>
+    <static>1</static>
+    <allow_auto_disable>1</allow_auto_disable>
+  </model>
+</sdf>

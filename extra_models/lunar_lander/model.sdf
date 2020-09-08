@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="lunar_lander">
+    <pose>0 0 0.4 0 0 0</pose>
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">  
+        <geometry>
+          <cylinder>
+            <radius>3.2</radius>
+            <length>7.25</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://lunar_lander/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://lunar_lander/materials/scripts</uri>
+            <uri>model://lunar_lander/materials/textures</uri>
+            <name>lunar_lander</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
