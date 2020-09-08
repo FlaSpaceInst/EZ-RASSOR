@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="isru_processing_plant">
+    <pose>0 0 0.4 0 0 0</pose>
+    <static>true</static>
+    <link name="link">
+      <collision name='collision_2'>
+        <pose frame=''>-3 1.5 1.5 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>3</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='collision_1'>
+        <pose frame=''>2.19 1.5 1.5 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>3</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='collision_3'>
+        <pose frame=''>-0.37 -3 1.5 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.3</radius>
+            <length>3</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='collision'>
+        <pose frame=''>-0.38 -0.03 2.6 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>1.7</radius>
+            <length>3</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://isru_processing_plant/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://isru_processing_plant/materials/scripts</uri>
+            <uri>model://isru_processing_plant/materials/textures</uri>
+            <name>isru_processing_plant</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="rock2">
+    <pose>0 0 0.4 0 0 0</pose>
+    <static>true</static>
+    <link name="link">
+	  <collision name='collision'>
+        <pose frame=''>0.31 0.37 0.38 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>4.5 2.5 3</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://rock_2/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://rock_2/materials/scripts</uri>
+            <uri>model://rock_2/materials/textures</uri>
+            <name>rock/2</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
