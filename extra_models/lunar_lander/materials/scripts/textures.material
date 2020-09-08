@@ -1,0 +1,13 @@
+material lunar_lander
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture metal_aluminum_1.jpg
+      }
+    }
+  }
+}

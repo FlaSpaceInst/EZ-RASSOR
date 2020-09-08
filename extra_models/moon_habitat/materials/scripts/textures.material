@@ -1,0 +1,13 @@
+material moon_habitat
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture metal_embossed.jpg
+      }
+    }
+  }
+}

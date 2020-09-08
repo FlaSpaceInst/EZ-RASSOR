@@ -1,0 +1,13 @@
+material solar_panels
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture solar_panel.jpg
+      }
+    }
+  }
+}

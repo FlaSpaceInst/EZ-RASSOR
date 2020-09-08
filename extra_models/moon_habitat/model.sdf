@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="moon_habitat">
+    <pose>0 0 0.4 0 0 0</pose>
+    <static>true</static>
+    <link name="link">
+      <collision name='collision'>
+          <laser_retro>0</laser_retro>
+          <max_contacts>10</max_contacts>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://moon_habitat/meshes/model.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://moon_habitat/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://moon_habitat/materials/scripts</uri>
+            <uri>model://moon_habitat/materials/textures</uri>
+            <name>moon_habitat</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

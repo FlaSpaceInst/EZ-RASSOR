@@ -1,0 +1,13 @@
+material rock/4
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture lunar_soil.jpg
+      }
+    }
+  }
+}

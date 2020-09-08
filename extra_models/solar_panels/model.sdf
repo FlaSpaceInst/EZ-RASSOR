@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="solar_panels">
+    <pose>0 0 0.4 0 0 0</pose>
+    <static>true</static>
+    <link name="link">
+      <collision name='collision'>
+        <pose frame=''>7.6 1.25 0 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>13 2 3</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://solar_panels/meshes/model.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://solar_panels/materials/scripts</uri>
+            <uri>model://solar_panels/materials/textures</uri>
+            <name>solar_panels</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
