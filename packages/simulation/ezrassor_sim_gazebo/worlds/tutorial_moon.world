@@ -99,7 +99,6 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    
 
     <include>
       <name>rock_1_0</name>
@@ -132,6 +131,36 @@
     </include>
 
     <include>
+      <name>rock_4_2</name>
+      <uri>model://rock_4</uri>
+      <pose>-60.0708 -18.8017 0 0 -0 0</pose>
+    </include>
+
+    <include>
+      <name>rock_4_3</name>
+      <uri>model://rock_4</uri>
+      <pose>-73.7845 -33.3042 0 0 0.85543 0</pose>
+    </include>
+
+    <include>
+      <name>rock_4_4</name>
+      <uri>model://rock_4</uri>
+      <pose>-64.0217 -5.00256 0 0 0 -2.0233</pose>
+    </include>
+
+    <include>
+      <name>rock_4_5</name>
+      <uri>model://rock_4</uri>
+      <pose>-30.6179 7.59373 -0.1 0 0.954861 0</pose>
+    </include>
+
+    <include>
+      <name>rock_4_6</name>
+      <uri>model://rock_4</uri>
+      <pose>-66.8079 -41.3161 -0.1 0 0 -1.32203</pose>
+    </include>
+
+    <include>
       <name>rock_2_0</name>
       <uri>model://rock_2</uri>
       <pose>28 -2 0.5 0 0 0 1</pose>
@@ -144,9 +173,21 @@
     </include>
 
     <include>
-      <name>rock_2_1</name>
+      <name>rock_2_2</name>
       <uri>model://rock_2</uri>
-      <pose>-13.5 -16.7 -0.1 0 0 0 1</pose>
+      <pose>-44.3403 0.30004 -0.1 0 -0 0</pose>
+    </include>
+
+    <include>
+      <name>rock_2_3</name>
+      <uri>model://rock_2</uri>
+      <pose>-78.2724 3.00211 -0.1 0 -0 0.74589</pose>
+    </include>
+
+    <include>
+      <name>rock_2_4</name>
+      <uri>model://rock_2</uri>
+      <pose>-79.7882 -11.3205 -0.1 0 -0 0.74589</pose>
     </include>
 
     <include>
@@ -177,6 +218,12 @@
       <name>isru_processing_plant_0</name>
       <uri>model://isru_processing_plant</uri>
       <pose>-29 -29 -0.8 0 0 0 1</pose>
+    </include>
+
+    <include>
+      <name>goal</name>
+      <uri>model://wireframe_dome</uri>
+      <pose>-91.4 -31.9 -5 0 0 0</pose>
     </include>
 
     <include>
@@ -231,6 +278,6 @@
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
-    </gui> 
+    </gui>
   </world>
 </sdf>
