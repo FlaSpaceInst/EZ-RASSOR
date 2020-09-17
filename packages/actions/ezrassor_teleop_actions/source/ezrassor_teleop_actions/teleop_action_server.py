@@ -35,14 +35,26 @@ class TeleopActionServer:
         self.wheel_instructions = rospy.Publisher(
             "wheel_instructions", Twist, queue_size=1
         )
+        self.front_arm_instructions = rospy.Publisher(
+            "front_arm_instructions", Float32, queue_size=1
+        )
+        self.back_arm_instructions = rospy.Publisher(
+            "back_arm_instructions", Float32, queue_size=1
+        )
         self.front_drum_instructions = rospy.Publisher(
             "front_drum_instructions", Float32, queue_size=1
+        )
+        self.back_drum_instructions = rospy.Publisher(
+            "back_drum_instructions", Float32, queue_size=1
         )
 
         # Make sure there are subscribers on the other end
         time.sleep(5)
         self.wheel_instructions.publish(ALL_STOP)
+        self.front_arm_instructions.publish(0.0)
+        self.back_arm_instructions.publish(0.0)
         self.front_drum_instructions.publish(0.0)
+        self.back_drum_instructions.publish(0.0)
 
         # Subscribe to the link states so we can get the xy position from Gazebo
         rospy.Subscriber(
@@ -118,31 +130,53 @@ class TeleopActionServer:
         rospy.loginfo("Duration: ")
         rospy.loginfo(duration)
 
-        if operation == "forward":
+        if operation == TeleopGoal.MOVE_FORWARD_OPERATION:
             msg.linear.x = 1
             self.wheel_instructions.publish(msg)
 
-        elif operation == "backward":
+        elif operation == TeleopGoal.MOVE_BACKWARD_OPERATION:
             msg.linear.x = -1
             self.wheel_instructions.publish(msg)
 
-        elif operation == "left":
+        elif operation == TeleopGoal.ROTATE_LEFT_OPERATION:
             msg.angular.z = 1
             self.wheel_instructions.publish(msg)
 
-        elif operation == "right":
+        elif operation == TeleopGoal.ROTATE_RIGHT_OPERATION:
             msg.angular.z = -1
             self.wheel_instructions.publish(msg)
 
-        elif operation == "dig":
+        elif operation == TeleopGoal.RAISE_FRONT_ARM_OPERATION:
+            self.front_arm_instructions.publish(1.0)
+
+        elif operation == TeleopGoal.LOWER_FRONT_ARM_OPERATION:
+            self.front_arm_instructions.publish(-1.0)
+
+        elif operation == TeleopGoal.RAISE_BACK_ARM_OPERATION:
+            self.back_arm_instructions.publish(1.0)
+
+        elif operation == TeleopGoal.LOWER_BACK_ARM_OPERATION:
+            self.back_arm_instructions.publish(-1.0)
+
+        elif operation == TeleopGoal.DIG_FRONT_DRUM_OPERATION:
             self.front_drum_instructions.publish(1.0)
 
-        elif operation == "dump":
+        elif operation == TeleopGoal.DUMP_FRONT_DRUM_OPERATION:
             self.front_drum_instructions.publish(-1.0)
+
+        elif operation == TeleopGoal.DIG_BACK_DRUM_OPERATION:
+            self.back_drum_instructions.publish(1.0)
+
+        elif operation == TeleopGoal.DUMP_BACK_DRUM_OPERATION:
+            self.back_drum_instructions.publish(-1.0)
 
         else:
             # Otherwise, we must be stopping
             self.wheel_instructions.publish(ALL_STOP)
+            self.front_arm_instructions.publish(0.0)
+            self.back_arm_instructions.publish(0.0)
+            self.front_drum_instructions.publish(0.0)
+            self.back_drum_instructions.publish(0.0)
 
         # Time counter
         self._counter = 0
@@ -181,7 +215,10 @@ class TeleopActionServer:
 
         # Stop the robot after every action
         self.wheel_instructions.publish(ALL_STOP)
+        self.front_arm_instructions.publish(0.0)
+        self.back_arm_instructions.publish(0.0)
         self.front_drum_instructions.publish(0.0)
+        self.back_drum_instructions.publish(0.0)
 
         # Result
         result = TeleopResult()
