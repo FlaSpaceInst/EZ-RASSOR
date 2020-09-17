@@ -21,11 +21,11 @@ class TeleopActionClient:
         self._client.wait_for_server()
         rospy.loginfo("Connected to Teleop Action Server.")
 
-    def read_instructions(file):
+    def read_instructions(self, instructions_file):
         """Parse in a text file to identify new goals.
         Lines that start with # are considered comments and are ignored."""
         actions = []
-        with open(file, "r") as reader:
+        with open(instructions_file, "r") as reader:
             for line in reader.readlines():
                 if line.startswith("#"):
                     continue
@@ -46,12 +46,18 @@ class TeleopActionClient:
             return False
 
         valid_operations = [
-            "forward",
-            "backward",
-            "left",
-            "right",
-            "dig",
-            "dump",
+            TeleopGoal.MOVE_FORWARD_OPERATION,
+            TeleopGoal.MOVE_BACKWARD_OPERATION,
+            TeleopGoal.ROTATE_LEFT_OPERATION,
+            TeleopGoal.ROTATE_RIGHT_OPERATION,
+            TeleopGoal.RAISE_FRONT_ARM_OPERATION,
+            TeleopGoal.LOWER_FRONT_ARM_OPERATION,
+            TeleopGoal.RAISE_BACK_ARM_OPERATION,
+            TeleopGoal.LOWER_BACK_ARM_OPERATION,
+            TeleopGoal.DUMP_FRONT_DRUM_OPERATION,
+            TeleopGoal.DIG_FRONT_DRUM_OPERATION,
+            TeleopGoal.DUMP_BACK_DRUM_OPERATION,
+            TeleopGoal.DIG_BACK_DRUM_OPERATION,
         ]
 
         # Validate every single action
@@ -130,11 +136,11 @@ if __name__ == "__main__":
         rospy.logerr("Please provide a file to the client script...")
         exit(0)
 
-    file = sys.argv[1]
+    instructions_file = sys.argv[1]
 
     client = TeleopActionClient()
 
-    actions = client.read_instructions(file)
+    actions = client.read_instructions(instructions_file)
     if not client.validate(actions):
         rospy.logerr("Exiting client...")
         exit(0)
