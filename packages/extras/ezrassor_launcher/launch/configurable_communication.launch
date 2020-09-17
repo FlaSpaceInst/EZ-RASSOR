@@ -47,12 +47,11 @@
 
   <group if="$(eval 'autonomy' in control_methods)">
 
-    <!-- This group sets up dual mode. It launches the controller server and/or
-         the Joy translator and/or keyboard with separate "manual" topics, and
-         it also launches autonomous control with separate "autonomous" topics.
-         Finally, it launches all necessary topic switches which handle flipping
-         between the two modes. -->
-    <group if="$(eval 'gamepad' in control_methods or 'keyboard' in control_methods or 'app' in control_methods)">
+    <!-- This group sets up dual mode. It launches manual controllers with
+         separate "manual" topics, and it also launches autonomous control with
+         separate "autonomous" topics. Finally, it launches all necessary topic
+         switches which handle flipping between the two modes. -->
+    <group if="$(eval 'gamepad' in control_methods or 'keyboard' in control_methods or 'actions' in control_methods or 'app' in control_methods)">
       <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
                if="$(eval 'gamepad' in control_methods)">
         <arg name="joystick" value="$(arg joystick)"/>
@@ -69,6 +68,19 @@
       </include>
       <include file="$(find ezrassor_keyboard_controller)/launch/keyboard_controller.launch"
                if="$(eval 'keyboard' in control_methods)">
+        <arg name="wheel_instructions_topic"
+             value="$(arg manual_wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg manual_front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg manual_back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg manual_front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg manual_back_drum_instructions_topic)"/>
+      </include>
+      <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
+               if="$(eval 'actions' in control_methods)">
         <arg name="wheel_instructions_topic"
              value="$(arg manual_wheel_instructions_topic)"/>
         <arg name="front_arm_instructions_topic"
@@ -175,7 +187,7 @@
          directs it to publish directly to the main instruction topics (no topic
          switches required). -->
     </group>
-    <group unless="$(eval 'gamepad' in control_methods or 'keyboard' in control_methods or 'app' in control_methods)">
+    <group unless="$(eval 'gamepad' in control_methods or 'keyboard' in control_methods or 'actions' in control_methods or 'app' in control_methods)">
       <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
         <arg name="wheel_instructions_topic"
              value="$(arg wheel_instructions_topic)"/>
@@ -215,9 +227,9 @@
     </group>
   </group>
 
-  <!-- This group sets up manual mode. It launches the controller server and/or
-       the Joy translator and/or the keyboard and directs these nodes to publish
-       directly to the main instruction topics (no topic switches required). -->
+  <!-- This group sets up manual mode. It launches manual controllers which
+       publish directly to the main instruction topics (no topic switches
+       required). -->
   <group unless="$(eval 'autonomy' in control_methods)">
     <include file="$(find ezrassor_joy_translator)/launch/joy_translator.launch"
              if="$(eval 'gamepad' in control_methods)">
@@ -230,6 +242,19 @@
     </include>
     <include file="$(find ezrassor_keyboard_controller)/launch/keyboard_controller.launch"
              if="$(eval 'keyboard' in control_methods)">
+      <arg name="wheel_instructions_topic"
+           value="$(arg wheel_instructions_topic)"/>
+      <arg name="front_arm_instructions_topic"
+           value="$(arg front_arm_instructions_topic)"/>
+      <arg name="back_arm_instructions_topic"
+           value="$(arg back_arm_instructions_topic)"/>
+      <arg name="front_drum_instructions_topic"
+           value="$(arg front_drum_instructions_topic)"/>
+      <arg name="back_drum_instructions_topic"
+           value="$(arg back_drum_instructions_topic)"/>
+    </include>
+    <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
+             if="$(eval 'actions' in control_methods)">
       <arg name="wheel_instructions_topic"
            value="$(arg wheel_instructions_topic)"/>
       <arg name="front_arm_instructions_topic"

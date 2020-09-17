@@ -66,9 +66,6 @@
 
     <!-- Launch the model controls. -->
     <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
-    <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
-             if="$(eval 'actions' in control_methods)"/>
-
   </group>
 
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
@@ -120,6 +117,5 @@
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
     <arg name="enable_park_ranger" value="$(arg enable_park_ranger)"/>
-    <arg name="world" value="$(arg world)"/>
   </include>
 </launch>

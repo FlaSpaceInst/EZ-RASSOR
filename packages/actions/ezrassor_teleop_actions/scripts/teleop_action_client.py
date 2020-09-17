@@ -15,7 +15,7 @@ class TeleopActionClient:
 
         # ROS Actionlib Library
         self._client = actionlib.SimpleActionClient(
-            "/teleop_action_server", TeleopAction
+            "teleop_action_server", TeleopAction
         )
 
         self._client.wait_for_server()
