@@ -15,11 +15,11 @@ jobs:
       - name: Pull repository
         uses: actions/checkout@v2
 
-      - name: Install Pip
-        run: sudo apt install python3-pip
+      - name: Set up Python
+        uses: actions/setup-python@v2
 
       - name: Install linting tools
-        run: sudo pip3 install black flake8
+        run: python -m pip install --upgrade pip black flake8
 
       - name: Check Black formatting
         run: black --check .
