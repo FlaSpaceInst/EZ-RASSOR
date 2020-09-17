@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  <arg name="wheel_instructions_topic"/>
+  <arg name="front_arm_instructions_topic"/>
+  <arg name="back_arm_instructions_topic"/>
+  <arg name="front_drum_instructions_topic"/>
+  <arg name="back_drum_instructions_topic"/>
 
   <node name="teleop_action_server"
         pkg="ezrassor_teleop_actions"
         type="teleop_action_server"
         output="screen">
+    <param name="wheel_instructions_topic"
+           value="$(arg wheel_instructions_topic)"/>
+    <param name="front_arm_instructions_topic"
+           value="$(arg front_arm_instructions_topic)"/>
+    <param name="back_arm_instructions_topic"
+           value="$(arg back_arm_instructions_topic)"/>
+    <param name="front_drum_instructions_topic"
+           value="$(arg front_drum_instructions_topic)"/>
+    <param name="back_drum_instructions_topic"
+           value="$(arg back_drum_instructions_topic)"/>
   </node>
-
 </launch>

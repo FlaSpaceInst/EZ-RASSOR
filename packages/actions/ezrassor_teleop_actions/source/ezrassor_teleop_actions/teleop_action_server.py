@@ -16,6 +16,7 @@ from std_msgs.msg import Float32
 from tf import transformations
 
 ALL_STOP = Twist()
+QUEUE_SIZE = 10
 
 
 class TeleopActionServer:
@@ -23,7 +24,7 @@ class TeleopActionServer:
 
         # ROS Actionlib Library
         self._server = actionlib.SimpleActionServer(
-            "/teleop_action_server",
+            "teleop_action_server",
             TeleopAction,
             execute_cb=self.on_goal,
             auto_start=False,
@@ -33,19 +34,31 @@ class TeleopActionServer:
 
         # Set up publishers
         self.wheel_instructions = rospy.Publisher(
-            "wheel_instructions", Twist, queue_size=1
+            rospy.get_param(rospy.get_name() + "/wheel_instructions_topic"),
+            Twist,
+            queue_size=QUEUE_SIZE,
         )
         self.front_arm_instructions = rospy.Publisher(
-            "front_arm_instructions", Float32, queue_size=1
+            rospy.get_param(rospy.get_name() + "/front_arm_instructions_topic"),
+            Float32,
+            queue_size=QUEUE_SIZE,
         )
         self.back_arm_instructions = rospy.Publisher(
-            "back_arm_instructions", Float32, queue_size=1
+            rospy.get_param(rospy.get_name() + "/back_arm_instructions_topic"),
+            Float32,
+            queue_size=QUEUE_SIZE,
         )
         self.front_drum_instructions = rospy.Publisher(
-            "front_drum_instructions", Float32, queue_size=1
+            rospy.get_param(
+                rospy.get_name() + "/front_drum_instructions_topic"
+            ),
+            Float32,
+            queue_size=QUEUE_SIZE,
         )
         self.back_drum_instructions = rospy.Publisher(
-            "back_drum_instructions", Float32, queue_size=1
+            rospy.get_param(rospy.get_name() + "/back_drum_instructions_topic"),
+            Float32,
+            queue_size=QUEUE_SIZE,
         )
 
         # Make sure there are subscribers on the other end
@@ -63,6 +76,11 @@ class TeleopActionServer:
 
         # Init the timer counter
         self._counter = 0
+
+        # Initialize positional/state data.
+        self.x = 0
+        self.y = 0
+        self.heading = ""
 
         # Give a success message!
         rospy.loginfo("EZRASSOR Teleop Action Server has been started")
