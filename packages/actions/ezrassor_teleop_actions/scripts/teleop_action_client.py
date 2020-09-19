@@ -1,11 +1,18 @@
 #!/usr/bin/env python
-
+import os
 import sys
-import rospy
-import actionlib
-
 from ezrassor_teleop_msgs.msg import TeleopAction
 from ezrassor_teleop_msgs.msg import TeleopGoal
+
+if "ROS_NAMESPACE" not in os.environ:
+    """The action server is attached to a particular ezrassor namespace.
+    In order for the client to work, it has to have a default value of being
+    on the ezrassor1 namespace."""
+    os.environ["ROS_NAMESPACE"] = TeleopGoal.DEFAULT_NAMESPACE
+
+# ROS_NAMESPACE must be set before importing rospy
+import rospy
+import actionlib
 
 
 class TeleopActionClient:

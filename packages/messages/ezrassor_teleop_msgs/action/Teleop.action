@@ -1,4 +1,5 @@
 # TeleopGoal
+string DEFAULT_NAMESPACE=ezrassor1
 string MOVE_FORWARD_OPERATION=move-forward
 string MOVE_BACKWARD_OPERATION=move-backward
 string ROTATE_LEFT_OPERATION=rotate-left
