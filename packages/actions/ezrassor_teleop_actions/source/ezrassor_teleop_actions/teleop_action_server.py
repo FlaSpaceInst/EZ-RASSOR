@@ -22,6 +22,9 @@ QUEUE_SIZE = 10
 class TeleopActionServer:
     def __init__(self):
 
+        # Initial assumption is that the server is not currently executing any operation
+        self.executing_goal = False
+
         # ROS Actionlib Library
         self._server = actionlib.SimpleActionServer(
             "teleop_action_server",
@@ -126,6 +129,10 @@ class TeleopActionServer:
         euler = transformations.euler_from_quaternion(quaternion)
         return euler[2]
 
+    def execution_timer_callback(self, event):
+        """If this callback is called, it is to stop execution"""
+        self.executing_goal = False
+
     def on_goal(self, goal):
         """Define all of the scenarios for handling a new goal from an action client."""
 
@@ -135,6 +142,8 @@ class TeleopActionServer:
             rospy.logerr("Unknown goal received")
             self._server.set_aborted(result)  # Returns failure
             return
+
+        self.executing_goal = True
 
         msg = Twist()
 
@@ -199,62 +208,63 @@ class TeleopActionServer:
         # Time counter
         self._counter = 0
 
-        success = False
-        preempted = False
+        # Start new timer for operation
+        rospy.Timer(
+            rospy.Duration(duration),
+            self.execution_timer_callback,
+            oneshot=True,
+        )
+        t0 = time.time()
 
         # Feedback
-        while not rospy.is_shutdown():
-            self._counter += 1
+        while not rospy.is_shutdown() and self.executing_goal:
 
-            rospy.loginfo("Counter: ")
-            rospy.loginfo(self._counter)
+            elapsed = time.time() - t0
+            rospy.loginfo("Elapsed (seconds): ")
+            rospy.loginfo(elapsed)
 
             rospy.loginfo("Duration: ")
             rospy.loginfo(duration)
 
-            # If the client asks for a cancel
             if self._server.is_preempt_requested():
-                preempted = True
-                break
-
-            # Success condition
-            if self._counter > duration:
-                success = True
-                break
+                rospy.loginfo("Preempted")
+                self.executing_goal = False
+                self._server.set_preempted(result)
+                return
 
             feedback = TeleopFeedback()
-
             feedback.x = self.x
             feedback.y = self.y
             feedback.heading = str("{} degrees".format(self.heading))
+            try:
+                self._server.publish_feedback(feedback)
+            except rospy.ROSException:
+                self._server.set_aborted(
+                    None, text="Unable to publish feedback. Has ROS stopped?"
+                )
+                return
 
-            self._server.publish_feedback(feedback)
-            time.sleep(1)
-
-        # Stop the robot after every action
-        self.wheel_instructions.publish(ALL_STOP)
-        self.front_arm_instructions.publish(0.0)
-        self.back_arm_instructions.publish(0.0)
-        self.front_drum_instructions.publish(0.0)
-        self.back_drum_instructions.publish(0.0)
+        try:
+            # Stop the robot after every action
+            self.wheel_instructions.publish(ALL_STOP)
+            self.front_arm_instructions.publish(0.0)
+            self.back_arm_instructions.publish(0.0)
+            self.front_drum_instructions.publish(0.0)
+            self.back_drum_instructions.publish(0.0)
+        except rospy.ROSException:
+            self._server.set_aborted(
+                None, text="Unable to publish all stop. Has ROS stopped?"
+            )
+            return
 
         # Result
         result = TeleopResult()
         result.x = self.x
         result.y = self.y
 
-        # Preempted means that a cancel command was issued from the client
-        if preempted:
-            rospy.loginfo("Preempted")
-            self._server.set_preempted(result)
         # Return success result to the client
-        elif success:
-            rospy.loginfo("Success")
-            self._server.set_succeeded(result)
-        # Return failure result to the client
-        else:
-            rospy.loginfo("Failure")
-            self._server.set_aborted(result)
+        rospy.loginfo("Success")
+        self._server.set_succeeded(result)
 
 
 def start_node():
