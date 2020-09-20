@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 import os
-import sys
 from ezrassor_teleop_msgs.msg import TeleopAction
 from ezrassor_teleop_msgs.msg import TeleopGoal
 
@@ -135,23 +133,3 @@ class TeleopActionClient:
     def feedback_callback(self, feedback):
         """Feedback comes formatted from the action server."""
         rospy.loginfo(feedback)
-
-
-if __name__ == "__main__":
-
-    if len(sys.argv) <= 1:
-        rospy.logerr("Please provide a file to the client script...")
-        exit(0)
-
-    instructions_file = sys.argv[1]
-
-    client = TeleopActionClient()
-
-    actions = client.read_instructions(instructions_file)
-    if not client.validate(actions):
-        rospy.logerr("Exiting client...")
-        exit(0)
-
-    client.send_movement_goal(actions)
-
-    rospy.loginfo("Actions completed. Closing client...")

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import rospy
 import actionlib
 import time
@@ -22,6 +20,9 @@ QUEUE_SIZE = 10
 class TeleopActionServer:
     def __init__(self):
 
+        # Create a new action server node
+        rospy.init_node("teleop_action_server")
+
         # Initial assumption is that the server is not currently executing any operation
         self.executing_goal = False
 
@@ -32,8 +33,6 @@ class TeleopActionServer:
             execute_cb=self.on_goal,
             auto_start=False,
         )
-
-        self._server.start()
 
         # Set up publishers
         self.wheel_instructions = rospy.Publisher(
@@ -86,7 +85,12 @@ class TeleopActionServer:
         self.heading = ""
 
         # Give a success message!
-        rospy.loginfo("EZRASSOR Teleop Action Server has been started")
+        rospy.loginfo("EZRASSOR Teleop Action Server has been initialized")
+
+    def spin(self):
+        """Start the node"""
+        self._server.start()
+        rospy.spin()
 
     def gazebo_state_callback(self, data):
         """Saves the Gazebo link state (position) data for use in the server.
@@ -265,15 +269,3 @@ class TeleopActionServer:
         # Return success result to the client
         rospy.loginfo("Success")
         self._server.set_succeeded(result)
-
-
-def start_node():
-
-    # Create a new action server node
-    rospy.init_node("teleop_action_server")
-
-    # Attach a new action server to the node
-    TeleopActionServer()
-
-    # Keep the node alive
-    rospy.spin()
