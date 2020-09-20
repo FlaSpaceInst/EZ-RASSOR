@@ -1,4 +1,5 @@
 #!/usr/bin/env python
-import ezrassor_teleop_actions
+from ezrassor_teleop_actions import TeleopActionServer
 
-ezrassor_teleop_actions.teleop_action_server.start_node()
+server = TeleopActionServer()
+server.spin()
