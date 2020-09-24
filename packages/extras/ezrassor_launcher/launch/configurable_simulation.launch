@@ -9,6 +9,9 @@
   <arg name="spawn_x_coords" default="default"/>
   <arg name="spawn_y_coords" default="default"/>
   <arg name="spawn_z_coords" default="default"/>
+  <arg name="spawn_roll" default="default"/>
+  <arg name="spawn_pitch" default="default"/>
+  <arg name="spawn_yaw" default="default"/>
   <arg name="digsite_x_coords" default="default"/>
   <arg name="digsite_y_coords" default="default"/>
   <arg name="world" default="default"/>
@@ -62,6 +65,15 @@
       <arg name="spawn_z_coord"
            value="$(eval str(spawn_z_coords).split()[robot_count - 1])"
            unless="$(eval spawn_z_coords == 'default')"/>
+      <arg name="roll"
+           value="$(eval str(spawn_roll).split()[robot_count - 1])"
+           unless="$(eval spawn_roll == 'default')"/>
+      <arg name="pitch"
+           value="$(eval str(spawn_pitch).split()[robot_count - 1])"
+           unless="$(eval spawn_pitch == 'default')"/>
+      <arg name="yaw"
+           value="$(eval str(spawn_yaw).split()[robot_count - 1])"
+           unless="$(eval spawn_yaw == 'default')"/>
     </include>
 
     <!-- Launch the model controls. -->

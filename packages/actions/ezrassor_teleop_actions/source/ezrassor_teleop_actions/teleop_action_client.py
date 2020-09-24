@@ -1,14 +1,6 @@
-import os
 from ezrassor_teleop_msgs.msg import TeleopAction
 from ezrassor_teleop_msgs.msg import TeleopGoal
 
-if "ROS_NAMESPACE" not in os.environ:
-    """The action server is attached to a particular ezrassor namespace.
-    In order for the client to work, it has to have a default value of being
-    on the ezrassor1 namespace."""
-    os.environ["ROS_NAMESPACE"] = TeleopGoal.DEFAULT_NAMESPACE
-
-# ROS_NAMESPACE must be set before importing rospy
 import rospy
 import actionlib
 
@@ -23,7 +15,15 @@ class TeleopActionClient:
             "teleop_action_server", TeleopAction
         )
 
-        self._client.wait_for_server()
+        connected = self._client.wait_for_server(timeout=rospy.Duration(3))
+        if not connected:
+            rospy.logerr("Unable to connect to Teleop Action Server.")
+            rospy.logerr(
+                "Ensure the action server is running and"
+                + " you have the ROS_NAMESPACE env var set"
+                + " to the namespace of your action server."
+            )
+            return
         rospy.loginfo("Connected to Teleop Action Server.")
 
     def read_instructions(self, instructions_file):
