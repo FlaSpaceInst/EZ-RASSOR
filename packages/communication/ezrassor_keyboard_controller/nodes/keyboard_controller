@@ -2,6 +2,7 @@
 """Publish EZRASSOR commands with a keyboard."""
 import ezrassor_keyboard_controller
 import geometry_msgs.msg
+import pynput
 import Queue
 import rospy
 import std_msgs.msg
@@ -97,10 +98,18 @@ AUTONOMOUS_TOGGLE_HANDLERS = {
     None: lambda: None,
 }
 WHEEL_HANDLERS = {
-    "a": lambda: publish_wheel_instruction(WHEELS_LEFT_INSTRUCTION),
-    "s": lambda: publish_wheel_instruction(WHEELS_BACKWARD_INSTRUCTION),
-    "w": lambda: publish_wheel_instruction(WHEELS_FORWARD_INSTRUCTION),
-    "d": lambda: publish_wheel_instruction(WHEELS_RIGHT_INSTRUCTION),
+    pynput.keyboard.Key.left.name: lambda: publish_wheel_instruction(
+        WHEELS_LEFT_INSTRUCTION
+    ),
+    pynput.keyboard.Key.down.name: lambda: publish_wheel_instruction(
+        WHEELS_BACKWARD_INSTRUCTION
+    ),
+    pynput.keyboard.Key.up.name: lambda: publish_wheel_instruction(
+        WHEELS_FORWARD_INSTRUCTION
+    ),
+    pynput.keyboard.Key.right.name: lambda: publish_wheel_instruction(
+        WHEELS_RIGHT_INSTRUCTION
+    ),
     None: lambda: publish_wheel_instruction(WHEELS_STOP_INSTRUCTION),
 }
 FRONT_ARM_HANDLERS = {
