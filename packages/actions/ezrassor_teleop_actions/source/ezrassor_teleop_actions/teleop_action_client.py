@@ -15,7 +15,7 @@ class TeleopActionClient:
             "teleop_action_server", TeleopAction
         )
 
-        connected = self._client.wait_for_server(timeout=rospy.Duration(3))
+        connected = self._client.wait_for_server(timeout=rospy.Duration(5))
         if not connected:
             rospy.logerr("Unable to connect to Teleop Action Server.")
             rospy.logerr(
@@ -63,6 +63,7 @@ class TeleopActionClient:
             TeleopGoal.DIG_FRONT_DRUM_OPERATION,
             TeleopGoal.DUMP_BACK_DRUM_OPERATION,
             TeleopGoal.DIG_BACK_DRUM_OPERATION,
+            TeleopGoal.STOP_OPERATION,
         ]
 
         # Validate every single action

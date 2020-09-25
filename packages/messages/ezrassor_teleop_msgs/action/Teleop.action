@@ -11,6 +11,7 @@ string DUMP_FRONT_DRUM_OPERATION=dump-front-drum
 string DIG_FRONT_DRUM_OPERATION=dig-front-drum
 string DUMP_BACK_DRUM_OPERATION=dump-back-drum
 string DIG_BACK_DRUM_OPERATION=dig-back-drum
+string STOP_OPERATION=stop
 string operation
 float64 duration
 ---
