@@ -11,6 +11,7 @@ catkin_package()
 catkin_python_setup()
 catkin_install_python(
     PROGRAMS
+        scripts/process_actions
         nodes/teleop_action_server
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
