@@ -59,7 +59,7 @@ diff_drive_controller:
       min_velocity           : -1.0 # m/s
 
       has_acceleration_limits: true
-      max_acceleration       : 5.0  # m/s^2
-      min_acceleration       : -5.0 # m/s^2
+      max_acceleration       : 1.0  # m/s^2
+      min_acceleration       : -1.0 # m/s^2
 
   # Could also include for constraints for angular but linear caps ensure rover doesn't rotate too fast
