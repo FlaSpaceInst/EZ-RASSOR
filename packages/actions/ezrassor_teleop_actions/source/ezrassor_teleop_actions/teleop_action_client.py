@@ -1,8 +1,9 @@
 from ezrassor_teleop_msgs.msg import TeleopAction
 from ezrassor_teleop_msgs.msg import TeleopGoal
 
-import rospy
 import actionlib
+import rospy
+import time
 
 
 class TeleopActionClient:
@@ -14,6 +15,11 @@ class TeleopActionClient:
         self._client = actionlib.SimpleActionClient(
             "teleop_action_server", TeleopAction
         )
+
+        # wait_for_server() occasionally fails instantly despite being given
+        # a timeout. To prevent these failures we briefly sleep before waiting.
+        # Hopefully this will be fixed in ROS 2.
+        time.sleep(1)
 
         connected = self._client.wait_for_server(timeout=rospy.Duration(5))
         if not connected:
