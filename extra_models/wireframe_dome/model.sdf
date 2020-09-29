@@ -16,7 +16,7 @@
         <geometry>
           <mesh>
             <uri>model://wireframe_dome/meshes/model.dae</uri>
-            <scale>7 7 7</scale>
+            <scale>20 20 20</scale>
           </mesh>
         </geometry>
         <material>
