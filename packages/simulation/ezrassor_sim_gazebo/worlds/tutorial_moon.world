@@ -72,7 +72,7 @@
     <include>
       <name>rock_4_3</name>
       <uri>model://rock_4</uri>
-      <pose>-73.7845 -33.3042 0 0 0.85543 0</pose>
+      <pose>-73.7845 -33.3042 -0.1 0 0 0</pose>
     </include>
 
     <include>
@@ -84,7 +84,7 @@
     <include>
       <name>rock_4_5</name>
       <uri>model://rock_4</uri>
-      <pose>-30.6179 7.59373 -0.1 0 0.954861 0</pose>
+      <pose>-30.6179 7.59373 -0.1 0 0 0</pose>
     </include>
 
     <include>
@@ -96,7 +96,7 @@
     <include>
       <name>rock_2_0</name>
       <uri>model://rock_2</uri>
-      <pose>28 -2 0.5 0 0 0 1</pose>
+      <pose>28 -2 -0.1 0 0 0 1</pose>
     </include>
 
     <include>
@@ -126,7 +126,7 @@
     <include>
       <name>lunar_lander_0</name>
       <uri>model://lunar_lander</uri>
-      <pose>1 -1 0 0 0 0 1</pose>
+      <pose>11 -12 0 0 0 0 1</pose>
     </include>
 
     <include>
@@ -144,19 +144,19 @@
     <include>
       <name>solar_panels_0</name>
       <uri>model://solar_panels</uri>
-      <pose>-52 -30 0.4 0 0 0 1</pose>
+      <pose>-52 -30 -0.01 0 0 0 1</pose>
     </include>
 
     <include>
       <name>solar_panels_1</name>
       <uri>model://solar_panels</uri>
-      <pose>-52 -34 0.4 0 0 0 1</pose>
+      <pose>-52 -34 -0.01 0 0 0 1</pose>
     </include>
 
     <include>
       <name>solar_panels_2</name>
       <uri>model://solar_panels</uri>
-      <pose>-52 -38 0.4 0 0 0 1</pose>
+      <pose>-52 -38 -0.01 0 0 0 1</pose>
     </include>
 
     <include>

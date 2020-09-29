@@ -4,12 +4,13 @@
     <pose>0 0 0.4 0 0 0</pose>
     <static>true</static>
     <link name="link">
-	  <collision name='collision'>
-        <pose frame=''>0.24 0.3 0.9 0 0 0</pose>
+	    <collision name='collision'>
+        <pose frame=''>.2 .3 .3 0 1.55 0</pose>
         <geometry>
-          <box>
-            <size>4 2.5 1.8</size>
-          </box>
+          <cylinder>
+            <radius>1.1</radius>
+            <length>2.8</length>
+          </cylinder>
         </geometry>
       </collision>
       <visual name="visual">
