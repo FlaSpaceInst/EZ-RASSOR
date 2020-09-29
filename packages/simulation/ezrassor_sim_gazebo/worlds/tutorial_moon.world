@@ -138,7 +138,7 @@
     <include>
       <name>goal</name>
       <uri>model://wireframe_dome</uri>
-      <pose>-91.4 -31.9 -5 0 0 0</pose>
+      <pose>-91.4 -31.9 -14.07 0 0 0</pose>
     </include>
 
     <include>
@@ -176,7 +176,7 @@
       <real_time>311 661025296</real_time>
       <wall_time>1554701956 216832245</wall_time>
       <iterations>30978</iterations>
-      <model name='apollo15_landing_site_1000x1000'>
+      <model name='flat_moon'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>

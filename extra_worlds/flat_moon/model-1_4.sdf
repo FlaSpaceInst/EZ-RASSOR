@@ -1,35 +1,48 @@
 <?xml version="1.0" ?>
 <sdf version="1.4">
   <model name="flat_moon">
-    <static>true</static>
-    <link name="link">
-      <collision name="collision">
+    <static>1</static>
+    <link name='link'>
+      <collision name='collision'>
         <surface>
           <friction>
-          <ode>
-            <mu>0.2</mu>
-          </ode>
+            <ode>
+              <mu>30</mu>
+            </ode>
+            <torsional>
+              <ode/>
+            </torsional>
           </friction>
           <contact>
-          <ode>
-            <soft_cfm>1</soft_cfm>
-            <kp>100000</kp>
-            <kd>1</kd>
-            <max_vel>0.000001</max_vel>
-            <min_depth>0.02</min_depth>
-          </ode>
+            <ode>
+              <soft_cfm>1</soft_cfm>
+              <kp>100000</kp>
+              <kd>1</kd>
+              <max_vel>1e-06</max_vel>
+              <min_depth>0.02</min_depth>
+            </ode>
           </contact>
+          <bounce/>
         </surface>
         <geometry>
           <heightmap>
             <uri>model://flat_moon/materials/textures/flat_heightmap.png</uri>
             <size>514 514 49</size>
             <pos>0 0 -48.9</pos>
+            <texture>
+              <size>10</size>
+              <diffuse>__default__</diffuse>
+              <normal>__default__</normal>
+            </texture>
+            <blend>
+              <min_height>0</min_height>
+              <fade_dist>0</fade_dist>
+            </blend>
           </heightmap>
         </geometry>
+        <max_contacts>10</max_contacts>
       </collision>
-
-      <visual name="visual">
+      <visual name='visual'>
         <geometry>
           <heightmap>
             <texture>
@@ -40,10 +53,16 @@
             <uri>model://flat_moon/materials/textures/flat_heightmap.png</uri>
             <size>514 514 49</size>
             <pos>0 0 -48.9</pos>
+            <blend>
+              <min_height>0</min_height>
+              <fade_dist>0</fade_dist>
+            </blend>
           </heightmap>
         </geometry>
       </visual>
-
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
     </link>
   </model>
 </sdf>
