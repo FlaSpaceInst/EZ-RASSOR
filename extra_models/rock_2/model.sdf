@@ -4,12 +4,22 @@
     <pose>0 0 0.4 0 0 0</pose>
     <static>true</static>
     <link name="link">
-	  <collision name='collision'>
-        <pose frame=''>0.31 0.37 0.38 0 0 0</pose>
+      <collision name='collision1'>
+        <pose frame=''>-.3 .4 .3 0 1.55 -.15</pose>
         <geometry>
-          <box>
-            <size>4.5 2.5 3</size>
-          </box>
+          <cylinder>
+            <radius>1.0</radius>
+            <length>2.0</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name="collision2">
+        <pose frame=''>1.2 .1 .3 0 1.55 -.15</pose>
+        <geometry>
+          <cylinder>
+            <radius>.7</radius>
+            <length>1.8</length>
+          </cylinder>
         </geometry>
       </collision>
       <visual name="visual">
