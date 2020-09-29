@@ -154,12 +154,11 @@ class TeleopActionServer:
         operation = goal.operation
         duration = goal.duration
 
-        rospy.loginfo("New goal received!")
-        rospy.loginfo("Action: ")
-        rospy.loginfo(operation)
-
-        rospy.loginfo("Duration: ")
-        rospy.loginfo(duration)
+        rospy.loginfo(
+            "new action: %s, duration: %f",
+            operation,
+            duration,
+        )
 
         if operation == TeleopGoal.MOVE_FORWARD_OPERATION:
             msg.linear.x = 1
@@ -224,11 +223,12 @@ class TeleopActionServer:
         while not rospy.is_shutdown() and self.executing_goal:
 
             elapsed = time.time() - t0
-            rospy.loginfo("Elapsed (seconds): ")
-            rospy.loginfo(elapsed)
-
-            rospy.loginfo("Duration: ")
-            rospy.loginfo(duration)
+            rospy.loginfo(
+                "operation: %s, duration: %f, elapsed: %f",
+                operation,
+                duration,
+                elapsed,
+            )
 
             if self._server.is_preempt_requested():
                 rospy.loginfo("Preempted")
