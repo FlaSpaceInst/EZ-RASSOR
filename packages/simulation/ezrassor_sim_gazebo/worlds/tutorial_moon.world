@@ -138,7 +138,7 @@
     <include>
       <name>goal</name>
       <uri>model://wireframe_dome</uri>
-      <pose>-91.4 -31.9 -14.07 0 0 0</pose>
+      <pose>-110 4 -14.07 0 0 0</pose>
     </include>
 
     <include>
