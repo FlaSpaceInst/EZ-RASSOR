@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="tutorial"/>
+
+  <!-- Launch the direct operation tutorial for IROS. -->
+  <group if="$(eval tutorial == 'iros1')">
+    <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+      <arg name="control_methods" value="keyboard"/>
+      <arg name="world" value="tutorial_moon"/>
+      <arg name="spawn_yaw" default="3.1"/>
+    </include>
+  </group>
+
+  <!-- Launch the delayed teleoperation tutorial for IROS. -->
+  <group if="$(eval tutorial == 'iros2')">
+    <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+      <arg name="control_methods" value="actions"/>
+      <arg name="world" value="tutorial_moon"/>
+      <arg name="spawn_yaw" default="3.1"/>
+    </include>
+  </group>
+
+  <!-- Launch the autonomous operation tutorial for IROS. -->
+  <group if="$(eval tutorial == 'iros3')">
+    <include file="$(find ezrassor_launcher)/launch/configurable_simulation.launch">
+      <arg name="control_methods" value="keyboard autonomy"/>
+      <arg name="world" value="tutorial_moon"/>
+      <arg name="digsite_x_coords" value="-91.5"/>
+      <arg name="digsite_y_coords" value="-51.5"/>
+      <arg name="spawn_yaw" default="3.1"/>
+    </include>
+  </group>
+</launch>
