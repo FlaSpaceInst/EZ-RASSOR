@@ -4,19 +4,11 @@
     <pose>0 0 0.4 0 0 0</pose>
     <static>true</static>
     <link name="link">
-      <collision name="collision">
-        <geometry>
-          <cylinder>
-            <radius>3.2</radius>
-            <length>7.25</length>
-          </cylinder>
-        </geometry>
-      </collision>
       <visual name="visual">
         <geometry>
           <mesh>
             <uri>model://giant_circle/meshes/model.dae</uri>
-            <scale>5 5 5</scale>
+            <scale>3 3 2</scale>
           </mesh>
         </geometry>
         <material>
