@@ -76,7 +76,35 @@ Alternatively, you can also call the relink function and use the ``-e`` flag to 
 .. code-block:: bash
 
   sh develop.sh relink -e ezrassor_swarm_control
-  
+
+WINDOWS 10 CONFIGURATION
+------------------------
+
+First, set up and install WSL2 on Windows 10 from `Microsoft's tutorial`_. Make sure to install Ubuntu 18.04 from the `Microsoft Store`_.
+
+Next, follow the steps in the `typical installation`_ section.
+
+Before you can run the simulation, VcXsrv needs to be installed and configured so that WSL2 can launch GUI applications in your environment. 
+
+* `Install VcXsrv`_ and run the XLaunch program.
+* Select multiple windows, set display number to -1 and click next.
+* Select Start no client and click next.
+* Keep Clipboard and Primary Selection checked, uncheck Native opengl, check Disable access control and click next.
+* Save configuration (optional) and click finish.
+
+You should now see XLaunch running in the background on the bottom right of your task bar.
+
+To test if GUI applications are properly displaying in your WSL2 environment in Ubuntu 18.04:
+
+.. code-block:: bash
+
+  sudo apt install mesa-utils
+  glxgears
+
+A window should now pop-up with a set of RGB gears turning smoothly. If the gears are not smoothly turning or frames are noticeably skipping, refer to the top answer from Superuser for `troubleshooting OpenGL on Ubuntu`_.
+
+Everything should be ready to go! Continue to the `usage`_ section.
+
 USAGE
 -----
 The EZ-RASSOR is controlled via a collection of *launch files*. These files contain lists of commands that start up the robot's systems and the simulation environment. They are read, understood, and executed by a core ROS utility called ``roslaunch``, whose general syntax is as follows:
@@ -145,9 +173,14 @@ AUTHORS
 .. |style badge| image:: https://img.shields.io/badge/Code%20Style-black-000000.svg
     :target: https://github.com/psf/black
 .. _`wiki`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki
+.. _`Microsoft's tutorial`: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+.. _`Microsoft Store`: https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q
+.. _`Install VcXsrv`: https://sourceforge.net/projects/vcxsrv/
+.. _`troubleshooting OpenGL on Ubuntu`: https://superuser.com/questions/1487555/how-to-troubleshoot-opengl-on-ubuntu-under-windows-10-wsl
 .. _`contributing guidelines`: CONTRIBUTING.rst
 .. _`license`: LICENSE.txt
 .. _`usage`: README.rst#Usage
+.. _`typical installation`: README.rst#Typical-Installation
 .. _`wiki page for the ezrassor_launcher`: https://github.com/FlaSpaceInst/EZ-RASSOR/wiki/ezrassor_launcher
 .. _`Sean Rapp`: https://github.com/shintoo
 .. _`Ron Marrero` : https://github.com/CSharpRon
