@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>ezrassor_swarm_control</name>
-  <version>1.0.0</version>
+  <version>1.3.0</version>
   <description>The ezrassor_swarm_control package</description>
 
   <maintainer email="danielzgsilva@knights.ucf.edu">Daniel Silva</maintainer>

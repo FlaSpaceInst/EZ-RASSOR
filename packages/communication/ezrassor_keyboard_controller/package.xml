@@ -2,7 +2,7 @@
 <package format="2">
   <name>ezrassor_keyboard_controller</name>
   <license>MIT</license>
-  <version>1.0.0</version>
+  <version>1.3.0</version>
   <author email="tgsachse@gmail.com">Tiger Sachse</author>
   <maintainer email="tgsachse@gmail.com">Tiger Sachse</maintainer>
   <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>

@@ -4,7 +4,7 @@
 <package format="2">
   <name>ezrassor_sim_gazebo</name>
   <license>MIT</license>
-  <version>1.1.1</version>
+  <version>1.3.0</version>
   <author email="Ronald.Marrero@outlook.com">Ronald Marrero</author>
   <maintainer email="Harrison.W.Black@gmail.com">Harrison Black</maintainer>
   <maintainer email="Ronald.Marrero@outlook.com">Ronald Marrero</maintainer>
