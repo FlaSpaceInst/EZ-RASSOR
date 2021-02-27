@@ -4,7 +4,8 @@ import rospy
 import math
 import numpy as np
 
-from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
+# NOTE: Imported 'UpdateRoverStatus' here
+from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath, UpdateRoverStatus
 
 
 def euclidean_distance(x1, x2, y1, y2):
@@ -20,11 +21,11 @@ def euclidean2D(a, b):
 
     return np.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2)
 
-
+# Client node
 def get_rover_status(rover_num):
     """
     ROS service that allows the swarm controller to request and
-    receive a given rover's current position
+    receive a given rover's current position, battery, and activity
     """
 
     # Build the service endpoint
@@ -41,10 +42,37 @@ def get_rover_status(rover_num):
         # Convert float coordinates to integers
         response.pose.position.x = int(round(response.pose.position.x))
         response.pose.position.y = int(round(response.pose.position.y))
+        
         return response
 
     except rospy.ServiceException as e:
         print("Service call failed: {}".format(e))
+
+# TODO: Create a ROS service that updates a rovers world state activity
+def update_rover_status(rover_num, new_activity, assignedDigsite):
+    """
+    ROS service that allows the swarm controller to update a 
+    rovers status (i.e, activity, battery, etc.)
+    """
+
+    # Build the service endpoint
+    service = "/ezrassor{}/update_rover_status".format(rover_num)
+
+    # Ensure it's running
+    rospy.wait_for_service(service, 5.0)
+
+    try:
+        # Retrieve updated rover status 
+        update_status = rospy.ServiceProxy(service, UpdateRoverStatus) # Service call
+        response = update_status(String(new_activity)) # Service response
+
+
+
+        return response
+
+    except rospy.ServiceException as e:
+         print("Service call failed: {}".format(e))
+
 
 
 def preempt_rover_path(rover_num):

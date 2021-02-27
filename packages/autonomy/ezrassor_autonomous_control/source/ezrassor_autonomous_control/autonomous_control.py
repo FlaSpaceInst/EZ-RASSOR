@@ -1,5 +1,6 @@
 import rospy
 
+from std_msgs.msg import String
 from std_msgs.msg import Int8
 from geometry_msgs.msg import Point
 from nav_msgs.msg import Odometry
@@ -9,6 +10,8 @@ import actionlib
 
 from ezrassor_swarm_control.msg import waypointAction, waypointResult
 from ezrassor_swarm_control.srv import GetRoverStatus, GetRoverStatusResponse
+# NOTE: Imported update status service
+from ezrassor_swarm_control.srv import UpdateRoverStatus, UpdateRoverStatusResponse
 
 import ai_objects as obj
 import auto_functions as af
@@ -108,6 +111,14 @@ class RoverController:
             )
             rospy.loginfo("Rover status service initialized.")
 
+            # NOTE: Added new 'update_status_service'
+            # Register UpdateRoverStatus, used by the swarm controller to retrieve
+            # a rover's position and battery
+            self.update_status_service = rospy.Service(
+                "update_rover_status", UpdateRoverStatus, self.update_status
+            )
+            rospy.loginfo("UPDATE rover status service initialized.")
+
         else:
             # Basic autonomous control using the autonomous control loop
             target_location = Point()
@@ -130,8 +141,19 @@ class RoverController:
         status.pose.position.y = self.world_state.positionY
         status.pose.position.z = self.world_state.positionZ
         status.battery = max(int(self.world_state.battery), 0)
-
+        status.activity = self.world_state.activity
         return status
+
+    # NOTE: Created function to update rover activity 
+    def update_status(self, request):
+        """Send the rover's updated activity to the the swarm controller"""
+
+        response = UpdateRoverStatusResponse(request.new_activity)
+        self.world_state.activity = response.new_activity
+        response.new_activity = self.world_state.activity
+        return response
+        
+
 
     def execute_action(self, goal):
         """Handle a swarm controller action."""

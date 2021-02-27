@@ -5,6 +5,7 @@ import nav_functions as nf
 import math
 from random import uniform
 from std_msgs.msg import Float32, Bool
+from std_msgs.msg import String
 from geometry_msgs.msg import Point, Twist
 
 
@@ -31,6 +32,7 @@ class WorldState:
         self.back_up = False
         self.battery = 100
         self.hardware_status = True
+        self.activity = 'idle'
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """

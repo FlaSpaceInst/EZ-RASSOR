@@ -7,7 +7,7 @@ from ezrassor_swarm_control.msg import Path
 
 from path_planner import PathPlanner
 from swarm_utils import euclidean_distance
-from swarm_utils import get_rover_status, preempt_rover_path
+from swarm_utils import get_rover_status, preempt_rover_path, update_rover_status
 
 import os
 
@@ -39,6 +39,7 @@ class SwarmController:
 
         # Tracks the battery and activity of rovers
         self.rover_activity_status_db = {
+            # NOTE: Pass in world.activity when instantiating rover
             i: Rover(i) for i in range(1, robot_count + 1)
         }
 
@@ -116,7 +117,7 @@ class SwarmController:
         while True:
             for i in range(1, self.robot_count + 1):
                 rover_status = get_rover_status(i)
-
+                # PRINT ACTIVITY HERE
                 if rover_status:
                     site_num = (i - 1) % len(self.dig_sites)
                     if self.rover_activity_status_db[i].activity == "idle":
@@ -128,7 +129,7 @@ class SwarmController:
                             self.rover_activity_status_db[
                                 i
                             ].activity = "driving to digsite"
-
+                            
                     elif self.rover_activity_status_db[i].activity == "digging":
                         if rover_status.battery <= 35.0:
                             preempt_rover_path(i)

@@ -1,3 +1,4 @@
 ---
 geometry_msgs/Pose pose
 int8 battery
+string activity

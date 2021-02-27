@@ -24,7 +24,7 @@ add_service_files(
   FILES
     GetRoverStatus.srv
     PreemptPath.srv
-
+    UpdateRoverStatus.srv
 )
 
 generate_messages(DEPENDENCIES
