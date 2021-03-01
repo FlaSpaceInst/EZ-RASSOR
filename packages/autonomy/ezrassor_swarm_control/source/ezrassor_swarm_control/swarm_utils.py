@@ -49,7 +49,7 @@ def get_rover_status(rover_num):
         print("Service call failed: {}".format(e))
 
 # TODO: Create a ROS service that updates a rovers world state activity
-def update_rover_status(rover_num, new_activity, assignedDigsite):
+def update_rover_status(rover_num, new_activity):
     """
     ROS service that allows the swarm controller to update a 
     rovers status (i.e, activity, battery, etc.)
@@ -64,7 +64,7 @@ def update_rover_status(rover_num, new_activity, assignedDigsite):
     try:
         # Retrieve updated rover status 
         update_status = rospy.ServiceProxy(service, UpdateRoverStatus) # Service call
-        response = update_status(String(new_activity)) # Service response
+        response = update_status(str(new_activity)) # Service response
 
 
 
