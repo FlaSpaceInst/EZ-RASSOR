@@ -2,4 +2,4 @@
 geometry_msgs/Pose pose
 int8 battery
 string activity
-int8 digsite
+geometry_msgs/Point digsite

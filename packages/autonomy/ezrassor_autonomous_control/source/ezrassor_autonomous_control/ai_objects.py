@@ -33,7 +33,7 @@ class WorldState:
         self.battery = 100
         self.hardware_status = True
         self.activity = 'idle'
-        self.assigned_digsite = -1 # No digsite assigned
+        self.assigned_digsite = Point() # No digsite assigned
 
     def jointCallBack(self, data):
         """ Set state_flags joint position data. """
