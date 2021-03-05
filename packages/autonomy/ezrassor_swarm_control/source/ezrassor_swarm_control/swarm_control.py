@@ -80,15 +80,19 @@ class SwarmController:
 
     def update_digsites(self, open_sites, ID, add = False):
         """ Updates list of available digsites """
+        
         #If add is true, ID is a rover ID
         if add is True:
-            open_sites.append(get_rover_status(ID).assigned_site)
+            open_sites.append(get_rover_status(ID).digsite)
+            rospy.loginfo("Updated digsites")
+            rospy.loginfo(open_sites)
             return open_sites
+
+        if open_sites == []:
+            open_sites = list(self.dig_sites)
 
         #Otherwise, ID is a siteID
         open_sites.pop(ID)
-        if open_sites == []:
-            open_sites = list(self.dig_sites)
         rospy.loginfo("Available digsites")
         rospy.loginfo(open_sites)
         return open_sites
@@ -109,7 +113,7 @@ class SwarmController:
             elif dist < dist_min:
                 dist_min = dist
                 curr_min = i
-        
+        #returns the index of closest site to rover from the open_dig_sites list
         return curr_min
 
     def assignPath(self, roverID, target, rover_status, path_planner):
@@ -149,25 +153,24 @@ class SwarmController:
         path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
         # Task Scheduling
-
         available_sites = list(self.dig_sites)
-        assigned_sites = {}
         while True:            
             for i in range(1, self.robot_count + 1):
 
+                #retrieve rover information for decision making
                 rover_status = get_rover_status(i)
-                #possibly make it so that the assigned site gets re-added to the open_sites list
 
                 #battery check
-                if rover_status.battery < 35.0 and rover_status.activity != "driving to lander":
+                if rover_status.battery < 35.0 and rover_status.activity not in ["driving to lander", "charging"]:
 
-                    rospy.loginfo("Low Battery : Rover " + str(i))
+                    rospy.loginfo("LOW BATTERY : Rover " + str(i))
                     preempt_rover_path(i)
                     self.assignPath(i, self.lander_loc, rover_status, path_planner)
-                    update_rover_status(i, "driving to lander")
+                    self.update_digsites(available_sites, i, add = True)
+                    update_rover_status(i, "driving to lander", Point())
 
                 elif rover_status.battery > 95.0 and rover_status.activity == "charging":
-                    update_rover_status(i, "idle")
+                    update_rover_status(i, "idle", rover_status.digsite)
 
                 #digsite assignment, only assigns if activity is "idle"
                 if rover_status.activity == "idle":
@@ -175,26 +178,25 @@ class SwarmController:
                     #determine closest site to rover and send it
                     closest_siteID = self.closest_digsite(available_sites, rover_status)
                     self.assignPath(i, available_sites[closest_siteID], rover_status, path_planner)
-                    update_rover_status(i, "driving to digsite")
 
-                    #keep track of the used sites and update the available ones
-                    assigned_sites[i] = available_sites[closest_siteID]
+                    #update status with activity and assigned site. Also update available sites.
+                    update_rover_status(i, "driving to digsite", available_sites[closest_siteID])
                     available_sites = self.update_digsites(available_sites, closest_siteID)
 
                 #determine if rover has reached destination and send an action command
                 elif rover_status.activity == "driving to lander" and self.is_at_lander(rover_status):
                     
-                    rospy.loginfo("Charging: Rover " + str(i))
+                    rospy.loginfo("CHARGING: Rover " + str(i))
                     preempt_rover_path(i)
                     self.waypoint_pubs[i].publish(self.create_command("CHG"))
-                    update_rover_status(i, "charging")
+                    update_rover_status(i, "charging", rover_status.digsite)
 
-                elif rover_status.activity == "driving to digsite" and self.is_at_digsite(rover_status, assigned_sites[i]):
+                elif rover_status.activity == "driving to digsite" and self.is_at_digsite(rover_status, rover_status.digsite):
                   
-                    rospy.loginfo("Digging: Rover " + str(i))
+                    rospy.loginfo("DIGGING: Rover " + str(i))
                     preempt_rover_path(i)
                     self.waypoint_pubs[i].publish(self.create_command("DIG"))
-                    update_rover_status(i, "digging")
+                    update_rover_status(i, "digging", rover_status.digsite)
 
 
 def on_start_up(
