@@ -1,3 +1,7 @@
 string new_activity
+int8 assigned_digsite
 ---
+# geometry_msgs/Pose pose
+# int8 battery
 string new_activity
+int8 assigned_digsite

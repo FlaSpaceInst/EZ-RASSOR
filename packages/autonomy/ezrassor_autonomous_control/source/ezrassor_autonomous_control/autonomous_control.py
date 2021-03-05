@@ -142,15 +142,23 @@ class RoverController:
         status.pose.position.z = self.world_state.positionZ
         status.battery = max(int(self.world_state.battery), 0)
         status.activity = self.world_state.activity
+        status.digsite = self.world_state.assigned_digsite
         return status
 
     # NOTE: Created function to update rover activity 
     def update_status(self, request):
         """Send the rover's updated activity to the the swarm controller"""
 
-        response = UpdateRoverStatusResponse(request.new_activity)
+        response = UpdateRoverStatusResponse(request.new_activity, request.assigned_digsite)
         self.world_state.activity = response.new_activity
         response.new_activity = self.world_state.activity
+
+        self.world_state.assigned_digsite = response.assigned_digsite
+        response.assigned_digsite = self.world_state.assigned_digsite
+        # response.pose.position.x = self.world_state.positionX
+        # response.pose.position.y = self.world_state.positionY
+        # response.pose.position.z = self.world_state.positionZ
+        # response.battery = max(int(self.world_state.battery), 0)
         return response
         
 
