@@ -38,12 +38,40 @@ def get_rover_status(rover_num):
         # Retrieve rover status
         get_status = rospy.ServiceProxy(service, GetRoverStatus)
         response = get_status()
+        #print_rover_status(rover_num)
 
         # Convert float coordinates to integers
         response.pose.position.x = int(round(response.pose.position.x))
         response.pose.position.y = int(round(response.pose.position.y))
         
         return response
+
+    except rospy.ServiceException as e:
+        print("Service call failed: {}".format(e))
+
+
+def print_rover_status(rover_num):
+
+
+    # Build the service endpoint
+    service = "/ezrassor{}/rover_status".format(rover_num)
+
+    # Ensure it's running
+    rospy.wait_for_service(service, 5.0)
+
+    try:
+        # Retrieve rover status
+        get_status = rospy.ServiceProxy(service, GetRoverStatus)
+        response = get_status()
+ 
+        roverFile = open("RoverInfo.txt", "a")
+        #roverFile.write("Rover #, Battery %, X, Y, time \n")
+        roverFile.write(str(rover_num) + "," + str(response.battery) + "," + str(math.floor(response.pose.position.x)) + \
+            "," + str(math.floor(response.pose.position.y)) + ","  + str(rospy.get_time())) 
+
+        roverFile.write("\n")
+
+        roverFile.close()
 
     except rospy.ServiceException as e:
         print("Service call failed: {}".format(e))
