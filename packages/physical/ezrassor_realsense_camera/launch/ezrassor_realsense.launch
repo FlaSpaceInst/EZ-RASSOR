@@ -205,5 +205,11 @@ Processing enabled by this node:
     </group>
 
   </group>
+  
+  <node pkg="topic_tools" type="relay" args="/imu /ezrassor1/imu" name="imu_relay"/> 
+  <node pkg="topic_tools" type="relay" args="/depth_registered/points /ezrassor1/depth/points" name="pointcloud_relay"/> 
+  <node pkg="topic_tools" type="relay" args="depth/image_rect_raw /ezrassor1/depth/image_raw" name="depth_relay"/> 
+  <node pkg="topic_tools" type="relay" args="/color/image_raw /ezrassor1/color/image_raw" name="image_relay"/> 
+  <node pkg="topic_tools" type="relay" args="/color/camera_info /ezrassor1/color/camera_info" name="camera_info_relay"/> 
 
 </launch>

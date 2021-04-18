@@ -23,6 +23,12 @@
   <arg name="use_sim_time" default="default"/>
   <arg name="enable_real_odometry" default="default"/>
   <arg name="enable_park_ranger" default="default"/>
+  
+  <arg name="camera" default="default"/>
+  
+  <group if="$(eval camera != 'default')">
+  	<include file="$(find ezrassor_realsense_camera)/launch/ezrassor_realsense.launch"/>
+  </group>
 
   <!-- Launch the communication system for a simulated robot. -->
   <group ns="ezrassor$(arg robot_count)">
