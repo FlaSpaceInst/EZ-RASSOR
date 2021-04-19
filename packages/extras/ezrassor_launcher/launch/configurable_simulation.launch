@@ -87,6 +87,9 @@
       <arg name="yaw"
            value="$(eval str(spawn_yaw).split()[robot_count - 1])"
            unless="$(eval spawn_yaw == 'default')"/>
+       <arg name="physical_camera"
+           value="$(eval str(camera).split()[robot_count - 1])"
+           unless="$(eval camera == 'default')"/>
     </include>
 
     <!-- Launch the model controls. -->

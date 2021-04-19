@@ -4,8 +4,13 @@
 
   <xacro:property name="cameraSize" value="0.01"/>
   <xacro:property name="cameraMass" value="0.1"/>
+  
+
+
 
   <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor.gazebo" />
+
+
   <xacro:include filename="$(find ezrassor_sim_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find ezrassor_sim_description)/urdf/macros.xacro" />
 
