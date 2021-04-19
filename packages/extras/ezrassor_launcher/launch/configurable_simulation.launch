@@ -25,6 +25,8 @@
   <arg name="enable_park_ranger" default="default"/>
   <arg name="hardware" default="default"/>
   <arg name="camera" default="default"/>
+  <arg name="obstacle_threshold" default="4.0"/>
+  <arg name="obstacle_buffer" default="1.5"/>
   
   <group if="$(eval camera != 'default')">
   	<include file="$(find ezrassor_realsense_camera)/launch/ezrassor_realsense.launch"/>
@@ -64,6 +66,10 @@
       <arg name="world"
            value="$(arg world)"
            unless="$(eval world == 'default')"/>
+      <arg name="obstacle_threshold"
+           value="$(arg obstacle_threshold)"/>
+      <arg name="obstacle_buffer"
+           value="$(arg obstacle_buffer)"/>
     </include>
 
     <!-- Spawn the model. -->

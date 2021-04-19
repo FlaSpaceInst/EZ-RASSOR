@@ -13,6 +13,8 @@
   <arg name="enable_park_ranger" default="default"/>
   <arg name="world" default="default"/>
   <arg name="swarm_control" default="default"/>
+  <arg name="obstacle_threshold" default="4.0"/>
+  <arg name="obstacle_buffer" default="1.5"/>
 
   <!-- A large collection of constants that this launch file needs. -->
   <arg name="wheel_instructions_topic" value="wheel_instructions"/>
@@ -141,6 +143,10 @@
         <arg name="world"
              value="$(arg world)"
              unless="$(eval world == 'default')"/>
+        <arg name="obstacle_threshold"
+             value="$(arg obstacle_threshold)"/>
+        <arg name="obstacle_buffer"
+             value="$(arg obstacle_buffer)"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
