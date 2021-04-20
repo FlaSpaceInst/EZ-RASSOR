@@ -13,7 +13,7 @@
 
   <!-- Spawn the robot. -->
   <param name="robot_description"
-         command="xacro '$(find ezrassor_sim_description)/urdf/ezrassor.xacro' physical_camera:=$(arg physical_camera)"/>
+         command="xacro '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
   <node name="ezrassor_spawn"
         pkg="gazebo_ros"
         type="spawn_model"

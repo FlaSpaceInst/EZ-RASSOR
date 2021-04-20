@@ -56,8 +56,8 @@ Processing enabled by this node:
   <arg name="fisheye_height"      default="480"/>
   <arg name="enable_fisheye"      default="false"/>
 
-  <arg name="depth_width"         default="640"/>
-  <arg name="depth_height"        default="480"/>
+  <arg name="depth_width"         default="240"/>
+  <arg name="depth_height"        default="180"/>
   <arg name="enable_depth"        default="true"/>
 
   <arg name="infra_width"         default="640"/>
@@ -65,8 +65,8 @@ Processing enabled by this node:
   <arg name="enable_infra1"       default="false"/>
   <arg name="enable_infra2"       default="false"/>
 
-  <arg name="color_width"         default="640"/>
-  <arg name="color_height"        default="480"/>
+  <arg name="color_width"         default="240"/>
+  <arg name="color_height"        default="180"/>
   <arg name="enable_color"        default="true"/>
 
   <arg name="fisheye_fps"         default="30"/>
@@ -211,5 +211,6 @@ Processing enabled by this node:
   <node pkg="topic_tools" type="relay" args="depth/image_rect_raw /ezrassor1/depth/image_raw" name="depth_relay"/> 
   <node pkg="topic_tools" type="relay" args="/color/image_raw /ezrassor1/color/image_raw" name="image_relay"/> 
   <node pkg="topic_tools" type="relay" args="/color/camera_info /ezrassor1/color/camera_info" name="camera_info_relay"/> 
+  <node pkg="topic_tools" type="relay" args="/depth/camera_info /ezrassor1/depth/camera_info" name="depth_camera_info_relay"/> 
 
 </launch>
