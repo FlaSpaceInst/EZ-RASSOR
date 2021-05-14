@@ -1,7 +1,5 @@
 <?xml version='1.0'?>
 
-<arg name="physical_camera" default="default"/>
-
 <robot>
 
   <gazebo reference="base_link">
@@ -93,7 +91,7 @@
         <cameraName></cameraName>
         <imageTopicName>color/image_raw</imageTopicName>
         <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
-        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <depthImageTopicName>depth/image_raw_null</depthImageTopicName>
         <depthImageInfoTopicName>depth/camera_info</depthImageInfoTopicName>
         <pointCloudTopicName>depth/points_null</pointCloudTopicName>
         <frameName>/depth_camera_optical_frame</frameName>

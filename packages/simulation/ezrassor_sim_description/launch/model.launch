@@ -12,8 +12,15 @@
   <arg name="physical_camera" default="default"/>
 
   <!-- Spawn the robot. -->
-  <param name="robot_description"
+  <group if="$(eval physical_camera != 'default')">
+  	<param name="robot_description"
+         command="xacro '$(find ezrassor_sim_description)/urdf/ezrassor.xacro' physical_camera:=true"/>
+  </group>
+  <group if="$(eval physical_camera == 'default')">
+  	<param name="robot_description"
          command="xacro '$(find ezrassor_sim_description)/urdf/ezrassor.xacro'"/>
+  </group>
+  
   <node name="ezrassor_spawn"
         pkg="gazebo_ros"
         type="spawn_model"

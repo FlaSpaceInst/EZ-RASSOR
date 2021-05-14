@@ -4,12 +4,16 @@
 
   <xacro:property name="cameraSize" value="0.01"/>
   <xacro:property name="cameraMass" value="0.1"/>
+  <xacro:arg name="physical_camera" default="default"/>
+
+
+  <xacro:if value="$(eval physical_camera != 'default')">
+    <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor_physical_camera.gazebo" />
+  </xacro:if>
+  <xacro:if value="$(eval physical_camera == 'default')">
+    <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor.gazebo" />
+  </xacro:if>
   
-
-
-
-  <xacro:include filename="$(find ezrassor_sim_description)/urdf/ezrassor.gazebo" />
-
 
   <xacro:include filename="$(find ezrassor_sim_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find ezrassor_sim_description)/urdf/macros.xacro" />
