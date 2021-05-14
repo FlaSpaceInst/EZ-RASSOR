@@ -91,9 +91,9 @@
         <cameraName></cameraName>
         <imageTopicName>color/image_raw</imageTopicName>
         <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
-        <depthImageTopicName>depth/image_raw_null</depthImageTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
         <depthImageInfoTopicName>depth/camera_info</depthImageInfoTopicName>
-        <pointCloudTopicName>depth/points_null</pointCloudTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
         <frameName>/depth_camera_optical_frame</frameName>
         <pointCloudCutoff>0.105</pointCloudCutoff>
         <pointCloudCutoffMax>10</pointCloudCutoffMax>
