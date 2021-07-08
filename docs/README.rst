@@ -174,3 +174,18 @@ AUTHORS
 .. _`Pip` : https://pip.pypa.io/en/stable/installing/
 .. _`rosdep` : http://wiki.ros.org/rosdep
 .. _`build-essential` : https://packages.ubuntu.com/bionic/build-essential
+
+CITATION
+--------
+Please include the following citation when using `EZRASSOR` for a paper:
+
+.. code-block:: bibtex
+
+    @misc{ezrassor_2021,
+      author = {EZRASSOR Team},
+      title = {EZRASSOR},
+      year = {2021},
+      publisher = {GitHub},
+      journal = {GitHub repository},
+      howpublished = {\url{https://github.com/FlaSpaceInst/EZ-RASSOR}}
+    }
