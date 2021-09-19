@@ -73,6 +73,9 @@ class WaypointClient:
     def is_charge_cmd(self, cmd):
         return cmd == commands["CHG"]
 
+    def is_dump_cmd(self, cmd):
+        return cmd == commands["DUMP"]
+
     def preempt_path(self, request=None):
         """Handle preempt path requests."""
 
@@ -86,7 +89,7 @@ class WaypointClient:
 
         # Replan path if rover veers away from its current waypoint too far
         if (
-            not (self.is_dig_cmd(self.goal) or self.is_charge_cmd(self.goal))
+            not (self.is_dig_cmd(self.goal) or self.is_charge_cmd(self.goal) or self.is_dump_cmd(self.goal))
             and self.goal
             and self.cur_waypoint
         ):
@@ -164,6 +167,14 @@ class WaypointClient:
         elif self.is_charge_cmd(self.goal):
             rospy.loginfo(
                 "Client {} received charge command!".format(
+                    self.namespace + self.client_name
+                )
+            )
+            self.send_waypoint(self.goal)
+
+        elif self.is_dump_cmd(self.goal):
+            rospy.loginfo(
+                "Client {} received dump command!".format(
                     self.namespace + self.client_name
                 )
             )

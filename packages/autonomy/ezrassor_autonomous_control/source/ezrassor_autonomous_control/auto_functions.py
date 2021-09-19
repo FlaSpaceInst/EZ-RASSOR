@@ -193,6 +193,54 @@ def auto_dig(world_state, ros_util, duration, waypoint_server=None):
     ros_util.publish_actions("stop", 0, 0, 0, 0)
     return feedback, preempted
 
+def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
+    """Rotate both drums inward and drive forward
+    for duration time in seconds.
+    """
+    feedback = uf.send_feedback(world_state, waypoint_server)
+    preempted = False
+
+    # Check rover battery, hardware, and if it's flipped over
+    if uf.self_check(world_state, ros_util) != 1:
+        if waypoint_server is not None:
+            waypoint_server.set_preempted()
+
+        preempted = True
+        return feedback, preempted
+
+    if waypoint_server is None:
+        rospy.loginfo("Auto-dumping for %d seconds...", duration)
+
+    # Raise arms
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+
+    t = 0
+    while t < duration * 40:
+        # Set drums to dump
+        ros_util.publish_actions("stop", 0, 0, -1, -1)
+        t += 1
+        ros_util.rate.sleep()
+
+        # Send feedback to waypoint client if being controlled by swarm controller
+        feedback = uf.send_feedback(world_state, waypoint_server)
+
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
+            preempted = True
+            break
+
+        if uf.self_check(world_state, ros_util) != 1:
+            if waypoint_server is not None:
+                waypoint_server.set_preempted()
+
+            preempted = True
+            break
+
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
+    return feedback, preempted
 
 def auto_dock(world_state, ros_util):
     """ Dock with the hopper. """

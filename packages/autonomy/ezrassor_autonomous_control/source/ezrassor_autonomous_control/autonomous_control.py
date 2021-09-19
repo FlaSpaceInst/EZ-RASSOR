@@ -168,6 +168,26 @@ class RoverController:
                 result = uf.build_result(self.world_state, preempted=0)
                 self.waypoint_server.set_succeeded(result)
 
+        elif goal.target.x == -997 and goal.target.y == -997:
+            rospy.loginfo(
+                "Waypoint server {} executing dump command".format(
+                    self.namespace + self.server_name
+                )
+            )
+
+            # Set rover to dump for 1000 seconds
+            feedback, preempted = af.auto_dump_land_pad(
+                self.world_state, self.ros_util, 1000, self.waypoint_server
+            )
+
+            if (
+                feedback is not None
+                and not preempted
+                and not self.waypoint_server.is_preempt_requested()
+            ):
+                result = uf.build_result(self.world_state, preempted=0)
+                self.waypoint_server.set_succeeded(result)
+
         else:
             self.world_state.target_location = goal.target
             rospy.loginfo(

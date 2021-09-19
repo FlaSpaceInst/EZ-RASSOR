@@ -47,6 +47,12 @@ class Rover:
         )
         self.activity = "digging"
 
+    def dump(self):
+        self.waypoint.publish(
+            self.create_command("DUMP")
+        )
+        self.activity = "dumping"
+
     def charge(self):
         self.waypoint.publish(
             self.create_command("CHG")
