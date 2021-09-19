@@ -15,12 +15,52 @@ import os
 class Rover:
     """Abstract class for the controller's knowledge of an EZRASSOR."""
 
-    def __init__(self, id):
-        self.id = id
+    #@staticmethod
+    def create_command(self, cmd):
+        path = Path()
+        path.path.append(commands[cmd])
+        return path
+
+    def __init__(self, id_):
+        self.id_ = id_
         self.activity = "idle"
         self.path_completed = False
         self.battery = 100
+        self.position = None
 
+        self.waypoint = rospy.Publisher(
+                "/ezrassor{}/waypoint_client".format(self.id_), Path, queue_size=10
+            )
+
+    def get_rover_status_(self):
+        rover_status = get_rover_status(self.id_)
+        self.position = rover_status.pose.position
+        self.battery = rover_status.battery
+        return rover_status
+
+    def preempt_rover_path(self):
+        preempt_rover_path(self.id_)
+
+    def dig(self):
+        self.waypoint.publish(
+            self.create_command("DIG")
+        )
+        self.activity = "digging"
+
+    def charge(self):
+        self.waypoint.publish(
+            self.create_command("CHG")
+        )
+        self.activity = "charging"
+
+    def go_to(self, target_point, target_name, path_planner):
+        path = path_planner.find_path(
+            self.get_rover_status_().pose.position, target_point
+        )
+        if path:
+
+            self.waypoint.publish(path)
+            self.activity = "driving to {}".format(target_name)
 
 class SwarmController:
     """Central controller for a swarm of EZRASSORs.
@@ -37,11 +77,18 @@ class SwarmController:
         self.elevation_map = elevation_map
         self.lander_loc = lander_loc
 
+        # Instaniate rover objects
+        self.rovers = {
+            i: Rover(i) for i in range(1, robot_count + 1)
+        }
+
+        """
         # Tracks the battery and activity of rovers
         self.rover_activity_status_db = {
             i: Rover(i) for i in range(1, robot_count + 1)
         }
-
+        """
+        """
         # Set up publishers used to send paths to each rover's waypoint client
         self.waypoint_pubs = {
             i: rospy.Publisher(
@@ -49,6 +96,7 @@ class SwarmController:
             )
             for i in range(1, robot_count + 1)
         }
+        """
 
     def is_at_lander(self, robot_status):
         if (
@@ -78,10 +126,12 @@ class SwarmController:
         else:
             return False
 
+    """
     def create_command(self, cmd):
         path = Path()
         path.path.append(commands[cmd])
         return path
+    """
 
     def run(self):
         rospy.loginfo(
@@ -114,6 +164,36 @@ class SwarmController:
         path_planner = PathPlanner(height_map, rover_max_climb_slope=2)
 
         while True:
+            for rover in self.rovers.values():
+                rover_status = rover.get_rover_status_()
+                if rover_status:
+                    site_num = (rover.id_ - 1) % len(self.dig_sites)
+
+                    if rover.activity == "idle":
+                        rover.go_to(self.dig_sites[site_num], "digsite", path_planner)
+
+                    elif rover.activity == "digging":
+                        if rover.battery <= 35.0:
+                            rover.preempt_rover_path()
+                            rover.go_to(self.lander_loc, "lander", path_planner)
+
+                    elif rover.activity == "driving to lander":
+                        if self.is_at_lander(rover_status):
+                            if rover.activity != "charging":
+                                rover.preempt_rover_path()
+                                rover.charge()
+
+                    elif rover.activity == "charging":
+                        if rover.battery >= 95.0:
+                            rover.go_to(self.dig_sites[site_num], "digsite", path_planner)
+                    else:
+                        if self.is_at_digsite(rover_status, site_num):
+                            if rover.activity == "driving to digsite":
+                                if rover.battery >= 35.0:
+                                    rover.preempt_rover_path()
+                                    rover.dig()
+
+            """
             for i in range(1, self.robot_count + 1):
                 rover_status = get_rover_status(i)
 
@@ -128,7 +208,8 @@ class SwarmController:
                             self.rover_activity_status_db[
                                 i
                             ].activity = "driving to digsite"
-
+            """
+            """
                     elif self.rover_activity_status_db[i].activity == "digging":
                         if rover_status.battery <= 35.0:
                             preempt_rover_path(i)
@@ -140,7 +221,8 @@ class SwarmController:
                                 self.rover_activity_status_db[
                                     i
                                 ].activity = "driving to lander"
-
+            """
+            """
                     elif (
                         self.rover_activity_status_db[i].activity
                         == "driving to lander"
@@ -157,6 +239,8 @@ class SwarmController:
                                 self.rover_activity_status_db[
                                     i
                                 ].activity = "charging"
+            """
+            """
 
                     elif (
                         self.rover_activity_status_db[i].activity == "charging"
@@ -171,6 +255,8 @@ class SwarmController:
                                 self.rover_activity_status_db[
                                     i
                                 ].activity = "driving to digsite"
+            """
+            """
                     else:
                         if self.is_at_digsite(rover_status, site_num):
                             if (
@@ -185,6 +271,7 @@ class SwarmController:
                                     self.rover_activity_status_db[
                                         i
                                     ].activity = "digging"
+            """
 
 
 def on_start_up(
