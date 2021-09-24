@@ -9,6 +9,7 @@ from path_planner import PathPlanner
 from swarm_utils import euclidean_distance
 from swarm_utils import get_rover_status, preempt_rover_path
 from swarm_utils import level_ground
+from swarm_utils import convert_image
 
 import os
 
