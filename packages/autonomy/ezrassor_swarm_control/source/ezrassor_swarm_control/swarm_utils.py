@@ -143,9 +143,9 @@ def level_ground(matrix):
     # Iterate through the entire matrix, adding digging sites and dumping sites to corresponding dictionary.
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
-            if matrix[i][j] > 0:
+            if matrix[i][j] > threshold:
                 dig_locations[(i,j)] = matrix[i][j]
-            elif matrix[i][j] < 0:
+            elif matrix[i][j] < -threshold:
                 dump_locations[(i,j)] = matrix[i][j]
 
     def check_level():
@@ -174,10 +174,10 @@ def convert_image(map_path, pixel_scale):
 
     # calculate the mean
     level_elevation = np.mean(height_matrix)
-    
+
     # elevation change from each rover dig/dump
     standard_dig_amount = 1
-    
+
     # loop through array and standardize the array
     for row in range(0, img_width):
         for col in range(0, img_height):
@@ -185,21 +185,21 @@ def convert_image(map_path, pixel_scale):
 
     rover_standard_dig_height = 5
     rover_standard_dig_width = 10
-    
+
     # Number of rows in new sub matrix that is replacing one cell of original matrix
     scale_height = pixel_scale // rover_standard_dig_height
     # Number of columns in new sub matrix that is replacing one cell of original matrix
     scale_width = pixel_scale // rover_standard_dig_width
-    
+
     # Dimensions of expanded matrix
     scaled_array_width = img_width * scale_width
     scaled_array_height = img_height * scale_height
     scaled_array = np.zeros((scaled_array_height, scaled_array_width))
-    
+
     for row in range(0, img_width):
         for col in range(0, img_height):
             for x in range(row * scale_height, (row * scale_height) + scale_height):
                 for y in range(col * scale_width, (col * scale_width) + scale_width):
                     scaled_array[x][y] = height_matrix[row][col]
-    
+
     return scaled_array
