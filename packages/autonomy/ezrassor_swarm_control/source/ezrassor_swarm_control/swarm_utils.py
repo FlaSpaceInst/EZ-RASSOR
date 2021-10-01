@@ -4,7 +4,6 @@ import rospy
 import math
 import numpy as np
 from collections import defaultdict
-from math import sqrt
 import cv2
 
 from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
@@ -163,7 +162,29 @@ def level_ground(matrix):
         number_of_actions = dig_dump(matrix, dig_locations, dump_locations, dig_location, dump_location)
         dig_dump_pairs[dig_location].append((dump_location, number_of_actions)) # Pair
 
-    return matrix, dig_dump_pairs
+    # Convert output points to objects and coordinates to simulation coordinates.
+    class Point():
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+    # Convert image coordinates to simulation coordinates in a Point object.
+    def convert_to_simulation_Point(matrix, x, y):
+        x -= len(matrix[0])) // 2
+        y = - (y - (len(matrix) // 2))
+        return Point(x, y)
+
+    converted_dig_dump_pairs = defaultdict(list)
+
+    for dig_location in dig_dump_pairs:
+        dig_location_point = convert_to_simulation_Point(matrix, dig_location[0], dig_location[1])
+
+        for dump_location, actions in dig_dump_pairs[dig_location]:
+            dump_location_point = convert_to_simulation_Point(matrix, dump_location[0], dump_location[1])
+
+            converted_dig_dump_pairs[dig_location_point].append((dump_location_point, actions))
+
+    return matrix, converted_dig_dump_pairs
 
 def convert_image(map_path, pixel_scale):
     # read in image
