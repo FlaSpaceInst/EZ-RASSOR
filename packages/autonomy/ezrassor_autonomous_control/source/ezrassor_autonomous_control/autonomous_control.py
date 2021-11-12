@@ -156,8 +156,8 @@ class RoverController:
             )
 
             # Set rover to dig for 1000 seconds
-            feedback, preempted = af.auto_dig(
-                self.world_state, self.ros_util, 1000, self.waypoint_server
+            feedback, preempted = af.auto_dig_land_pad(
+                self.world_state, self.ros_util, 5, self.waypoint_server
             )
 
             if (
@@ -177,7 +177,7 @@ class RoverController:
 
             # Set rover to dump for 1000 seconds
             feedback, preempted = af.auto_dump_land_pad(
-                self.world_state, self.ros_util, 1000, self.waypoint_server
+                self.world_state, self.ros_util, 5, self.waypoint_server
             )
 
             if (
@@ -198,7 +198,7 @@ class RoverController:
             )
 
             # Set rover to autonomously navigate to target
-            feedback, preempted = af.auto_drive_location(
+            feedback, preempted = af.auto_drive_location_land_pad(
                 self.world_state, self.ros_util, self.waypoint_server
             )
 
@@ -223,7 +223,7 @@ class RoverController:
             self.waypoint_server.set_preempted(result)
 
     def full_autonomy(self, world_state, ros_util):
-        """ Full Autonomy Loop Function """
+        """Full Autonomy Loop Function"""
 
         rospy.loginfo("Full autonomy activated.")
 
@@ -245,7 +245,7 @@ class RoverController:
         world_state.target_location.y = world_state.dig_site.y
 
     def autonomous_control_loop(self, world_state, ros_util):
-        """ Control Auto Functions based on auto_function_command input. """
+        """Control Auto Functions based on auto_function_command input."""
 
         while True:
             while (
@@ -296,7 +296,7 @@ def on_start_up(
     real_odometry=False,
     swarm_control=False,
 ):
-    """ Initialization Function  """
+    """Initialization Function"""
 
     # ROS Node Init Parameters
     rospy.init_node("autonomous_control")

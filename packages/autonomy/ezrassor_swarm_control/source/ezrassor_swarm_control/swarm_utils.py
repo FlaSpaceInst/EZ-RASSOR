@@ -4,13 +4,14 @@ import rospy
 import math
 import numpy as np
 from collections import defaultdict
+from geometry_msgs.msg import Point
 import cv2
 
 from ezrassor_swarm_control.srv import GetRoverStatus, PreemptPath
 
 
 def euclidean_distance(x1, x2, y1, y2):
-    """ Calculate Euclidean distance from (x1,y1) to (x2,y2). """
+    """Calculate Euclidean distance from (x1,y1) to (x2,y2)."""
 
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -71,120 +72,168 @@ def preempt_rover_path(rover_num):
     except rospy.ServiceException as e:
         print("Service call failed: {}".format(e))
 
-#Leveling Algorithm Functions
 
-def dig_dump(matrix, dig_locations, dump_locations, dig_location, dump_location):
-    """
-    Dig and dump between two locations until one location is level.
-    """
+# Leveling Algorithm Functions
 
-    count = 0
-    while dig_locations[dig_location] and dump_locations[dump_location]:
 
-        # If a location does not have enough resources, take resources available.
-        dig_amount = 1 if dig_locations[dig_location] >= 1 else dig_locations[dig_location]
-        dig_amount = dig_amount if dump_locations[dump_location] * -1  >= dig_amount else dump_locations[dump_location] * -1
-        dig_locations[dig_location] -= dig_amount
-        dump_locations[dump_location] += dig_amount
+def create_level_instructions(matrix):
+    """Given a matrix where each cell is a point on the map and each cell's value is the elvation at that point,
+    create a set of instructions which describe the redistrubtion of elevation at specific points to make every cell have
+    almost the same elevation.
+    Assume that the elevation may be distributed in such a way that resulting area may be level."""
 
-        dig_y, dig_x = dig_location
-        dump_y, dump_x = dump_location
+    # Elevation at which the location is considered level.
+    threshold = 0.0000000009
 
-        matrix[dig_y][dig_x] -= dig_amount
-        matrix[dump_y][dump_x] += dig_amount
-        count += dig_amount
-    return count
-
-# Threshold value for a cell to be considered level.
-
-threshold = 0.09
-def find_largest_difference(dig_locations, dump_locations):
-    """
-    Pair the dig annd dump pairs which seem like the best choice. (Greedy component)
-    Return dig and dump pairs which have the largest distance difference between its closest dump location and its next closest dump location.
-    If the closest dump location to chosen dig location is paired off with another dig location, then the overall pathing distance will be greater.
-    """
-
-    # TODO: Use dynamic programming.
-
-    # Get the distances between every dig and dump pair.
-    distance_matrix = []
-    for dig_location in dig_locations:
-        if dig_locations[dig_location] < threshold:
-            continue
-        distance_matrix.append(sorted([(euclidean_distance(dig_location[0], dig_location[1], dump_location[0], dump_location[1]), dig_location, dump_location) for dump_location in dump_locations if abs(dump_locations[dump_location]) > threshold]))
-
-    # Get the dig locations which are the farthest apart between their closest dump location and their next closest dump location.
-    # TODO: Account for edge case when all largest distance difference variables are the same.
-    #       Solution is to recalculate largest_difference_list where the closest path distance is subtracted by a path distance with a value other then the next closest path distance.
-    largest_differences_list = []
-    for dig_location_distances in distance_matrix:
-        if len(dig_location_distances) == 1:
-            largest_differences_list.append((0, dig_location_distances[0][1], dig_location_distances[0][2]))
-        else:
-            largest_differences_list.append((dig_location_distances[1][0] - dig_location_distances[0][0], dig_location_distances[0][1], dig_location_distances[0][2]))
-    largest_differences_list.sort()
-
-    return largest_differences_list[-1]
-
-def level_ground(matrix):
-    """
-    Pair digging and dumping locations to level a given matrix using a greedy approach.
-    """
-
-    # Holds dig or dump coordinates  and their elevation.
+    # Holds a point on the map (x, y) whose elevation is greater then desired.
+    # Key is point and value is elevation.
     dig_locations = {}
+    # Like dig locations but elevation of points must be less then desired.
     dump_locations = {}
-
-    # Pairs dig and dump location and specifies how many actions must be completed in both locations.
+    # Holds dig locations which have not been included in enough instructions to be considered level.
+    dig_set = set()
+    dump_set = set()  # Like dig_set.
+    # Holds every instruction created.
+    # Organized by dig location
+    # Key: dig_location
+    # Value: A list of tuples of format (dump_location, elevation_change)
     dig_dump_pairs = defaultdict(list)
 
-    # Iterate through the entire matrix, adding digging sites and dumping sites to corresponding dictionary.
+    # Iterate through the matrix and find every dig location and dump location in the area.
+    # Populate respective variables.
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
+            # Location has an elevation greater then what is considered level.
             if matrix[i][j] > threshold:
-                dig_locations[(i,j)] = matrix[i][j]
+                dig_locations[(i, j)] = matrix[i][j]
+                dig_set.add((i, j))
+            # Location has an elevation then what is considered level.
             elif matrix[i][j] < -threshold:
-                dump_locations[(i,j)] = matrix[i][j]
+                dump_locations[(i, j)] = matrix[i][j]
+                dump_set.add((i, j))
 
-    def check_level():
-        # Check if the area is level.
-        # One location is allowed to contain the excess resource of the matrix.
-        for row in matrix:
-            for column in row:
-                if abs(column) > threshold:
-                    return False
-        return True
+    # Create list where every element is a list which contains the distances between one dig location and all dump locations.
+    distance_matrix = defaultdict(list)
+    for dig_location in dig_locations:
+        for dump_location in dump_locations:
+            # Append a tuple which contains:
+            # 1. distance between the current dig location and dump location
+            # 2. the coordinates of the dump location
+            distance_matrix[dig_location].append(
+                (
+                    euclidean_distance(
+                        dig_location[0],
+                        dump_location[0],
+                        dig_location[1],
+                        dump_location[1],
+                    ),
+                    dump_location,
+                )
+            )
+        # Sort the list so that the dump locations which are closest to the current dig location are first.
+        distance_matrix[dig_location].sort()
 
-    while not check_level():
-        # Pair dig and dump locations until all locations are level.
-        distance, dig_location, dump_location = find_largest_difference(dig_locations, dump_locations) # Greedy choice
-        number_of_actions = dig_dump(matrix, dig_locations, dump_locations, dig_location, dump_location)
-        dig_dump_pairs[dig_location].append((dump_location, number_of_actions)) # Pair
+    # Create an instruction while there are still dig locations and dump locations to be leveled.
+    while dig_set and dump_set:
+        # Create an instruction based on the following definitions and procedure:
+        # A. For each dig location, take the difference between:
+        #   1. The distance between the dig location and the closest available dump location
+        #   2. The distance between the dig location and the next closest available dump location
+        # B. Choose the dig location and the closest dump location which provided the largest value in step A.
+        # Note that the largest value in step A is refered as the largest difference.
+        sub_pair = None
+        largest_difference = None
+        for dig_location in distance_matrix:
 
-    # Convert output points to objects and coordinates to simulation coordinates.
-    class Point():
-        def __init__(self, x, y):
-            self.x = x
-            self.y = y
+            distance_list = distance_matrix[dig_location]
+
+            # Delete closest dump locations not available.
+            while distance_list and distance_list[0][1] not in dump_set:
+                del distance_list[0]
+
+            # Delete next closest dump locations not avaiable.
+            while (
+                len(distance_list) > 1 and distance_list[1][1] not in dump_set
+            ):
+                del distance_list[1]
+
+            # If there are no dump locations to level dig location, raise exception.
+            if not distance_list:
+                raise Exception
+
+            # If no largest_difference has been set, set it.
+            if not largest_difference:
+                # If there is only one dump location, then the difference is 0.
+                if len(distance_list) == 1:
+                    largest_difference = 0
+                else:
+                    largest_difference = (
+                        distance_list[1][0] - distance_list[0][0]
+                    )
+                sub_pair = (dig_location, distance_list[0][1])
+
+            # Only set this pair as sup pair if the difference between the closest dump location and the next closest dump location is greater then the largest distance difference recorded.
+            elif (
+                len(distance_list) > 1
+                and largest_difference
+                < distance_list[1][0] - distance_list[0][0]
+            ):
+                sub_pair = (dig_location, distance_list[0][1])
+                largest_difference = distance_list[1][0] - distance_list[0][0]
+
+        # Level subpair with largest difference.
+        dig_location, dump_location = sub_pair
+        dig_elevation = dig_locations[dig_location]
+        dump_elevation = abs(dump_locations[dump_location])
+        # The change of elevation is the elvation which is closest to the desired elevation.
+        elevation_change = (
+            dig_elevation if dig_elevation < dump_elevation else dump_elevation
+        )
+
+        # Update elevation of both locations in sup-pair.
+        dig_locations[dig_location] -= elevation_change
+        dump_locations[dump_location] += elevation_change
+
+        # If a location is level, remove it from set.
+        if dig_locations[dig_location] <= threshold:
+            dig_set.remove(dig_location)
+            del distance_matrix[dig_location]
+
+        if dump_locations[dump_location] >= -threshold:
+            dump_set.remove(dump_location)
+
+        # Create new instruction.
+        dig_dump_pairs[dig_location].append((dump_location, elevation_change))
 
     # Convert image coordinates to simulation coordinates in a Point object.
     def convert_to_simulation_Point(matrix, x, y):
-        x -= len(matrix[0])) // 2
-        y = - (y - (len(matrix) // 2))
-        return Point(x, y)
+        x -= len(matrix[0]) // 2
+        y = -(y - (len(matrix) // 2))
+        a_point = Point()
+        a_point.x = x
+        a_point.y = y
+        return a_point
 
     converted_dig_dump_pairs = defaultdict(list)
 
     for dig_location in dig_dump_pairs:
-        dig_location_point = convert_to_simulation_Point(matrix, dig_location[0], dig_location[1])
+        dig_location_point = convert_to_simulation_Point(
+            matrix, dig_location[0], dig_location[1]
+        )
 
         for dump_location, actions in dig_dump_pairs[dig_location]:
-            dump_location_point = convert_to_simulation_Point(matrix, dump_location[0], dump_location[1])
+            dump_location_point = convert_to_simulation_Point(
+                matrix, dump_location[0], dump_location[1]
+            )
 
-            converted_dig_dump_pairs[dig_location_point].append((dump_location_point, actions))
+            converted_dig_dump_pairs[dig_location_point].append(
+                (dump_location_point, actions)
+            )
+    return converted_dig_dump_pairs
 
-    return matrix, converted_dig_dump_pairs
+
+# Image Processing functions
+
 
 def convert_image(map_path, pixel_scale):
     # read in image
@@ -202,7 +251,9 @@ def convert_image(map_path, pixel_scale):
     # loop through array and standardize the array
     for row in range(0, img_width):
         for col in range(0, img_height):
-            height_matrix[row][col] = ((height_matrix[row][col] - level_elevation) / standard_dig_amount)
+            height_matrix[row][col] = (
+                height_matrix[row][col] - level_elevation
+            ) / standard_dig_amount
 
     rover_standard_dig_height = 5
     rover_standard_dig_width = 10
@@ -219,62 +270,62 @@ def convert_image(map_path, pixel_scale):
 
     for row in range(0, img_width):
         for col in range(0, img_height):
-            for x in range(row * scale_height, (row * scale_height) + scale_height):
-                for y in range(col * scale_width, (col * scale_width) + scale_width):
+            for x in range(
+                row * scale_height, (row * scale_height) + scale_height
+            ):
+                for y in range(
+                    col * scale_width, (col * scale_width) + scale_width
+                ):
                     scaled_array[x][y] = height_matrix[row][col]
 
     return scaled_array
 
-def pixel_normalize(map_path):
-    # read in image
-    moon_img = cv2.imread(map_path, 0)
-    # convert image to float32 and extract tuple
-    height_matrix = moon_img.astype(np.float32)
-    img_height, img_width = height_matrix.shape
 
-    # calculate the mean
-    level_elevation = np.mean(height_matrix)
-
+def pixel_normalize(height_matrix):
     # elevation change from each rover dig/dump
     standard_dig_amount = 1
 
-    # loop through array and standardize the array
-    for row in range(0, img_width):
-        for col in range(0, img_height):
-            height_matrix[row][col] = ((height_matrix[row][col] - level_elevation) / standard_dig_amount)
+    mean = height_matrix.mean()
+
+    height_matrix = (height_matrix - mean) / standard_dig_amount
 
     return height_matrix
+
 
 def pixel_expand(map_path, pixel_scale):
     # read in image
     moon_img = cv2.imread(map_path, 0)
     # convert image to float32 and extract tuple
-    height_matrix = moon_img.astype(np.float32)
+    height_matrix = np.array(moon_img, dtype=int)
     img_height, img_width = height_matrix.shape
 
     # calculate the mean
     level_elevation = np.mean(height_matrix)
-    
+
     # elevation change from each rover dig/dump
     standard_dig_amount = 1
 
     rover_standard_dig_height = 5
     rover_standard_dig_width = 10
-    
+
     # Number of rows in new sub matrix that is replacing one cell of original matrix
     scale_height = pixel_scale // rover_standard_dig_height
     # Number of columns in new sub matrix that is replacing one cell of original matrix
     scale_width = pixel_scale // rover_standard_dig_width
-    
+
     # Dimensions of expanded matrix
     scaled_array_width = img_width * scale_width
     scaled_array_height = img_height * scale_height
     scaled_array = np.zeros((scaled_array_height, scaled_array_width))
-    
+
     for row in range(0, img_width):
         for col in range(0, img_height):
-            for x in range(row * scale_height, (row * scale_height) + scale_height):
-                for y in range(col * scale_width, (col * scale_width) + scale_width):
+            for x in range(
+                row * scale_height, (row * scale_height) + scale_height
+            ):
+                for y in range(
+                    col * scale_width, (col * scale_width) + scale_width
+                ):
                     scaled_array[x][y] = height_matrix[row][col]
-    
+
     return scaled_array

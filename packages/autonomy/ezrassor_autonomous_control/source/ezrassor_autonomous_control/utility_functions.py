@@ -18,7 +18,7 @@ def on_scan_update(new_scan):
 
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
-    """ Set front arm to absolute angle target_angle in radians. """
+    """Set front arm to absolute angle target_angle in radians."""
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
             ros_util.publish_actions("stop", 1, 0, 0, 0)
@@ -34,7 +34,7 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
-    """ Set back arm to absolute angle target_angle in radians. """
+    """Set back arm to absolute angle target_angle in radians."""
     """rospy.loginfo('Setting back arm angle to %s radian%s...',
                   str(target_angle),
                   "" if target_angle == 1 else "s")"""
@@ -165,7 +165,7 @@ def move(dist, world_state, ros_util, direction="forward"):
             scan,
             ros_util.obstacle_threshold,
         ):
-            rospy.loginfo("Obstacle too close! Stopping!")
+            # rospy.loginfo("Obstacle too close! Stopping!")
             ros_util.publish_actions("stop", 0, 0, 0, 0)
             break
 
@@ -195,7 +195,7 @@ def move(dist, world_state, ros_util, direction="forward"):
 
 
 def reverse_turn(world_state, ros_util):
-    """ Reverse until object no longer detected and turn left """
+    """Reverse until object no longer detected and turn left"""
 
     while world_state.warning_flag == 3:
         ros_util.publish_actions("reverse", 0, 0, 0, 0)
@@ -252,7 +252,7 @@ def dodge_right(world_state, ros_util):
 
 
 def self_right_from_side(world_state, ros_util):
-    """ Flip EZ-RASSOR over from its side. """
+    """Flip EZ-RASSOR over from its side."""
 
     rospy.loginfo("Starting auto self-right...")
     while world_state.on_side is not False:
@@ -287,10 +287,10 @@ def get_turn_angle(world_state, ros_util):
             switchDirection = -1
             wedgeDist = 0
             wedgeSize = (scan.angle_max - scan.angle_min) / 2.0
-            rospy.loginfo(
-                "There is nowhere to go in the current wedge. "
-                + "Turning to an adjacent wedge."
-            )
+            # rospy.loginfo(
+            # "There is nowhere to go in the current wedge. "
+            # + "Turning to an adjacent wedge."
+            # )
 
             # Keep checking adjacent wedges until we find a safe angle.
             while best_angle is None:
@@ -321,7 +321,7 @@ def get_turn_angle(world_state, ros_util):
                 ros_util.rate.sleep()
                 rospy.sleep(0.1)
 
-                rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
+                # rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
                 best_angle = nf.get_best_angle(
                     world_state,
                     ros_util.obstacle_buffer,
