@@ -918,6 +918,10 @@ class SwarmController:
             rover.kill_thread = True
             rospy.loginfo("Killing Rover {}'s thread".format(rover.id_))
 
+        rospy.loginfo("Blacklisted sites:\n")
+        for element in blacklist:
+            rospy.loginfo("{} ".format(element))
+
 
 def on_start_up(
     robot_count, target_xs, target_ys, lander_coords, world, elevation_map
