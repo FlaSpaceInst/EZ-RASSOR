@@ -930,15 +930,17 @@ class SwarmController:
             rover.kill_thread = True
             rospy.loginfo("Killing Rover {}'s thread".format(rover.id_))
 
-        rospy.loginfo("Blacklisted sites:")
-        for element in blacklist:
-            rospy.loginfo("{}".format(element))
+        if blacklist:
+            rospy.loginfo("Blacklisted sites:")
+            for element in blacklist:
+                rospy.loginfo("{}".format(element))
 
-        rospy.loginfo("Immobilized Rover information:")
-        for rover_id, location in immobilized_rover_list:
-            rospy.loginfo(
-                "Rover {} is immobilized at {}".format(rover_id, location)
-            )
+        if immobilized_rover_list:
+            rospy.loginfo("Immobilized Rover information:")
+            for rover_id, location in immobilized_rover_list:
+                rospy.loginfo(
+                    "Rover {} is immobilized at {}".format(rover_id, location)
+                )
 
 
 def on_start_up(
