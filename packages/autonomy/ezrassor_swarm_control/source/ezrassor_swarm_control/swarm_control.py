@@ -654,6 +654,9 @@ class SwarmController:
         # Data structure which holds locations which should not be assigned to rovers.
         blacklist = set()
 
+        # Data structure which holds locations of immobilized rovers.
+        immobilized_rover_list = set()
+
         # Create the data structure which holds the number of actions required for each
         # sub pair.
         # The key is the dig location and the dump location.
@@ -744,6 +747,15 @@ class SwarmController:
                     blacklist.add(
                         (round(rover.position.x), round(rover.position.y))
                     )
+
+                    # Add id and location of immobilized rover to immobilized_rover_list.
+                    immobilized_rover_list.add(
+                        (
+                            rover.id_,
+                            (round(rover.position.x), round(rover.position.y)),
+                        )
+                    )
+
                     # Kill rover thread to save processing power.
                     rover.kill_thread = True
                     rospy.loginfo("Killing Rover {}'s thread".format(rover.id_))
@@ -918,9 +930,15 @@ class SwarmController:
             rover.kill_thread = True
             rospy.loginfo("Killing Rover {}'s thread".format(rover.id_))
 
-        rospy.loginfo("Blacklisted sites:\n")
+        rospy.loginfo("Blacklisted sites:")
         for element in blacklist:
-            rospy.loginfo("{} ".format(element))
+            rospy.loginfo("{}".format(element))
+
+        rospy.loginfo("Immobilized Rover information:")
+        for rover_id, location in immobilized_rover_list:
+            rospy.loginfo(
+                "Rover {} is immobilized at {}".format(rover_id, location)
+            )
 
 
 def on_start_up(
