@@ -407,6 +407,10 @@ def send_feedback(world_state, waypoint_server):
 
     # Publish feedback (current pose)
     waypoint_server.publish_feedback(feedback)
+
+    # Lower battery due to sending message.
+    world_state.battery -= 0.01
+
     return feedback
 
 
