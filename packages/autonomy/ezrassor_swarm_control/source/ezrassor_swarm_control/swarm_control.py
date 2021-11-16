@@ -725,6 +725,9 @@ class SwarmController:
         # While instructions are still remaining to be completed,
         # give idle rovers instructions to complete.
         while check_actions_remaining():
+            # If all rovers are immobilized, exit routine.
+            if len(immobilized_rover_list) == len(self.rovers):
+                break
 
             # Get an idle rover's id from the queue.
             rover = self.rovers[self.rover_queue.get()]
@@ -941,6 +944,9 @@ class SwarmController:
                 rospy.loginfo(
                     "Rover {} is immobilized at {}".format(rover_id, location)
                 )
+
+        if len(immobilized_rover_list) != len(self.rovers) and not blacklist:
+            rospy.loginfo("Area successfuly leveled!")
 
 
 def on_start_up(
