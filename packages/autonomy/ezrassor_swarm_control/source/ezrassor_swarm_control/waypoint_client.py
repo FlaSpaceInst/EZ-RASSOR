@@ -17,7 +17,9 @@ from constants import commands
 from std_msgs.msg import Int8
 from enum import Enum
 
-# Enumerate status codes which rover objects will use to differentiate which actions have been completed.
+
+# Enumerate status codes which rover objects will use to differentiate which actions
+# have been completed.
 class ActionCodes(Enum):
     path_completed = 1
     action_completed = 2

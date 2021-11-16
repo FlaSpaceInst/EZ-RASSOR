@@ -30,7 +30,8 @@ class RoverProblemError(Exception):
 
 
 class ActionCodes(Enum):
-    """Enumerate status codes which rover objects will use to differentiate which actions have been completed."""
+    """Enumerate status codes which rover objects will use to differentiate which actions
+    have been completed."""
 
     no_action_completed = 0
     path_completed = 1
@@ -142,11 +143,13 @@ class Rover:
         return rover_status
 
     def preempt_rover_path_(self):
-        """Request the SwarmController to preempt the rover's current pathing routine."""
+        """Request the SwarmController to preempt the rover's current pathing
+        routine."""
         preempt_rover_path(self.id_)
 
     def set_action_completed(self, res):
-        """Callback for when waypoint client tells the rover that the desired action has been completed."""
+        """Callback for when waypoint client tells the rover that the desired action has
+        been completed."""
         res = res.data
         # Set rover status code.
         self.action_completed = res
@@ -235,7 +238,8 @@ class Rover:
                         "Rover {} exceeded 100 seconds".format(self.id_)
                     )
                     # Find if rover cannot move or if it cannot reach its destination.
-                    # If the rover has moved since sleep began, it's in an infinite pathing loop.
+                    # If the rover has moved since sleep began, it's in an infinite
+                    # pathing loop.
                     self.get_rover_status_()
                     position_start = self.position
                     rospy.sleep(20.0)
@@ -300,7 +304,8 @@ class Rover:
         expected_battery_difference,
         battery_from_dump_to_charge,
     ):
-        """Recalculate the amount of actions possible by a rover given a possibly unexpected battery difference due to an action."""
+        """Recalculate the amount of actions possible by a rover given a possibly
+        unexpected battery difference due to an action."""
         self.get_rover_status_()
         # Check if battery cost of action was more than expected without padding.
         if battery_before - self.battery > (expected_battery_difference * 0.9):
@@ -372,7 +377,8 @@ class Rover:
         )
 
         # Calculate the battery cost of one action.
-        # An action is the following sequence: Dig, go to dump with load, dump, go to dig
+        # An action is the following sequence: Dig, go to dump with load, dump, go to
+        # dig
         # A partial dig is counted as a total dig.
         battery_cost_of_one_action = self.dig_battery_cost
         battery_cost_of_one_action += battery_from_dig_to_dump
@@ -383,7 +389,8 @@ class Rover:
         self.get_rover_status_()
         current_battery = self.battery
 
-        # Negate the battery cost of the last action's pathing from the dump site to the dig site.
+        # Negate the battery cost of the last action's pathing from the dump site to the
+        # dig site.
         current_battery += battery_from_dump_to_dig
         actions = (
             current_battery
@@ -394,7 +401,7 @@ class Rover:
         # If we can't complete a single action, go to charge.
         if actions <= 0:
             rospy.loginfo(
-                "Rover {} cannot complete any assigned actions. Going to charge.".format(
+                "Rover {} cannot complete any actions. Going to charge.".format(
                     self.id_
                 )
             )
@@ -414,7 +421,7 @@ class Rover:
 
         # Go to the digsite to begin action sequence.
         rospy.loginfo(
-            "Rover {} is going to start action routine for {} actions. Going to digsite.".format(
+            "Rover {} is going to start action for {} actions.".format(
                 self.id_,
                 actions
                 if actions
@@ -457,7 +464,8 @@ class Rover:
             # Go to the dump site
             self.go_to(self.dump_location, "dumpsite")
 
-            # Recalculate total actions possible and recalculate pathing cost to dump site.
+            # Recalculate total actions possible and recalculate pathing cost to dump
+            # site.
             (
                 actions,
                 battery_from_dig_to_dump,
@@ -490,7 +498,8 @@ class Rover:
                 self.get_rover_status_()
                 battery_before = self.battery
                 self.go_to(self.dig_location, "digsite")
-                # Recalculate total actions possible and recalculate pathing cost to dump site.
+                # Recalculate total actions possible and recalculate pathing cost to
+                # dump site.
                 (
                     actions,
                     battery_from_dump_to_dig,
@@ -512,7 +521,8 @@ class Rover:
         self.dump_locations_not_assigned.add(self.dump_location)
         self.locations_not_assigned_lock.release()
 
-        # If the rover was not capable of completing all of its assigned actions, go charge.
+        # If the rover was not capable of completing all of its assigned actions, go
+        # charge.
         if self.sub_pair_actions[(self.dig_location, self.dump_location)]:
             rospy.loginfo(
                 "Rover {} could not complete assigned actions. Going to charge.".format(
@@ -520,7 +530,8 @@ class Rover:
                 )
             )
             self.go_to_charge()
-        # If no actions are required of assigned subpair, delete subpair from master data structure.
+        # If no actions are required of assigned subpair, delete subpair from master
+        # data structure.
         else:
             self.sub_pair_actions_lock.acquire()
             del self.sub_pair_actions[(self.dig_location, self.dump_location)]
@@ -634,16 +645,20 @@ class SwarmController:
         rospy.loginfo("Starting leveling algorithm.")
 
         # Run leveling algorithm to create the instructions to level.
-        # An instruction is a sub pair and the number of actions to be performed to the two.
-        # A sub pair is a dig location and dump location where regolith will be redistributed.
+        # An instruction is a sub pair and the number of actions to be performed to the
+        # two.
+        # A sub pair is a dig location and dump location where regolith will be
+        # redistributed.
         dig_dump_pairs = create_level_instructions(pixel_normalize(new_matrix))
 
         # Data structure which holds locations which should not be assigned to rovers.
         blacklist = set()
 
-        # Create the data structure which holds the number of actions required for each sub pair.
+        # Create the data structure which holds the number of actions required for each
+        # sub pair.
         # The key is the dig location and the dump location.
-        # The value is the number of buckets full of dirt need to be transported from the dig
+        # The value is the number of buckets full of dirt need to be transported from
+        # the dig
         # location to the dump location.
         sub_pair_actions = {}
         for dig_location in dig_dump_pairs:
@@ -652,10 +667,12 @@ class SwarmController:
                     actions
                 )
 
-        # Data structure to see which dig locations are not being used and can be assigned.
+        # Data structure to see which dig locations are not being used and can be
+        # assigned.
         dig_locations_not_assigned = set(dig_dump_pairs.keys())
 
-        # Data structure to see which dump locations are not being used and can be assigned.
+        # Data structure to see which dump locations are not being used and can be
+        # assigned.
         dump_locations_not_assigned = set()
         for dig_location in dig_dump_pairs:
             for dump_location, _ in dig_dump_pairs[dig_location]:
@@ -690,7 +707,8 @@ class SwarmController:
             """Check if all instructions have been completed."""
             sub_pair_actions_lock.acquire()
             for dig_location, dump_location in sub_pair_actions:
-                # If an instruction contain blacklisted locations, consider it completed.
+                # If an instruction contain blacklisted locations, consider it
+                # completed.
                 if (
                     sub_pair_actions[(dig_location, dump_location)]
                     and (dig_location.x, dig_location.y) not in blacklist
@@ -762,7 +780,8 @@ class SwarmController:
                     # Reset rover status.
                     rover.need_help = RoverState.okay.value
 
-                    # If rover has a full drums, go dump its contents where it was before.
+                    # If rover has a full drums, go dump its contents where it was
+                    # before.
                     if rover.drum_full:
 
                         # Define a custom function to make rover reset its drums.
@@ -819,7 +838,6 @@ class SwarmController:
             # Find the closest dig location to the rover and choose
             # a subpair with that location.
             rover.get_rover_status_()
-            current_location = rover.position
 
             # Check if any dig locations and dump locations are available.
             locations_not_assigned_lock.acquire()
@@ -829,7 +847,8 @@ class SwarmController:
             ):
                 locations_not_assigned_lock.release()
                 # Requeue rover to assign it locations when they are available.
-                # Todo: should we wait until there are locations not assigned before continueing?
+                # Todo: should we wait until there are locations not assigned before
+                # continueing?
                 self.rover_queue.put(rover.id_)
                 continue
             locations_not_assigned_lock.release()
@@ -850,14 +869,15 @@ class SwarmController:
                 # Make sure locations are in hash sets.
                 locations_not_assigned_lock.acquire()
                 if (
-                    not dig_location in dig_locations_not_assigned
-                    or not dump_location in dump_locations_not_assigned
+                    dig_location not in dig_locations_not_assigned
+                    or dump_location not in dump_locations_not_assigned
                 ):
                     locations_not_assigned_lock.release()
                     continue
                 locations_not_assigned_lock.release()
 
-                # Choose sub pair if dig location is the closest dig location found so far.
+                # Choose sub pair if dig location is the closest dig location found so
+                # far.
                 distance = euclidean_distance(
                     dig_location.x,
                     rover.position.x,
