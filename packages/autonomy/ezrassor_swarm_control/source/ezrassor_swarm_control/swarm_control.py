@@ -134,6 +134,9 @@ class Rover:
         # Function to run when rover status is "executing custom routine"
         self.custom_routine = None
 
+        # Save rover spawn point to go back to at the end of the program.
+        self.home = None
+
     def get_rover_status_(self):
         """Request the SwarmController to update this rover's position and battery."""
         rover_status = get_rover_status(self.id_)
@@ -567,6 +570,12 @@ class Rover:
                 self.custom_routine = None
                 self.abort()
 
+        # Send rover home.
+        try:
+            self.go_to(self.home, "Spawn Point")
+        except RoverProblemError:
+            pass
+
 
 class SwarmController:
     """Central controller for a swarm of EZRASSORs.
@@ -695,6 +704,7 @@ class SwarmController:
         # Add references of shared objects to rover.
         for rover in self.rovers.values():
             rover.get_rover_status_()
+            rover.home = rover.position
 
             rover.path_planner = path_planner
 
