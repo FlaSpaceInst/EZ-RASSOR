@@ -77,10 +77,13 @@ def preempt_rover_path(rover_num):
 
 
 def create_level_instructions(matrix):
-    """Given a matrix where each cell is a point on the map and each cell's value is the elvation at that point,
-    create a set of instructions which describe the redistrubtion of elevation at specific points to make every cell have
+    """Given a matrix where each cell is a point on the map and each cell's value is the
+    elvation at that point,
+    create a set of instructions which describe the redistrubtion of elevation at
+    specific points to make every cell have
     almost the same elevation.
-    Assume that the elevation may be distributed in such a way that resulting area may be level."""
+    Assume that the elevation may be distributed in such a way that resulting area may
+    be level."""
 
     # Elevation at which the location is considered level.
     threshold = 0.0000000009
@@ -90,7 +93,8 @@ def create_level_instructions(matrix):
     dig_locations = {}
     # Like dig locations but elevation of points must be less then desired.
     dump_locations = {}
-    # Holds dig locations which have not been included in enough instructions to be considered level.
+    # Holds dig locations which have not been included in enough instructions to be
+    # considered level.
     dig_set = set()
     dump_set = set()  # Like dig_set.
     # Holds every instruction created.
@@ -99,7 +103,8 @@ def create_level_instructions(matrix):
     # Value: A list of tuples of format (dump_location, elevation_change)
     dig_dump_pairs = defaultdict(list)
 
-    # Iterate through the matrix and find every dig location and dump location in the area.
+    # Iterate through the matrix and find every dig location and dump location
+    # in the area.
     # Populate respective variables.
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
@@ -112,7 +117,8 @@ def create_level_instructions(matrix):
                 dump_locations[(i, j)] = matrix[i][j]
                 dump_set.add((i, j))
 
-    # Create list where every element is a list which contains the distances between one dig location and all dump locations.
+    # Create list where every element is a list which contains the distances between one
+    # dig location and all dump locations.
     distance_matrix = defaultdict(list)
     for dig_location in dig_locations:
         for dump_location in dump_locations:
@@ -130,16 +136,21 @@ def create_level_instructions(matrix):
                     dump_location,
                 )
             )
-        # Sort the list so that the dump locations which are closest to the current dig location are first.
+        # Sort the list so that the dump locations which are closest to the current dig
+        # location are first.
         distance_matrix[dig_location].sort()
 
-    # Create an instruction while there are still dig locations and dump locations to be leveled.
+    # Create an instruction while there are still dig locations and dump locations to
+    # be leveled.
     while dig_set and dump_set:
         # Create an instruction based on the following definitions and procedure:
         # A. For each dig location, take the difference between:
-        #   1. The distance between the dig location and the closest available dump location
-        #   2. The distance between the dig location and the next closest available dump location
-        # B. Choose the dig location and the closest dump location which provided the largest value in step A.
+        #   1. The distance between the dig location and the closest available dump
+        #   location
+        #   2. The distance between the dig location and the next closest available dump
+        #   location
+        # B. Choose the dig location and the closest dump location which provided the
+        # largest value in step A.
         # Note that the largest value in step A is refered as the largest difference.
         sub_pair = None
         largest_difference = None
@@ -172,7 +183,9 @@ def create_level_instructions(matrix):
                     )
                 sub_pair = (dig_location, distance_list[0][1])
 
-            # Only set this pair as sup pair if the difference between the closest dump location and the next closest dump location is greater then the largest distance difference recorded.
+            # Only set this pair as sup pair if the difference between the closest dump
+            # location and the next closest dump location is greater then the largest
+            # distance difference recorded.
             elif (
                 len(distance_list) > 1
                 and largest_difference
@@ -185,7 +198,8 @@ def create_level_instructions(matrix):
         dig_location, dump_location = sub_pair
         dig_elevation = dig_locations[dig_location]
         dump_elevation = abs(dump_locations[dump_location])
-        # The change of elevation is the elvation which is closest to the desired elevation.
+        # The change of elevation is the elvation which is closest to the desired
+        # elevation.
         elevation_change = (
             dig_elevation if dig_elevation < dump_elevation else dump_elevation
         )
@@ -298,12 +312,6 @@ def pixel_expand(map_path, pixel_scale):
     # convert image to float32 and extract tuple
     height_matrix = np.array(moon_img, dtype=int)
     img_height, img_width = height_matrix.shape
-
-    # calculate the mean
-    level_elevation = np.mean(height_matrix)
-
-    # elevation change from each rover dig/dump
-    standard_dig_amount = 1
 
     rover_standard_dig_height = 5
     rover_standard_dig_width = 10
