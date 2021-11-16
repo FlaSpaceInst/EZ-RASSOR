@@ -424,8 +424,8 @@ def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
 
 
 def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
-    """Rotate both drums inward and drive forward
-    for duration time in seconds.
+    """Dump the contents of the drums while moving forward or backward.
+    To avoid dumping in front of the rover, Only dump behind the rover.
     """
     feedback = uf.send_feedback(world_state, waypoint_server)
     preempted = False
@@ -453,10 +453,23 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
+    direction = "forward"
+    back_drum = 0
+    front_drum = -1
     t = 0
-    while t < duration * 40:
-        # Set drums to dump
-        ros_util.publish_actions("stop", 0, 0, -1, -1)
+    while t < duration * 80:
+        # Set drums to dump and move forward and backwards.
+        if t % 100 == 0:
+            if direction == "forward":
+                direction = "reverse"
+                back_drum = 0
+                front_drum = -1
+            else:
+                direction = "forward"
+                back_drum = -1
+                front_drum = 0
+
+        ros_util.publish_actions(direction, 0, 0, front_drum, back_drum)
         t += 1
         ros_util.rate.sleep()
 
