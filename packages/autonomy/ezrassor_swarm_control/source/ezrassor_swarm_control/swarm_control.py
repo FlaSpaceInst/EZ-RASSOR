@@ -641,7 +641,7 @@ class SwarmController:
         ):
             new_matrix[row_num_new_height_matrix] = height_matrix[
                 row_num_height_matrix
-            ][old_matrix_range[0] : old_matrix_range[1]]
+            ][old_matrix_range[0]: old_matrix_range[1]]
         rospy.loginfo("Starting leveling algorithm.")
 
         # Run leveling algorithm to create the instructions to level.
@@ -737,7 +737,7 @@ class SwarmController:
                 if rover.need_help == RoverState.cannot_move.value:
                     rover.get_rover_status_()
                     rospy.loginfo(
-                        "Rover {} cannot move. Adding ({}, {}) to the blacklist.".format(
+                        "Rover {} cannot move. Adding ({}, {}) to blacklist.".format(
                             rover.id_,
                             round(rover.position.x),
                             round(rover.position.y),
@@ -748,7 +748,7 @@ class SwarmController:
                         (round(rover.position.x), round(rover.position.y))
                     )
 
-                    # Add id and location of immobilized rover to immobilized_rover_list.
+                    # Add id and location of immobilized rover to list.
                     immobilized_rover_list.add(
                         (
                             rover.id_,
@@ -783,7 +783,7 @@ class SwarmController:
                     )
 
                     rospy.loginfo(
-                        "Rover {} infinitely pathing. Adding ({}, {}) to the blacklist.".format(
+                        "Rover {} inf pathing. Adding ({}, {}) to blacklist.".format(
                             rover.id_,
                             int(rover_activity_list[-2]),
                             int(rover_activity_list[-1]),
