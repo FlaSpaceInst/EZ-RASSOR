@@ -394,6 +394,8 @@ def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
         # Swap between digging forward or backward every few seconds
         if t % 50 == 0:
             direction = "reverse" if direction == "forward" else "forward"
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
+            rospy.sleep(2.0)
 
         ros_util.publish_actions(direction, 0, 0, 1, 1)
         t += 1
@@ -453,7 +455,7 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
     uf.set_front_arm_angle(world_state, ros_util, 1.3)
     uf.set_back_arm_angle(world_state, ros_util, 1.3)
 
-    direction == "forward"
+    direction = "forward"
     back_drum = 0
     front_drum = -1
     t = 0
@@ -461,13 +463,15 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
         # Set drums to dump and move forward and backwards.
         if t % 50 == 0:
             if direction == "forward":
-                direction == "reverse"
+                direction = "reverse"
                 back_drum = 0
                 front_drum = -1
             else:
-                direction == "forward"
+                direction = "forward"
                 back_drum = -1
                 front_drum = 0
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
+            rospy.sleep(3.0)
 
         ros_util.publish_actions(direction, 0, 0, front_drum, back_drum)
         t += 1
