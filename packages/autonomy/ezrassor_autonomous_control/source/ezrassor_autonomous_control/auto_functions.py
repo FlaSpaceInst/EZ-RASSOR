@@ -392,7 +392,7 @@ def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
     direction = "forward"
     while t < duration * 40:
         # Swap between digging forward or backward every few seconds
-        if t % 100 == 0:
+        if t % 50 == 0:
             direction = "reverse" if direction == "forward" else "forward"
 
         ros_util.publish_actions(direction, 0, 0, 1, 1)
@@ -459,7 +459,7 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
     t = 0
     while t < duration * 80:
         # Set drums to dump and move forward and backwards.
-        if t % 100 == 0:
+        if t % 50 == 0:
             if direction == "forward":
                 direction == "reverse"
                 back_drum = 0

@@ -11,13 +11,13 @@
   <arg name="digsite_y_coord" default="10"/>
   <arg name="spawn_x_coord" default="0"/>
   <arg name="spawn_y_coord" default="0"/>
-  <arg name="max_linear_velocity" default="1.0"/>
-  <arg name="max_angular_velocity" default="1.0"/>
+  <arg name="max_linear_velocity" default="0.5"/>
+  <arg name="max_angular_velocity" default="0.5"/>
   <arg name="enable_real_odometry" default="false"/>
   <arg name="swarm_control" default="false"/>
   <arg name="obstacle_threshold" default="4.0"/>
   <arg name="obstacle_buffer" default=".1"/>
-  <arg name="move_increment" default="3.0"/>
+  <arg name="move_increment" default="1.5"/>
   <arg name="max_obstacle_angle" default="45.0"/>
   <arg name="min_hole_diameter" default="3.0"/>
   <arg name="enable_park_ranger" default="false"/>
