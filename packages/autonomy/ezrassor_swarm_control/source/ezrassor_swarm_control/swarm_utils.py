@@ -262,12 +262,8 @@ def convert_image(map_path, pixel_scale):
     # elevation change from each rover dig/dump
     standard_dig_amount = 1
 
-    # loop through array and standardize the array
-    for row in range(0, img_width):
-        for col in range(0, img_height):
-            height_matrix[row][col] = (
-                height_matrix[row][col] - level_elevation
-            ) / standard_dig_amount
+    # standardize the array
+    height_matrix = (height_matrix - level_elevation) / standard_dig_amount
 
     rover_standard_dig_height = 5
     rover_standard_dig_width = 10
