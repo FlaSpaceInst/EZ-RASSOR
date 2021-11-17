@@ -123,7 +123,7 @@ class Rover:
         # The cost of completing one dig action.
         self.dig_battery_cost = 6.0
         # The cost of completing one dump action.
-        self.dump_battery_cost = 3.6
+        self.dump_battery_cost = 12.0
 
         # Status code indicating spefific rover problems, if any.
         self.need_help = RoverState.okay.value
@@ -641,7 +641,7 @@ class SwarmController:
         ):
             new_matrix[row_num_new_height_matrix] = height_matrix[
                 row_num_height_matrix
-            ][old_matrix_range[0]: old_matrix_range[1]]
+            ][old_matrix_range[0] : old_matrix_range[1]]
         rospy.loginfo("Starting leveling algorithm.")
 
         # Run leveling algorithm to create the instructions to level.
