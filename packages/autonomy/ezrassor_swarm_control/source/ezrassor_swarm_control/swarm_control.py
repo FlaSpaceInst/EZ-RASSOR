@@ -86,12 +86,12 @@ class Rover:
         # Lock to prevent access.
         self.sub_pair_actions_lock = None
 
-        # dig locations not yet assigned set.
-        self.dig_locations_not_assigned = None
-        # dump locations not yet assigned set.
-        self.dump_locations_not_assigned = None
+        # dig locations which have been assigned.
+        self.dig_locations_assigned = None
+        # dump locations which have been assigned.
+        self.dump_locations_assigned = None
         # Lock to locations not assigned sets.
-        self.locations_not_assigned_lock = None
+        self.locations_assigned_lock = None
 
         # Queue of rover ids which need an assignment from SwarmController.
         self.rover_queue = rover_queue
@@ -406,10 +406,10 @@ class Rover:
                 )
             )
             # Update dig/dump locations available to Swarm Control.
-            self.locations_not_assigned_lock.acquire()
-            self.dig_locations_not_assigned.add(self.dig_location)
-            self.dump_locations_not_assigned.add(self.dump_location)
-            self.locations_not_assigned_lock.release()
+            self.locations_assigned_lock.acquire()
+            self.dig_locations_assigned.remove(self.dig_location)
+            self.dump_locations_assigned.remove(self.dump_location)
+            self.locations_assigned_lock.release()
 
             # Remove rover assignments.
             self.dig_location = None
@@ -516,10 +516,10 @@ class Rover:
             "Rover {} has completed possible actions.".format(self.id_)
         )
         # Allow Swarm Controller to assign these locations.
-        self.locations_not_assigned_lock.acquire()
-        self.dig_locations_not_assigned.add(self.dig_location)
-        self.dump_locations_not_assigned.add(self.dump_location)
-        self.locations_not_assigned_lock.release()
+        self.locations_assigned_lock.acquire()
+        self.dig_locations_assigned.remove(self.dig_location)
+        self.dump_locations_assigned.remove(self.dump_location)
+        self.locations_assigned_lock.release()
 
         # If the rover was not capable of completing all of its assigned actions, go
         # charge.
@@ -657,6 +657,10 @@ class SwarmController:
         # Data structure which holds locations of immobilized rovers.
         immobilized_rover_list = set()
 
+        # Data structures which holds all locations.
+        dig_locations = set()
+        dump_locations = set()
+
         # Create the data structure which holds the number of actions required for each
         # sub pair.
         # The key is the dig location and the dump location.
@@ -665,21 +669,22 @@ class SwarmController:
         # location to the dump location.
         sub_pair_actions = {}
         for dig_location in dig_dump_pairs:
+            dig_locations.add(dig_location)
+
             for dump_location, actions in dig_dump_pairs[dig_location]:
                 sub_pair_actions[(dig_location, dump_location)] = math.ceil(
                     actions
                 )
 
-        # Data structure to see which dig locations are not being used and can be
-        # assigned.
-        dig_locations_not_assigned = set(dig_dump_pairs.keys())
+                dump_locations.add(dump_location)
 
-        # Data structure to see which dump locations are not being used and can be
+        # Data structure to see which dig locations are being used and cannot be
         # assigned.
-        dump_locations_not_assigned = set()
-        for dig_location in dig_dump_pairs:
-            for dump_location, _ in dig_dump_pairs[dig_location]:
-                dump_locations_not_assigned.add(dump_location)
+        dig_locations_assigned = set()
+
+        # Data structure to see which dump locations are being used and cannot be
+        # assigned.
+        dump_locations_assigned = set()
 
         # Create A* path planner.
         path_planner = PathPlanner(map_path, rover_max_climb_slope=2)
@@ -689,7 +694,7 @@ class SwarmController:
         # Create locks to make global data structures thread safe.
         # Global data structes include dig and dump location sets and sub pair actions.
         sub_pair_actions_lock = Lock()
-        locations_not_assigned_lock = Lock()
+        locations_assigned_lock = Lock()
 
         # Start rover threads.
         # Add references of shared objects to rover.
@@ -701,9 +706,9 @@ class SwarmController:
             rover.sub_pair_actions = sub_pair_actions
             rover.sub_pair_actions_lock = sub_pair_actions_lock
 
-            rover.dig_locations_not_assigned = dig_locations_not_assigned
-            rover.dump_locations_not_assigned = dump_locations_not_assigned
-            rover.locations_not_assigned_lock = locations_not_assigned_lock
+            rover.dig_locations_assigned = dig_locations_assigned
+            rover.dump_locations_assigned = dump_locations_assigned
+            rover.locations_assigned_lock = locations_assigned_lock
             rover.thread.start()
 
         def check_actions_remaining():
@@ -764,10 +769,10 @@ class SwarmController:
                     rospy.loginfo("Killing Rover {}'s thread".format(rover.id_))
 
                     # Allow Swarm Controller to assign these locations.
-                    rover.locations_not_assigned_lock.acquire()
-                    rover.dig_locations_not_assigned.add(rover.dig_location)
-                    rover.dump_locations_not_assigned.add(rover.dump_location)
-                    rover.locations_not_assigned_lock.release()
+                    rover.locations_assigned_lock.acquire()
+                    rover.dig_locations_assigned.remove(rover.dig_location)
+                    rover.dump_locations_assigned.remove(rover.dump_location)
+                    rover.locations_assigned_lock.release()
                     rover.activity = "idle"
                     rover.dig_location = None
                     rover.dump_location = None
@@ -809,14 +814,14 @@ class SwarmController:
                             rover.go_to(rover.dig_location, "dig location")
                             rover.dump()
                             # Allow Swarm Controller to assign these locations.
-                            rover.locations_not_assigned_lock.acquire()
-                            rover.dig_locations_not_assigned.add(
+                            rover.locations_assigned_lock.acquire()
+                            rover.dig_locations_assigned.remove(
                                 rover.dig_location
                             )
-                            rover.dump_locations_not_assigned.add(
+                            rover.dump_locations_assigned.remove(
                                 rover.dump_location
                             )
-                            rover.locations_not_assigned_lock.release()
+                            rover.locations_assigned_lock.release()
                             # Set rover status to idle.
                             rover.activity = "idle"
                             rover.dig_location = None
@@ -839,10 +844,10 @@ class SwarmController:
                         continue
 
                     # Allow Swarm Controller to assign these locations.
-                    rover.locations_not_assigned_lock.acquire()
-                    rover.dig_locations_not_assigned.add(rover.dig_location)
-                    rover.dump_locations_not_assigned.add(rover.dump_location)
-                    rover.locations_not_assigned_lock.release()
+                    rover.locations_assigned_lock.acquire()
+                    rover.dig_locations_assigned.remove(rover.dig_location)
+                    rover.dump_locations_assigned.remove(rover.dump_location)
+                    rover.locations_assigned_lock.release()
                     rover.activity = "idle"
                     rover.dig_location = None
                     rover.dump_location = None
@@ -855,24 +860,25 @@ class SwarmController:
             rover.get_rover_status_()
 
             # Check if any dig locations and dump locations are available.
-            locations_not_assigned_lock.acquire()
-            if (
-                not dig_locations_not_assigned
-                or not dump_locations_not_assigned
-            ):
-                locations_not_assigned_lock.release()
+            # TODO Lock necessary?
+            locations_assigned_lock.acquire()
+            if len(dig_locations_assigned) == len(dig_locations) or len(
+                dump_locations_assigned
+            ) == len(dump_locations):
+                locations_assigned_lock.release()
                 # Requeue rover to assign it locations when they are available.
-                # Todo: should we wait until there are locations not assigned before
+                # TODO: should we wait until there are locations not assigned before
                 # continueing?
                 self.rover_queue.put(rover.id_)
                 continue
-            locations_not_assigned_lock.release()
+            locations_assigned_lock.release()
 
             # Find the closest dig location to the rover.
             closest_dig_distance = None
             assigned_dig_location = None
             assigned_dump_location = None
             sub_pair_actions_lock.acquire()
+
             for dig_location, dump_location in sub_pair_actions:
                 # Make sure locations are not blacklisted.
                 if blacklist:
@@ -881,15 +887,45 @@ class SwarmController:
                         dump_location.y,
                     ) in blacklist:
                         continue
-                # Make sure locations are in hash sets.
-                locations_not_assigned_lock.acquire()
+
+                # Make sure locations are not assigned already.
+                locations_assigned_lock.acquire()
                 if (
-                    dig_location not in dig_locations_not_assigned
-                    or dump_location not in dump_locations_not_assigned
+                    dig_location in dig_locations_assigned
+                    or dump_location in dump_locations_assigned
                 ):
-                    locations_not_assigned_lock.release()
+                    locations_assigned_lock.release()
                     continue
-                locations_not_assigned_lock.release()
+                locations_assigned_lock.release()
+
+                # Ensure that chosen locations are not near other assigned locations.
+                neighbors = [
+                    (0, 1),
+                    (0, -1),
+                    (1, 0),
+                    (-1, 0),
+                    (1, 1),
+                    (1, -1),
+                    (-1, 1),
+                    (-1, -1),
+                ]
+                for neighbor in neighbors:
+                    dig_neighbor = Point()
+                    dig_neighbor.x = dig_location.x + neighbor[0]
+                    dig_neighbor.y = dig_location.y + neighbor[1]
+
+                    dump_neighbor = Point()
+                    dump_neighbor.x = dig_location.x + neighbor[0]
+                    dump_neighbor.y = dig_location.y + neighbor[1]
+
+                    locations_assigned_lock.acquire()
+                    if (
+                        dig_neighbor in dig_locations
+                        or dump_neighbor in dump_locations
+                    ):
+                        locations_assigned_lock.release()
+                        continue
+                    locations_assigned_lock.release()
 
                 # Choose sub pair if dig location is the closest dig location found so
                 # far.
@@ -907,8 +943,7 @@ class SwarmController:
                     )
             sub_pair_actions_lock.release()
 
-            # Check level returns true when a rover is working on an assignemnt
-            # But no assignments would able to be assigned.
+            # Check if locations where successfully assigned.
             if not assigned_dig_location or not assigned_dump_location:
                 self.rover_queue.put(rover.id_)
                 continue
@@ -919,10 +954,10 @@ class SwarmController:
             rover.dump_location = assigned_dump_location
 
             # Remove locations from location sets, so that they cannot be reassigned.
-            locations_not_assigned_lock.acquire()
-            dig_locations_not_assigned.remove(rover.dig_location)
-            dump_locations_not_assigned.remove(rover.dump_location)
-            locations_not_assigned_lock.release()
+            locations_assigned_lock.acquire()
+            dig_locations_assigned.remove(rover.dig_location)
+            dump_locations_assigned.remove(rover.dump_location)
+            locations_assigned_lock.release()
             # set the rover status to ready to dig.
             rover.activity = "ready to level"
 
