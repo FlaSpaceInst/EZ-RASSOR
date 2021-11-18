@@ -953,10 +953,10 @@ class SwarmController:
             rover.dig_location = assigned_dig_location
             rover.dump_location = assigned_dump_location
 
-            # Remove locations from location sets, so that they cannot be reassigned.
+            # Add locations to data structure so that they cannot be reasigned.
             locations_assigned_lock.acquire()
-            dig_locations_assigned.remove(rover.dig_location)
-            dump_locations_assigned.remove(rover.dump_location)
+            dig_locations_assigned.add(rover.dig_location)
+            dump_locations_assigned.add(rover.dump_location)
             locations_assigned_lock.release()
             # set the rover status to ready to dig.
             rover.activity = "ready to level"
