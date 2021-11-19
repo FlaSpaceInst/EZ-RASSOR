@@ -121,7 +121,7 @@ class Rover:
         # The cost of moving one waypoint full of dirt.
         self.move_battery_cost_with_dirt = 0.2
         # The cost of completing one dig action.
-        self.dig_battery_cost = 6.0
+        self.dig_battery_cost = 10.0
         # The cost of completing one dump action.
         self.dump_battery_cost = 12.0
 
