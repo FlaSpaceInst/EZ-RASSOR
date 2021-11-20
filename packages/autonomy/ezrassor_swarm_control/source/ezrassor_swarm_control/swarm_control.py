@@ -609,8 +609,10 @@ class SwarmController:
     def report_immobilized_rover(self, rover, immobilized_rover_list):
         # Send message
         rospy.loginfo(
-            "Rover {} cannot move and requires attention at location {}, {}."
-        ).format(rover.id_, round(rover.position.x), round(rover.position.y))
+            "Rover {} cannot move and requires attention at location {}, {}.".format(
+                rover.id_, round(rover.position.x), round(rover.position.y)
+            )
+        )
 
         # Add id and location of immobilized rover to list.
         immobilized_rover_list.add(
