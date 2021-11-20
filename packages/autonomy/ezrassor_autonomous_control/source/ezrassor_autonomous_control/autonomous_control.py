@@ -132,7 +132,7 @@ class RoverController:
         status.battery = max(int(self.world_state.battery), 0)
 
         # Lower battery due to sending message.
-        self.world_state.battery -= 0.01
+        # self.world_state.battery -= 0.01
         return status
 
     def execute_action(self, goal):
