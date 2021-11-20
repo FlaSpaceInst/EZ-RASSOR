@@ -384,6 +384,8 @@ def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
         ros_util,
     )
 
+    rospy.sleep(3.0)
+
     uf.set_front_arm_angle(world_state, ros_util, -0.1)
     uf.set_back_arm_angle(world_state, ros_util, -0.1)
 
@@ -395,7 +397,7 @@ def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
         if t % 50 == 0:
             direction = "reverse" if direction == "forward" else "forward"
             ros_util.publish_actions("stop", 0, 0, 0, 0)
-            rospy.sleep(1.0)
+            rospy.sleep(3.0)
 
         ros_util.publish_actions(direction, 0, 0, 1, 1)
         t += 1
