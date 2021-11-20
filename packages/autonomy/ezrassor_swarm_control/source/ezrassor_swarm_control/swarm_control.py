@@ -205,7 +205,7 @@ class Rover:
     def go_to_charge(self, path=None):
         """Command rover to complete charging routine."""
         # Go to charging site.
-        self.go_to(self.lander_loc, "lander", path)
+        self.go_to(self.home, "charging station", path)
         self.charge()
 
     def go_to(self, target_point, target_name, path=None):
