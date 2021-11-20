@@ -452,8 +452,8 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
     )
 
     # Raise arms
-    uf.set_front_arm_angle(world_state, ros_util, 1.3)
-    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+    uf.set_front_arm_angle(world_state, ros_util, 0.6)
+    uf.set_back_arm_angle(world_state, ros_util, 0.6)
 
     direction = "forward"
     back_drum = 0
