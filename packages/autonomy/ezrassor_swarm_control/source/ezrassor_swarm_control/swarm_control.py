@@ -606,7 +606,7 @@ class SwarmController:
         }
 
     # Communicate to supervisor that a rover has been immobilized.
-    def report_immobilized_rover(rover, immobilized_rover_list):
+    def report_immobilized_rover(self, rover, immobilized_rover_list):
         # Send message
         rospy.loginfo(
             "Rover {} cannot move and requires attention at location {}, {}."
