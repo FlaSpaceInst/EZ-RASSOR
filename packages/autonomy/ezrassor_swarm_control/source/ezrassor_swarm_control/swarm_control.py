@@ -605,6 +605,21 @@ class SwarmController:
             for i in range(1, robot_count + 1)
         }
 
+    # Communicate to supervisor that a rover has been immobilized.
+    def report_immobilized_rover(rover, immobilized_rover_list):
+        # Send message
+        rospy.loginfo(
+            "Rover {} cannot move and requires attention at location {}, {}."
+        ).format(rover.id_, round(rover.position.x), round(rover.position.y))
+
+        # Add id and location of immobilized rover to list.
+        immobilized_rover_list.add(
+            (
+                rover.id_,
+                (round(rover.position.x), round(rover.position.y)),
+            )
+        )
+
     def run(self):
         """Run Swarm Controller to command rovers to level an area on the moon
         given a set of instructions."""
@@ -766,13 +781,7 @@ class SwarmController:
                         (round(rover.position.x), round(rover.position.y))
                     )
 
-                    # Add id and location of immobilized rover to list.
-                    immobilized_rover_list.add(
-                        (
-                            rover.id_,
-                            (round(rover.position.x), round(rover.position.y)),
-                        )
-                    )
+                    self.report_immobilized_rover(rover, immobilized_rover_list)
 
                     # Kill rover thread to save processing power.
                     rover.kill_thread = True
