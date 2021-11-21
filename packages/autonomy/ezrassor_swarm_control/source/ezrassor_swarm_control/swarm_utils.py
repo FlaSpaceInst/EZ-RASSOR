@@ -271,12 +271,12 @@ def convert_image(map_path, pixel_scale):
     scaled_array_height = img_height * scale_height
     dim = (scaled_array_height, scaled_array_width)
 
-    resized = cv2.resize(moon_img, dim, interpolation = cv2.INTER_AREA)
+    resized = cv2.resize(moon_img, dim, interpolation=cv2.INTER_AREA)
 
-    print('Resized Dimensions : ',resized.shape)
+    print("Resized Dimensions : ", resized.shape)
 
     cv2.imwrite("nasa_moon_dem.jpg", resized)
- 
+
     cv2.imshow("Resized image", resized)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
