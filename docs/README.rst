@@ -141,6 +141,7 @@ AUTHORS
 - `Autumn Esponda`_
 
 **EZ-RASSOR 3.0 (Swarm Build Pad) Team**
+
 - `Hung Nguyen`_
 - `Coy Torreblanca`_
 - `Stanley Minervini`_
