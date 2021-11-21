@@ -165,7 +165,7 @@ def move(dist, world_state, ros_util, direction="forward"):
             scan,
             ros_util.obstacle_threshold,
         ):
-            # rospy.loginfo("Obstacle too close! Stopping!")
+            rospy.loginfo("Obstacle too close! Stopping!")
             ros_util.publish_actions("stop", 0, 0, 0, 0)
             break
 
@@ -287,10 +287,10 @@ def get_turn_angle(world_state, ros_util):
             switchDirection = -1
             wedgeDist = 0
             wedgeSize = (scan.angle_max - scan.angle_min) / 2.0
-            # rospy.loginfo(
-            # "There is nowhere to go in the current wedge. "
-            # + "Turning to an adjacent wedge."
-            # )
+            rospy.loginfo(
+                "There is nowhere to go in the current wedge. "
+                + "Turning to an adjacent wedge."
+            )
 
             # Keep checking adjacent wedges until we find a safe angle.
             while best_angle is None:
@@ -321,7 +321,7 @@ def get_turn_angle(world_state, ros_util):
                 ros_util.rate.sleep()
                 rospy.sleep(0.1)
 
-                # rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
+                rospy.loginfo("Currently at wedge W{}".format(wedgeDist - 1))
                 best_angle = nf.get_best_angle(
                     world_state,
                     ros_util.obstacle_buffer,
