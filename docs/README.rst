@@ -140,6 +140,13 @@ AUTHORS
 - `Daniel Simoes`_
 - `Autumn Esponda`_
 
+**EZ-RASSOR 3.0 (Swarm Build Pad) Team**
+- `Hung Nguyen`_
+- `Coy Torreblanca`_
+- `Stanley Minervini`_
+- `Richard Malcolm`_
+- `Camry Artalona`_
+
 .. |build badge| image:: https://github.com/FlaSpaceInst/EZ-RASSOR/workflows/Build/badge.svg
     :target: https://github.com/FlaSpaceInst/EZ-RASSOR/actions
 .. |style badge| image:: https://img.shields.io/badge/Code%20Style-black-000000.svg
@@ -169,6 +176,11 @@ AUTHORS
 .. _`Martin Power` : https://github.com/martinpower
 .. _`Daniel Simoes` : https://github.com/RuptorT
 .. _`Autumn Esponda` : https://github.com/autumnesponda
+.. _`Hung Nguyen` : https://github.com/hungjn
+.. _`Coy Torreblanca` : https://github.com/Coy-Torreblanca
+.. _`Stanley Minervini` : https://github.com/StanleyMine
+.. _`Richard Malcolm` : https://github.com/RichardMalcolm-CS
+.. _`Camry Artalona` : https://github.com/cmryArt
 .. _`ROS Melodic` : http://wiki.ros.org/melodic/Installation/Ubuntu
 .. _`Python 2.7` : https://www.python.org/download/releases/2.7/
 .. _`Pip` : https://pip.pypa.io/en/stable/installing/
