@@ -832,6 +832,11 @@ class SwarmController:
                                     rover.id_
                                 )
                             )
+
+                            rover.get_rover_status_()
+                            if rover.battery < 20:
+                                rover.go_to_charge()
+
                             rover.go_to(rover.dig_location, "dig location")
                             rover.dump()
                             # Allow Swarm Controller to assign these locations.
