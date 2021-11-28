@@ -473,7 +473,7 @@ def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
                 back_drum = -1
                 front_drum = 0
             ros_util.publish_actions("stop", 0, 0, 0, 0)
-            rospy.sleep(1.0)
+            rospy.sleep(3.0)
 
         ros_util.publish_actions(direction, 0, 0, front_drum, back_drum)
         t += 1
