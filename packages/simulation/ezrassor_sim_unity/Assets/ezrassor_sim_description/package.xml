@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!-- Package metadata for the ezrassor_sim_description ROS package.
+     Written by Tiger Sachse. -->
+<package format="2">
+  <name>ezrassor_sim_description</name>
+  <license>MIT</license>
+  <version>1.3.0</version>
+  <author email="Ronald.Marrero@outlook.com">Ronald Marrero</author>
+  <maintainer email="Ronald.Marrero@outlook.com">Ronald Marrero</maintainer>
+  <url type="website">https://github.com/FlaSpaceInst/EZ-RASSOR</url>
+  <description>The EZ-RASSOR simulation model XACRO description.</description>
+
+  <!-- A list of package dependencies. -->
+  <depend>rviz</depend>
+  <depend>xacro</depend>
+  <depend>roslaunch</depend>
+  <depend>gazebo_ros</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>
