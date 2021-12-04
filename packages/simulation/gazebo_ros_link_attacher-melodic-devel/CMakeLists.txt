@@ -19,7 +19,8 @@ endif()
 # Load catkin and all dependencies required for this package
 find_package(catkin REQUIRED COMPONENTS 
   roscpp 
-  gazebo_ros
+  gazebo_ros_control
+  gazebo_plugins
   std_msgs
   message_generation
 )
