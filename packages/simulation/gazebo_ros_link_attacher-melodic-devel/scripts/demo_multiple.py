@@ -2,7 +2,7 @@
 
 import rospy
 from gazebo_ros_link_attacher.msg import Attach
-from gazebo_msgs.srv import SpawnModel, SpawnModelRequest, SpawnModelResponse
+from gazebo_msgs.srv import SpawnModel, SpawnModelRequest
 from copy import deepcopy
 from tf.transformations import quaternion_from_euler
 
@@ -178,12 +178,6 @@ if __name__ == "__main__":
     attach_pub.publish(amsg)
     rospy.sleep(1.0)
     # From the shell:
-    """
-rostopic pub /link_attacher_node/attach_models gazebo_ros_link_attacher/Attach "model_name_1: 'cube1'
-link_name_1: 'link'
-model_name_2: 'cube2'
-link_name_2: 'link'"
-    """
     rospy.loginfo("Published into linking service!")
 
     rospy.loginfo("Attaching cube2 and cube3")

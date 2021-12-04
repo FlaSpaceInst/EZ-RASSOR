@@ -1,22 +1,21 @@
 import sys
 import copy
 import rospy
-import rosservice
 import moveit_commander
-import moveit_msgs.msg
 import geometry_msgs.msg
 import numpy as np
 from math import pi
-from std_msgs.msg import String, Float64MultiArray, Float32, MultiArrayDimension
-from moveit_commander.conversions import pose_to_list
-from ezrassor_arm_autonomous_control.msg import ArmCommand
+from std_msgs.msg import Float64MultiArray, Float32
 import arm_utility_functions as auf
 from tf.transformations import quaternion_from_euler
 
-# Container class for the moveit python interface so that needed information is available after the subscriber callback
+# Container class for the moveit python interface so 
+# that needed information is available after the subscriber callback
 class MoveIt:
 
-    # Init for the MoveIt class and takes a RobotCommander, PlanningSceneInterface, and MoveGroupCommander all from moveit_commander
+
+    # Init for the MoveIt class and takes a RobotCommander, 
+    # PlanningSceneInterface, and MoveGroupCommander all from moveit_commander
     def __init__(self, robot, scene, move_group, claw_topic):
         self.robot = robot
         self.scene = scene
@@ -69,7 +68,8 @@ class MoveIt:
 
         # self.MoveHomePose
 
-    # Move the arm based on a small increment for use with manual inputs (gamepad/keyboard)
+    # Move the arm based on a small increment for use with 
+    # manual inputs (gamepad/keyboard)
     def MoveArmApp(self, data):
         current_pose = self.GetCurrentPose()
         pose_goal = geometry_msgs.msg.Pose()
@@ -79,13 +79,15 @@ class MoveIt:
         rospy.loginfo(pose_goal)
         self.move_group.set_pose_target(pose_goal)
         plan = self.move_group.go(wait=True)
+        rospy.loginfo(plan)
         self.move_group.stop()
         self.move_group.clear_pose_targets()
         # self.MoveArmJointGoal([0.0, 0.0, 0.0, 0.0, 0.6])
 
         self.MoveHomePose
 
-    # Move the arm so that the end effector is in a specific position, operate grabber, then return to home position
+    # Move the arm so that the end effector is in a specific position, 
+    # operate grabber, then return to home position
     def MoveArmAuto(self, data):
         pose_goal = geometry_msgs.msg.Pose()
         quant = quaternion_from_euler(0, 0, (pi / 4) - data.data[3])
@@ -105,7 +107,9 @@ class MoveIt:
         self.move_group.clear_pose_targets()
         rospy.loginfo(self.GetJointAngles())
 
-    # Move the arm along a cartesian path that first raises the arm, moves along the xy-plane, then lowers before operating th grabber; then return to the home position
+    # Move the arm along a cartesian path that first raises the arm,
+    # moves along the xy-plane, then lowers before operating the grabber;
+    # then return to the home position
     def MoveAutoPath(self, data):
         waypoints = []
 
@@ -160,12 +164,6 @@ class MoveIt:
         self.move_group.set_max_velocity_scaling_factor(1)
         self.move_group.set_max_acceleration_scaling_factor(1)
 
-    def AttachObject(self):
-        paver_size = [1, 1, 0.1]
-
-    def DettachObject(self):
-        paver_size = [1, 1, 0.1]
-
     def getArmOutOfWay(self):
         self.move_group.set_named_target("Pickup_First_Paver_Prep")
         self.move_group.go(wait=True)
@@ -186,14 +184,6 @@ class MoveIt:
         self.move_group.go(wait=True)
         self.move_group.stop()
         self.move_group.clear_pose_targets()
-        # rospy.sleep(rospy.Duration(secs=2))
-        # rospy.loginfo('Current Pose: ', self.GetCurrentPose().position.x)
-        # print('Current Pose: ', self.GetCurrentPose().position)
-        # arm_data = Float64MultiArray()
-        # arm_data.data = [-0.5, 0.1, 0.66, 0.0, 1.0]
-        # self.MoveArmAuto(arm_data)
-        # arm_data.data = [2.4879988955373697, -1.0121464736534298, 1.5168467742294576, -0.5040257745474701, 0]
-        # self.MoveArmJointGoal(arm_data)
 
     # Move arm to home position utility function
     def MoveHomePose(self):
@@ -202,7 +192,8 @@ class MoveIt:
         self.move_group.stop()
         self.move_group.clear_pose_targets()
 
-    # Handle the command obtained from the paver_arm_controller_instructions_topic subscriber
+    # Handle the command obtained from the 
+    # paver_arm_controller_instructions_topic subscriber
     def HandleCommand(self, data):
         if data.data[4] == 1.0:
             self.MoveArmAuto(data)

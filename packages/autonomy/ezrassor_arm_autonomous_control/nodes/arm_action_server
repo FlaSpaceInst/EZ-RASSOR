@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import rospy
 from ezrassor_arm_autonomous_control import arm_action_server
 
 arm_action_server.on_start()

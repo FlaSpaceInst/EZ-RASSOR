@@ -1,21 +1,10 @@
 #!/usr/bin/env python
 
-from rosgraph.names import namespace
-from roslaunch import launch
 import rospy
-import roslaunch
 import math
-
-import auto_functions as af
-import ai_objects as ao
 
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose
-from geometry_msgs.msg import Point
-from gazebo_msgs.msg import ModelStates, LinkStates
-from std_msgs.msg import Float32MultiArray, Int16, Float64MultiArray, Float32
-from sensor_msgs.msg import JointState, Imu, LaserScan
-from std_msgs.msg import Int8
 
 import nav_functions as nf
 from ezrassor_swarm_control.msg import waypointFeedback, waypointResult

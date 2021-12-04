@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from gazebo_msgs.srv import SpawnModel, SpawnModelRequest, SpawnModelResponse
+from gazebo_msgs.srv import SpawnModel, SpawnModelRequest
 from copy import deepcopy
 from tf.transformations import quaternion_from_euler
 

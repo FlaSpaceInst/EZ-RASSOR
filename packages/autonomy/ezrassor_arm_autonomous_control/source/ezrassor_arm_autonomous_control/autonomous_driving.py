@@ -9,22 +9,20 @@ from std_msgs.msg import Float64MultiArray, Int8, Float32
 from sensor_msgs.msg import Imu, LaserScan, JointState, PointCloud2
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
 from moveit_msgs.msg import MoveGroupActionResult
-import control_msgs.msg
 
 import ezrassor_autonomous_control.utility_functions as uf
 import ezrassor_autonomous_control.ai_objects as ao
 import ezrassor_autonomous_control.auto_functions as af
 import ezrassor_autonomous_control.nav_functions as nf
-import object_detection as od
 import arm_utility_functions as auf
 
 from tf.transformations import euler_from_quaternion
 
 
 class ArmAutoHelper:
-    # Init function for the class ArmAutoHelper that integrates the arm autonomus movement with the autonomous driving of the rover
+    # Init function for the class ArmAutoHelper that integrates the arm 
+    # autonomus movement with the autonomous driving of the rover
     def __init__(
         self,
         target_x,
@@ -115,10 +113,6 @@ class ArmAutoHelper:
                     (self.target_x - (x * 0.355), self.target_y - (y * 0.455))
                 )
 
-        new_start = [0, 0]
-        new_target = [0, 0]
-        last_paver = [0, 0]
-
         self.arm_base_link_x = None
         self.arm_base_link_y = None
         self.model_poses = None
@@ -205,7 +199,8 @@ class ArmAutoHelper:
         norm = np.linalg.norm(self.quant)
         self.quant /= norm
 
-    # Arm movement function used to test connection between this node and the move group interface node
+    # Arm movement function used to test connection between 
+    # this node and the move group interface node
     def fullArmMove(self, target):
         msg = Float64MultiArray()
         msg.data = [0.0, 0.0, 0.0, 0.0, 3.0]
@@ -276,7 +271,8 @@ class ArmAutoHelper:
     def degToRad(self, deg):
         return math.radians(deg)
 
-    # Function for keeping track of what paver model type should be spawned based on the current row count
+    # Function for keeping track of what paver model type 
+    # should be spawned based on the current row count
     def paverIncrementer(self, count):
         if count % self.pad_size == 0:
             if self.paver_tracker_cap == 9:
@@ -342,7 +338,7 @@ class ArmAutoHelper:
         rospy.loginfo(self.model_names)
         rospy.loginfo(self.model_poses)
 
-    # Modified rover driving function to account for the missing front drum arm other aspects to adapt the solution to work with our arm
+    # Modified rover driving function to account for the missing front drum and arm
     def auto_drive_location(self, world_state, ros_util, waypoint_server=None):
         """Navigate to location. Avoid obstacles while moving toward location."""
 
@@ -490,7 +486,8 @@ class ArmAutoHelper:
 
         return new_heading
 
-    # Function the utilizes the rover's autonomous driving functions to turn to a desired heading
+    # Function the utilizes the rover's autonomous driving functions 
+    # to turn to a desired heading
     def turnToDesiredHeading(self, pass_angle):
         location = [self.world_state.positionY, self.world_state.positionX + 1]
         new_heading_degrees = self.calculate_heading(self.world_state, location)
@@ -551,17 +548,6 @@ class ArmAutoHelper:
 
         # Start auto loop
         while True:
-
-            # Record heading of rover before first placement to remove orientation issues
-            # if self.paver_angle == None:
-            #    self.paver_angle = self.getRadOrientationOfRover()
-            #    rospy.loginfo("Paver Angle: ")
-            #    rospy.loginfo(self.paver_angle)
-
-            # Turn to face same heading as first placement to ensure orientation of paver
-            # else:
-            #    rospy.loginfo('Turning for placement')
-            #    self.turnToDesiredHeading(self.paver_angle[2])
 
             current_orientation = self.getRadOrientationOfRover()
             new_angle = (2 * np.pi) - np.abs(current_orientation[2])
@@ -684,7 +670,8 @@ class ArmAutoHelper:
                 self.paverIncrementer(self.target_counter)
             self.returnToPaverPlace(new_target)
 
-    # Function for preparing the rover to return to its spawn location for paver pickup
+    # Function for preparing the rover to 
+    # return to its spawn location for paver pickup
     def returnToSpawnPrep(self, current_location):
         self.world_state.startPositionX = current_location[0]
         self.world_state.startPositionY = current_location[1]
@@ -692,7 +679,8 @@ class ArmAutoHelper:
         self.world_state.target_location.x = self.start_x
         self.world_state.target_location.y = self.start_y
 
-    # Function for preparing the rover to travel to the next location for paver placement
+    # Function for preparing the rover to 
+    # travel to the next location for paver placement
     def returnToPaverPlace(self, target_location):
         self.world_state.startPositionX = self.start_x
         self.world_state.startPositionY = self.start_y
@@ -711,7 +699,8 @@ class ArmAutoHelper:
             self.world_state, self.ros_util, waypoint_server=None
         )
 
-    # Object detection callback function to use the information obtained by object detection to get the location of the last paver in relation to the rover
+    # Object detection callback function to use the information obtained by 
+    # object detection to get the location of the last paver in relation to the rover
     def objectLocationCallback(self, data):
         depth = np.sqrt((data.data[2] ** 2) - (0.23 ** 2))
         if self.paver_count == self.pad_size + 1:
@@ -773,7 +762,7 @@ def onStart(
         rospy.sleep(rospy.Duration(secs=2))
         # driver.armTest()
         # driver.visualNetworkTest()
-        # driver.full_auto()
+        driver.full_auto()
 
     except ROSInterruptException:
         pass

@@ -7,7 +7,6 @@ from std_msgs.msg import (
     Float64MultiArray,
     MultiArrayDimension,
 )
-from trajectory_msgs.msg import JointTrajectoryPoint
 
 NODE = "sim_paver_arm_driver"
 FIRST_JOINT_TOPIC = "paver_arm_joint_1_instructions"
@@ -106,7 +105,6 @@ def start_node():
             FIFTH_JOINT_TOPIC, Float64, handle_fifth_joint_movements
         )
         rospy.Subscriber(CLAW_TOPIC, Float32, handle_claw_movements)
-        #        rospy.Subscriber(AUTO_TOPIC, JointTrajectoryPoint, handle_auto_movement)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

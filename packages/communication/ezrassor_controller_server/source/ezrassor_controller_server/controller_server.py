@@ -11,7 +11,6 @@ import threading
 import std_msgs.msg
 import BaseHTTPServer
 import geometry_msgs.msg
-from ezrassor_arm_autonomous_control.msg import ArmCommand
 
 
 def get_custom_handler(publishers):

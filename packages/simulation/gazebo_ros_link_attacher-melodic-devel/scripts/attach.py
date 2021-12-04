@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from gazebo_ros_link_attacher.srv import Attach, AttachRequest, AttachResponse
+from gazebo_ros_link_attacher.srv import Attach, AttachRequest
 
 
 if __name__ == "__main__":

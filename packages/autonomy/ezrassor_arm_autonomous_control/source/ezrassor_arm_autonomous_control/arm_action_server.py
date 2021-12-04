@@ -1,4 +1,3 @@
-import roslib
 import rospy
 import actionlib
 
@@ -21,5 +20,5 @@ class MoveArm:
 
 def on_start():
     rospy.init_node("arm_action_server")
-    server = MoveArm()
+    #server = MoveArm()
     rospy.spin()
