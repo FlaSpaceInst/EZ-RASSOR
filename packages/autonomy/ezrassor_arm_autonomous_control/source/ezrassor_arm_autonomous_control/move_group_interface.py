@@ -9,6 +9,7 @@ from std_msgs.msg import Float64MultiArray, Float32
 import arm_utility_functions as auf
 from tf.transformations import quaternion_from_euler
 
+
 # Container class for the moveit python interface so
 # that needed information is available after the subscriber callback
 class MoveIt:

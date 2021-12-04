@@ -90,7 +90,8 @@ class ImageHolder:
         )
         PATH_TO_TXT = (
             rospack.get_path("ezrassor_arm_autonomous_control")
-            + "/source/ezrassor_arm_autonomous_control/faster_rcnn_inception_v2_coco_2018_01_28.pbtxt"
+            + "/source/ezrassor_arm_autonomous_control/"
+            + "faster_rcnn_inception_v2_coco_2018_01_28.pbtxt"
         )
 
         # Load in the model with it's fozen weights and configurations
