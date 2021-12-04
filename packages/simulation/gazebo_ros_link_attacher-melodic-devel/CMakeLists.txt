@@ -42,7 +42,7 @@ generate_messages(
 ###################################
 ## catkin specific configuration ##
 ###################################
-catkin_package(CATKIN_DEPENDS message_runtime roscpp gazebo_ros gazebo std_msgs)
+catkin_package(CATKIN_DEPENDS message_runtime)
 
 ###########
 ## Build ##
