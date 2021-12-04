@@ -59,4 +59,48 @@
     <xacro:macro name="drum_arm">
         <mesh filename="package://ezrassor_sim_description/meshes/drum_arm.dae" scale="0.35 0.35 0.35"></mesh>
     </xacro:macro>
+
+<!-- ARM VISUAL AND COLLISION MACROS -->
+
+    <xacro:macro name="link1">
+        <mesh filename="package://ezrassor_sim_description/meshes/link1.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="link2">
+        <mesh filename="package://ezrassor_sim_description/meshes/link2.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="link3">
+        <mesh filename="package://ezrassor_sim_description/meshes/link3.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="link4">
+        <mesh filename="package://ezrassor_sim_description/meshes/link4.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="link5">
+        <mesh filename="package://ezrassor_sim_description/meshes/link5.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="link6">
+        <mesh filename="package://ezrassor_sim_description/meshes/link6.1.dae" scale="0.35 0.35 0.45"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="arm_camera">
+        <mesh filename="package://ezrassor_sim_description/meshes/arm_camera.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="grabber1">
+        <mesh filename="package://ezrassor_sim_description/meshes/grabber1.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="grabber2">
+        <mesh filename="package://ezrassor_sim_description/meshes/grabber2.dae" scale="0.35 0.35 0.35"></mesh> 
+    </xacro:macro>
+
+    <xacro:macro name="platform">
+        <mesh filename="package://ezrassor_sim_description/meshes/platform.dae" scale="2 2 2"></mesh> 
+    </xacro:macro>
+
+
 </robot>

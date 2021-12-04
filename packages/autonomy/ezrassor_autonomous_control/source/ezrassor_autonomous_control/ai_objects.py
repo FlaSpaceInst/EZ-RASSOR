@@ -37,6 +37,10 @@ class WorldState:
 
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
+    
+    def jointCallBackV2(self, data):
+
+        self.back_arm_angle = data.position[0]
 
     def odometryCallBack(self, data):
         """ Set state_flags world position data. """

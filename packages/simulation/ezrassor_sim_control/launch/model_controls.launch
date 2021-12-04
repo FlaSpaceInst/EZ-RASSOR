@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Launch all machinery necessary to control the EZ-RASSOR in a simulation.
-     Written by Ron Marrero and Tiger Sachse. -->
+     Written by Ron Marrero and Tiger Sachse. 
+     
+     Modified by Robert Forristall (Spring 2021 Arm Team)
+          -Added velocity controllers for paver arm to controller manager
+          -Launch node sim_paver_arm_driver
+-->
 <launch>
-  <rosparam command="load"
-            file="$(find ezrassor_sim_control)/config/default_position_controllers.yaml"/>
 
-  <!-- Spawn the controllers. -->
-  <node name="controller_spawner"
+  <arg name="rover_model" default="standard"/>
+  
+
+  <rosparam command="load"
+            file="$(find ezrassor_sim_control)/config/standard_rover/default_position_controllers.yaml"
+            unless="$(eval 'paver_arm' in rover_model)"/>
+  <rosparam command="load"
+            file="$(find ezrassor_sim_control)/config/paver_arm_rover/default_position_controllers.yaml"
+            unless="$(eval 'standard' in rover_model)"/>
+
+  <group if="$(eval 'standard' in rover_model)">
+      <!-- Spawn the controllers. -->
+      <node name="controller_spawner"
         pkg="controller_manager"
         type="spawner"
         output="screen"
@@ -17,17 +31,58 @@
               joint_state_controller
               diff_drive_controller"/>
 
-  <!-- Launch the driver nodes. -->
-  <node pkg="ezrassor_sim_control"
+      <!-- Launch the driver nodes. -->
+      <node pkg="ezrassor_sim_control"
         name="sim_arms_driver"
         type="sim_arms_driver"
-        output="screen"/>
-  <node pkg="ezrassor_sim_control"
+        output="screen">
+        <param name="rover_model" value="$(arg rover_model)"/>
+      </node>
+      <node pkg="ezrassor_sim_control"
         name="sim_wheels_driver"
         type="sim_wheels_driver"
         output="screen"/>
-  <node pkg="ezrassor_sim_control"
+      <node pkg="ezrassor_sim_control"
         name="sim_drums_driver"
         type="sim_drums_driver"
+        output="screen">
+        <param name="rover_model" value="$(arg rover_model)"/>
+      </node>
+  </group>
+
+  <group if="$(eval 'paver_arm' in rover_model)">
+      <!-- Spawn the controllers. -->
+      <node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        output="screen"
+        args="arm_back_velocity_controller
+              drum_back_velocity_controller
+              PA_claw_velocity_controller
+              paver_arm_controller
+              joint_state_controller
+              diff_drive_controller"/>
+
+      <!-- Launch the driver nodes. -->
+      <node pkg="ezrassor_sim_control"
+        name="sim_arms_driver"
+        type="sim_arms_driver"
+        output="screen">
+        <param name="rover_model" value="$(arg rover_model)"/>
+      </node>
+      <node pkg="ezrassor_sim_control"
+        name="sim_wheels_driver"
+        type="sim_wheels_driver"
         output="screen"/>
+      <node pkg="ezrassor_sim_control"
+        name="sim_drums_driver"
+        type="sim_drums_driver"
+        output="screen">
+        <param name="rover_model" value="$(arg rover_model)"/>
+      </node>
+      <node pkg ="ezrassor_sim_control"
+        name ="sim_paver_arm_driver"
+        type ="sim_paver_arm_driver"
+        output ="screen"/>
+  </group>
 </launch>

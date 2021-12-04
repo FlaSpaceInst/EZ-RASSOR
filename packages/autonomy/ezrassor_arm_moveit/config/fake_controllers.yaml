@@ -1,0 +1,18 @@
+controller_list:
+  - name: fake_moveit_arm_controller_controller
+    type: $(arg execution_type)
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+  - name: fake_gripper_controller_controller
+    type: $(arg execution_type)
+    joints:
+      - joint5
+      - grabber_joint1
+      - grabber_joint2
+initial:  # Define initial robot poses.
+  - group: moveit_arm_controller
+    pose: Home

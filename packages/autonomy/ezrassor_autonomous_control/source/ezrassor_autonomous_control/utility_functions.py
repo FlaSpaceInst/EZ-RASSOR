@@ -1,16 +1,26 @@
 #!/usr/bin/env python
 
+from rosgraph.names import namespace
+from roslaunch import launch
 import rospy
+import roslaunch
 import math
+
+import auto_functions as af
+import ai_objects as ao
 
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Point
+from gazebo_msgs.msg import ModelStates, LinkStates
+from std_msgs.msg import Float32MultiArray, Int16, Float64MultiArray, Float32
+from sensor_msgs.msg import JointState, Imu, LaserScan
+from std_msgs.msg import Int8
 
 import nav_functions as nf
 from ezrassor_swarm_control.msg import waypointFeedback, waypointResult
 
 scan = None
-
 
 def on_scan_update(new_scan):
     global scan
@@ -270,7 +280,7 @@ adjacent view. Return once a safe angle is found.
 """
 
 
-def get_turn_angle(world_state, ros_util):
+def get_turn_angle(world_state, ros_util, flag=True):
     # Iterate over all of the laser beams in our current scan and determine the
     # best angle to turn towards.
     best_angle = nf.get_best_angle(
@@ -297,9 +307,10 @@ def get_turn_angle(world_state, ros_util):
                 if self_check(world_state, ros_util) != 1:
                     rospy.logdebug("Status check failed.")
                     return
-
-                set_front_arm_angle(world_state, ros_util, 1.3)
-                set_back_arm_angle(world_state, ros_util, 1.3)
+                    
+                if (flag):
+                    set_front_arm_angle(world_state, ros_util, 0.2)
+                set_back_arm_angle(world_state, ros_util, 0.2)
 
                 switchDirection *= -1
                 wedgeDist += 1
@@ -382,6 +393,10 @@ def get_turn_angle(world_state, ros_util):
         if best_angle is not None:
             return best_angle
 
+
+        
+        
+    
 
 ##################################################################
 #  THE BELOW FUNCTIONS ARE UTILIZED BY THE WAYPOINT ACTION       #

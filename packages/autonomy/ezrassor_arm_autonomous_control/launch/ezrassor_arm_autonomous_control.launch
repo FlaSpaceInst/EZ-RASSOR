@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="paver_arm_controller_instructions_topic" default="paver_arm_controller_instructions"/>
+    <arg name="paver_arm_claw_instructions_topic" default="paver_arm_claw_instructions"/>
+    <arg name="camera_image_topic" default="d435_camera/color/image_raw"/>
+    <arg name="camera_info_topic" default="d435_camera/color/camera_info"/>
+    <arg name="command_topic" default="paver_arm_object_detection_command_instructions"/>
+
+    <arg name="digsite_x_coord" default="10"/>
+    <arg name="digsite_y_coord" default="10"/>
+    <arg name="spawn_x_coord" default="0"/>
+    <arg name="spawn_y_coord" default="0"/>
+    <arg name="wheel_instructions_topic"/>
+    <arg name="front_arm_instructions_topic"/>
+    <arg name="back_arm_instructions_topic"/>
+    <arg name="front_drum_instructions_topic"/>
+    <arg name="back_drum_instructions_topic"/>
+    <arg name="max_linear_velocity" default="1.0"/>
+    <arg name="max_angular_velocity" default="1.0"/>
+    <arg name="enable_real_odometry" default="false"/>
+    <arg name="swarm_control" default="false"/>
+    <arg name="obstacle_threshold" default="4.0"/>
+    <arg name="obstacle_buffer" default="1.5"/>
+    <arg name="move_increment" default="3.0"/>
+    <arg name="max_obstacle_angle" default="45.0"/>
+    <arg name="enable_park_ranger" default="false"/>
+    <arg name="min_hole_diameter" default="3.0"/>
+    
+
+    <include file="$(find ezrassor_arm_moveit)/launch/move_group.launch">
+    </include> 
+    <node name="move_group_interface" pkg="ezrassor_arm_autonomous_control" type="move_group_interface" output="screen">
+        <param name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/> 
+        <param name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+        
+    </node>
+
+    <node name="object_detection" pkg="ezrassor_arm_autonomous_control" type="object_detection" output="screen">
+        <param name="camera_image_topic" value="$(arg camera_image_topic)"/>
+        <param name="camera_info_topic" value="$(arg camera_info_topic)"/>
+        <param name="command_topic" value="$(arg command_topic)"/>
+        
+    </node>
+
+    <node name="autonomous_driving" pkg="ezrassor_arm_autonomous_control" type="autonomous_driving" output="screen">
+        <param name="digsite_x_coord" value="$(arg digsite_x_coord)"/>
+        <param name="digsite_y_coord" value="$(arg digsite_y_coord)"/>
+        <param name="spawn_x_coord" value="$(arg spawn_x_coord)"/>
+        <param name="spawn_y_coord" value="$(arg spawn_y_coord)"/>
+        <param name="wheel_instructions_topic" value="$(arg wheel_instructions_topic)"/>
+        <param name="front_arm_instructions_topic" value="$(arg front_arm_instructions_topic)"/>
+        <param name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
+        <param name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
+        <param name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+        <param name="max_linear_velocity" value="$(arg max_linear_velocity)"/>
+        <param name="max_angular_velocity" value="$(arg max_angular_velocity)"/>
+        <param name="enable_real_odometry" value="$(arg enable_real_odometry)"/>
+        <param name="swarm_control" value="$(arg swarm_control)"/>
+        <param name="obstacle_threshold" value="$(arg obstacle_threshold)"/>
+        <param name="obstacle_buffer" value="$(arg obstacle_buffer)"/>
+        <param name="move_increment" value="$(arg move_increment)"/>
+ 
+    </node>
+
+    <node pkg="ezrassor_autonomous_control" type="obstacle_detection" name="obstacle_detection">
+       <param name="max_angle"
+              value="$(arg max_obstacle_angle)"/>
+       <param name="max_obstacle_dist"
+              value="$(arg obstacle_threshold)"/>
+       <param name="min_hole_diameter"
+              value="$(arg min_hole_diameter)"/>
+    </node>
+</launch>

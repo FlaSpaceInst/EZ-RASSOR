@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+import rospy
+from ezrassor_arm_autonomous_control import autonomous_driving
+
+target_x = rospy.get_param("autonomous_driving/digsite_x_coord")
+target_y = rospy.get_param("autonomous_driving/digsite_y_coord")
+start_x = rospy.get_param("autonomous_driving/spawn_x_coord")
+start_y = rospy.get_param("autonomous_driving/spawn_y_coord")
+movement_topic = rospy.get_param("autonomous_driving/wheel_instructions_topic")
+front_arm_topic = rospy.get_param(
+    "autonomous_driving/front_arm_instructions_topic"
+)
+back_arm_topic = rospy.get_param(
+    "autonomous_driving/back_arm_instructions_topic"
+)
+front_drum_topic = rospy.get_param(
+    "autonomous_driving/front_drum_instructions_topic"
+)
+back_drum_topic = rospy.get_param(
+    "autonomous_driving/back_drum_instructions_topic"
+)
+max_linear_velocity = rospy.get_param("autonomous_driving/max_linear_velocity")
+max_angular_velocity = rospy.get_param(
+    "autonomous_driving/max_angular_velocity"
+)
+real_odometry = rospy.get_param("autonomous_driving/enable_real_odometry")
+obstacle_threshold = rospy.get_param("autonomous_driving/obstacle_threshold")
+obstacle_buffer = rospy.get_param("autonomous_driving/obstacle_buffer")
+move_increment = rospy.get_param("autonomous_driving/move_increment")
+swarm_control = rospy.get_param("autonomous_driving/swarm_control")
+
+autonomous_driving.onStart (
+    target_x,
+    target_y,
+    start_x,
+    start_y,
+    movement_topic,
+    front_arm_topic,
+    back_arm_topic,
+    front_drum_topic,
+    back_drum_topic,
+    float(obstacle_threshold),
+    float(obstacle_buffer),
+    float(move_increment),
+    float(max_linear_velocity),
+    float(max_angular_velocity),
+    bool(real_odometry),
+    swarm_control,
+)

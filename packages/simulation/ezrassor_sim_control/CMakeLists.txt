@@ -10,6 +10,7 @@ catkin_install_python(
         nodes/sim_arms_driver
         nodes/sim_drums_driver
         nodes/sim_wheels_driver
+	    nodes/sim_paver_arm_driver
     DESTINATION
         ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

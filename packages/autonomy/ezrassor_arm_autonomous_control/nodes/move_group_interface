@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+import rospy
+from ezrassor_arm_autonomous_control import move_group_interface
+
+paver_arm_controller_instructions_topic = rospy.get_param('move_group_interface/paver_arm_controller_instructions_topic')
+paver_arm_claw_instructions_topic = rospy.get_param('move_group_interface/paver_arm_claw_instructions_topic')
+
+move_group_interface.on_start_up(
+    paver_arm_controller_instructions_topic,
+    paver_arm_claw_instructions_topic
+)

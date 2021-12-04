@@ -35,11 +35,12 @@ def handle_back_drum_movements(data):
     pub_BA.publish(data.data * MAX_DRUM_SPEED)
 
 
-def start_node():
+def start_node(rover_model):
     # Main entry point to the node.
     try:
         rospy.init_node(NODE)
-        rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_drum_movements)
+        if (rover_model != 'paver_arm'):
+            rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_drum_movements)
         rospy.Subscriber(BACK_TOPIC, Float32, handle_back_drum_movements)
         rospy.loginfo("Simulation drums driver initialized.")
         rospy.spin()

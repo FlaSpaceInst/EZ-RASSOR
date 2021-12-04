@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: ""
+    relative_path: /home/robert/Desktop/arm_model.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/ezrassor.srdf
+  CONFIG:
+    author_name: Robert Forristall
+    author_email: robert.s.forristall@gmail.com
+    generated_timestamp: 1634432083

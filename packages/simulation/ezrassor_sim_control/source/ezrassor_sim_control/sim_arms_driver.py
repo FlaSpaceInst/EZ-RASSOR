@@ -33,11 +33,12 @@ def handle_back_arm_movements(data):
     pub_BA.publish(data.data * MAX_ARM_SPEED)
 
 
-def start_node():
+def start_node(rover_model):
     # Main entry point to the node.
     try:
         rospy.init_node(NODE)
-        rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_arm_movements)
+        if (rover_model != 'paver_arm'):
+            rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_arm_movements)
         rospy.Subscriber(BACK_TOPIC, Float32, handle_back_arm_movements)
         rospy.loginfo("Simulation arms driver initialized.")
         rospy.spin()

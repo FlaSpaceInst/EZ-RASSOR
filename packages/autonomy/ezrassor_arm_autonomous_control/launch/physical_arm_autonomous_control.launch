@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+    <rosparam command="load" file="$(find ezrassor_arm_moveit)/config/joint_names.yaml"/>
+
+    <arg name="paver_arm_controller_instructions_topic" default="paver_arm_controller_instructions"/>
+    <arg name="paver_arm_claw_instructions_topic" default="paver_arm_claw_instructions"/>
+    
+    <include file="$(find ezrassor_arm_moveit)/launch/planning_context.launch">
+        <arg name="load_robot_description" value="true"/>
+    </include>
+    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+    <include file="$(find ezrassor_arm_moveit)/launch/move_group.launch">
+        <arg name="publish_monitored_planning_scene" value="true"/>
+    </include> 
+    <node name="move_group_interface" pkg="ezrassor_arm_autonomous_control" type="move_group_interface" output="screen">
+        <param name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/> 
+        <param name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+        
+    </node>
+
+    <node name="arm_action_server" pkg="ezrassor_arm_autonomous_control" type="arm_action_server" output="screen"/>
+
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find ezrassor_arm_moveit)/launch/moveit.rviz"/>
+</launch>
