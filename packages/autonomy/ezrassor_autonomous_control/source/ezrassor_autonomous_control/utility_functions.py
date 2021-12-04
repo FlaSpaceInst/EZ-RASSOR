@@ -22,13 +22,14 @@ from ezrassor_swarm_control.msg import waypointFeedback, waypointResult
 
 scan = None
 
+
 def on_scan_update(new_scan):
     global scan
     scan = new_scan
 
 
 def set_front_arm_angle(world_state, ros_util, target_angle):
-    """ Set front arm to absolute angle target_angle in radians. """
+    """Set front arm to absolute angle target_angle in radians."""
     if target_angle > world_state.front_arm_angle:
         while target_angle > world_state.front_arm_angle:
             ros_util.publish_actions("stop", 1, 0, 0, 0)
@@ -44,7 +45,7 @@ def set_front_arm_angle(world_state, ros_util, target_angle):
 
 
 def set_back_arm_angle(world_state, ros_util, target_angle):
-    """ Set back arm to absolute angle target_angle in radians. """
+    """Set back arm to absolute angle target_angle in radians."""
     """rospy.loginfo('Setting back arm angle to %s radian%s...',
                   str(target_angle),
                   "" if target_angle == 1 else "s")"""
@@ -205,7 +206,7 @@ def move(dist, world_state, ros_util, direction="forward"):
 
 
 def reverse_turn(world_state, ros_util):
-    """ Reverse until object no longer detected and turn left """
+    """Reverse until object no longer detected and turn left"""
 
     while world_state.warning_flag == 3:
         ros_util.publish_actions("reverse", 0, 0, 0, 0)
@@ -262,7 +263,7 @@ def dodge_right(world_state, ros_util):
 
 
 def self_right_from_side(world_state, ros_util):
-    """ Flip EZ-RASSOR over from its side. """
+    """Flip EZ-RASSOR over from its side."""
 
     rospy.loginfo("Starting auto self-right...")
     while world_state.on_side is not False:
@@ -307,8 +308,8 @@ def get_turn_angle(world_state, ros_util, flag=True):
                 if self_check(world_state, ros_util) != 1:
                     rospy.logdebug("Status check failed.")
                     return
-                    
-                if (flag):
+
+                if flag:
                     set_front_arm_angle(world_state, ros_util, 0.2)
                 set_back_arm_angle(world_state, ros_util, 0.2)
 
@@ -393,10 +394,6 @@ def get_turn_angle(world_state, ros_util, flag=True):
         if best_angle is not None:
             return best_angle
 
-
-        
-        
-    
 
 ##################################################################
 #  THE BELOW FUNCTIONS ARE UTILIZED BY THE WAYPOINT ACTION       #

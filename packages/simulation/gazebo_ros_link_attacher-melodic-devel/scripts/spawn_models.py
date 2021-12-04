@@ -81,11 +81,12 @@ def create_cube_request(modelname, px, py, pz, rr, rp, ry, sx, sy, sz):
     sx sy sz: size of the cube"""
     cube = deepcopy(sdf_cube)
     # Replace size of model
-    size_str = str(round(sx, 3)) + " " + \
-        str(round(sy, 3)) + " " + str(round(sz, 3))
-    cube = cube.replace('SIZEXYZ', size_str)
+    size_str = (
+        str(round(sx, 3)) + " " + str(round(sy, 3)) + " " + str(round(sz, 3))
+    )
+    cube = cube.replace("SIZEXYZ", size_str)
     # Replace modelname
-    cube = cube.replace('MODELNAME', str(modelname))
+    cube = cube.replace("MODELNAME", str(modelname))
 
     req = SpawnModelRequest()
     req.model_name = modelname
@@ -103,36 +104,60 @@ def create_cube_request(modelname, px, py, pz, rr, rp, ry, sx, sy, sz):
     return req
 
 
-if __name__ == '__main__':
-    rospy.init_node('spawn_models')
-    spawn_srv = rospy.ServiceProxy('/gazebo/spawn_sdf_model', SpawnModel)
+if __name__ == "__main__":
+    rospy.init_node("spawn_models")
+    spawn_srv = rospy.ServiceProxy("/gazebo/spawn_sdf_model", SpawnModel)
     rospy.loginfo("Waiting for /gazebo/spawn_sdf_model service...")
     spawn_srv.wait_for_service()
     rospy.loginfo("Connected to service!")
 
     # Spawn object 1
     rospy.loginfo("Spawning cube1")
-    req1 = create_cube_request("cube1",
-                              0.0, 0.0, 0.51,  # position
-                              0.0, 0.0, 0.0,  # rotation
-                              1.0, 1.0, 1.0)  # size
+    req1 = create_cube_request(
+        "cube1",
+        0.0,
+        0.0,
+        0.51,  # position
+        0.0,
+        0.0,
+        0.0,  # rotation
+        1.0,
+        1.0,
+        1.0,
+    )  # size
     spawn_srv.call(req1)
     rospy.sleep(1.0)
 
     # Spawn object 2
     rospy.loginfo("Spawning cube2")
-    req2 = create_cube_request("cube2",
-                              0.0, 1.1, 0.41,  # position
-                              0.0, 0.0, 0.0,  # rotation
-                              0.8, 0.8, 0.8)  # size
+    req2 = create_cube_request(
+        "cube2",
+        0.0,
+        1.1,
+        0.41,  # position
+        0.0,
+        0.0,
+        0.0,  # rotation
+        0.8,
+        0.8,
+        0.8,
+    )  # size
     spawn_srv.call(req2)
     rospy.sleep(1.0)
 
     # Spawn object 3
     rospy.loginfo("Spawning cube3")
-    req3 = create_cube_request("cube3",
-                              0.0, 2.1, 0.41,  # position
-                              0.0, 0.0, 0.0,  # rotation
-                              0.4, 0.4, 0.4)  # size
+    req3 = create_cube_request(
+        "cube3",
+        0.0,
+        2.1,
+        0.41,  # position
+        0.0,
+        0.0,
+        0.0,  # rotation
+        0.4,
+        0.4,
+        0.4,
+    )  # size
     spawn_srv.call(req3)
     rospy.sleep(1.0)

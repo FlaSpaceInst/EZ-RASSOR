@@ -17,7 +17,7 @@ def at_target(positionX, positionY, targetX, targetY, threshold):
 
 
 def charge_battery(world_state, ros_util):
-    """ Charge the rover's battery for a designated duration until battery is 100% """
+    """Charge the rover's battery for a designated duration until battery is 100%"""
 
     ros_util.publish_actions("stop", 0, 0, 0, 0)
 
@@ -29,7 +29,7 @@ def charge_battery(world_state, ros_util):
 
 
 def auto_drive_location(world_state, ros_util, waypoint_server=None):
-    """ Navigate to location. Avoid obstacles while moving toward location. """
+    """Navigate to location. Avoid obstacles while moving toward location."""
 
     # Action server will print it's own info
     if waypoint_server is None:
@@ -195,7 +195,7 @@ def auto_dig(world_state, ros_util, duration, waypoint_server=None):
 
 
 def auto_dock(world_state, ros_util):
-    """ Dock with the hopper. """
+    """Dock with the hopper."""
 
     rospy.loginfo("Auto-returning to origin...")
 

@@ -2,6 +2,6 @@
 import rospy
 import ezrassor_sim_control
 
-rover_model = rospy.get_param('sim_arms_driver/rover_model')
+rover_model = rospy.get_param("sim_arms_driver/rover_model")
 
 ezrassor_sim_control.sim_drums_driver.start_node(rover_model)

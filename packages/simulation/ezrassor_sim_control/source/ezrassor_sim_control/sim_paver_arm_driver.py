@@ -1,7 +1,12 @@
 #!/user/bin/env python
 
 import rospy
-from std_msgs.msg import Float32, Float64, Float64MultiArray, MultiArrayDimension
+from std_msgs.msg import (
+    Float32,
+    Float64,
+    Float64MultiArray,
+    MultiArrayDimension,
+)
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 NODE = "sim_paver_arm_driver"
@@ -39,7 +44,7 @@ pub_claw = rospy.Publisher(
 
 # pub_auto = rospy.Publisher(
 #    "paver_arm_controller/command", JointTrajectoryPoint, queue_size=10
-#)
+# )
 
 
 def handle_first_joint_movements(data):
@@ -73,23 +78,35 @@ def handle_claw_movements(data):
     msg.layout.dim[0].size = 2
     msg.layout.dim[0].stride = 1
     msg.layout.dim[0].label = "x"
-    msg.data = [data.data]*2
+    msg.data = [data.data] * 2
     pub_claw.publish(msg)
 
-#def  handle_auto_movement(data):
 
- #   pub_auto.publish(data.data)
+# def  handle_auto_movement(data):
+
+#   pub_auto.publish(data.data)
+
 
 def start_node():
     try:
         rospy.init_node(NODE)
-        rospy.Subscriber(FIRST_JOINT_TOPIC, Float64, handle_first_joint_movements)
-        rospy.Subscriber(SECOND_JOINT_TOPIC, Float64, handle_second_joint_movements)
-        rospy.Subscriber(THIRD_JOINT_TOPIC, Float64, handle_third_joint_movements)
-        rospy.Subscriber(FOURTH_JOINT_TOPIC, Float64, handle_fourth_joint_movements)
-        rospy.Subscriber(FIFTH_JOINT_TOPIC, Float64, handle_fifth_joint_movements)
+        rospy.Subscriber(
+            FIRST_JOINT_TOPIC, Float64, handle_first_joint_movements
+        )
+        rospy.Subscriber(
+            SECOND_JOINT_TOPIC, Float64, handle_second_joint_movements
+        )
+        rospy.Subscriber(
+            THIRD_JOINT_TOPIC, Float64, handle_third_joint_movements
+        )
+        rospy.Subscriber(
+            FOURTH_JOINT_TOPIC, Float64, handle_fourth_joint_movements
+        )
+        rospy.Subscriber(
+            FIFTH_JOINT_TOPIC, Float64, handle_fifth_joint_movements
+        )
         rospy.Subscriber(CLAW_TOPIC, Float32, handle_claw_movements)
-#        rospy.Subscriber(AUTO_TOPIC, JointTrajectoryPoint, handle_auto_movement)
+        #        rospy.Subscriber(AUTO_TOPIC, JointTrajectoryPoint, handle_auto_movement)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

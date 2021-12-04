@@ -190,7 +190,7 @@ class SwarmController:
 def on_start_up(
     robot_count, target_xs, target_ys, lander_coords, world, elevation_map
 ):
-    """ Initialization Function  """
+    """Initialization Function"""
 
     # ROS Node Init Parameters
     rospy.init_node("swarm_control")

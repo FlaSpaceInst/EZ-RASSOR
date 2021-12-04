@@ -108,34 +108,34 @@ publish_back_drum_instruction = rospy.Publisher(
     queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_joint_1_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_joint_1_instructions_topic"),
-	std_msgs.msg.Float64,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_joint_1_instructions_topic"),
+    std_msgs.msg.Float64,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_joint_2_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_joint_2_instructions_topic"),
-	std_msgs.msg.Float64,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_joint_2_instructions_topic"),
+    std_msgs.msg.Float64,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_joint_3_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_joint_3_instructions_topic"),
-	std_msgs.msg.Float64,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_joint_3_instructions_topic"),
+    std_msgs.msg.Float64,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_joint_4_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_joint_4_instructions_topic"),
-	std_msgs.msg.Float64,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_joint_4_instructions_topic"),
+    std_msgs.msg.Float64,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_joint_5_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_joint_5_instructions_topic"),
-	std_msgs.msg.Float64,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_joint_5_instructions_topic"),
+    std_msgs.msg.Float64,
+    queue_size=QUEUE_SIZE,
 ).publish
 publish_paver_arm_claw_instruction = rospy.Publisher(
-	rospy.get_param(rospy.get_name() + "/paver_arm_claw_instructions_topic"),
-	std_msgs.msg.Float32,
-	queue_size=QUEUE_SIZE
+    rospy.get_param(rospy.get_name() + "/paver_arm_claw_instructions_topic"),
+    std_msgs.msg.Float32,
+    queue_size=QUEUE_SIZE,
 ).publish
 
 AUTONOMOUS_TOGGLE_HANDLERS = {
@@ -186,34 +186,70 @@ BACK_DRUM_HANDLERS = {
     None: lambda: publish_back_drum_instruction(BACK_DRUM_STOP_INSTRUCTION),
 }
 PAVER_ARM_JOINT_1_HANDLERS = {
-	"q": lambda: publish_paver_arm_joint_1_instruction(PAVER_ARM_JOINT_1_FORWARD_INSTRUCTION),
-	"a": lambda: publish_paver_arm_joint_1_instruction(PAVER_ARM_JOINT_1_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_joint_1_instruction(PAVER_ARM_JOINT_1_STOP_INSTRUCTION),
+    "q": lambda: publish_paver_arm_joint_1_instruction(
+        PAVER_ARM_JOINT_1_FORWARD_INSTRUCTION
+    ),
+    "a": lambda: publish_paver_arm_joint_1_instruction(
+        PAVER_ARM_JOINT_1_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_joint_1_instruction(
+        PAVER_ARM_JOINT_1_STOP_INSTRUCTION
+    ),
 }
 PAVER_ARM_JOINT_2_HANDLERS = {
-	"w": lambda: publish_paver_arm_joint_2_instruction(PAVER_ARM_JOINT_2_FORWARD_INSTRUCTION),
-	"s": lambda: publish_paver_arm_joint_2_instruction(PAVER_ARM_JOINT_2_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_joint_2_instruction(PAVER_ARM_JOINT_2_STOP_INSTRUCTION),
+    "w": lambda: publish_paver_arm_joint_2_instruction(
+        PAVER_ARM_JOINT_2_FORWARD_INSTRUCTION
+    ),
+    "s": lambda: publish_paver_arm_joint_2_instruction(
+        PAVER_ARM_JOINT_2_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_joint_2_instruction(
+        PAVER_ARM_JOINT_2_STOP_INSTRUCTION
+    ),
 }
 PAVER_ARM_JOINT_3_HANDLERS = {
-	"e": lambda: publish_paver_arm_joint_3_instruction(PAVER_ARM_JOINT_3_FORWARD_INSTRUCTION),
-	"d": lambda: publish_paver_arm_joint_3_instruction(PAVER_ARM_JOINT_3_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_joint_3_instruction(PAVER_ARM_JOINT_3_STOP_INSTRUCTION),
+    "e": lambda: publish_paver_arm_joint_3_instruction(
+        PAVER_ARM_JOINT_3_FORWARD_INSTRUCTION
+    ),
+    "d": lambda: publish_paver_arm_joint_3_instruction(
+        PAVER_ARM_JOINT_3_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_joint_3_instruction(
+        PAVER_ARM_JOINT_3_STOP_INSTRUCTION
+    ),
 }
 PAVER_ARM_JOINT_4_HANDLERS = {
-	"r": lambda: publish_paver_arm_joint_4_instruction(PAVER_ARM_JOINT_4_FORWARD_INSTRUCTION),
-	"f": lambda: publish_paver_arm_joint_4_instruction(PAVER_ARM_JOINT_4_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_joint_4_instruction(PAVER_ARM_JOINT_4_STOP_INSTRUCTION),
+    "r": lambda: publish_paver_arm_joint_4_instruction(
+        PAVER_ARM_JOINT_4_FORWARD_INSTRUCTION
+    ),
+    "f": lambda: publish_paver_arm_joint_4_instruction(
+        PAVER_ARM_JOINT_4_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_joint_4_instruction(
+        PAVER_ARM_JOINT_4_STOP_INSTRUCTION
+    ),
 }
 PAVER_ARM_JOINT_5_HANDLERS = {
-	"t": lambda: publish_paver_arm_joint_5_instruction(PAVER_ARM_JOINT_5_FORWARD_INSTRUCTION),
-	"g": lambda: publish_paver_arm_joint_5_instruction(PAVER_ARM_JOINT_5_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_joint_5_instruction(PAVER_ARM_JOINT_5_STOP_INSTRUCTION),
+    "t": lambda: publish_paver_arm_joint_5_instruction(
+        PAVER_ARM_JOINT_5_FORWARD_INSTRUCTION
+    ),
+    "g": lambda: publish_paver_arm_joint_5_instruction(
+        PAVER_ARM_JOINT_5_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_joint_5_instruction(
+        PAVER_ARM_JOINT_5_STOP_INSTRUCTION
+    ),
 }
 PAVER_ARM_CLAW_HANDLERS = {
-	"z": lambda: publish_paver_arm_claw_instruction(PAVER_ARM_CLAW_FORWARD_INSTRUCTION),
-	"x": lambda: publish_paver_arm_claw_instruction(PAVER_ARM_CLAW_BACKWARD_INSTRUCTION),
-	None: lambda: publish_paver_arm_claw_instruction(PAVER_ARM_CLAW_STOP_INSTRUCTION),
+    "z": lambda: publish_paver_arm_claw_instruction(
+        PAVER_ARM_CLAW_FORWARD_INSTRUCTION
+    ),
+    "x": lambda: publish_paver_arm_claw_instruction(
+        PAVER_ARM_CLAW_BACKWARD_INSTRUCTION
+    ),
+    None: lambda: publish_paver_arm_claw_instruction(
+        PAVER_ARM_CLAW_STOP_INSTRUCTION
+    ),
 }
 
 halt_queue = Queue.Queue(maxsize=1)
@@ -262,46 +298,46 @@ back_drum_control_thread = threading.Thread(
     ),
 )
 paver_arm_joint_1_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_JOINT_1_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_JOINT_1_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 paver_arm_joint_2_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_JOINT_2_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_JOINT_2_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 paver_arm_joint_3_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_JOINT_3_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_JOINT_3_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 paver_arm_joint_4_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_JOINT_4_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_JOINT_4_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 paver_arm_joint_5_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_JOINT_5_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_JOINT_5_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 paver_arm_claw_control_thread = threading.Thread(
-	target=ezrassor_keyboard_controller.handle_keypresses,
-	args=(
-		PAVER_ARM_CLAW_HANDLERS,
-		ezrassor_keyboard_controller.pynput_events(halt_queue),
-	),
+    target=ezrassor_keyboard_controller.handle_keypresses,
+    args=(
+        PAVER_ARM_CLAW_HANDLERS,
+        ezrassor_keyboard_controller.pynput_events(halt_queue),
+    ),
 )
 threads = [
     autonomous_toggle_control_thread,

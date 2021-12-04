@@ -33,17 +33,17 @@ class WorldState:
         self.hardware_status = True
 
     def jointCallBack(self, data):
-        """ Set state_flags joint position data. """
+        """Set state_flags joint position data."""
 
         self.front_arm_angle = data.position[1]
         self.back_arm_angle = data.position[0]
-    
+
     def jointCallBackV2(self, data):
 
         self.back_arm_angle = data.position[0]
 
     def odometryCallBack(self, data):
-        """ Set state_flags world position data. """
+        """Set state_flags world position data."""
 
         self.positionX = data.pose.pose.position.x + self.startPositionX
         self.positionY = data.pose.pose.position.y + self.startPositionY
@@ -80,7 +80,7 @@ class WorldState:
             self.heading = 360 + heading
 
     def imuCallBack(self, data):
-        " Heading data collected from orientation IMU data. "
+        "Heading data collected from orientation IMU data."
 
         if abs(data.linear_acceleration.y) > 9:
             self.on_side = True
@@ -120,7 +120,7 @@ class ROSUtility:
         obstacle_buffer,
         move_increment,
     ):
-        """ Initialize the ROS Utility Object. """
+        """Initialize the ROS Utility Object."""
 
         self.movement_pub = rospy.Publisher(
             movement_topic, Twist, queue_size=10
@@ -157,7 +157,7 @@ class ROSUtility:
     def publish_actions(
         self, movement, front_arm, back_arm, front_drum, back_drum
     ):
-        """ Publishes actions for all joints and motors """
+        """Publishes actions for all joints and motors"""
 
         twist_message = Twist()
 
@@ -179,5 +179,5 @@ class ROSUtility:
         self.back_drum_pub.publish(back_drum)
 
     def autoCommandCallBack(self, data):
-        """ Set auto_function_command to the current choice. """
+        """Set auto_function_command to the current choice."""
         self.auto_function_command = data.data

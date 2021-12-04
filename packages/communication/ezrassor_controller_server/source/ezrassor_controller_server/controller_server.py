@@ -13,6 +13,7 @@ import BaseHTTPServer
 import geometry_msgs.msg
 from ezrassor_arm_autonomous_control.msg import ArmCommand
 
+
 def get_custom_handler(publishers):
     """Get a custom HTTP request handler with appropriate publishers."""
 
@@ -95,109 +96,117 @@ def get_custom_handler(publishers):
                 )
             if "paver_arm_joint_1_instruction" in instructions:
                 self.paver_arm_joint_1_instructions_publisher.publish(
-                    instructions["paver_arm_joint_1_instruction"],		
-            )
+                    instructions["paver_arm_joint_1_instruction"],
+                )
             if "paver_arm_joint_2_instruction" in instructions:
                 self.paver_arm_joint_2_instructions_publisher.publish(
-                    instructions["paver_arm_joint_2_instruction"],		
-            )
+                    instructions["paver_arm_joint_2_instruction"],
+                )
             if "paver_arm_joint_3_instruction" in instructions:
                 self.paver_arm_joint_3_instructions_publisher.publish(
-                    instructions["paver_arm_joint_3_instruction"],		
-            )
+                    instructions["paver_arm_joint_3_instruction"],
+                )
             if "paver_arm_joint_4_instruction" in instructions:
                 self.paver_arm_joint_4_instructions_publisher.publish(
-                    instructions["paver_arm_joint_4_instruction"],		
-            )
+                    instructions["paver_arm_joint_4_instruction"],
+                )
             if "paver_arm_joint_5_instruction" in instructions:
                 self.paver_arm_joint_5_instructions_publisher.publish(
-                    instructions["paver_arm_joint_5_instruction"],		
-            )
+                    instructions["paver_arm_joint_5_instruction"],
+                )
             if "paver_arm_claw_instruction" in instructions:
                 self.paver_arm_claw_instructions_publisher.publish(
-                    instructions["paver_arm_claw_instruction"],		
-            )
+                    instructions["paver_arm_claw_instruction"],
+                )
             if "robotic_arm_instruction" in instructions:
                 base_msg = std_msgs.msg.Float64MultiArray()
                 base_msg.data = [0.0, 0.0, 0.0, 0.0, 0.0]
-                if instructions["robotic_arm_instruction"] == 'armup':
+                if instructions["robotic_arm_instruction"] == "armup":
                     base_msg.data[1] = -0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'armdown':
+                elif instructions["robotic_arm_instruction"] == "armdown":
                     base_msg.data[1] = 0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'armleft':
+                elif instructions["robotic_arm_instruction"] == "armleft":
                     base_msg.data[0] = 0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'armright':
+                elif instructions["robotic_arm_instruction"] == "armright":
                     base_msg.data[0] = -0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'armforward':
+                elif instructions["robotic_arm_instruction"] == "armforward":
                     base_msg.data[2] = -0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'armbackward':
+                elif instructions["robotic_arm_instruction"] == "armbackward":
                     base_msg.data[2] = 0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'grabberup':
+                elif instructions["robotic_arm_instruction"] == "grabberup":
                     base_msg.data[3] = -0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'grabberdown':
+                elif instructions["robotic_arm_instruction"] == "grabberdown":
                     base_msg.data[3] = 0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'grabberleft':
+                elif instructions["robotic_arm_instruction"] == "grabberleft":
                     base_msg.data[0] = 0.1
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'grabberright':
+                elif instructions["robotic_arm_instruction"] == "grabberright":
                     base_msg.data[0] = -0.1
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'rotateleft':
+                elif instructions["robotic_arm_instruction"] == "rotateleft":
                     base_msg.data[4] = 0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
-                elif instructions["robotic_arm_instruction"] == 'rotateright':
+                elif instructions["robotic_arm_instruction"] == "rotateright":
                     base_msg.data[4] = -0.2
                     self.paver_arm_controller_instructions_publisher.publish(
                         base_msg
                     )
                 elif instructions["robotic_arm_instruction"] == 1:
-                    self.paver_arm_claw_instructions_publisher.publish(std_msgs.msg.Float32(6))
+                    self.paver_arm_claw_instructions_publisher.publish(
+                        std_msgs.msg.Float32(6)
+                    )
                 elif instructions["robotic_arm_instruction"] == 0:
-                    self.paver_arm_claw_instructions_publisher.publish(std_msgs.msg.Float32(-6))
-                elif instructions["robotic_arm_instruction"] == 'pickup':
+                    self.paver_arm_claw_instructions_publisher.publish(
+                        std_msgs.msg.Float32(-6)
+                    )
+                elif instructions["robotic_arm_instruction"] == "pickup":
                     arm_data = std_msgs.msg.Float64MultiArray()
-                    arm_data.data = [0.0, 0.0, 0.0, 0.0, 3.0] 
-                    self.paver_arm_controller_instructions_publisher.publish(arm_data)
-                elif instructions["robotic_arm_instruction"] == 'place':
+                    arm_data.data = [0.0, 0.0, 0.0, 0.0, 3.0]
+                    self.paver_arm_controller_instructions_publisher.publish(
+                        arm_data
+                    )
+                elif instructions["robotic_arm_instruction"] == "place":
                     arm_data = std_msgs.msg.Float64MultiArray()
-                    arm_data.data = [1.0, 3.0, 2.0, 0.0, 2.0] 
-                    self.paver_arm_controller_instructions_publisher.publish(arm_data)
-                elif instructions["robotic_arm_instruction"] == 'home':
+                    arm_data.data = [1.0, 3.0, 2.0, 0.0, 2.0]
+                    self.paver_arm_controller_instructions_publisher.publish(
+                        arm_data
+                    )
+                elif instructions["robotic_arm_instruction"] == "home":
                     arm_data = std_msgs.msg.Float64MultiArray()
                     arm_data.data = [1.0, 2.0, 2.0, 0.0, 5.0]
-                    self.paver_arm_controller_instructions_publisher.publish(arm_data)
-                
-                
+                    self.paver_arm_controller_instructions_publisher.publish(
+                        arm_data
+                    )
 
     return CustomRequestHandler
 
@@ -329,9 +338,9 @@ def start_node(
             queue_size=queue_size,
         )
         paver_arm_controller_instructions_publisher = rospy.Publisher(
-           paver_arm_controller_instructions_topic,
-           std_msgs.msg.Float64MultiArray,
-           queue_size=queue_size
+            paver_arm_controller_instructions_topic,
+            std_msgs.msg.Float64MultiArray,
+            queue_size=queue_size,
         )
 
         rospy.loginfo("Creating HTTP server...")

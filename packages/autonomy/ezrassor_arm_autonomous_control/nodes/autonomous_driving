@@ -29,7 +29,7 @@ obstacle_buffer = rospy.get_param("autonomous_driving/obstacle_buffer")
 move_increment = rospy.get_param("autonomous_driving/move_increment")
 swarm_control = rospy.get_param("autonomous_driving/swarm_control")
 
-autonomous_driving.onStart (
+autonomous_driving.onStart(
     target_x,
     target_y,
     start_x,

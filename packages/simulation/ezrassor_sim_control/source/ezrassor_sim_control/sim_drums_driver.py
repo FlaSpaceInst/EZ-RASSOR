@@ -39,7 +39,7 @@ def start_node(rover_model):
     # Main entry point to the node.
     try:
         rospy.init_node(NODE)
-        if (rover_model != 'paver_arm'):
+        if rover_model != "paver_arm":
             rospy.Subscriber(FRONT_TOPIC, Float32, handle_front_drum_movements)
         rospy.Subscriber(BACK_TOPIC, Float32, handle_back_drum_movements)
         rospy.loginfo("Simulation drums driver initialized.")
