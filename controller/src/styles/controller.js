@@ -14,6 +14,10 @@ const ControllerStyle = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  ArmContainer: {
+    flex: 1,
+    backgroundColor: '#5D6061'
+  },
   
   dPadLeft: {
     flex: 1, 
@@ -90,6 +94,13 @@ const ControllerStyle = StyleSheet.create({
   },
 
   textSmall: {
+    fontFamily: 'NASA', 
+    fontSize: 22, 
+    color: '#fff'
+  },
+
+  textSmallCenter: {
+    textAlign: 'center',
     fontFamily: 'NASA', 
     fontSize: 22, 
     color: '#fff'

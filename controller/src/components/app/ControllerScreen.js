@@ -1,10 +1,10 @@
 import React from 'react';
 import Modal from "react-native-modal";
-import FadeInView from "ezrassor-app/src/components/app/FadeInView";
-import EZRASSOR from 'ezrassor-app/src/api/ezrassor-service' 
-import ControllerStyle from 'ezrassor-app/src/styles/controller';
-import {Robot, Operation} from 'ezrassor-app/src/enumerations/robot-commands';
-import { Linking, Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
+import FadeInView from "./FadeInView";
+import EZRASSOR from '../../api/ezrassor-service' 
+import ControllerStyle from '../../styles/controller';
+import {Robot, Operation} from '../../enumerations/robot-commands';
+import { StyleSheet, Linking, Text, View, TouchableHighlight, TouchableOpacity, Image, StatusBar, KeyboardAvoidingView, TextInput} from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Font  from 'expo-font';
 
@@ -17,12 +17,12 @@ export default class ControllerScreen extends React.Component {
       infoModalVisible: false,
       ipModal: false,
       xyModal: false,
+      armModal: false,
       isLoading: true,
       control: 0,
       xy: '0,0',
-      ip: '192.168.1.2:8080' 
+      ip: '192.168.0.102:8080' 
     }; 
-
     this.EZRASSOR = new EZRASSOR(this.state.ip);
   }
 
@@ -85,8 +85,10 @@ export default class ControllerScreen extends React.Component {
         <Modal
           style={ControllerStyle.modalViewContainer}
           isVisible={this.state.autonomyModalVisible}
+          onSwipeComplete={() => this.setAutonomyModalVisible(false)}
+          swipeDirection='down'
           onRequestClose={() => this.setAutonomyModalVisible(!this.state.autonomyModalVisible)}>
-          
+    
           <TouchableHighlight style={{ flex: 1, marginHorizontal: 15, justifyContent: 'center' }}>
             <View>
               <View style={{ flexDirection: 'row', marginVertical: 15, justifyContent: 'center' }}>
@@ -113,55 +115,13 @@ export default class ControllerScreen extends React.Component {
           </TouchableHighlight>
         </Modal>
 
-        {/*Information Popup Modal*/}
-        <Modal
-          style={ControllerStyle.modalViewContainer}
-          isVisible={this.state.infoModalVisible}
-          onSwipe={() => this.setInfoModalVisible(false)}
-          swipeDirection='down'
-          onRequestClose={() => this.setInfoModalVisible(false)}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={ControllerStyle.columnHeader}>
-              <Text style={ControllerStyle.textSmall}>App Developer</Text>
-              <Text style={{color: '#fff'}}>Christopher Taliaferro</Text>
-              <View style={{marginVertical: 10}}/>
-              <Text style={ControllerStyle.textSmall}>EZ-RASSOR Team</Text>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <Text style={ControllerStyle.columnText}>Camilo Lozano</Text>
-                  <Text style={ControllerStyle.columnText}>Cameron Taylor</Text>
-                  <Text style={ControllerStyle.columnText}>Harrison Black</Text>
-                  <Text style={ControllerStyle.columnText}>Ronald Marrero</Text>
-                  <Text style={ControllerStyle.columnText}>Samuel Lewis</Text>
-                </View>
-                <View style={{marginHorizontal:5}}/>
-                <View>
-                  <Text style={ControllerStyle.columnText}>Sean Rapp</Text>
-                  <Text style={ControllerStyle.columnText}>Tiger Sachse</Text>
-                  <Text style={ControllerStyle.columnText}>Tyler Duncan</Text>
-                  <Text style={ControllerStyle.columnText}>Lucas Gonzalez</Text>
-                </View>
-              </View>
-            </View>
-            <View style={{ flex: .5, borderRadius:20, backgroundColor: '#2e3030'}}></View>
-            <View style={ControllerStyle.columnHeader}>
-              <Text style={ControllerStyle.textSmall}>Our Mission</Text>
-              <View style={{marginVertical: 10}}/>
-              <Text style={ControllerStyle.columnText}>The EZ-RASSOR (EZ Regolith Advanced Surface Systems Operations Robot) is an inexpensive, autonomous, regolith-mining robot designed to mimic the look and abilities of NASA’s RASSOR on a smaller scale. The primary goal of the EZ-RASSOR is to provide a functioning demonstration robot for visitors at the Kennedy Space Center.</Text>
-              <View style={{marginVertical: 10}}/>
-              <Text style={[ControllerStyle.textTiny, ControllerStyle.columnText]}>Visit
-                  <Text style={[ControllerStyle.textTiny, ControllerStyle.columnHyperlink]} onPress={() => Linking.openURL('https://github.com/FlaSpaceInst/EZ-RASSOR')}> our GitHub repository </Text>
-                  for more information.
-              </Text>
-            </View>
-          </View>
-        </Modal>
-
+        {/*Arm Functionality Popup Modal*/}
+        
         {/*Settings Modal*/}
         <Modal
           style={ControllerStyle.modalViewContainer}
           isVisible={this.state.ipModal}
-          onSwipe={() => this.setIPModalVisible(false)}
+          onSwipeComplete={() => this.setIPModalVisible(false)}
           swipeDirection='down'
           onRequestClose={() => {this.setIPModalVisible(false)}}>
           <KeyboardAvoidingView
@@ -178,7 +138,7 @@ export default class ControllerScreen extends React.Component {
         <Modal
           style={ControllerStyle.modalViewContainer}
           isVisible={this.state.xyModal}
-          onSwipe={() => this.setXYModalVisible(false)}
+          onSwipeComplete={() => this.setXYModalVisible(false)}
           swipeDirection='down'
           onRequestClose={() => {this.setXYModalVisible(false)}}>
           <KeyboardAvoidingView
@@ -199,8 +159,8 @@ export default class ControllerScreen extends React.Component {
         <FadeInView style={ControllerStyle.headerContainer}>
 
           {/*Left Row Icons*/}
-          <TouchableOpacity style={{ flex: 1, padding: 3 }} onPress={() => { this.setInfoModalVisible(true)}}>
-            <FontAwesome name="info-circle" size={32} color='#fff'/>
+          <TouchableOpacity style={{ flex: 1, padding: 3 }} onPress={() => { this.props.navigation.navigate('Arm')}}>
+            <MaterialCommunityIcons  name="arm-flex-outline" size={32} color='#fff'/>
           </TouchableOpacity>
           <TouchableOpacity style={{ flex: 1, padding: 1 }} onPress={() => this.setIPModalVisible(true)}>
             <FontAwesome name="search" size={30} color='#fff'/>
@@ -332,3 +292,8 @@ export default class ControllerScreen extends React.Component {
     );
   }
 } 
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#f0f"
+  }
+});

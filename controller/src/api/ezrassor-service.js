@@ -1,5 +1,5 @@
-import {Robot, Operation} from 'ezrassor-app/src/enumerations/robot-commands';
-import HTTP from 'ezrassor-app/src/api/web-commands';
+import {Robot, Operation} from '../enumerations/robot-commands';
+import HTTP from './web-commands';
 
 export default class EZRASSOR { 
 
@@ -90,7 +90,8 @@ export default class EZRASSOR {
             front_arm_instruction:0,
             back_arm_instruction:0,
             front_drum_instruction:0,
-            back_drum_instruction:0 
+            back_drum_instruction:0,
+            robotic_arm_instruction:0 
         }
 
         HTTP.doPost(this.apiPath, this.twistMsg);
@@ -119,6 +120,9 @@ export default class EZRASSOR {
                 break;
             case Robot.WHEELS:
                 this.updateTwistMsg({wheel_instruction:operation});
+                break;
+            case Robot.ARM:
+                this.updateTwistMsg({robotic_arm_instruction:operation});
                 break;
             case Robot.AUTONOMY:
                 this.updateAutonomyTwistMsg(operation);
