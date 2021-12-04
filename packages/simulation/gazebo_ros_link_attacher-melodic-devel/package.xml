@@ -10,6 +10,7 @@
 
   <license>BSD</license>
 
+  <depend>gazebo_ros</depend>
 
   <build_depend>message_generation</build_depend>
   <build_depend>roscpp</build_depend>
