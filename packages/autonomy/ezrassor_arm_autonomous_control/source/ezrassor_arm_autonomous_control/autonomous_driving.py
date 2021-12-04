@@ -21,7 +21,7 @@ from tf.transformations import euler_from_quaternion
 
 
 class ArmAutoHelper:
-    # Init function for the class ArmAutoHelper that integrates the arm 
+    # Init function for the class ArmAutoHelper that integrates the arm
     # autonomus movement with the autonomous driving of the rover
     def __init__(
         self,
@@ -199,7 +199,7 @@ class ArmAutoHelper:
         norm = np.linalg.norm(self.quant)
         self.quant /= norm
 
-    # Arm movement function used to test connection between 
+    # Arm movement function used to test connection between
     # this node and the move group interface node
     def fullArmMove(self, target):
         msg = Float64MultiArray()
@@ -271,7 +271,7 @@ class ArmAutoHelper:
     def degToRad(self, deg):
         return math.radians(deg)
 
-    # Function for keeping track of what paver model type 
+    # Function for keeping track of what paver model type
     # should be spawned based on the current row count
     def paverIncrementer(self, count):
         if count % self.pad_size == 0:
@@ -486,7 +486,7 @@ class ArmAutoHelper:
 
         return new_heading
 
-    # Function the utilizes the rover's autonomous driving functions 
+    # Function the utilizes the rover's autonomous driving functions
     # to turn to a desired heading
     def turnToDesiredHeading(self, pass_angle):
         location = [self.world_state.positionY, self.world_state.positionX + 1]
@@ -670,7 +670,7 @@ class ArmAutoHelper:
                 self.paverIncrementer(self.target_counter)
             self.returnToPaverPlace(new_target)
 
-    # Function for preparing the rover to 
+    # Function for preparing the rover to
     # return to its spawn location for paver pickup
     def returnToSpawnPrep(self, current_location):
         self.world_state.startPositionX = current_location[0]
@@ -679,7 +679,7 @@ class ArmAutoHelper:
         self.world_state.target_location.x = self.start_x
         self.world_state.target_location.y = self.start_y
 
-    # Function for preparing the rover to 
+    # Function for preparing the rover to
     # travel to the next location for paver placement
     def returnToPaverPlace(self, target_location):
         self.world_state.startPositionX = self.start_x
@@ -699,7 +699,7 @@ class ArmAutoHelper:
             self.world_state, self.ros_util, waypoint_server=None
         )
 
-    # Object detection callback function to use the information obtained by 
+    # Object detection callback function to use the information obtained by
     # object detection to get the location of the last paver in relation to the rover
     def objectLocationCallback(self, data):
         depth = np.sqrt((data.data[2] ** 2) - (0.23 ** 2))

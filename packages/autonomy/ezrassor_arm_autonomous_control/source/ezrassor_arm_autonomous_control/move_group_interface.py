@@ -9,12 +9,11 @@ from std_msgs.msg import Float64MultiArray, Float32
 import arm_utility_functions as auf
 from tf.transformations import quaternion_from_euler
 
-# Container class for the moveit python interface so 
+# Container class for the moveit python interface so
 # that needed information is available after the subscriber callback
 class MoveIt:
 
-
-    # Init for the MoveIt class and takes a RobotCommander, 
+    # Init for the MoveIt class and takes a RobotCommander,
     # PlanningSceneInterface, and MoveGroupCommander all from moveit_commander
     def __init__(self, robot, scene, move_group, claw_topic):
         self.robot = robot
@@ -68,7 +67,7 @@ class MoveIt:
 
         # self.MoveHomePose
 
-    # Move the arm based on a small increment for use with 
+    # Move the arm based on a small increment for use with
     # manual inputs (gamepad/keyboard)
     def MoveArmApp(self, data):
         current_pose = self.GetCurrentPose()
@@ -86,7 +85,7 @@ class MoveIt:
 
         self.MoveHomePose
 
-    # Move the arm so that the end effector is in a specific position, 
+    # Move the arm so that the end effector is in a specific position,
     # operate grabber, then return to home position
     def MoveArmAuto(self, data):
         pose_goal = geometry_msgs.msg.Pose()
@@ -192,7 +191,7 @@ class MoveIt:
         self.move_group.stop()
         self.move_group.clear_pose_targets()
 
-    # Handle the command obtained from the 
+    # Handle the command obtained from the
     # paver_arm_controller_instructions_topic subscriber
     def HandleCommand(self, data):
         if data.data[4] == 1.0:

@@ -70,7 +70,7 @@ class ImageHolder:
         _intrinsics.fy = cameraInfo.K[4]
         _intrinsics.model = rs.distortion.none
 
-        # If the camera has D values, the following line must be used, otherwise, 
+        # If the camera has D values, the following line must be used, otherwise,
         # the coeffs can be set to an array of zeros
         # _intrinsics.coeffs = [i for i in cameraInfo.D]
         _intrinsics.coeffs = [0, 0, 0, 0, 0]
@@ -96,7 +96,7 @@ class ImageHolder:
         # Load in the model with it's fozen weights and configurations
         cvNet = cv2.dnn.readNetFromTensorflow(PATH_TO_FIG, PATH_TO_TXT)
 
-        # Get the color and depth images from the 
+        # Get the color and depth images from the
         # camera convert them to arrays with values
         color_frame = self.GetImage()
         color_image = np.asanyarray(color_frame)
@@ -105,7 +105,7 @@ class ImageHolder:
         rows = color_image.shape[0]
         cols = color_image.shape[1]
 
-        # Set the input of the model to the color image 
+        # Set the input of the model to the color image
         # and run the model with our input
         cvNet.setInput(
             cv2.dnn.blobFromImage(
@@ -123,7 +123,7 @@ class ImageHolder:
         distance = 0
         scoreMax = 0.0
 
-        # Loop through objects our model detected and save the coordinates of the 
+        # Loop through objects our model detected and save the coordinates of the
         # object with the best confidence score
         for detection in cvOut[0, 0, :, :]:
             score = float(detection[2])
@@ -144,14 +144,14 @@ class ImageHolder:
             thickness=2,
         )
 
-        # Calculate the center of the bounding box for getting the most 
+        # Calculate the center of the bounding box for getting the most
         # accurate depth of the paver
         pointX = (int)(left + right) / 2
         pointY = (int)(bottom + top) / 2
         rospy.loginfo("pointX = " + str(pointX))
         rospy.loginfo("pointY = " + str(pointY))
 
-        # Get the value from our depth image at the center 
+        # Get the value from our depth image at the center
         # pixel coordinates we calculated
         distance = depth_image[pointY, pointX]
         rospy.loginfo("distance = " + str(distance))
@@ -174,7 +174,7 @@ class ImageHolder:
         rospy.loginfo("yCoord = " + str(yCoord))
         rospy.loginfo("zCoord = " + str(zCoord))
 
-        # publish the physical coordinates for the autonomous controller to 
+        # publish the physical coordinates for the autonomous controller to
         # determine where the arm needs to be moved
         pub_arr = Float64MultiArray()
         pub_arr.data = [xCoord, yCoord, zCoord]
