@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<!--Created by Robert Forristall-->
+
+<sdf version="1.6">
+    <model name = "paver_7">
+        <pose>0 0 0 0 0 0</pose>
+        <link name = "paver_link">
+            <inertial>
+                <mass>5.0</mass>
+                <inertia>
+                    <ixx>0.0</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>0.0</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.0</izz>
+                </inertia>
+            </inertial>
+            <collision name = "paver_collision">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <mesh>
+                        <uri>model://paver/meshes/small_paver_thin.dae</uri>
+                    </mesh>
+                </geometry>
+                <surface>
+                    <bounce>
+                        <restitution_coefficient>0</restitution_coefficient>
+                    </bounce>
+                    <friction>
+                        <ode>
+                            <fdir1>0 0 0</fdir1>
+                            <mu>1000</mu>
+                            <mu2>1000</mu2>
+                            <slip1>0</slip1>
+                            <slip2>0</slip2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <collide_bitmask>0x040</collide_bitmask>
+                        <ode>
+                            <max_vel>100</max_vel>
+                            <min_depth>0.002</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual name = "paver_visual">
+                <geometry>
+                    <mesh>
+                        <uri>model://paver/meshes/small_paver_thin.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>
