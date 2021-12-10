@@ -6,11 +6,11 @@
   <arg name="back_arm_instructions_topic"/>
   <arg name="front_drum_instructions_topic"/>
   <arg name="back_drum_instructions_topic"/>
-  <arg name="paver_arm_joint_1_instructions_topic"/>
-  <arg name="paver_arm_joint_2_instructions_topic"/>
-  <arg name="paver_arm_joint_3_instructions_topic"/>
-  <arg name="paver_arm_joint_4_instructions_topic"/>
-  <arg name="paver_arm_joint_5_instructions_topic"/>
+  <arg name="paver_arm_joint_1_instructions_topic" default="paver_arm_joint_1_instructions_topic"/>
+  <arg name="paver_arm_joint_2_instructions_topic" default="paver_arm_joint_2_instructions_topic"/>
+  <arg name="paver_arm_joint_3_instructions_topic" default="paver_arm_joint_3_instructions_topic"/>
+  <arg name="paver_arm_joint_4_instructions_topic" default="paver_arm_joint_4_instructions_topic"/>
+  <arg name="paver_arm_joint_5_instructions_topic" default="paver_arm_joint_5_instructions_topic"/>
   <arg name="paver_arm_claw_instructions_topic"/>
   <arg name="paver_arm_controller_instructions_topic"/>
   <arg name="rover_model" default = "standard"/>
