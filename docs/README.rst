@@ -32,6 +32,14 @@ First, clone this repository with ``git``.
     git clone https://github.com/FlaSpaceInst/EZ-RASSOR.git
     cd EZ-RASSOR 
 
+Next if you plan to use the paver arm rover model please clone the following git
+
+.. code-block:: bash
+
+    git clone https://github.com/pal-robotics/gazebo_ros_link_attacher.git
+    
+And place the cloned folder inside EZ-RASSOR/Packages/Simulation directory
+
 Then, let the ``develop.sh`` script do the heavy lifting! On Ubuntu Xenial or Ubuntu Bionic, creating a catkin workspace and building all packages is achieved with these commands:
 
 .. code-block:: bash
@@ -76,7 +84,39 @@ Alternatively, you can also call the relink function and use the ``-e`` flag to 
 .. code-block:: bash
 
   sh develop.sh relink -e ezrassor_swarm_control
-  
+
+INSTALLATION FOR OBJECT DETECTION
+---------------------------------
+In order for the object detection script to work, you may need to ensure you have certain python libraries installed properly. First you will need to upgrade pip before installing each library
+
+.. code-block:: bash
+
+  pip install --upgrade pip
+
+Next, make sure you uninstall tensorflow, numpy and/or opencv if you have already installed them, and reinstall them.
+
+.. code-block:: bash
+
+  pip uninstall <library>
+  pip install <library>
+  #Example
+  pip uninstall tensorflow
+  pip install tensorflow
+
+You will need to upgrade tensorflow to the current version to avoid errors when running the script.
+
+.. code-block:: bash
+
+  pip install --upgrade tensorflow
+  pip install --upgrade --force-reinstall tensorflow
+
+Finally, opencv requires that you have the frozen weights and the configuration file for the trained model in order to load and run the input image through it. You must install these two files for this to work.
+
+- `frozen_inference_graph.pb`_
+- `graph.pbtxt`_
+
+Then make sure you move these files to the ``FSI-RE-RASSOR-Arm\packages\autonomy\ezrassor_arm_autonomous_control\source\ezrassor_arm_autonomous_control`` directory.
+
 USAGE
 -----
 The EZ-RASSOR is controlled via a collection of *launch files*. These files contain lists of commands that start up the robot's systems and the simulation environment. They are read, understood, and executed by a core ROS utility called ``roslaunch``, whose general syntax is as follows:
@@ -94,6 +134,9 @@ Each launch file is located in one of our packages, and the most important launc
   
   # Launch the simulation with a single robot controlled by an autonomous loop.
   roslaunch ezrassor_launcher configurable_simulation.launch control_methods:=autonomy
+  
+  # Launch the simulation with a single robot using the paver arm and controlled by an autonomous loop.
+  roslaunch ezrassor_launcher configurable_simulation.launch control_methods:=autonomy rover_model:=paver_arm
   
   # Launch the simulation with two robots, both controlled by gamepads, on the moon.
   roslaunch ezrassor_launcher configurable_simulation.launch \
@@ -174,18 +217,5 @@ AUTHORS
 .. _`Pip` : https://pip.pypa.io/en/stable/installing/
 .. _`rosdep` : http://wiki.ros.org/rosdep
 .. _`build-essential` : https://packages.ubuntu.com/bionic/build-essential
-
-CITATION
---------
-Please include the following citation when using `EZRASSOR` for a paper:
-
-.. code-block:: bibtex
-
-    @misc{ezrassor_2021,
-      author = {EZRASSOR Team},
-      title = {EZRASSOR},
-      year = {2021},
-      publisher = {GitHub},
-      journal = {GitHub repository},
-      howpublished = {\url{https://github.com/FlaSpaceInst/EZ-RASSOR}}
-    }
+.. _`frozen_inference_graph.pb` : http://download.tensorflow.org/models/object_detection/faster_rcnn_inception_v2_coco_2018_01_28.tar.gz
+.. _`graph.pbtxt` : https://github.com/opencv/opencv_extra/blob/master/testdata/dnn/faster_rcnn_inception_v2_coco_2018_01_28.pbtxt
