@@ -1,0 +1,64 @@
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+arm_front_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: arm_front_hinge
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+arm_back_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: arm_back_hinge
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+drum_front_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: drum_front_hinge
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+drum_back_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: drum_back_hinge
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+
+# Allow for diff drive kinematics, one Twist command for all wheels and get odom for free
+diff_drive_controller:
+  type: diff_drive_controller/DiffDriveController
+
+  # Joints for each wheel
+  left_wheel: [ 'left_wheel_front_hinge', 'left_wheel_back_hinge' ]
+  right_wheel: [ 'right_wheel_front_hinge', 'right_wheel_back_hinge' ]
+
+  # Separation between a left and right wheel in meters
+  wheel_separation: 0.4
+
+  wheel_radius: 0.18
+
+  # Setting the timeout to INT_MAX (~68 years) until we can migrate all of our
+  # controllers to publish commands continuously instead of discretely.
+  cmd_vel_timeout: 2147483647
+
+  # Publish the odometry to separate topic or not; false to work w/ Kalman Filter
+  enable_odom_tf: false
+
+  # Default covariance values from example on diff drive controller wiki
+  pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+  twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+
+  # Frame of rover
+  base_frame_id: base_link
+
+  # The ratio of max acc and max vel is same as skid steer example in diff drive controlller wiki
+  linear:
+    x:
+      has_velocity_limits    : true
+
+      # Actual speed of rover is 1 meter per 3 secs, so this is sped up
+      max_velocity           : 1.0  # m/s
+
+      # Match backwards speed cap
+      min_velocity           : -1.0 # m/s
+
+      has_acceleration_limits: true
+      max_acceleration       : 1.0  # m/s^2
+      min_acceleration       : -1.0 # m/s^2
+
+  # Could also include for constraints for angular but linear caps ensure rover doesn't rotate too fast

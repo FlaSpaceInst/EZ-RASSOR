@@ -1,0 +1,13 @@
+material paver
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture paver.png
+            }
+        }
+    }
+}

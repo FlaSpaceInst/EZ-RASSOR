@@ -270,7 +270,7 @@ adjacent view. Return once a safe angle is found.
 """
 
 
-def get_turn_angle(world_state, ros_util):
+def get_turn_angle(world_state, ros_util, flag=True):
     # Iterate over all of the laser beams in our current scan and determine the
     # best angle to turn towards.
     best_angle = nf.get_best_angle(
@@ -298,8 +298,9 @@ def get_turn_angle(world_state, ros_util):
                     rospy.logdebug("Status check failed.")
                     return
 
-                set_front_arm_angle(world_state, ros_util, 1.3)
-                set_back_arm_angle(world_state, ros_util, 1.3)
+                if flag:
+                    set_front_arm_angle(world_state, ros_util, 0.2)
+                set_back_arm_angle(world_state, ros_util, 0.2)
 
                 switchDirection *= -1
                 wedgeDist += 1

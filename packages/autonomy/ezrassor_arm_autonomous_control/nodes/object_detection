@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+import rospy
+from ezrassor_arm_autonomous_control import object_detection
+
+camera_image_topic = rospy.get_param("object_detection/camera_image_topic")
+camera_info_topic = rospy.get_param("object_detection/camera_info_topic")
+command_topic = rospy.get_param("object_detection/command_topic")
+
+object_detection.onStart(camera_image_topic, camera_info_topic, command_topic)

@@ -3,6 +3,7 @@
      Written by Tiger Sachse. -->
 <launch>
   <arg name="control_methods"/>
+  <arg name="rover_model"/>
   <arg name="port" default="default"/>
   <arg name="joystick" default="default"/>
   <arg name="digsite_x_coord" default="default"/>
@@ -20,11 +21,29 @@
   <arg name="back_arm_instructions_topic" value="back_arm_instructions"/>
   <arg name="front_drum_instructions_topic" value="front_drum_instructions"/>
   <arg name="back_drum_instructions_topic" value="back_drum_instructions"/>
+  <arg name="paver_arm_joint_1_instructions_topic" value="paver_arm_joint_1_instructions"/>
+  <arg name="paver_arm_joint_2_instructions_topic" value="paver_arm_joint_2_instructions"/>
+  <arg name="paver_arm_joint_3_instructions_topic" value="paver_arm_joint_3_instructions"/>
+  <arg name="paver_arm_joint_4_instructions_topic" value="paver_arm_joint_4_instructions"/>
+  <arg name="paver_arm_joint_5_instructions_topic" value="paver_arm_joint_5_instructions"/>
+  <arg name="paver_arm_claw_instructions_topic" value="paver_arm_claw_instructions"/>
+  <arg name="paver_arm_controller_instructions_topic" value="paver_arm_controller_instructions"/>
   <arg name="manual_wheel_instructions_topic" value="manual_wheel_instructions"/>
   <arg name="manual_front_arm_instructions_topic" value="manual_front_arm_instructions"/>
   <arg name="manual_back_arm_instructions_topic" value="manual_back_arm_instructions"/>
   <arg name="manual_front_drum_instructions_topic" value="manual_front_drum_instructions"/>
   <arg name="manual_back_drum_instructions_topic" value="manual_back_drum_instructions"/>
+  <arg name="manual_paver_arm_joint_1_instructions_topic"
+       value="manual_paver_arm_joint_1_instructions"/>
+  <arg name="manual_paver_arm_joint_2_instructions_topic"
+       value="manual_paver_arm_joint_2_instructions"/>
+  <arg name="manual_paver_arm_joint_3_instructions_topic"
+       value="manual_paver_arm_joint_3_instructions"/>
+  <arg name="manual_paver_arm_joint_4_instructions_topic"
+       value="manual_paver_arm_joint_4_instructions"/>
+  <arg name="manual_paver_arm_joint_5_instructions_topic"
+       value="manual_paver_arm_joint_5_instructions"/>
+  <arg name="manual_paver_arm_claw_instructions_topic" value="manual_paver_arm_claw_instructions"/>
   <arg name="autonomous_wheel_instructions_topic"
        value="autonomous_wheel_instructions"/>
   <arg name="autonomous_front_arm_instructions_topic"
@@ -78,6 +97,20 @@
              value="$(arg manual_front_drum_instructions_topic)"/>
         <arg name="back_drum_instructions_topic"
              value="$(arg manual_back_drum_instructions_topic)"/>
+        <arg name="paver_arm_joint_1_instructions_topic"
+	        value="$(arg paver_arm_joint_1_instructions_topic)"/>
+        <arg name="paver_arm_joint_2_instructions_topic"
+	        value="$(arg paver_arm_joint_2_instructions_topic)"/>
+        <arg name="paver_arm_joint_3_instructions_topic"
+	        value="$(arg paver_arm_joint_3_instructions_topic)"/>
+        <arg name="paver_arm_joint_4_instructions_topic"
+	        value="$(arg paver_arm_joint_4_instructions_topic)"/>
+        <arg name="paver_arm_joint_5_instructions_topic"
+	        value="$(arg paver_arm_joint_5_instructions_topic)"/>
+        <arg name="paver_arm_claw_instructions_topic"
+	        value="$(arg paver_arm_claw_instructions_topic)"/>
+        <arg name="paver_arm_controller_instructions_topic"
+	        value="$(arg paver_arm_controller_instructions_topic)"/>
       </include>
       <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
                if="$(eval 'actions' in control_methods)">
@@ -105,8 +138,22 @@
              value="$(arg manual_front_drum_instructions_topic)"/>
         <arg name="back_drum_instructions_topic"
              value="$(arg manual_back_drum_instructions_topic)"/>
+        <arg name="paver_arm_joint_1_instructions_topic"
+	        value="$(arg paver_arm_joint_1_instructions_topic)"/>
+        <arg name="paver_arm_joint_2_instructions_topic"
+	        value="$(arg paver_arm_joint_2_instructions_topic)"/>
+        <arg name="paver_arm_joint_3_instructions_topic"
+	        value="$(arg paver_arm_joint_3_instructions_topic)"/>
+        <arg name="paver_arm_joint_4_instructions_topic"
+	        value="$(arg paver_arm_joint_4_instructions_topic)"/>
+        <arg name="paver_arm_joint_5_instructions_topic"
+	        value="$(arg paver_arm_joint_5_instructions_topic)"/>
+        <arg name="paver_arm_claw_instructions_topic"
+	        value="$(arg paver_arm_claw_instructions_topic)"/>
+        <arg name="paver_arm_controller_instructions_topic"
+	        value="$(arg paver_arm_controller_instructions_topic)"/>
       </include>
-      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
+      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch" if="$(eval 'standard' in rover_model)">
         <arg name="wheel_instructions_topic"
              value="$(arg autonomous_wheel_instructions_topic)"/>
         <arg name="front_arm_instructions_topic"
@@ -141,6 +188,41 @@
         <arg name="world"
              value="$(arg world)"
              unless="$(eval world == 'default')"/>
+      </include>
+      <include file="$(find ezrassor_arm_autonomous_control)/launch/ezrassor_arm_autonomous_control.launch" if="$(eval 'paver_arm' in rover_model)">
+        <arg name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/>
+        <arg name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+        <arg name="digsite_x_coord"
+             value="$(arg digsite_x_coord)"
+             unless="$(eval digsite_x_coord == 'default')"/>
+        <arg name="digsite_y_coord"
+             value="$(arg digsite_y_coord)"
+             unless="$(eval digsite_y_coord == 'default')"/>
+        <arg name="spawn_x_coord"
+             value="$(arg spawn_x_coord)"
+             unless="$(eval spawn_x_coord == 'default')"/>
+        <arg name="spawn_y_coord"
+             value="$(arg spawn_y_coord)"
+             unless="$(eval spawn_y_coord == 'default')"/>
+        <arg name="wheel_instructions_topic"
+             value="$(arg wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg back_drum_instructions_topic)"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="swarm_control"
+             value="$(arg swarm_control)"
+             unless="$(eval swarm_control == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
       </include>
       <include file="$(find ezrassor_topic_switch)/launch/topic_switch.launch">
         <arg name="node_name" value="$(arg wheel_switch_name)"/>
@@ -188,7 +270,7 @@
          switches required). -->
     </group>
     <group unless="$(eval 'gamepad' in control_methods or 'keyboard' in control_methods or 'actions' in control_methods or 'app' in control_methods)">
-      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch">
+      <include file="$(find ezrassor_autonomous_control)/launch/autonomous_control.launch" if="$(eval 'standard' in rover_model)">
         <arg name="wheel_instructions_topic"
              value="$(arg wheel_instructions_topic)"/>
         <arg name="front_arm_instructions_topic"
@@ -224,6 +306,41 @@
              value="$(arg world)"
              unless="$(eval world == 'default')"/>
       </include>
+      <include file="$(find ezrassor_arm_autonomous_control)/launch/ezrassor_arm_autonomous_control.launch" if="$(eval 'paver_arm' in rover_model)">
+        <arg name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/>
+        <arg name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+        <arg name="digsite_x_coord"
+             value="$(arg digsite_x_coord)"
+             unless="$(eval digsite_x_coord == 'default')"/>
+        <arg name="digsite_y_coord"
+             value="$(arg digsite_y_coord)"
+             unless="$(eval digsite_y_coord == 'default')"/>
+        <arg name="spawn_x_coord"
+             value="$(arg spawn_x_coord)"
+             unless="$(eval spawn_x_coord == 'default')"/>
+        <arg name="spawn_y_coord"
+             value="$(arg spawn_y_coord)"
+             unless="$(eval spawn_y_coord == 'default')"/>
+        <arg name="wheel_instructions_topic"
+             value="$(arg wheel_instructions_topic)"/>
+        <arg name="front_arm_instructions_topic"
+             value="$(arg front_arm_instructions_topic)"/>
+        <arg name="back_arm_instructions_topic"
+             value="$(arg back_arm_instructions_topic)"/>
+        <arg name="front_drum_instructions_topic"
+             value="$(arg front_drum_instructions_topic)"/>
+        <arg name="back_drum_instructions_topic"
+             value="$(arg back_drum_instructions_topic)"/>
+        <arg name="enable_real_odometry"
+             value="$(arg enable_real_odometry)"
+             unless="$(eval enable_real_odometry == 'default')"/>
+        <arg name="swarm_control"
+             value="$(arg swarm_control)"
+             unless="$(eval swarm_control == 'default')"/>
+        <arg name="enable_park_ranger"
+             value="$(arg enable_park_ranger)"
+             unless="$(eval enable_park_ranger == 'default')"/>
+      </include>
     </group>
   </group>
 
@@ -252,6 +369,20 @@
            value="$(arg front_drum_instructions_topic)"/>
       <arg name="back_drum_instructions_topic"
            value="$(arg back_drum_instructions_topic)"/>
+      <arg name="paver_arm_joint_1_instructions_topic"
+	   value="$(arg paver_arm_joint_1_instructions_topic)"/>
+      <arg name="paver_arm_joint_2_instructions_topic"
+	   value="$(arg paver_arm_joint_2_instructions_topic)"/>
+      <arg name="paver_arm_joint_3_instructions_topic"
+	   value="$(arg paver_arm_joint_3_instructions_topic)"/>
+      <arg name="paver_arm_joint_4_instructions_topic"
+	   value="$(arg paver_arm_joint_4_instructions_topic)"/>
+      <arg name="paver_arm_joint_5_instructions_topic"
+	   value="$(arg paver_arm_joint_5_instructions_topic)"/>
+      <arg name="paver_arm_claw_instructions_topic"
+	   value="$(arg paver_arm_claw_instructions_topic)"/>
+      <arg name="paver_arm_controller_instructions_topic"
+	        value="$(arg paver_arm_controller_instructions_topic)"/>
     </include>
     <include file="$(find ezrassor_teleop_actions)/launch/teleop_action_server.launch"
              if="$(eval 'actions' in control_methods)">
@@ -274,6 +405,23 @@
       <arg name="back_arm_instructions_topic" value="$(arg back_arm_instructions_topic)"/>
       <arg name="front_drum_instructions_topic" value="$(arg front_drum_instructions_topic)"/>
       <arg name="back_drum_instructions_topic" value="$(arg back_drum_instructions_topic)"/>
+      <arg name="paver_arm_joint_1_instructions_topic" value="$(arg paver_arm_joint_1_instructions_topic)"/>
+      <arg name="paver_arm_joint_2_instructions_topic" value="$(arg paver_arm_joint_2_instructions_topic)"/>
+      <arg name="paver_arm_joint_3_instructions_topic" value="$(arg paver_arm_joint_3_instructions_topic)"/>
+      <arg name="paver_arm_joint_4_instructions_topic" value="$(arg paver_arm_joint_4_instructions_topic)"/>
+      <arg name="paver_arm_joint_5_instructions_topic" value="$(arg paver_arm_joint_5_instructions_topic)"/>
+      <arg name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+      <arg name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/>
+      <arg name="rover_model" value="$(arg rover_model)"/>
     </include>
+    <group unless="$(eval 'standard' in rover_model)">
+     <include file="$(find ezrassor_arm_moveit)/launch/move_group.launch">
+     </include> 
+     <node name="move_group_interface" pkg="ezrassor_arm_autonomous_control" type="move_group_interface" output="screen">
+          <param name="paver_arm_controller_instructions_topic" value="$(arg paver_arm_controller_instructions_topic)"/> 
+          <param name="paver_arm_claw_instructions_topic" value="$(arg paver_arm_claw_instructions_topic)"/>
+          
+     </node>
+    </group>
   </group>
 </launch>

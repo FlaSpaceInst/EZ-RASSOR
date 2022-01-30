@@ -3,6 +3,7 @@
      Written by Tiger Sachse. -->
 <launch>
   <arg name="control_methods"/>
+  <arg name="rover_model" default="standard"/>
   <arg name="robot_count" default="1"/>
   <arg name="ports" default="default"/>
   <arg name="joysticks" default="default"/>
@@ -51,6 +52,8 @@
       <arg name="world"
            value="$(arg world)"
            unless="$(eval world == 'default')"/>
+      <arg name="rover_model"
+           value="$(arg rover_model)"/>
     </include>
 
     <!-- Spawn the model. -->
@@ -74,10 +77,14 @@
       <arg name="yaw"
            value="$(eval str(spawn_yaw).split()[robot_count - 1])"
            unless="$(eval spawn_yaw == 'default')"/>
+      <arg name="rover_model" value="$(arg rover_model)"/>
     </include>
 
     <!-- Launch the model controls. -->
-    <include file="$(find ezrassor_sim_control)/launch/model_controls.launch"/>
+    <include file="$(find ezrassor_sim_control)/launch/model_controls.launch">
+      <arg name="rover_model" value="$(arg rover_model)"/>
+      
+    </include>
   </group>
 
   <!-- If the final robot has been spawned, load up an empty world. Any arguments
