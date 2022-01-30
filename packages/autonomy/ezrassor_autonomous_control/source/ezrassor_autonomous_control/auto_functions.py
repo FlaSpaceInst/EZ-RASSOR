@@ -17,7 +17,7 @@ def at_target(positionX, positionY, targetX, targetY, threshold):
 
 
 def charge_battery(world_state, ros_util):
-    """ Charge the rover's battery for a designated duration until battery is 100% """
+    """Charge the rover's battery for a designated duration until battery is 100%"""
 
     ros_util.publish_actions("stop", 0, 0, 0, 0)
 
@@ -29,7 +29,7 @@ def charge_battery(world_state, ros_util):
 
 
 def auto_drive_location(world_state, ros_util, waypoint_server=None):
-    """ Navigate to location. Avoid obstacles while moving toward location. """
+    """Navigate to location. Avoid obstacles while moving toward location."""
 
     # Action server will print it's own info
     if waypoint_server is None:
@@ -195,7 +195,7 @@ def auto_dig(world_state, ros_util, duration, waypoint_server=None):
 
 
 def auto_dock(world_state, ros_util):
-    """ Dock with the hopper. """
+    """Dock with the hopper."""
 
     rospy.loginfo("Auto-returning to origin...")
 
@@ -243,3 +243,261 @@ def auto_dump(world_state, ros_util, duration):
         ros_util.rate.sleep()
 
     ros_util.publish_actions("stop", 0, 0, 0, 0)
+
+
+def auto_drive_location_land_pad(world_state, ros_util, waypoint_server=None):
+    """Navigate to location. Avoid obstacles while moving toward location."""
+
+    # Action server will print it's own info
+    if waypoint_server is None:
+        rospy.loginfo(
+            "Auto-driving to [%s, %s]...",
+            str(world_state.target_location.x),
+            str(world_state.target_location.y),
+        )
+
+    # Send feedback to waypoint client if being controlled by swarm controller
+    preempted = False
+    feedback = uf.send_feedback(world_state, waypoint_server)
+
+    # Set arms up for travel
+    uf.set_front_arm_angle(world_state, ros_util, 1.3)
+    uf.set_back_arm_angle(world_state, ros_util, 1.3)
+
+    # Check rover battery, hardware, and if it's flipped over
+    if uf.self_check(world_state, ros_util) != 1:
+        preempted = True
+
+        # Cancel action server request is self check failed
+        if waypoint_server is not None:
+            waypoint_server.set_preempted()
+
+        rospy.logdebug("Status check failed.")
+        return feedback, preempted
+
+    # Before we head towards our goal, turn to face it.
+    # Get new heading angle relative to current heading
+    new_heading_degrees = nf.calculate_heading(world_state)
+    angle2goal_radians = nf.adjust_angle(
+        world_state.heading, new_heading_degrees
+    )
+
+    # If our angle is less than zero, then we would expect a right turn
+    # otherwise turn left.
+    if angle2goal_radians < 0:
+        direction = "right"
+    else:
+        direction = "left"
+
+    uf.turn(new_heading_degrees, direction, world_state, ros_util)
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
+
+    # Main loop until location is reached
+    while not at_target(
+        world_state.positionX,
+        world_state.positionY,
+        world_state.target_location.x,
+        world_state.target_location.y,
+        ros_util.threshold,
+    ):
+
+        # Check that the waypoint client request hasnt been canceled
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
+            preempted = True
+            break
+
+        # Set arms up for travel
+        uf.set_front_arm_angle(world_state, ros_util, 1.3)
+        uf.set_back_arm_angle(world_state, ros_util, 1.3)
+
+        # Check rover battery, hardware, and if it's flipped over
+        if uf.self_check(world_state, ros_util) != 1:
+            preempted = True
+            # Cancel waypoint client request is self check failed
+            if waypoint_server is not None:
+                waypoint_server.set_preempted()
+
+            rospy.logdebug("Status check failed.")
+            break
+
+        angle = uf.get_turn_angle(world_state, ros_util)
+
+        # If our angle is less than zero, then we would expect a right turn
+        # otherwise turn left.
+        direction = "right" if angle < 0 else "left"
+
+        # Turn towards the direction chosen.
+        uf.turn(
+            nf.rel_to_abs(world_state.heading, angle),
+            direction,
+            world_state,
+            ros_util,
+        )
+
+        # Move towards the direction chosen.
+        uf.move(ros_util.move_increment, world_state, ros_util)
+
+        if world_state.carrying_dirt:
+            world_state.battery -= 0.2
+        else:
+            world_state.battery -= 0.1
+
+        # Send feedback to waypoint action client
+        feedback = uf.send_feedback(world_state, waypoint_server)
+
+    # Action server will print its own info
+    if waypoint_server is None:
+        rospy.loginfo("Destination reached!")
+
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
+    return feedback, preempted
+
+
+def auto_dig_land_pad(world_state, ros_util, duration, waypoint_server=None):
+    """
+    Rotate both drums inward and dig
+    for duration time in seconds.
+    """
+
+    feedback = uf.send_feedback(world_state, waypoint_server)
+    preempted = False
+
+    # Check rover battery, hardware, and if it's flipped over
+    if uf.self_check(world_state, ros_util) != 1:
+        if waypoint_server is not None:
+            waypoint_server.set_preempted()
+
+        preempted = True
+        return feedback, preempted
+
+    if waypoint_server is None:
+        rospy.loginfo("Auto-digging for %d seconds...", duration)
+
+    # Turn to the same direction before every dump.
+    uf.turn(
+        90,
+        "left",
+        world_state,
+        ros_util,
+    )
+
+    rospy.sleep(3.0)
+
+    uf.set_front_arm_angle(world_state, ros_util, -0.1)
+    uf.set_back_arm_angle(world_state, ros_util, -0.1)
+
+    # Dig for the desired duration
+    t = 0
+    direction = "forward"
+    while t < duration * 40:
+        # Swap between digging forward or backward every few seconds
+        if t % 50 == 0:
+            direction = "reverse" if direction == "forward" else "forward"
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
+            rospy.sleep(3.0)
+
+        ros_util.publish_actions(direction, 0, 0, 1, 1)
+        t += 1
+        ros_util.rate.sleep()
+
+        world_state.battery -= 0.05
+
+        # Send feedback to waypoint client if being controlled by swarm controller
+        feedback = uf.send_feedback(world_state, waypoint_server)
+
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
+            preempted = True
+            break
+
+        if uf.self_check(world_state, ros_util) != 1:
+            if waypoint_server is not None:
+                waypoint_server.set_preempted()
+
+            preempted = True
+            break
+
+    world_state.carrying_dirt = True
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
+    return feedback, preempted
+
+
+def auto_dump_land_pad(world_state, ros_util, duration, waypoint_server=None):
+    """Dump the contents of the drums while moving forward or backward.
+    To avoid dumping in front of the rover, Only dump behind the rover.
+    """
+    feedback = uf.send_feedback(world_state, waypoint_server)
+    preempted = False
+
+    # Check rover battery, hardware, and if it's flipped over
+    if uf.self_check(world_state, ros_util) != 1:
+        if waypoint_server is not None:
+            waypoint_server.set_preempted()
+
+        preempted = True
+        return feedback, preempted
+
+    if waypoint_server is None:
+        rospy.loginfo("Auto-dumping for %d seconds...", duration)
+
+    # Turn to the same direction before every dump.
+    uf.turn(
+        90,
+        "left",
+        world_state,
+        ros_util,
+    )
+
+    # Raise arms
+    uf.set_front_arm_angle(world_state, ros_util, 0.6)
+    uf.set_back_arm_angle(world_state, ros_util, 0.6)
+
+    direction = "forward"
+    back_drum = 0
+    front_drum = -1
+    t = 0
+    while t < duration * 80:
+        # Set drums to dump and move forward and backwards.
+        if t % 50 == 0:
+            if direction == "forward":
+                direction = "reverse"
+                back_drum = 0
+                front_drum = -1
+            else:
+                direction = "forward"
+                back_drum = -1
+                front_drum = 0
+            ros_util.publish_actions("stop", 0, 0, 0, 0)
+            rospy.sleep(3.0)
+
+        ros_util.publish_actions(direction, 0, 0, front_drum, back_drum)
+        t += 1
+        ros_util.rate.sleep()
+
+        world_state.battery -= 0.03
+
+        # Send feedback to waypoint client if being controlled by swarm controller
+        feedback = uf.send_feedback(world_state, waypoint_server)
+
+        if (
+            waypoint_server is not None
+            and waypoint_server.is_preempt_requested()
+        ):
+            preempted = True
+            break
+
+        if uf.self_check(world_state, ros_util) != 1:
+            if waypoint_server is not None:
+                waypoint_server.set_preempted()
+
+            preempted = True
+            break
+
+    world_state.carrying_dirt = False
+    ros_util.publish_actions("stop", 0, 0, 0, 0)
+    return feedback, preempted

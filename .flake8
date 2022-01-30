@@ -10,4 +10,6 @@ exclude = */test/*.test
 
 # Ignore unused imports in __init__.py files.
 per-file-ignores =
-    __init__.py: F401
+    __init__.py: F401,
+    # Flake Error 203 is not PEP8 compliant.
+    packages/autonomy/ezrassor_swarm_control/source/ezrassor_swarm_control/swarm_control.py: E203

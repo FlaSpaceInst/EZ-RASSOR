@@ -82,7 +82,7 @@ def cell_gps_core():
 
     while True:
 
-        """ waits here until new image is published """
+        """waits here until new image is published"""
 
         img = cv.imread("d_03_12_20_t_22_16_15.jpg", 1)  # pub by camera node
         clock_time = 26.2708333  # system call
